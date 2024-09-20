@@ -51,15 +51,16 @@ type Action =
   | { type: 'ADD_SEMESTER'; payload: {} }
 
 function flowsheetReducer(draft: Draft<State>, action: Action) {
+  const { flowsheet, semesters, addedCourses } = draft
   const { type, payload } = action
 
   switch (type) {
     case 'ADD_COURSE':
       const { semesterId, courseId } = payload
-      if (draft.addedCourses.includes(courseId))
+      if (addedCourses.includes(courseId))
         return alert(`tf u think ur doing with my boy Course ${courseId}`)
-      draft.semesters[semesterId].courseIds.push(courseId)
-      draft.addedCourses.push(courseId)
+      semesters[semesterId].courseIds.push(courseId)
+      addedCourses.push(courseId)
       break
     case 'ADD_SEMESTER':
 
