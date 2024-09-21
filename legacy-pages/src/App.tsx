@@ -11,7 +11,6 @@ import {
   DialogTrigger,
 } from './components/ui/dialog'
 import { ScrollArea } from './components/ui/scroll-area'
-import { useState } from 'react'
 
 type Year = {
   id: number
@@ -26,17 +25,14 @@ type Semester = {
 interface flowsheetState {
   id: number
   name: string
-  numberOfYears: number
   years: { [key: number]: Year }
   semesters: { [key: number]: Semester }
-  addedCourseIds: number[]
   error: string | null
 }
 
 const initialFlowsheet: flowsheetState = {
   id: 1,
   name: 'Computer Science 2023/2024 - General Track',
-  numberOfYears: 4,
   years: {
     1: {
       id: 1,
@@ -61,7 +57,6 @@ const initialFlowsheet: flowsheetState = {
       courseIds: [],
     },
   },
-  addedCourseIds: [],
   error: null,
 }
 
@@ -117,15 +112,22 @@ const courses: { [key: number]: Course } = {
   },
 }
 
+function isAdded(
+  courseId: number,
+  semesters: { [key: number]: Semester }
+): boolean {
+  return Object.values(semesters).some((semester) =>
+    semester.courseIds.includes(courseId)
+  )
+}
+
 type Action =
   | { type: 'ADD_COURSE'; payload: { semesterId: number; courseId: number } }
   | { type: 'REMOVE_COURSE'; payload: { semesterId: number; courseId: number } }
 
 function flowsheetReducer(draft: Draft<flowsheetState>, action: Action) {
-  let { semesters, addedCourseIds } = draft
+  let { semesters } = draft
   const { type, payload } = action
-
-  console.log(addedCourseIds)
 
   switch (type) {
     case 'ADD_COURSE': {
@@ -133,34 +135,29 @@ function flowsheetReducer(draft: Draft<flowsheetState>, action: Action) {
       const course = courses[courseId]
       const semester = semesters[semesterId]
 
-      if (!course || !semester)
-        return alert(
-          `Course not found in study plan or semester not found in flowsheet`
-        )
-      if (addedCourseIds.includes(courseId))
+      if (!course || !semester) return alert('Course or semester not found')
+      if (isAdded(courseId, semesters))
         return alert(`${course.name} is already added to the flowsheet`)
 
       semester.courseIds.push(courseId)
-      addedCourseIds.push(courseId)
       break
     }
+
     case 'REMOVE_COURSE': {
       const { semesterId, courseId } = payload
       const course = courses[courseId]
       const semester = semesters[semesterId]
 
-      if (!course || !semester)
-        return alert(
-          `Course not found in study plan or semester not found in flowsheet`
-        )
-      if (!addedCourseIds.includes(courseId))
+      if (!course || !semester) return alert(`Course or semester not found`)
+      if (!isAdded(courseId, semesters))
         return alert(`${course.name} is not in the flowsheet`)
 
       semester.courseIds.splice(semester.courseIds.indexOf(courseId), 1)
-      addedCourseIds.splice(addedCourseIds.indexOf(courseId), 1)
       break
     }
+
     default:
+      alert('Invalid dispatch type')
       break
   }
 }
@@ -274,8 +271,7 @@ function Semester({
           <ScrollArea>
             <ul className="grid grid-cols-3 gap-1 w-fit">
               {Object.values(courses).map((course) => {
-                const isAdded = flowsheet.addedCourseIds.includes(course.id)
-                if (isAdded) return null
+                if (isAdded(course.id, flowsheet.semesters)) return null
                 return (
                   <li key={course.id}>
                     <Course
@@ -284,7 +280,7 @@ function Semester({
                       name={course.name}
                       creditHours={course.creditHours}
                       semesterId={semesterId}
-                      isAdded={isAdded}
+                      isAdded={false}
                       dispatch={dispatch}
                     />
                   </li>
@@ -317,35 +313,36 @@ function Course({
     courseId: number
   ) => dispatch({ type: actionType, payload: { semesterId, courseId } })
   return (
-    <div className="group border rounded transition-all hover:bg-blue-100 cursor-pointer flex flex-col p-3 bg-zinc-200 w-36 h-36 relative">
-      <header className="text-left flex gap-2 w-full">
+    <Button
+      onClick={() =>
+        handleCourseAction(
+          isAdded ? 'REMOVE_COURSE' : 'ADD_COURSE',
+          semesterId,
+          courseId
+        )
+      }
+      variant="ghost"
+      className={`group border rounded transition-all bg-zinc-200 ${
+        isAdded ? 'hover:bg-red-500/50' : 'hover:bg-green-500/50'
+      } cursor-pointer flex flex-col p-3 w-36 h-36 relative text-left`}
+    >
+      <header className="flex gap-2 w-full">
         <h1 className="font-semibold">{code}</h1>
       </header>
-      <p className="whitespace-normal font-normal text-sm overflow-hidden text-ellipsis line-clamp-3">
+      <p className="w-full whitespace-normal font-normal text-sm overflow-hidden text-ellipsis line-clamp-3">
         {name}
       </p>
       <footer className="w-full mt-auto flex text-xs font-semibold text-muted-foreground">
         <p className="ml-auto">{creditHours} Cr Hr</p>
       </footer>
-      <Button
-        onClick={() =>
-          handleCourseAction(
-            isAdded ? 'REMOVE_COURSE' : 'ADD_COURSE',
-            semesterId,
-            courseId
-          )
-        }
-        variant="ghost"
-        className={`${
-          isAdded ? 'hover:text-red-600' : 'hover:text-red-600'
-        } px-2 absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-all`}
-      >
+
+      <div className="p-1 absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-all">
         {isAdded ? (
-          <Trash className="scale-90" />
+          <Trash className="scale-90 hover:text-red-500 transition-all" />
         ) : (
-          <Plus className="scale-90" />
+          <Plus className="scale-90 hover:text-green-500 transition-all" />
         )}
-      </Button>
-    </div>
+      </div>
+    </Button>
   )
 }
