@@ -1,6 +1,7 @@
 import { Draft } from 'immer'
 import { useImmerReducer } from 'use-immer'
 import { Button } from './components/ui/button'
+import { Trash } from 'lucide-react'
 
 type Flowsheet = {
   id: number
@@ -22,7 +23,7 @@ interface flowsheetState {
   flowsheet: Flowsheet
   years: { [key: number]: Year }
   semesters: { [key: number]: Semester }
-  addedCourses: number[]
+  addedCourseIds: number[]
   error: string | null
 }
 
@@ -45,18 +46,18 @@ const initialFlowsheet: flowsheetState = {
   semesters: {
     1: {
       id: 1,
-      courseIds: [16, 17],
+      courseIds: [],
     },
     2: {
       id: 2,
-      courseIds: [20, 21],
+      courseIds: [],
     },
     3: {
       id: 3,
-      courseIds: [18, 19],
+      courseIds: [],
     },
   },
-  addedCourses: [16, 17, 20, 21, 18, 19],
+  addedCourseIds: [],
   error: null,
 }
 
@@ -112,26 +113,51 @@ const courses: { [key: number]: Course } = {
   },
 }
 
-type Action = {
-  type: 'ADD_COURSE'
-  payload: { semesterId: number; courseId: number }
-}
+type Action =
+  | { type: 'ADD_COURSE'; payload: { semesterId: number; courseId: number } }
+  | { type: 'REMOVE_COURSE'; payload: { semesterId: number; courseId: number } }
 
 function flowsheetReducer(draft: Draft<flowsheetState>, action: Action) {
-  const { semesters, addedCourses } = draft
+  let { semesters, addedCourseIds } = draft
   const { type, payload } = action
 
+  console.log(addedCourseIds)
+
   switch (type) {
-    case 'ADD_COURSE':
+    case 'ADD_COURSE': {
       const { semesterId, courseId } = payload
-      if (!courses[courseId]) return alert(`Course not found in study plan`)
-      if (addedCourses.includes(courseId))
+      const course = courses[courseId]
+      const semester = semesters[semesterId]
+
+      if (!course || !semester)
+        return alert(
+          `Course not found in study plan or semester not found in flowsheet`
+        )
+      if (addedCourseIds.includes(courseId))
         return alert(
           `${courses[courseId].name} is already added to the flowsheet`
         )
-      semesters[semesterId].courseIds.push(courseId)
-      addedCourses.push(courseId)
+
+      semester.courseIds.push(courseId)
+      addedCourseIds.push(courseId)
       break
+    }
+    case 'REMOVE_COURSE': {
+      const { semesterId, courseId } = payload
+      const course = courses[courseId]
+      const semester = semesters[semesterId]
+
+      if (!course || !semester)
+        return alert(
+          `Course not found in study plan or semester not found in flowsheet`
+        )
+      if (!addedCourseIds.includes(courseId))
+        return alert(`${course.name} is not in the flowsheet`)
+
+      semester.courseIds.splice(semester.courseIds.indexOf(courseId), 1)
+      addedCourseIds.splice(addedCourseIds.indexOf(courseId), 1)
+      break
+    }
     default:
       break
   }
@@ -200,39 +226,65 @@ function Year({
   )
 }
 
-function Semester({ id, courseIds, dispatch }: Semester & { dispatch: any }) {
-  const handleAddCourse = (semesterId: number, courseId: number) =>
-    dispatch({ type: 'ADD_COURSE', payload: { semesterId, courseId } })
+function Semester({
+  id: semesterId,
+  courseIds,
+  dispatch,
+}: Semester & { dispatch: any }) {
+  const handleCourseAction = (
+    actionType: string,
+    semesterId: number,
+    courseId: number
+  ) => dispatch({ type: actionType, payload: { semesterId, courseId } })
 
   return (
     <section className="flex flex-col gap-1">
-      <header className="text-center">Semester {id}</header>
+      <header className="text-center">Semester {semesterId}</header>
       <ul className="flex flex-col gap-1">
         {courseIds.map((id) => {
           const course = courses[id]
           if (!course) return null
           return (
-            <li key={id}>
+            <li key={id} className="relative">
               <Course
                 id={id}
                 code={course.code}
                 name={course.name}
                 creditHours={course.creditHours}
+                semesterId={semesterId}
+                handleCourseAction={handleCourseAction}
               />
             </li>
           )
         })}
       </ul>
-      <Button onClick={() => handleAddCourse(id, 22)} variant="outline">
+      <Button
+        onClick={() => handleCourseAction('ADD_COURSE', semesterId, 22)}
+        variant="outline"
+      >
         Add course
       </Button>
     </section>
   )
 }
 
-function Course({ code, name, creditHours }: Course) {
+function Course({
+  id: courseId,
+  code,
+  name,
+  creditHours,
+  semesterId,
+  handleCourseAction,
+}: Course & {
+  semesterId: number
+  handleCourseAction: (
+    actionType: string,
+    semesterId: number,
+    courseId: number
+  ) => void
+}) {
   return (
-    <div className="border rounded transition-all hover:bg-blue-100 cursor-pointer flex flex-col p-3 bg-zinc-200 w-36 h-36">
+    <div className="group border rounded transition-all hover:bg-blue-100 cursor-pointer flex flex-col p-3 bg-zinc-200 w-36 h-36 relative">
       <header className="text-left flex gap-2 w-full">
         <h1 className="font-semibold">{code}</h1>
       </header>
@@ -242,6 +294,15 @@ function Course({ code, name, creditHours }: Course) {
       <footer className="w-full mt-auto flex text-xs font-semibold text-muted-foreground">
         <p className="ml-auto">{creditHours} Cr Hr</p>
       </footer>
+      <Button
+        onClick={() =>
+          handleCourseAction('REMOVE_COURSE', semesterId, courseId)
+        }
+        variant="ghost"
+        className="hover:text-red-600 px-2 absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-all"
+      >
+        <Trash className="scale-90" />
+      </Button>
     </div>
   )
 }
