@@ -274,7 +274,8 @@ function Semester({
           <ScrollArea>
             <ul className="grid grid-cols-3 gap-1 w-fit">
               {Object.values(courses).map((course) => {
-                if (flowsheet.addedCourseIds.includes(course.id)) return null
+                const isAdded = flowsheet.addedCourseIds.includes(course.id)
+                if (isAdded) return null
                 return (
                   <li key={course.id}>
                     <Course
@@ -283,7 +284,7 @@ function Semester({
                       name={course.name}
                       creditHours={course.creditHours}
                       semesterId={semesterId}
-                      isAdded={false}
+                      isAdded={isAdded}
                       dispatch={dispatch}
                     />
                   </li>
