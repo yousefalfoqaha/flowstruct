@@ -11,6 +11,7 @@ import {
   DialogTrigger,
 } from './components/ui/dialog'
 import { ScrollArea } from './components/ui/scroll-area'
+import { createContext, ReactNode, useContext } from 'react'
 
 type Year = {
   id: number
@@ -121,6 +122,8 @@ function isAdded(
   )
 }
 
+
+
 type Action =
   | { type: 'ADD_COURSE'; payload: { semesterId: number; courseId: number } }
   | { type: 'REMOVE_COURSE'; payload: { semesterId: number; courseId: number } }
@@ -162,22 +165,47 @@ function flowsheetReducer(draft: Draft<flowsheetState>, action: Action) {
   }
 }
 
-export default function App() {
+const FlowsheetContext = createContext<flowsheetState | undefined>(undefined)
+const FlowsheetDispatchContext = createContext<any | undefined>(undefined)
+
+function useFlowsheetContext() {
+  const flowsheet = useContext(FlowsheetContext)
+  const dispatch = useContext(FlowsheetDispatchContext)
+
+  if (!flowsheet || !dispatch) {
+    throw new Error(
+      'FlowsheetContext or FlowsheetDispatchContext must be used within a FlowsheetProvider'
+    )
+  }
+
+  return { flowsheet, dispatch }
+}
+
+function FlowsheetProvider({ children }: { children: ReactNode }) {
   const [flowsheet, dispatch] = useImmerReducer(
     flowsheetReducer,
     initialFlowsheet
   )
 
-  return <Flowsheet flowsheet={flowsheet} dispatch={dispatch} />
+  return (
+    <FlowsheetContext.Provider value={flowsheet}>
+      <FlowsheetDispatchContext.Provider value={dispatch}>
+        {children}
+      </FlowsheetDispatchContext.Provider>
+    </FlowsheetContext.Provider>
+  )
 }
 
-function Flowsheet({
-  flowsheet,
-  dispatch,
-}: {
-  flowsheet: flowsheetState
-  dispatch: any
-}) {
+export default function FlowsheetApp() {
+  return (
+    <FlowsheetProvider>
+      <Flowsheet />
+    </FlowsheetProvider>
+  )
+}
+
+function Flowsheet() {
+  const { flowsheet } = useFlowsheetContext()
   return (
     <section className="flex flex-col justify-center">
       <header>{flowsheet.name}</header>
@@ -186,12 +214,7 @@ function Flowsheet({
           if (!year) return null // will inform user of the null components to be deleted
           return (
             <li key={year.id}>
-              <Year
-                id={year.id}
-                semesterIds={year.semesterIds}
-                flowsheet={flowsheet}
-                dispatch={dispatch} // need useContext to avoid prop drilling
-              />
+              <Year id={year.id} semesterIds={year.semesterIds} />
             </li>
           )
         })}
@@ -200,12 +223,8 @@ function Flowsheet({
   )
 }
 
-function Year({
-  id: yearId,
-  semesterIds,
-  flowsheet,
-  dispatch,
-}: Year & { flowsheet: flowsheetState; dispatch: any }) {
+function Year({ id: yearId, semesterIds }: Year) {
+  const { flowsheet } = useFlowsheetContext()
   return (
     <section>
       <header className="bg-zinc-200 px-10 text-center">Year {yearId}</header>
@@ -215,12 +234,7 @@ function Year({
           if (!semester) return null
           return (
             <li key={id}>
-              <Semester
-                id={id}
-                courseIds={semester.courseIds}
-                flowsheet={flowsheet}
-                dispatch={dispatch} // need useContext to avoid prop drilling
-              />
+              <Semester id={id} courseIds={semester.courseIds} />
             </li>
           )
         })}
@@ -229,12 +243,7 @@ function Year({
   )
 }
 
-function Semester({
-  id: semesterId,
-  courseIds,
-  flowsheet,
-  dispatch,
-}: Semester & { flowsheet: flowsheetState; dispatch: any }) {
+function Semester({ id: semesterId, courseIds }: Semester) {
   return (
     <section className="flex flex-col gap-1 w-36">
       <header className="text-center">Semester {semesterId}</header>
@@ -251,46 +260,52 @@ function Semester({
                 creditHours={course.creditHours}
                 semesterId={semesterId}
                 isAdded={true}
-                dispatch={dispatch}
               />
             </li>
           )
         })}
       </ul>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="outline">Add course</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Study Plan Courses</DialogTitle>
-            <DialogDescription>
-              Add available courses to semester {semesterId}
-            </DialogDescription>
-          </DialogHeader>
-          <ScrollArea>
-            <ul className="grid grid-cols-3 gap-1 w-fit">
-              {Object.values(courses).map((course) => {
-                if (isAdded(course.id, flowsheet.semesters)) return null
-                return (
-                  <li key={course.id}>
-                    <Course
-                      id={course.id}
-                      code={course.code}
-                      name={course.name}
-                      creditHours={course.creditHours}
-                      semesterId={semesterId}
-                      isAdded={false}
-                      dispatch={dispatch}
-                    />
-                  </li>
-                )
-              })}
-            </ul>
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
+      <StudyPlan semesterId={semesterId} />
     </section>
+  )
+}
+
+function StudyPlan({ semesterId }: { semesterId: number }) {
+  const { flowsheet, dispatch } = useFlowsheetContext()
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Add course</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Study Plan Courses</DialogTitle>
+          <DialogDescription>
+            Add available courses to semester {semesterId}
+          </DialogDescription>
+        </DialogHeader>
+        <ScrollArea>
+          <ul className="grid grid-cols-3 gap-1 w-fit">
+            {Object.values(courses).map((course) => {
+              if (isAdded(course.id, flowsheet.semesters)) return null
+              return (
+                <li key={course.id}>
+                  <Course
+                    id={course.id}
+                    code={course.code}
+                    name={course.name}
+                    creditHours={course.creditHours}
+                    semesterId={semesterId}
+                    isAdded={false}
+                    dispatch={dispatch}
+                  />
+                </li>
+              )
+            })}
+          </ul>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -300,13 +315,12 @@ function Course({
   name,
   creditHours,
   semesterId,
-  isAdded,
-  dispatch,
+  isAdded, // refactor into custom hook
 }: Course & {
   semesterId: number
   isAdded: boolean
-  dispatch: any
 }) {
+  const { dispatch } = useFlowsheetContext()
   const handleCourseAction = (
     actionType: string,
     semesterId: number,
