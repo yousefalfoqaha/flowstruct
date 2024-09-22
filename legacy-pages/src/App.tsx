@@ -4,14 +4,22 @@ import { Button } from './components/ui/button'
 import { Plus, Trash } from 'lucide-react'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from './components/ui/dialog'
 import { ScrollArea } from './components/ui/scroll-area'
 import { createContext, ReactNode, useContext } from 'react'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from './components/ui/accordion'
 
 type Year = {
   id: number
@@ -41,7 +49,15 @@ const initialFlowsheet: flowsheetState = {
     },
     2: {
       id: 2,
-      semesterIds: [3],
+      semesterIds: [3, 4],
+    },
+    3: {
+      id: 3,
+      semesterIds: [5, 6],
+    },
+    4: {
+      id: 4,
+      semesterIds: [7, 8],
     },
   },
   semesters: {
@@ -57,8 +73,75 @@ const initialFlowsheet: flowsheetState = {
       id: 3,
       courseIds: [],
     },
+    4: {
+      id: 4,
+      courseIds: [],
+    },
+    5: {
+      id: 5,
+      courseIds: [],
+    },
+    6: {
+      id: 6,
+      courseIds: [],
+    },
+    7: {
+      id: 7,
+      courseIds: [],
+    },
+    8: {
+      id: 8,
+      courseIds: [],
+    },
   },
   error: null,
+}
+
+type Section = {
+  id: number
+  name: string
+  requiredCreditHours: number
+  courseIds: number[]
+}
+
+type StudyPlan = {
+  id: number
+  name: string
+  sections: { [key: number]: Section }
+}
+
+export const studyPlan: StudyPlan = {
+  id: 1,
+  name: 'Computer Science 2023/2024 - General Track',
+  sections: {
+    1: {
+      id: 1,
+      name: 'University Requirements',
+      requiredCreditHours: 16,
+      courseIds: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    },
+    2: {
+      id: 2,
+      name: 'School Requirements',
+      requiredCreditHours: 21,
+      courseIds: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22],
+    },
+    3: {
+      id: 3,
+      name: 'Program Requirements',
+      requiredCreditHours: 86,
+      courseIds: [
+        23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+        41, 42, 43, 44, 45,
+      ],
+    },
+    4: {
+      id: 4,
+      name: 'Special Program Requirements (General Track)',
+      requiredCreditHours: 12,
+      courseIds: [46, 47, 48, 49],
+    },
+  },
 }
 
 type Course = {
@@ -69,6 +152,96 @@ type Course = {
 }
 
 const courses: { [key: number]: Course } = {
+  1: {
+    id: 1,
+    code: 'ARB100',
+    name: 'Arabic',
+    creditHours: 3,
+  },
+  2: {
+    id: 2,
+    code: 'ENGL1001',
+    name: 'Upper-Intermediate English',
+    creditHours: 3,
+  },
+  3: {
+    id: 3,
+    code: 'ENGL1002',
+    name: 'Advanced English',
+    creditHours: 3,
+  },
+  4: {
+    id: 4,
+    code: 'GERL101B1',
+    name: 'German I B1-Track',
+    creditHours: 3,
+  },
+  5: {
+    id: 5,
+    code: 'GERL102B1',
+    name: 'German II B1-Track',
+    creditHours: 3,
+  },
+  6: {
+    id: 6,
+    code: 'GERL102B2',
+    name: 'German II B2-Track',
+    creditHours: 3,
+  },
+  7: {
+    id: 7,
+    code: 'MILS100',
+    name: 'Military Science',
+    creditHours: 3,
+  },
+  8: {
+    id: 8,
+    code: 'NE101',
+    name: 'National Education',
+    creditHours: 3,
+  },
+  9: {
+    id: 9,
+    code: 'NEE101',
+    name: 'National Education in English',
+    creditHours: 3,
+  },
+  10: {
+    id: 10,
+    code: 'GERL201B1',
+    name: 'German III B1-Track',
+    creditHours: 3,
+  },
+  11: {
+    id: 11,
+    code: 'GERL201B2',
+    name: 'German III B2-Track',
+    creditHours: 3,
+  },
+  12: {
+    id: 12,
+    code: 'GERL202B1',
+    name: 'German IV B1-Track',
+    creditHours: 3,
+  },
+  13: {
+    id: 13,
+    code: 'GERL202B2',
+    name: 'German IV B2-Track',
+    creditHours: 3,
+  },
+  14: {
+    id: 14,
+    code: 'MATH101',
+    name: 'Calculus I',
+    creditHours: 3,
+  },
+  15: {
+    id: 15,
+    code: 'MATH102',
+    name: 'Calculus II',
+    creditHours: 3,
+  },
   16: {
     id: 16,
     code: 'CS116',
@@ -111,6 +284,168 @@ const courses: { [key: number]: Course } = {
     name: 'Linear Algebra',
     creditHours: 3,
   },
+  23: {
+    id: 23,
+    code: 'GERL301B1',
+    name: 'German V B1-Track',
+    creditHours: 3,
+  },
+  24: {
+    id: 24,
+    code: 'GERL301B2',
+    name: 'German V B2-Track',
+    creditHours: 3,
+  },
+  25: {
+    id: 25,
+    code: 'GERL302B1',
+    name: 'German VI B1-Track',
+    creditHours: 3,
+  },
+  26: {
+    id: 26,
+    code: 'GERL302B2',
+    name: 'German VI B2-Track',
+    creditHours: 3,
+  },
+  27: {
+    id: 27,
+    code: 'IE0121',
+    name: 'Probability and Statistics',
+    creditHours: 3,
+  },
+  28: {
+    id: 28,
+    code: 'CS201',
+    name: 'Discrete Structures',
+    creditHours: 3,
+  },
+  29: {
+    id: 29,
+    code: 'CE201',
+    name: 'Computer Architecture and Organization',
+    creditHours: 3,
+  },
+  30: {
+    id: 30,
+    code: 'CS222',
+    name: 'Theory of Algorithms',
+    creditHours: 3,
+  },
+  31: {
+    id: 31,
+    code: 'CS223',
+    name: 'Data Structures',
+    creditHours: 3,
+  },
+  32: {
+    id: 32,
+    code: 'CS264',
+    name: 'Visual Programming',
+    creditHours: 3,
+  },
+  33: {
+    id: 33,
+    code: 'CS263',
+    name: 'Database Management Systems',
+    creditHours: 3,
+  },
+  34: {
+    id: 34,
+    code: 'CS323',
+    name: 'Computational Theory',
+    creditHours: 3,
+  },
+  35: {
+    id: 35,
+    code: 'CS342',
+    name: 'Software Engineering',
+    creditHours: 3,
+  },
+  36: {
+    id: 36,
+    code: 'CE352',
+    name: 'Computer Networks',
+    creditHours: 3,
+  },
+  37: {
+    id: 37,
+    code: 'CS355',
+    name: 'Web Technologies',
+    creditHours: 3,
+  },
+  38: {
+    id: 38,
+    code: 'CS356',
+    name: 'Information Security',
+    creditHours: 3,
+  },
+  39: {
+    id: 39,
+    code: 'CE357',
+    name: 'Operating Systems',
+    creditHours: 3,
+  },
+  40: {
+    id: 40,
+    code: 'CE3570',
+    name: 'Operating Systems Lab',
+    creditHours: 1,
+  },
+  41: {
+    id: 41,
+    code: 'CS391',
+    name: 'Field Training',
+    creditHours: 0,
+  },
+  42: {
+    id: 42,
+    code: 'CS416',
+    name: 'Systems Programming',
+    creditHours: 3,
+  },
+  43: {
+    id: 43,
+    code: 'CS451',
+    name: 'Artificial Intelligence',
+    creditHours: 3,
+  },
+  44: {
+    id: 44,
+    code: 'CS491',
+    name: 'International Internship 20 weeks beginning beginning beginnging',
+    creditHours: 12,
+  },
+  45: {
+    id: 45,
+    code: 'CS492',
+    name: 'Senior Project',
+    creditHours: 3,
+  },
+  46: {
+    id: 46,
+    code: 'CS330',
+    name: 'Image Understanding',
+    creditHours: 3,
+  },
+  47: {
+    id: 47,
+    code: 'CS332',
+    name: 'Computer Graphics',
+    creditHours: 3,
+  },
+  48: {
+    id: 48,
+    code: 'CS419',
+    name: 'Compiler Construction',
+    creditHours: 3,
+  },
+  49: {
+    id: 49,
+    code: 'CS477',
+    name: 'Mobile Computing',
+    creditHours: 3,
+  },
 }
 
 function isAdded(
@@ -121,8 +456,6 @@ function isAdded(
     semester.courseIds.includes(courseId)
   )
 }
-
-
 
 type Action =
   | { type: 'ADD_COURSE'; payload: { semesterId: number; courseId: number } }
@@ -219,6 +552,7 @@ function Flowsheet() {
           )
         })}
       </ul>
+      <StudyPlan semesterId={1} />
     </section>
   )
 }
@@ -254,26 +588,57 @@ function Semester({ id: semesterId, courseIds }: Semester) {
           return (
             <li key={id} className="relative">
               <Course
-                id={id}
+                id={course.id}
                 code={course.code}
                 name={course.name}
                 creditHours={course.creditHours}
                 semesterId={semesterId}
-                isAdded={true}
               />
             </li>
           )
         })}
       </ul>
-      <StudyPlan semesterId={semesterId} />
     </section>
   )
 }
 
-function StudyPlan({ semesterId }: { semesterId: number }) {
-  const { flowsheet, dispatch } = useFlowsheetContext()
+function Section({
+  id,
+  name,
+  courseIds,
+  semesterId,
+}: Section & { semesterId: number }) {
   return (
-    <Dialog>
+    <AccordionItem value={`item-${id}`} className="px-2">
+      <AccordionTrigger>
+        <p className="font-normal text-start pr-4">{name}</p>
+      </AccordionTrigger>
+      <AccordionContent>
+        <ul className="flex flex-col gap-1">
+          {courseIds.map((id) => {
+            const course = courses[id]
+            if (!course) return null
+            return (
+              <li key={course.id} className="w-full h-24">
+                <Course
+                  id={course.id}
+                  code={course.code}
+                  name={course.name}
+                  creditHours={course.creditHours}
+                  semesterId={semesterId}
+                />
+              </li>
+            )
+          })}
+        </ul>
+      </AccordionContent>
+    </AccordionItem>
+  )
+}
+
+function StudyPlan({ semesterId }: { semesterId: number }) {
+  return (
+    <Dialog defaultOpen={true}>
       <DialogTrigger asChild>
         <Button variant="outline">Add course</Button>
       </DialogTrigger>
@@ -284,41 +649,56 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
             Add available courses to semester {semesterId}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea>
-          <ul className="grid grid-cols-3 gap-1 w-fit">
-            {Object.values(courses).map((course) => {
-              if (isAdded(course.id, flowsheet.semesters)) return null
-              return (
-                <li key={course.id}>
-                  <Course
-                    id={course.id}
-                    code={course.code}
-                    name={course.name}
-                    creditHours={course.creditHours}
+        <div className="flex gap-1">
+          <ScrollArea className="border rounded-lg h-96 p-1">
+            <Accordion type="single" collapsible>
+              {Object.values(studyPlan.sections).map((section) => {
+                return (
+                  <Section
+                    key={section.id}
+                    id={section.id}
+                    name={section.name}
+                    requiredCreditHours={section.requiredCreditHours}
+                    courseIds={section.courseIds}
                     semesterId={semesterId}
-                    isAdded={false}
-                    dispatch={dispatch}
                   />
-                </li>
-              )
-            })}
-          </ul>
-        </ScrollArea>
+                )
+              })}
+            </Accordion>
+          </ScrollArea>
+          <section>
+            <div className="flex border rounded-lg h-full w-40">
+              <p className="text-muted-foreground text-sm m-auto text-center">
+                No courses
+                <br />
+                selected
+              </p>
+            </div>
+          </section>
+        </div>
+        <DialogFooter className="w-full">
+          <Button variant="outline" className="mr-auto">
+            Clear selection
+          </Button>
+          <DialogClose>
+            <Button className="w-40">Add courses</Button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
 }
 
-function Course({
-  id: courseId,
-  code,
-  name,
-  creditHours,
+function CourseWrapper({
   semesterId,
-  isAdded, // refactor into custom hook
-}: Course & {
+  courseId,
+  isAdded,
+  children,
+}: {
   semesterId: number
+  courseId: number
   isAdded: boolean
+  children: ReactNode
 }) {
   const { dispatch } = useFlowsheetContext()
   const handleCourseAction = (
@@ -326,6 +706,7 @@ function Course({
     semesterId: number,
     courseId: number
   ) => dispatch({ type: actionType, payload: { semesterId, courseId } })
+
   return (
     <Button
       onClick={() =>
@@ -336,21 +717,12 @@ function Course({
         )
       }
       variant="ghost"
-      className={`group border rounded transition-all bg-zinc-200 ${
+      className={`group p-0 h-full w-full relative bg-zinc-100 ${
         isAdded ? 'hover:bg-red-500/50' : 'hover:bg-green-500/50'
-      } cursor-pointer flex flex-col p-3 w-36 h-36 relative text-left`}
+      } `}
     >
-      <header className="flex gap-2 w-full">
-        <h1 className="font-semibold">{code}</h1>
-      </header>
-      <p className="w-full whitespace-normal font-normal text-sm overflow-hidden text-ellipsis line-clamp-3">
-        {name}
-      </p>
-      <footer className="w-full mt-auto flex text-xs font-semibold text-muted-foreground">
-        <p className="ml-auto">{creditHours} Cr Hr</p>
-      </footer>
-
-      <div className="p-1 absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-all">
+      {children}
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all">
         {isAdded ? (
           <Trash className="scale-90 hover:text-red-500 transition-all" />
         ) : (
@@ -358,5 +730,47 @@ function Course({
         )}
       </div>
     </Button>
+  )
+}
+
+function Course({
+  id: courseId,
+  code,
+  name,
+  creditHours,
+  semesterId,
+}: Course & { semesterId: number }) {
+  const { flowsheet } = useFlowsheetContext()
+  if (isAdded(courseId, flowsheet.semesters))
+    return (
+      <CourseWrapper courseId={courseId} semesterId={semesterId} isAdded={true}>
+        <div className="flex flex-col p-3 w-full h-36 relative text-left">
+          <header>{code}</header>
+          <p
+            className={`whitespace-normal font-normal text-sm overflow-hidden text-ellipsis line-clamp-3`}
+          >
+            {name}
+          </p>
+          <footer className="mt-auto ml-auto flex text-xs font-semibold text-muted-foreground">
+            {creditHours} Cr Hr
+          </footer>
+        </div>
+      </CourseWrapper>
+    )
+
+  return (
+    <CourseWrapper courseId={courseId} semesterId={semesterId} isAdded={false}>
+      <div className="flex flex-col p-3 w-full h-full relative text-left">
+        <header>{code}</header>
+        <p
+          className={`whitespace-normal font-normal text-sm overflow-hidden text-ellipsis line-clamp-3`}
+        >
+          {name}
+        </p>
+        <footer className="mt-auto ml-auto flex text-xs font-semibold text-muted-foreground">
+          {creditHours} Cr Hr
+        </footer>
+      </div>
+    </CourseWrapper>
   )
 }
