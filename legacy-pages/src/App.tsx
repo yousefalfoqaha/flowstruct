@@ -114,6 +114,12 @@ const studyPlan: StudyPlan = {
   id: 1,
   name: 'Computer Science 2023/2024 - General Track',
   sections: {
+    0: {
+      id: 0,
+      name: 'Remedial Courses',
+      requiredCreditHours: 0,
+      courseIds: [],
+    },
     1: {
       id: 1,
       name: 'University Requirements',
@@ -564,7 +570,6 @@ function Flowsheet() {
           )
         })}
       </ul>
-      {/* <StudyPlan semesterId={1} /> */}
     </section>
   )
 }
@@ -656,7 +661,7 @@ function Section({
             )
               return null
             return (
-              <li key={course.id} className="w-full h-24">
+              <li key={course.id} className="w-full">
                 <Course
                   id={course.id}
                   code={course.code}
@@ -707,15 +712,15 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
       <DialogTrigger asChild>
         <Button variant="outline">Add course</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-w-[60rem] max-h-[50rem] flex flex-col">
         <DialogHeader>
           <DialogTitle>Study Plan Courses</DialogTitle>
           <DialogDescription>
             Add available courses to semester {semesterId}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex gap-1">
-          <ScrollArea className="border rounded-lg h-96 p-1">
+        <div className="flex gap-1 w-full">
+          <ScrollArea className="border rounded-lg h-[30rem] p-1 w-full">
             <Accordion type="single" collapsible>
               {Object.values(studyPlan.sections).map((section) => {
                 return (
@@ -759,7 +764,7 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
             </div>
           </section>
         </div>
-        <DialogFooter className="w-full">
+        <DialogFooter className="w-full flex flex-row">
           <Button
             onClick={clearPendingCourses}
             variant="outline"
@@ -769,7 +774,7 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
           </Button>
           <DialogClose asChild>
             {pendingCourseIds.length === 0 ? (
-              <Button disabled className="w-40">
+              <Button disabled className="ml-auto w-40">
                 Add 0 courses
               </Button>
             ) : (
@@ -779,7 +784,7 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
                     addCourseToFlowsheet(courseId)
                   )
                 }
-                className="w-40"
+                className="ml-auto w-40"
               >
                 Add {pendingCourseIds.length} courses
               </Button>
@@ -792,7 +797,6 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
 }
 
 function Course({
-  id: courseId,
   code,
   name,
   creditHours,
@@ -800,7 +804,7 @@ function Course({
   onClick,
 }: Course & { status: string; onClick: () => void }) {
   let height = 'h-full'
-  let hoverColor = 'hover:bg-zinc-200'
+  let hoverColor = ''
   let icon = null
 
   switch (status) {
@@ -821,19 +825,20 @@ function Course({
       break
     default:
       height = 'h-full'
-      hoverColor = 'hover:bg-zinc-200'
+      hoverColor = ''
       icon = null
       break
   }
 
   return (
-    <div
+    <Button
+      variant="ghost"
       onClick={onClick}
-      className={`group flex flex-col bg-zinc-200 p-3 w-full ${height} rounded-md relative text-left cursor-pointer ${hoverColor} hover:${hoverColor} transition-colors`} // apply hoverColor class here
+      className={`group text-left flex flex-col bg-zinc-200 p-3 w-full ${height} rounded-md relative ${hoverColor}`} // apply hoverColor class here
     >
-      <header className="font-semibold">{code}</header>
+      <header className="w-full font-semibold">{code}</header>
       <p
-        className={`whitespace-normal font-normal text-sm overflow-hidden text-ellipsis line-clamp-3`}
+        className={`w-full whitespace-normal font-normal text-sm overflow-hidden text-ellipsis line-clamp-3`}
       >
         {name}
       </p>
@@ -843,6 +848,6 @@ function Course({
       <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all">
         {icon}
       </div>
-    </div>
+    </Button>
   )
 }
