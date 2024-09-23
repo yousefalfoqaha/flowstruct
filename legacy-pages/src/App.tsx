@@ -768,16 +768,22 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
             Clear selection
           </Button>
           <DialogClose asChild>
-            <Button
-              onClick={() =>
-                pendingCourseIds.forEach((courseId) =>
-                  addCourseToFlowsheet(courseId)
-                )
-              }
-              className="w-40"
-            >
-              Add courses
-            </Button>
+            {pendingCourseIds.length === 0 ? (
+              <Button disabled className="w-40">
+                Add 0 courses
+              </Button>
+            ) : (
+              <Button
+                onClick={() =>
+                  pendingCourseIds.forEach((courseId) =>
+                    addCourseToFlowsheet(courseId)
+                  )
+                }
+                className="w-40"
+              >
+                Add {pendingCourseIds.length} courses
+              </Button>
+            )}
           </DialogClose>
         </DialogFooter>
       </DialogContent>
@@ -793,14 +799,39 @@ function Course({
   status,
   onClick,
 }: Course & { status: string; onClick: () => void }) {
+  let height = 'h-full'
+  let hoverColor = 'hover:bg-zinc-200'
+  let icon = null
+
+  switch (status) {
+    case 'STUDY_PLAN':
+      height = 'h-full'
+      hoverColor = 'hover:bg-green-500/50'
+      icon = <Plus className="scale-90" />
+      break
+    case 'PENDING':
+      height = 'h-36'
+      hoverColor = 'hover:bg-blue-300/50'
+      icon = <ArrowLeftFromLine className="scale-90" />
+      break
+    case 'FLOWSHEET':
+      height = 'h-36'
+      hoverColor = 'hover:bg-red-500/50'
+      icon = <Trash className="scale-90" />
+      break
+    default:
+      height = 'h-full'
+      hoverColor = 'hover:bg-zinc-200'
+      icon = null
+      break
+  }
+
   return (
     <div
       onClick={onClick}
-      className="flex flex-col p-3 w-full h-full relative text-left cursor-pointer" // Ensure it's visibly clickable
+      className={`group flex flex-col bg-zinc-200 p-3 w-full ${height} rounded-md relative text-left cursor-pointer ${hoverColor} hover:${hoverColor} transition-colors`} // apply hoverColor class here
     >
-      <header>
-        {code} - {status}
-      </header>
+      <header className="font-semibold">{code}</header>
       <p
         className={`whitespace-normal font-normal text-sm overflow-hidden text-ellipsis line-clamp-3`}
       >
@@ -809,6 +840,9 @@ function Course({
       <footer className="mt-auto ml-auto flex text-xs font-semibold text-muted-foreground">
         {creditHours} Cr Hr
       </footer>
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all">
+        {icon}
+      </div>
     </div>
   )
 }
