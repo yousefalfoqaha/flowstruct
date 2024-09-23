@@ -1,7 +1,7 @@
-import { Draft } from 'immer'
-import { useImmerReducer } from 'use-immer'
+import { Draft, produce } from 'immer'
+import { Updater, useImmer, useImmerReducer } from 'use-immer'
 import { Button } from './components/ui/button'
-import { Plus, Trash } from 'lucide-react'
+import { ArrowLeftFromLine, Plus, Trash } from 'lucide-react'
 import {
   Dialog,
   DialogClose,
@@ -9,11 +9,12 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogOverlay,
   DialogTitle,
   DialogTrigger,
 } from './components/ui/dialog'
 import { ScrollArea } from './components/ui/scroll-area'
-import { createContext, ReactNode, useContext } from 'react'
+import { createContext, ReactNode, useContext, useState } from 'react'
 import {
   Accordion,
   AccordionContent,
@@ -91,7 +92,7 @@ const initialFlowsheet: flowsheetState = {
     },
     8: {
       id: 8,
-      courseIds: [],
+      courseIds: [44],
     },
   },
   error: null,
@@ -110,7 +111,7 @@ type StudyPlan = {
   sections: { [key: number]: Section }
 }
 
-export const studyPlan: StudyPlan = {
+const studyPlan: StudyPlan = {
   id: 1,
   name: 'Computer Science 2023/2024 - General Track',
   sections: {
@@ -122,12 +123,18 @@ export const studyPlan: StudyPlan = {
     },
     2: {
       id: 2,
+      name: 'University Electives',
+      requiredCreditHours: 6,
+      courseIds: [10],
+    },
+    3: {
+      id: 3,
       name: 'School Requirements',
       requiredCreditHours: 21,
       courseIds: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22],
     },
-    3: {
-      id: 3,
+    4: {
+      id: 4,
       name: 'Program Requirements',
       requiredCreditHours: 86,
       courseIds: [
@@ -135,11 +142,17 @@ export const studyPlan: StudyPlan = {
         41, 42, 43, 44, 45,
       ],
     },
-    4: {
-      id: 4,
+    5: {
+      id: 5,
       name: 'Special Program Requirements (General Track)',
       requiredCreditHours: 12,
       courseIds: [46, 47, 48, 49],
+    },
+    6: {
+      id: 6,
+      name: 'Program  Electives',
+      requiredCreditHours: 12,
+      courseIds: [],
     },
   },
 }
@@ -413,7 +426,7 @@ const courses: { [key: number]: Course } = {
   44: {
     id: 44,
     code: 'CS491',
-    name: 'International Internship 20 weeks beginning beginning beginnging',
+    name: 'International Internship 20 weeks',
     creditHours: 12,
   },
   45: {
@@ -552,7 +565,7 @@ function Flowsheet() {
           )
         })}
       </ul>
-      <StudyPlan semesterId={1} />
+      {/* <StudyPlan semesterId={1} /> */}
     </section>
   )
 }
@@ -587,17 +600,19 @@ function Semester({ id: semesterId, courseIds }: Semester) {
           if (!course) return null
           return (
             <li key={id} className="relative">
-              <Course
-                id={course.id}
-                code={course.code}
-                name={course.name}
-                creditHours={course.creditHours}
-                semesterId={semesterId}
-              />
+              <RemoveCourseWrapper semesterId={semesterId} courseId={course.id}>
+                <Course
+                  id={course.id}
+                  code={course.code}
+                  name={course.name}
+                  creditHours={course.creditHours}
+                />
+              </RemoveCourseWrapper>
             </li>
           )
         })}
       </ul>
+      <StudyPlan semesterId={semesterId} />
     </section>
   )
 }
@@ -605,28 +620,51 @@ function Semester({ id: semesterId, courseIds }: Semester) {
 function Section({
   id,
   name,
+  requiredCreditHours,
   courseIds,
   semesterId,
-}: Section & { semesterId: number }) {
+  pendingCourseIds,
+  setPendingCourseIds,
+}: Section & {
+  semesterId: number
+  pendingCourseIds: number[]
+  setPendingCourseIds: React.Dispatch<React.SetStateAction<number[]>>
+}) {
+  const { flowsheet } = useFlowsheetContext()
   return (
     <AccordionItem value={`item-${id}`} className="px-2">
       <AccordionTrigger>
-        <p className="font-normal text-start pr-4">{name}</p>
+        <section className="text-left">
+          <p className="font-normal text-start pr-4">{name}</p>
+          <p className="mt-1 font-semibold text-xs text-muted-foreground">
+            {requiredCreditHours} Cr Hrs required
+          </p>
+        </section>
       </AccordionTrigger>
       <AccordionContent>
         <ul className="flex flex-col gap-1">
           {courseIds.map((id) => {
             const course = courses[id]
-            if (!course) return null
+            if (
+              !course ||
+              pendingCourseIds.includes(id) ||
+              isAdded(id, flowsheet.semesters)
+            )
+              return null
             return (
               <li key={course.id} className="w-full h-24">
-                <Course
-                  id={course.id}
-                  code={course.code}
-                  name={course.name}
-                  creditHours={course.creditHours}
-                  semesterId={semesterId}
-                />
+                <PendCourseWrapper
+                  courseId={course.id}
+                  pendingCourseIds={pendingCourseIds}
+                  setPendingCourseIds={setPendingCourseIds}
+                >
+                  <Course
+                    id={course.id}
+                    code={course.code}
+                    name={course.name}
+                    creditHours={course.creditHours}
+                  />
+                </PendCourseWrapper>
               </li>
             )
           })}
@@ -637,8 +675,17 @@ function Section({
 }
 
 function StudyPlan({ semesterId }: { semesterId: number }) {
+  const [pendingCourseIds, setPendingCourseIds] = useState<number[]>([])
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
+  const { dispatch } = useFlowsheetContext()
   return (
-    <Dialog defaultOpen={true}>
+    <Dialog
+      open={isDialogOpen}
+      onOpenChange={(open) => {
+        setIsDialogOpen(open)
+        if (!open) setPendingCourseIds([])
+      }}
+    >
       <DialogTrigger asChild>
         <Button variant="outline">Add course</Button>
       </DialogTrigger>
@@ -661,27 +708,67 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
                     requiredCreditHours={section.requiredCreditHours}
                     courseIds={section.courseIds}
                     semesterId={semesterId}
+                    pendingCourseIds={pendingCourseIds}
+                    setPendingCourseIds={setPendingCourseIds}
                   />
                 )
               })}
             </Accordion>
           </ScrollArea>
           <section>
-            <div className="flex border rounded-lg h-full w-40">
-              <p className="text-muted-foreground text-sm m-auto text-center">
-                No courses
-                <br />
-                selected
-              </p>
+            <div className="flex flex-col p-2 gap-1 border rounded-lg h-full w-40">
+              {pendingCourseIds.length === 0 ? (
+                <p className="text-muted-foreground text-sm m-auto text-center">
+                  No courses
+                  <br />
+                  selected
+                </p>
+              ) : (
+                pendingCourseIds.map((id: number) => {
+                  const course = courses[id]
+                  return (
+                    <PendCourseWrapper
+                      key={course.id}
+                      courseId={course.id}
+                      pendingCourseIds={pendingCourseIds}
+                      setPendingCourseIds={setPendingCourseIds}
+                    >
+                      <Course
+                        key={course.id}
+                        id={course.id}
+                        code={course.code}
+                        name={course.name}
+                        creditHours={course.creditHours}
+                      />
+                    </PendCourseWrapper>
+                  )
+                })
+              )}
             </div>
           </section>
         </div>
         <DialogFooter className="w-full">
-          <Button variant="outline" className="mr-auto">
+          <Button
+            onClick={() => setPendingCourseIds([])}
+            variant="outline"
+            className="mr-auto"
+          >
             Clear selection
           </Button>
           <DialogClose>
-            <Button className="w-40">Add courses</Button>
+            <Button
+              onClick={() =>
+                pendingCourseIds.forEach((courseId) => {
+                  dispatch({
+                    type: 'ADD_COURSE',
+                    payload: { semesterId, courseId },
+                  })
+                })
+              }
+              className="w-40"
+            >
+              Add courses
+            </Button>
           </DialogClose>
         </DialogFooter>
       </DialogContent>
@@ -689,88 +776,83 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
   )
 }
 
-function CourseWrapper({
-  semesterId,
+function PendCourseWrapper({
   courseId,
-  isAdded,
+  pendingCourseIds,
+  setPendingCourseIds,
   children,
 }: {
-  semesterId: number
   courseId: number
-  isAdded: boolean
+  pendingCourseIds: number[]
+  setPendingCourseIds: React.Dispatch<React.SetStateAction<number[]>>
   children: ReactNode
 }) {
-  const { dispatch } = useFlowsheetContext()
-  const handleCourseAction = (
-    actionType: string,
-    semesterId: number,
-    courseId: number
-  ) => dispatch({ type: actionType, payload: { semesterId, courseId } })
-
+  const isPending = pendingCourseIds.includes(courseId)
   return (
     <Button
       onClick={() =>
-        handleCourseAction(
-          isAdded ? 'REMOVE_COURSE' : 'ADD_COURSE',
-          semesterId,
-          courseId
-        )
+        isPending
+          ? setPendingCourseIds(
+              pendingCourseIds.filter((id) => id !== courseId)
+            )
+          : setPendingCourseIds([...pendingCourseIds, courseId])
       }
       variant="ghost"
-      className={`group p-0 h-full w-full relative bg-zinc-100 ${
-        isAdded ? 'hover:bg-red-500/50' : 'hover:bg-green-500/50'
-      } `}
+      className={`group p-0 w-full h-full relative bg-zinc-100 ${
+        isPending ? 'hover:bg-blue-300/50' : 'hover:bg-green-500/50'
+      }`}
     >
       {children}
       <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all">
-        {isAdded ? (
-          <Trash className="scale-90 hover:text-red-500 transition-all" />
+        {isPending ? (
+          <ArrowLeftFromLine className="scale-90" />
         ) : (
-          <Plus className="scale-90 hover:text-green-500 transition-all" />
+          <Plus className="scale-90" />
         )}
       </div>
     </Button>
   )
 }
 
-function Course({
-  id: courseId,
-  code,
-  name,
-  creditHours,
+function RemoveCourseWrapper({
   semesterId,
-}: Course & { semesterId: number }) {
-  const { flowsheet } = useFlowsheetContext()
-  if (isAdded(courseId, flowsheet.semesters))
-    return (
-      <CourseWrapper courseId={courseId} semesterId={semesterId} isAdded={true}>
-        <div className="flex flex-col p-3 w-full h-36 relative text-left">
-          <header>{code}</header>
-          <p
-            className={`whitespace-normal font-normal text-sm overflow-hidden text-ellipsis line-clamp-3`}
-          >
-            {name}
-          </p>
-          <footer className="mt-auto ml-auto flex text-xs font-semibold text-muted-foreground">
-            {creditHours} Cr Hr
-          </footer>
-        </div>
-      </CourseWrapper>
-    )
+  courseId,
+  children,
+}: {
+  semesterId: number
+  courseId: number
+  children: ReactNode
+}) {
+  const { dispatch } = useFlowsheetContext()
 
   return (
-    <CourseWrapper courseId={courseId} semesterId={semesterId} isAdded={false}>
-      <div className="flex flex-col p-3 w-full h-full relative text-left">
-        <header>{code}</header>
-        <p
-          className={`whitespace-normal font-normal text-sm overflow-hidden text-ellipsis line-clamp-3`}
-        >
-          {name}
-        </p>
-        <footer className="mt-auto ml-auto flex text-xs font-semibold text-muted-foreground">
-          {creditHours} Cr Hr
-        </footer>
+    <Button
+      onClick={() =>
+        dispatch({ type: 'REMOVE_COURSE', payload: { semesterId, courseId } })
+      }
+      variant="ghost"
+      className="group h-full p-0 w-full relative bg-zinc-100 hover:bg-red-500/50"
+    >
+      {children}
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all">
+        <Trash className="scale-90 hover:text-red-500 transition-all" />
       </div>
-    </CourseWrapper>
+    </Button>
+  )
+}
+
+function Course({ id: courseId, code, name, creditHours }: Course) {
+  return (
+    <div className="flex flex-col p-3 w-full h-full relative text-left">
+      <header>{code}</header>
+      <p
+        className={`whitespace-normal font-normal text-sm overflow-hidden text-ellipsis line-clamp-3`}
+      >
+        {name}
+      </p>
+      <footer className="mt-auto ml-auto flex text-xs font-semibold text-muted-foreground">
+        {creditHours} Cr Hr
+      </footer>
+    </div>
   )
 }
