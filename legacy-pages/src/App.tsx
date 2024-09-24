@@ -31,69 +31,41 @@ type Semester = {
   courseIds: number[]
 }
 
-interface flowsheetState {
+interface Flowsheet {
   id: number
   name: string
-  years: { [key: number]: Year }
-  semesters: { [key: number]: Semester }
   error: string | null
 }
 
-const initialFlowsheet: flowsheetState = {
+const initialYears: { [key: number]: Year } = {
+  1: {
+    id: 1,
+    semesterIds: [1, 2],
+  },
+  2: {
+    id: 2,
+    semesterIds: [3],
+  },
+}
+
+const initialSemesters: { [key: number]: Semester } = {
+  1: {
+    id: 1,
+    courseIds: [],
+  },
+  2: {
+    id: 2,
+    courseIds: [],
+  },
+  3: {
+    id: 3,
+    courseIds: [],
+  },
+}
+
+const initialFlowsheet: Flowsheet = {
   id: 1,
   name: 'Computer Science 2023/2024 - General Track',
-  years: {
-    1: {
-      id: 1,
-      semesterIds: [1, 2],
-    },
-    2: {
-      id: 2,
-      semesterIds: [3, 4],
-    },
-    3: {
-      id: 3,
-      semesterIds: [5, 6],
-    },
-    4: {
-      id: 4,
-      semesterIds: [7, 8],
-    },
-  },
-  semesters: {
-    1: {
-      id: 1,
-      courseIds: [],
-    },
-    2: {
-      id: 2,
-      courseIds: [],
-    },
-    3: {
-      id: 3,
-      courseIds: [],
-    },
-    4: {
-      id: 4,
-      courseIds: [],
-    },
-    5: {
-      id: 5,
-      courseIds: [],
-    },
-    6: {
-      id: 6,
-      courseIds: [],
-    },
-    7: {
-      id: 7,
-      courseIds: [],
-    },
-    8: {
-      id: 8,
-      courseIds: [44],
-    },
-  },
   error: null,
 }
 
@@ -107,59 +79,59 @@ type Section = {
 type StudyPlan = {
   id: number
   name: string
-  sections: { [key: number]: Section }
+}
+
+const sections: { [key: number]: Section } = {
+  0: {
+    id: 0,
+    name: 'Remedial Courses',
+    requiredCreditHours: 0,
+    courseIds: [],
+  },
+  1: {
+    id: 1,
+    name: 'University Requirements',
+    requiredCreditHours: 16,
+    courseIds: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  },
+  2: {
+    id: 2,
+    name: 'University Electives',
+    requiredCreditHours: 6,
+    courseIds: [10],
+  },
+  3: {
+    id: 3,
+    name: 'School Requirements',
+    requiredCreditHours: 21,
+    courseIds: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22],
+  },
+  4: {
+    id: 4,
+    name: 'Program Requirements',
+    requiredCreditHours: 86,
+    courseIds: [
+      23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+      41, 42, 43, 44, 45,
+    ],
+  },
+  5: {
+    id: 5,
+    name: 'Special Program Requirements (General Track)',
+    requiredCreditHours: 12,
+    courseIds: [46, 47, 48, 49],
+  },
+  6: {
+    id: 6,
+    name: 'Program  Electives',
+    requiredCreditHours: 12,
+    courseIds: [],
+  },
 }
 
 const studyPlan: StudyPlan = {
   id: 1,
   name: 'Computer Science 2023/2024 - General Track',
-  sections: {
-    0: {
-      id: 0,
-      name: 'Remedial Courses',
-      requiredCreditHours: 0,
-      courseIds: [],
-    },
-    1: {
-      id: 1,
-      name: 'University Requirements',
-      requiredCreditHours: 16,
-      courseIds: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-    },
-    2: {
-      id: 2,
-      name: 'University Electives',
-      requiredCreditHours: 6,
-      courseIds: [10],
-    },
-    3: {
-      id: 3,
-      name: 'School Requirements',
-      requiredCreditHours: 21,
-      courseIds: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22],
-    },
-    4: {
-      id: 4,
-      name: 'Program Requirements',
-      requiredCreditHours: 86,
-      courseIds: [
-        23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
-        41, 42, 43, 44, 45,
-      ],
-    },
-    5: {
-      id: 5,
-      name: 'Special Program Requirements (General Track)',
-      requiredCreditHours: 12,
-      courseIds: [46, 47, 48, 49],
-    },
-    6: {
-      id: 6,
-      name: 'Program  Electives',
-      requiredCreditHours: 12,
-      courseIds: [],
-    },
-  },
 }
 
 type Course = {
@@ -466,7 +438,7 @@ const courses: { [key: number]: Course } = {
   },
 }
 
-function isAdded(
+function inSemester(
   courseId: number,
   semesters: { [key: number]: Semester }
 ): boolean {
@@ -479,8 +451,10 @@ type Action =
   | { type: 'ADD_COURSE'; payload: { semesterId: number; courseId: number } }
   | { type: 'REMOVE_COURSE'; payload: { semesterId: number; courseId: number } }
 
-function flowsheetReducer(draft: Draft<flowsheetState>, action: Action) {
-  let { semesters } = draft
+function semestersReducer(
+  semesters: Draft<{ [key: number]: Semester }>,
+  action: Action
+) {
   const { type, payload } = action
 
   switch (type) {
@@ -490,8 +464,8 @@ function flowsheetReducer(draft: Draft<flowsheetState>, action: Action) {
       const semester = semesters[semesterId]
 
       if (!course || !semester) return alert('Course or semester not found')
-      if (isAdded(courseId, semesters))
-        return alert(`${course.name} is already added to the flowsheet`)
+      if (inSemester(courseId, semesters))
+        return alert(`${course.name} is already added to a semester`)
 
       semester.courseIds.push(courseId)
       break
@@ -503,8 +477,8 @@ function flowsheetReducer(draft: Draft<flowsheetState>, action: Action) {
       const semester = semesters[semesterId]
 
       if (!course || !semester) return alert(`Course or semester not found`)
-      if (!isAdded(courseId, semesters))
-        return alert(`${course.name} is not in the flowsheet`)
+      if (!inSemester(courseId, semesters))
+        return alert(`${course.name} is not in a semester`)
 
       semester.courseIds.splice(semester.courseIds.indexOf(courseId), 1)
       break
@@ -516,56 +490,61 @@ function flowsheetReducer(draft: Draft<flowsheetState>, action: Action) {
   }
 }
 
-const FlowsheetContext = createContext<flowsheetState | undefined>(undefined)
-const FlowsheetDispatchContext = createContext<any | undefined>(undefined)
+const SemestersContext = createContext<{ [key: number]: Semester } | undefined>(
+  undefined
+)
+const SemestersDispatchContext = createContext<any | undefined>(undefined)
 
-function useFlowsheetContext() {
-  const flowsheet = useContext(FlowsheetContext)
-  const dispatch = useContext(FlowsheetDispatchContext)
+function useSemestersContext() {
+  const semesters = useContext(SemestersContext)
+  const dispatch = useContext(SemestersDispatchContext)
 
-  if (!flowsheet || !dispatch) {
+  if (!semesters || !dispatch) {
     throw new Error(
-      'FlowsheetContext or FlowsheetDispatchContext must be used within a FlowsheetProvider'
+      'SemestersContext or SemestersDispatchContext must be used within a SemestersProvider'
     )
   }
 
-  return { flowsheet, dispatch }
+  return { semesters, dispatch }
 }
 
-function FlowsheetProvider({ children }: { children: ReactNode }) {
-  const [flowsheet, dispatch] = useImmerReducer(
-    flowsheetReducer,
-    initialFlowsheet
+function SemestersProvider({ children }: { children: ReactNode }) {
+  const [semesters, dispatch] = useImmerReducer(
+    semestersReducer,
+    initialSemesters
   )
 
   return (
-    <FlowsheetContext.Provider value={flowsheet}>
-      <FlowsheetDispatchContext.Provider value={dispatch}>
+    <SemestersContext.Provider value={semesters}>
+      <SemestersDispatchContext.Provider value={dispatch}>
         {children}
-      </FlowsheetDispatchContext.Provider>
-    </FlowsheetContext.Provider>
+      </SemestersDispatchContext.Provider>
+    </SemestersContext.Provider>
   )
 }
 
 export default function FlowsheetApp() {
-  return (
-    <FlowsheetProvider>
-      <Flowsheet />
-    </FlowsheetProvider>
-  )
+  return <Flowsheet flowsheet={initialFlowsheet} years={initialYears} />
 }
 
-function Flowsheet() {
-  const { flowsheet } = useFlowsheetContext()
+function Flowsheet({
+  flowsheet,
+  years,
+}: {
+  flowsheet: Flowsheet
+  years: { [key: number]: Year }
+}) {
   return (
     <section className="flex flex-col justify-center">
       <header>{flowsheet.name}</header>
       <ul className="flex gap-1">
-        {Object.values(flowsheet.years).map((year: Year) => {
+        {Object.values(years).map((year: Year) => {
           if (!year) return null // will inform user of the null components to be deleted
           return (
             <li key={year.id}>
-              <Year id={year.id} semesterIds={year.semesterIds} />
+              <SemestersProvider>
+                <Year id={year.id} semesterIds={year.semesterIds} />
+              </SemestersProvider>
             </li>
           )
         })}
@@ -575,13 +554,13 @@ function Flowsheet() {
 }
 
 function Year({ id: yearId, semesterIds }: Year) {
-  const { flowsheet } = useFlowsheetContext()
+  const { semesters } = useSemestersContext()
   return (
     <section>
       <header className="bg-zinc-200 px-10 text-center">Year {yearId}</header>
       <ul className="flex gap-1">
         {semesterIds.map((id) => {
-          const semester = flowsheet.semesters[id]
+          const semester = semesters[id]
           if (!semester) return null
           return (
             <li key={id}>
@@ -595,9 +574,9 @@ function Year({ id: yearId, semesterIds }: Year) {
 }
 
 function Semester({ id: semesterId, courseIds }: Semester) {
-  const { dispatch } = useFlowsheetContext()
+  const { dispatch } = useSemestersContext()
 
-  const removeCourseFromFlowsheet = (semesterId: number, courseId: number) => {
+  const removeCourseFromSemester = (semesterId: number, courseId: number) => {
     dispatch({ type: 'REMOVE_COURSE', payload: { semesterId, courseId } })
   }
 
@@ -616,7 +595,7 @@ function Semester({ id: semesterId, courseIds }: Semester) {
                 name={course.name}
                 creditHours={course.creditHours}
                 status="FLOWSHEET"
-                onClick={() => removeCourseFromFlowsheet(semesterId, course.id)}
+                onClick={() => removeCourseFromSemester(semesterId, course.id)}
               />
             </li>
           )
@@ -638,7 +617,7 @@ function Section({
   pendingCourseIds: number[]
   pendCourse: (courseId: number) => void
 }) {
-  const { flowsheet } = useFlowsheetContext()
+  const { semesters } = useSemestersContext()
 
   return (
     <AccordionItem value={`item-${id}`} className="px-2">
@@ -657,7 +636,7 @@ function Section({
             if (
               !course ||
               pendingCourseIds.includes(id) ||
-              isAdded(id, flowsheet.semesters)
+              inSemester(id, semesters)
             )
               return null
             return (
@@ -683,7 +662,7 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
   const [pendingCourseIds, setPendingCourseIds] = useState<number[]>([])
 
-  const { dispatch } = useFlowsheetContext()
+  const { dispatch } = useSemestersContext()
 
   const pendCourse = (courseId: number) => {
     setPendingCourseIds([...pendingCourseIds, courseId])
@@ -693,7 +672,7 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
     setPendingCourseIds(pendingCourseIds.filter((id) => id !== courseId))
   }
 
-  const addCourseToFlowsheet = (courseId: number) => {
+  const addCoursetoSemester = (courseId: number) => {
     dispatch({ type: 'ADD_COURSE', payload: { semesterId, courseId } })
   }
 
@@ -722,7 +701,7 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
         <div className="flex gap-1 w-full">
           <ScrollArea className="border rounded-lg h-[30rem] p-1 w-full">
             <Accordion type="single" collapsible>
-              {Object.values(studyPlan.sections).map((section) => {
+              {Object.values(sections).map((section) => {
                 return (
                   <Section
                     key={section.id}
@@ -781,7 +760,7 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
               <Button
                 onClick={() =>
                   pendingCourseIds.forEach((courseId) =>
-                    addCourseToFlowsheet(courseId)
+                    addCoursetoSemester(courseId)
                   )
                 }
                 className="ml-auto w-40"
