@@ -438,7 +438,7 @@ const courses: { [key: number]: Course } = {
   },
 }
 
-function inSemester(
+function courseInSemester(
   courseId: number,
   semesters: { [key: number]: Semester }
 ): boolean {
@@ -464,7 +464,7 @@ function semestersReducer(
       const semester = semesters[semesterId]
 
       if (!course || !semester) return alert('Course or semester not found')
-      if (inSemester(courseId, semesters))
+      if (courseInSemester(courseId, semesters))
         return alert(`${course.name} is already added to a semester`)
 
       semester.courseIds.push(courseId)
@@ -477,7 +477,7 @@ function semestersReducer(
       const semester = semesters[semesterId]
 
       if (!course || !semester) return alert(`Course or semester not found`)
-      if (!inSemester(courseId, semesters))
+      if (!courseInSemester(courseId, semesters))
         return alert(`${course.name} is not in a semester`)
 
       semester.courseIds.splice(semester.courseIds.indexOf(courseId), 1)
@@ -495,7 +495,7 @@ const SemestersContext = createContext<{ [key: number]: Semester } | undefined>(
 )
 const SemestersDispatchContext = createContext<any | undefined>(undefined)
 
-function useSemestersContext() {
+function useSemesters() {
   const semesters = useContext(SemestersContext)
   const dispatch = useContext(SemestersDispatchContext)
 
@@ -528,7 +528,6 @@ export default function FlowsheetApp() {
 }
 
 function Flowsheet({
-  flowsheet,
   years,
 }: {
   flowsheet: Flowsheet
@@ -536,7 +535,7 @@ function Flowsheet({
 }) {
   return (
     <section className="flex flex-col justify-center">
-      <header>{flowsheet.name}</header>
+      <header>{studyPlan.name} Flowsheet</header>
       <ul className="flex gap-1">
         {Object.values(years).map((year: Year) => {
           if (!year) return null // will inform user of the null components to be deleted
@@ -554,7 +553,7 @@ function Flowsheet({
 }
 
 function Year({ id: yearId, semesterIds }: Year) {
-  const { semesters } = useSemestersContext()
+  const { semesters } = useSemesters()
   return (
     <section>
       <header className="bg-zinc-200 px-10 text-center">Year {yearId}</header>
@@ -574,7 +573,7 @@ function Year({ id: yearId, semesterIds }: Year) {
 }
 
 function Semester({ id: semesterId, courseIds }: Semester) {
-  const { dispatch } = useSemestersContext()
+  const { dispatch } = useSemesters()
 
   const removeCourseFromSemester = (semesterId: number, courseId: number) => {
     dispatch({ type: 'REMOVE_COURSE', payload: { semesterId, courseId } })
@@ -601,24 +600,63 @@ function Semester({ id: semesterId, courseIds }: Semester) {
           )
         })}
       </ul>
-      <StudyPlan semesterId={semesterId} />
+      <PendingCoursesProvider>
+        <StudyPlan semesterId={semesterId} />
+      </PendingCoursesProvider>
     </section>
   )
 }
 
-function Section({
-  id,
-  name,
-  requiredCreditHours,
-  courseIds,
-  pendingCourseIds,
-  pendCourse,
-}: Section & {
-  pendingCourseIds: number[]
+type PendingCoursesContextType = {
+  pendingCourses: number[]
   pendCourse: (courseId: number) => void
-}) {
-  const { semesters } = useSemestersContext()
+  unpendCourse: (courseId: number) => void
+  clearPendingCourses: () => void
+}
 
+const PendingCoursesContext = createContext<
+  PendingCoursesContextType | undefined
+>(undefined)
+
+function PendingCoursesProvider({ children }: { children: ReactNode }) {
+  const [pendingCourses, setPendingCourses] = useState<number[]>([])
+
+  const pendCourse = (courseId: number) => {
+    setPendingCourses([...pendingCourses, courseId])
+  }
+
+  const unpendCourse = (courseId: number) => {
+    setPendingCourses(pendingCourses.filter((id) => id !== courseId))
+  }
+
+  const clearPendingCourses = () => {
+    setPendingCourses([])
+  }
+
+  return (
+    <PendingCoursesContext.Provider
+      value={{ pendingCourses, pendCourse, unpendCourse, clearPendingCourses }}
+    >
+      {children}
+    </PendingCoursesContext.Provider>
+  )
+}
+
+function usePendingCourses() {
+  const context = useContext(PendingCoursesContext)
+
+  if (!context) {
+    throw new Error(
+      'usePendingCourses must be used within a PendingCoursesProvider'
+    )
+  }
+
+  return context
+}
+
+function Section({ id, name, requiredCreditHours, courseIds }: Section) {
+  const { semesters } = useSemesters()
+  const { pendingCourses, pendCourse } = usePendingCourses()
   return (
     <AccordionItem value={`item-${id}`} className="px-2">
       <AccordionTrigger>
@@ -635,8 +673,8 @@ function Section({
             const course = courses[id]
             if (
               !course ||
-              pendingCourseIds.includes(id) ||
-              inSemester(id, semesters)
+              pendingCourses.includes(id) ||
+              courseInSemester(id, semesters)
             )
               return null
             return (
@@ -660,25 +698,10 @@ function Section({
 
 function StudyPlan({ semesterId }: { semesterId: number }) {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
-  const [pendingCourseIds, setPendingCourseIds] = useState<number[]>([])
-
-  const { dispatch } = useSemestersContext()
-
-  const pendCourse = (courseId: number) => {
-    setPendingCourseIds([...pendingCourseIds, courseId])
-  }
-
-  const unpendCourse = (courseId: number) => {
-    setPendingCourseIds(pendingCourseIds.filter((id) => id !== courseId))
-  }
-
-  const addCoursetoSemester = (courseId: number) => {
-    dispatch({ type: 'ADD_COURSE', payload: { semesterId, courseId } })
-  }
-
-  const clearPendingCourses = () => {
-    setPendingCourseIds([])
-  }
+  const { dispatch } = useSemesters()
+  const { pendingCourses, clearPendingCourses, unpendCourse } = usePendingCourses()
+  
+  console.log("Re-rendering study plan...")
 
   return (
     <Dialog
@@ -709,8 +732,6 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
                     name={section.name}
                     requiredCreditHours={section.requiredCreditHours}
                     courseIds={section.courseIds}
-                    pendingCourseIds={pendingCourseIds}
-                    pendCourse={pendCourse}
                   />
                 )
               })}
@@ -718,14 +739,14 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
           </ScrollArea>
           <section>
             <div className="flex flex-col p-2 gap-1 border rounded-lg h-full w-40">
-              {pendingCourseIds.length === 0 ? (
+              {pendingCourses.length === 0 ? (
                 <p className="text-muted-foreground text-sm m-auto text-center">
                   No courses
                   <br />
                   selected
                 </p>
               ) : (
-                pendingCourseIds.map((id: number) => {
+                pendingCourses.map((id: number) => {
                   const course = courses[id]
                   return (
                     <Course
@@ -752,20 +773,20 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
             Clear selection
           </Button>
           <DialogClose asChild>
-            {pendingCourseIds.length === 0 ? (
+            {pendingCourses.length === 0 ? (
               <Button disabled className="ml-auto w-40">
                 Add 0 courses
               </Button>
             ) : (
               <Button
                 onClick={() =>
-                  pendingCourseIds.forEach((courseId) =>
-                    addCoursetoSemester(courseId)
+                  pendingCourses.forEach((courseId: number) =>
+                    dispatch({ type: 'ADD_COURSE', payload: { semesterId, courseId }})
                   )
                 }
                 className="ml-auto w-40"
               >
-                Add {pendingCourseIds.length} courses
+                Add {pendingCourses.length} courses
               </Button>
             )}
           </DialogClose>
