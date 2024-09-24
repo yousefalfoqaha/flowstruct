@@ -13,7 +13,7 @@ import {
   DialogTrigger,
 } from './components/ui/dialog'
 import { ScrollArea } from './components/ui/scroll-area'
-import { createContext, ReactNode, useContext, useState } from 'react'
+import { createContext, Dispatch, ReactNode, useContext, useState } from 'react'
 import {
   Accordion,
   AccordionContent,
@@ -490,22 +490,24 @@ function semestersReducer(
   }
 }
 
-const SemestersContext = createContext<{ [key: number]: Semester } | undefined>(
+interface SemestersContextType {
+  semesters: { [key: number]: Semester }
+  addCourseToSemester: (courseId: number, semesterId: number) => void
+  removeCourseFromSemester: (courseId: number, semesterId: number) => void
+}
+
+const SemestersContext = createContext<SemestersContextType | undefined>(
   undefined
 )
-const SemestersDispatchContext = createContext<any | undefined>(undefined)
 
 function useSemesters() {
-  const semesters = useContext(SemestersContext)
-  const dispatch = useContext(SemestersDispatchContext)
+  const context = useContext(SemestersContext)
 
-  if (!semesters || !dispatch) {
-    throw new Error(
-      'SemestersContext or SemestersDispatchContext must be used within a SemestersProvider'
-    )
+  if (!context) {
+    throw new Error('SemestersContext must be used within a SemestersProvider')
   }
 
-  return { semesters, dispatch }
+  return context
 }
 
 function SemestersProvider({ children }: { children: ReactNode }) {
@@ -514,11 +516,23 @@ function SemestersProvider({ children }: { children: ReactNode }) {
     initialSemesters
   )
 
+  const addCourseToSemester = (semesterId: number, courseId: number) => {
+    dispatch({ type: 'ADD_COURSE', payload: { semesterId, courseId } })
+  }
+
+  const removeCourseFromSemester = (semesterId: number, courseId: number) => {
+    dispatch({ type: 'REMOVE_COURSE', payload: { semesterId, courseId } })
+  }
+
   return (
-    <SemestersContext.Provider value={semesters}>
-      <SemestersDispatchContext.Provider value={dispatch}>
-        {children}
-      </SemestersDispatchContext.Provider>
+    <SemestersContext.Provider
+      value={{
+        semesters,
+        addCourseToSemester,
+        removeCourseFromSemester,
+      }}
+    >
+      {children}
     </SemestersContext.Provider>
   )
 }
@@ -573,11 +587,7 @@ function Year({ id: yearId, semesterIds }: Year) {
 }
 
 function Semester({ id: semesterId, courseIds }: Semester) {
-  const { dispatch } = useSemesters()
-
-  const removeCourseFromSemester = (semesterId: number, courseId: number) => {
-    dispatch({ type: 'REMOVE_COURSE', payload: { semesterId, courseId } })
-  }
+  const { removeCourseFromSemester } = useSemesters()
 
   return (
     <section className="flex flex-col gap-1 w-36">
@@ -655,7 +665,7 @@ function usePendingCourses() {
 }
 
 function Section({ id, name, requiredCreditHours, courseIds }: Section) {
-  const { semesters } = useSemesters()
+  const { semesters } = useSemesters() // abstract more to have section only worry about course status, not needing to see semesters
   const { pendingCourses, pendCourse } = usePendingCourses()
   return (
     <AccordionItem value={`item-${id}`} className="px-2">
@@ -698,10 +708,9 @@ function Section({ id, name, requiredCreditHours, courseIds }: Section) {
 
 function StudyPlan({ semesterId }: { semesterId: number }) {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
-  const { dispatch } = useSemesters()
-  const { pendingCourses, clearPendingCourses, unpendCourse } = usePendingCourses()
-  
-  console.log("Re-rendering study plan...")
+  const { addCourseToSemester } = useSemesters()
+  const { pendingCourses, clearPendingCourses, unpendCourse } =
+    usePendingCourses()
 
   return (
     <Dialog
@@ -781,7 +790,7 @@ function StudyPlan({ semesterId }: { semesterId: number }) {
               <Button
                 onClick={() =>
                   pendingCourses.forEach((courseId: number) =>
-                    dispatch({ type: 'ADD_COURSE', payload: { semesterId, courseId }})
+                    addCourseToSemester(semesterId, courseId)
                   )
                 }
                 className="ml-auto w-40"
