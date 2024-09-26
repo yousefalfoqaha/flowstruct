@@ -17,13 +17,25 @@ import { usePendingCourses } from '../hooks/usePendingCourses'
 import { useSemesters } from '../hooks/useSemesters'
 import { Button } from './ui/button'
 
-export function StudyPlan({ semesterId }: { semesterId: number }) {
+type StudyPlanProps = {
+  semesterId: number
+  onClose: () => void
+}
+
+export function StudyPlan({ semesterId, onClose }: StudyPlanProps) {
   const { addCourseToSemester } = useSemesters()
   const { pendingCourses, clearPendingCourses, unpendCourse } =
     usePendingCourses()
 
+  console.log('Rendering full study plan')
   return (
-    <Dialog open={true} onOpenChange={clearPendingCourses}>
+    <Dialog
+      open={!!semesterId}
+      onOpenChange={() => {
+        clearPendingCourses()
+        onClose()
+      }}
+    >
       <DialogContent className="max-w-[60rem] max-h-[50rem] flex flex-col">
         <DialogHeader>
           <DialogTitle>Study Plan Courses</DialogTitle>

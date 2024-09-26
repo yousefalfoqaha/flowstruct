@@ -1,14 +1,20 @@
 import { courses } from '@/data/courses'
 import { Course } from './Course'
 import { useSemesters } from '../hooks/useSemesters'
+import { PendingCoursesProvider } from '@/providers/PendingCoursesProvider'
 import { Button } from './ui/button'
 
 type SemesterProps = {
   id: number
   courseIds: number[]
+  onOpenStudyPlan: () => void
 }
 
-export function Semester({ id: semesterId, courseIds }: SemesterProps) {
+export function Semester({
+  id: semesterId,
+  courseIds,
+  onOpenStudyPlan,
+}: SemesterProps) {
   const { removeCourseFromSemester } = useSemesters()
   return (
     <section className="flex flex-col gap-1 w-36">
@@ -30,7 +36,9 @@ export function Semester({ id: semesterId, courseIds }: SemesterProps) {
           )
         })}
       </ul>
-      <Button variant="outline">Add course</Button>
+      <PendingCoursesProvider>
+        <Button onClick={onOpenStudyPlan}>Add course</Button>
+      </PendingCoursesProvider>
     </section>
   )
 }
