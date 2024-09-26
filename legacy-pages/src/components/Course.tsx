@@ -1,5 +1,5 @@
-import { Plus, ArrowLeftFromLine, Trash } from "lucide-react"
-import { Button } from "./ui/button"
+import { Plus, ArrowLeftFromLine, Trash } from 'lucide-react'
+import { Button } from './ui/button'
 
 type CourseProps = {
   code: string

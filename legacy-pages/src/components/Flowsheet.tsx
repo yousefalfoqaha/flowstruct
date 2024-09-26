@@ -3,7 +3,6 @@ import { useSemesters } from '../hooks/useSemesters'
 import { Semester } from './Semester'
 import { useState } from 'react'
 import { StudyPlan } from './StudyPlan'
-import { PendingCoursesProvider } from '@/providers/PendingCoursesProvider'
 
 export function Flowsheet() {
   const { semesters } = useSemesters()
@@ -12,7 +11,7 @@ export function Flowsheet() {
   )
 
   return (
-    <PendingCoursesProvider>
+    <>
       <section className="flex flex-col justify-center">
         <header>{studyPlan.name} Flowsheet</header>
         <ul className="flex gap-1">
@@ -36,6 +35,6 @@ export function Flowsheet() {
           onClose={() => setSelectedSemesterId(null)}
         />
       )}
-    </PendingCoursesProvider>
+    </>
   )
 }

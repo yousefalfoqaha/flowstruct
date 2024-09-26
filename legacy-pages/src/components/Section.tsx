@@ -6,7 +6,6 @@ import {
   AccordionContent,
 } from './ui/accordion'
 import { Course } from './Course'
-import { usePendingCourses } from '../hooks/usePendingCourses'
 import { useSemesters } from '../hooks/useSemesters'
 
 type SectionProps = {
@@ -14,6 +13,8 @@ type SectionProps = {
   name: string
   requiredCreditHours: number
   courseIds: number[]
+  pendingCourseIds: number[]
+  onPendCourse: (courseId: number) => void
 }
 
 export function Section({
@@ -21,9 +22,10 @@ export function Section({
   name,
   requiredCreditHours,
   courseIds,
+  pendingCourseIds,
+  onPendCourse,
 }: SectionProps) {
   const { semesters } = useSemesters() // abstract more to have section only worry about course status, not needing to see semesters
-  const { pendingCourses, pendCourse } = usePendingCourses()
   return (
     <AccordionItem value={`item-${id}`} className="px-2">
       <AccordionTrigger>
@@ -40,7 +42,7 @@ export function Section({
             const course = courses[id]
             if (
               !course ||
-              pendingCourses.includes(id) ||
+              pendingCourseIds.includes(id) ||
               courseInSemester(id, semesters)
             )
               return null
@@ -51,7 +53,7 @@ export function Section({
                   name={course.name}
                   creditHours={course.creditHours}
                   status="STUDY_PLAN"
-                  onClick={() => pendCourse(course.id)}
+                  onClick={() => onPendCourse(course.id)}
                 />
               </li>
             )

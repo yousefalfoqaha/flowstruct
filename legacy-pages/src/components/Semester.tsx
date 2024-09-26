@@ -1,7 +1,6 @@
 import { courses } from '@/data/courses'
 import { Course } from './Course'
 import { useSemesters } from '../hooks/useSemesters'
-import { PendingCoursesProvider } from '@/providers/PendingCoursesProvider'
 import { Button } from './ui/button'
 
 type SemesterProps = {
@@ -36,9 +35,7 @@ export function Semester({
           )
         })}
       </ul>
-      <PendingCoursesProvider>
-        <Button onClick={onOpenStudyPlan}>Add course</Button>
-      </PendingCoursesProvider>
+      <Button onClick={onOpenStudyPlan}>Add course</Button>
     </section>
   )
 }

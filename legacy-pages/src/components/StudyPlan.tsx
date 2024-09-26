@@ -13,9 +13,9 @@ import {
 import { ScrollArea } from './ui/scroll-area'
 import { Section } from './Section'
 import { Course } from './Course'
-import { usePendingCourses } from '../hooks/usePendingCourses'
 import { useSemesters } from '../hooks/useSemesters'
 import { Button } from './ui/button'
+import { useState } from 'react'
 
 type StudyPlanProps = {
   semesterId: number
@@ -24,15 +24,22 @@ type StudyPlanProps = {
 
 export function StudyPlan({ semesterId, onClose }: StudyPlanProps) {
   const { addCourseToSemester } = useSemesters()
-  const { pendingCourses, clearPendingCourses, unpendCourse } =
-    usePendingCourses()
+  const [pendingCourseIds, setPendingCourseIds] = useState<number[]>([])
+
+  const handlePendCourse = (courseId: number) => {
+    setPendingCourseIds((prev) =>
+      prev.includes(courseId)
+        ? prev.filter((id) => id !== courseId)
+        : [...prev, courseId]
+    )
+  }
 
   console.log('Rendering full study plan')
   return (
     <Dialog
       open={!!semesterId}
       onOpenChange={() => {
-        clearPendingCourses()
+        setPendingCourseIds([])
         onClose()
       }}
     >
@@ -54,6 +61,8 @@ export function StudyPlan({ semesterId, onClose }: StudyPlanProps) {
                     name={section.name}
                     requiredCreditHours={section.requiredCreditHours}
                     courseIds={section.courseIds}
+                    pendingCourseIds={pendingCourseIds}
+                    onPendCourse={handlePendCourse}
                   />
                 )
               })}
@@ -61,14 +70,14 @@ export function StudyPlan({ semesterId, onClose }: StudyPlanProps) {
           </ScrollArea>
           <section>
             <div className="flex flex-col p-2 gap-1 border rounded-lg h-full w-40">
-              {pendingCourses.length === 0 ? (
+              {pendingCourseIds.length === 0 ? (
                 <p className="text-muted-foreground text-sm m-auto text-center">
                   No courses
                   <br />
                   selected
                 </p>
               ) : (
-                pendingCourses.map((id: number) => {
+                pendingCourseIds.map((id: number) => {
                   const course = courses[id]
                   return (
                     <Course
@@ -77,7 +86,7 @@ export function StudyPlan({ semesterId, onClose }: StudyPlanProps) {
                       name={course.name}
                       creditHours={course.creditHours}
                       status="PENDING"
-                      onClick={() => unpendCourse(course.id)}
+                      onClick={() => handlePendCourse(course.id)}
                     />
                   )
                 })
@@ -87,27 +96,27 @@ export function StudyPlan({ semesterId, onClose }: StudyPlanProps) {
         </div>
         <DialogFooter className="w-full flex flex-row">
           <Button
-            onClick={clearPendingCourses}
+            onClick={() => setPendingCourseIds([])}
             variant="outline"
             className="mr-auto"
           >
             Clear selection
           </Button>
           <DialogClose asChild>
-            {pendingCourses.length === 0 ? (
+            {pendingCourseIds.length === 0 ? (
               <Button disabled className="ml-auto w-40">
                 Add 0 courses
               </Button>
             ) : (
               <Button
                 onClick={() =>
-                  pendingCourses.forEach((courseId: number) =>
+                  pendingCourseIds.forEach((courseId: number) =>
                     addCourseToSemester(semesterId, courseId)
                   )
                 }
                 className="ml-auto w-40"
               >
-                Add {pendingCourses.length} courses
+                Add {pendingCourseIds.length} courses
               </Button>
             )}
           </DialogClose>
