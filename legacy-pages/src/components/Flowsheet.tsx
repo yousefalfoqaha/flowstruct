@@ -32,7 +32,7 @@ export function Flowsheet() {
       {selectedSemesterId && (
         <StudyPlan
           semesterId={selectedSemesterId}
-          onClose={() => setSelectedSemesterId(null)}
+          onCloseStudyPlan={() => setSelectedSemesterId(null)}
         />
       )}
     </>

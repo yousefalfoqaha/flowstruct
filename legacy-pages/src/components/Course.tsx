@@ -22,12 +22,12 @@ export function Course({
 
   switch (status) {
     case 'STUDY_PLAN':
-      height = 'h-36 w-36'
+      height = 'h-24'
       hoverColor = 'hover:bg-green-500/50'
       icon = <Plus className="scale-90" />
       break
     case 'PENDING':
-      height = 'h-36'
+      height = 'bg-zinc-200 h-36'
       hoverColor = 'hover:bg-blue-300/50'
       icon = <ArrowLeftFromLine className="scale-90" />
       break
@@ -47,7 +47,7 @@ export function Course({
     <Button
       variant="ghost"
       onClick={onClick}
-      className={`group text-left flex flex-col bg-zinc-200 p-3 w-full ${height} rounded-md relative ${hoverColor}`} // apply hoverColor class here
+      className={`group text-left flex flex-col p-3 w-full ${height} rounded-md relative ${hoverColor}`} // apply hoverColor class here
     >
       <header className="w-full font-semibold">{code}</header>
       <p

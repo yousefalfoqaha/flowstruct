@@ -1,17 +1,14 @@
 import { courses } from '@/data/courses'
 import { sections } from '@/data/sections'
-import { Accordion } from './ui/accordion'
 import {
   Dialog,
   DialogHeader,
   DialogFooter,
   DialogContent,
-  DialogTitle,
-  DialogDescription,
   DialogClose,
+  DialogTitle,
 } from './ui/dialog'
 import { ScrollArea } from './ui/scroll-area'
-import { Section } from './Section'
 import { Course } from './Course'
 import { useSemesters } from '../hooks/useSemesters'
 import { Button } from './ui/button'
@@ -19,10 +16,10 @@ import { useState } from 'react'
 
 type StudyPlanProps = {
   semesterId: number
-  onClose: () => void
+  onCloseStudyPlan: () => void
 }
 
-export function StudyPlan({ semesterId, onClose }: StudyPlanProps) {
+export function StudyPlan({ semesterId, onCloseStudyPlan }: StudyPlanProps) {
   const { addCourseToSemester } = useSemesters()
   const [pendingCourseIds, setPendingCourseIds] = useState<number[]>([])
 
@@ -33,68 +30,91 @@ export function StudyPlan({ semesterId, onClose }: StudyPlanProps) {
         : [...prev, courseId]
     )
   }
-
-  console.log('Rendering full study plan')
+  console.log('Rendering sp')
   return (
     <Dialog
       open={!!semesterId}
       onOpenChange={() => {
         setPendingCourseIds([])
-        onClose()
+        onCloseStudyPlan()
       }}
     >
-      <DialogContent className="max-w-[60rem] max-h-[50rem] flex flex-col">
+      <DialogContent className="flex flex-col max-w-[60rem] min-w-[40rem]">
         <DialogHeader>
-          <DialogTitle>Study Plan Courses</DialogTitle>
-          <DialogDescription>
-            Add available courses to semester {semesterId}
-          </DialogDescription>
+          <DialogTitle>Computer Science 2023/2024 Courses</DialogTitle>
         </DialogHeader>
-        <div className="flex gap-1 w-full">
-          <ScrollArea className="border rounded-lg h-[30rem] p-1 w-full">
-            <Accordion type="single" collapsible>
-              {Object.values(sections).map((section) => {
-                return (
-                  <Section
-                    key={section.id}
-                    id={section.id}
-                    name={section.name}
-                    requiredCreditHours={section.requiredCreditHours}
-                    courseIds={section.courseIds}
-                    pendingCourseIds={pendingCourseIds}
-                    onPendCourse={handlePendCourse}
-                  />
-                )
-              })}
-            </Accordion>
-          </ScrollArea>
-          <section>
-            <div className="flex flex-col p-2 gap-1 border rounded-lg h-full w-40">
-              {pendingCourseIds.length === 0 ? (
-                <p className="text-muted-foreground text-sm m-auto text-center">
-                  No courses
-                  <br />
-                  selected
-                </p>
-              ) : (
-                pendingCourseIds.map((id: number) => {
-                  const course = courses[id]
+        <div className="flex gap-6 h-[30rem]">
+          <section className="border rounded-lg w-full flex">
+            <ScrollArea>
+              <div className="flex flex-col border-r">
+                <h2 className="text-center py-2 font-semibold">Sections</h2>
+                {Object.values(sections).map((section) => {
                   return (
-                    <Course
-                      key={course.id}
-                      code={course.code}
-                      name={course.name}
-                      creditHours={course.creditHours}
-                      status="PENDING"
-                      onClick={() => handlePendCourse(course.id)}
-                    />
+                    <Button
+                      variant="ghost"
+                      className="font-normal h-full whitespace-normal rounded-none"
+                    >
+                      <div className="flex flex-col gap-1">
+                        <h2>{section.name}</h2>
+                        <p className="text-muted-foreground">
+                          {section.requiredCreditHours} Cr Hr required
+                        </p>
+                      </div>
+                    </Button>
                   )
-                })
-              )}
-            </div>
+                })}
+              </div>
+            </ScrollArea>
+            <section className="flex flex-col w-full">
+              <h2 className="text-center p-2 font-semibold">All Courses</h2>
+              <ScrollArea>
+                <div className="flex flex-col gap-1 px-2">
+                  {Object.values(courses).map((course) => {
+                    if (!course) return
+                    return (
+                      <Course
+                        code={course.code}
+                        name={course.name}
+                        creditHours={course.creditHours}
+                        status="STUDY_PLAN"
+                        onClick={() => handlePendCourse(course.id)}
+                      />
+                    )
+                  })}
+                </div>
+              </ScrollArea>
+            </section>
+          </section>
+          <section className="flex flex-col border rounded-lg">
+            <h2 className="text-center p-2 font-semibold">Selected</h2>
+            <ScrollArea>
+              <div className="flex flex-col w-40 px-2 gap-1">
+                {pendingCourseIds.length === 0 ? (
+                  <p className="text-muted-foreground text-sm text-center">
+                    No courses
+                    <br />
+                    selected
+                  </p>
+                ) : (
+                  pendingCourseIds.map((id: number) => {
+                    const course = courses[id]
+                    return (
+                      <Course
+                        key={course.id}
+                        code={course.code}
+                        name={course.name}
+                        creditHours={course.creditHours}
+                        status="PENDING"
+                        onClick={() => handlePendCourse(course.id)}
+                      />
+                    )
+                  })
+                )}
+              </div>
+            </ScrollArea>
           </section>
         </div>
-        <DialogFooter className="w-full flex flex-row">
+        <DialogFooter className="w-full flex-row">
           <Button
             onClick={() => setPendingCourseIds([])}
             variant="outline"

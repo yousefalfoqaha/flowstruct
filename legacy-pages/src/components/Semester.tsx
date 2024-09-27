@@ -19,7 +19,7 @@ export function Semester({
     <section className="flex flex-col gap-1 w-36">
       <header className="text-center">Semester {semesterId}</header>
       <ul className="flex flex-col gap-1">
-        {courseIds.map((id) => {
+        {courseIds.map((id: number) => {
           const course = courses[id]
           if (!course) return null
           return (
