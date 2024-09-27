@@ -22,7 +22,7 @@ export function Course({
 
   switch (status) {
     case 'STUDY_PLAN':
-      height = 'h-full'
+      height = 'h-36 w-36'
       hoverColor = 'hover:bg-green-500/50'
       icon = <Plus className="scale-90" />
       break
