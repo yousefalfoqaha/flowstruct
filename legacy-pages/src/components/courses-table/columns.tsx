@@ -3,6 +3,8 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Button } from '../ui/button'
 import { ArrowUpDown } from 'lucide-react'
 import { Checkbox } from '../ui/checkbox'
+import { sections } from '@/data/sections'
+import { Badge } from '../ui/badge'
 
 export const columns: ColumnDef<Course>[] = [
   {
@@ -53,5 +55,19 @@ export const columns: ColumnDef<Course>[] = [
   {
     accessorKey: 'creditHours',
     header: 'Cr Hr',
+  },
+  {
+    accessorKey: 'section',
+    header: 'Section',
+    cell: ({ row }) => {
+      const section = Object.values(sections).find((section) =>
+        section.courseIds.includes(row.original.id)
+      )
+      return (
+        section 
+      ? <Badge variant='outline'>{section.name}</Badge>
+      : 'N/A'
+      ) 
+    },
   },
 ]

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -26,6 +26,7 @@ import { useSemesters } from '@/hooks/useSemesters'
 import { courseInSemester } from '@/lib/utils'
 import { Button } from '../ui/button'
 import { ComboboxPopover } from './SectionComboBox'
+import { Section } from '@/data/sections'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -43,7 +44,9 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [rowSelection, setRowSelection] = useState({})
+  const [selectedSection, setSelectedSection] = useState<Section | null>(null)
   const { semesters, addCourseToSemester } = useSemesters()
+
   const table = useReactTable({
     data,
     columns,
@@ -57,10 +60,18 @@ export function DataTable<TData, TValue>({
     enableRowSelection: (row) => !courseInSemester(row.original.id, semesters),
     state: {
       sorting,
-      columnFilters,
       rowSelection,
+      columnFilters,
     },
   })
+
+  useEffect(() => {
+    if (selectedSection) {
+      return table.getColumn('section')?.setFilterValue(selectedSection.name)
+    } else {
+      table.getColumn('section')?.setFilterValue('')
+    }
+  }, [selectedSection, table])
 
   const handleAddCourses = () => {
     const selectedRows = table.getFilteredSelectedRowModel().rows
@@ -69,20 +80,24 @@ export function DataTable<TData, TValue>({
     })
     onCloseStudyPlan()
     table.setRowSelection({})
+    setSelectedSection(null)
   }
-
+  console.log(selectedSection)
   return (
     <div className="flex flex-col h-full">
-      <div className='flex gap-2'>
+      <div className="flex gap-2">
         <Input
-          placeholder="Filter courses..."
-          value={(table.getColumn('code')?.getFilterValue() as string) ?? ''}
+          placeholder="Search courses..."
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event: any) =>
-            table.getColumn('code')?.setFilterValue(event.target.value)
+            table.getColumn('name')?.setFilterValue(event.target.value)
           }
           className="max-w-sm w-96 h-9 shadow-sm my-2"
         />
-        <ComboboxPopover />
+        <ComboboxPopover
+          selectedSection={selectedSection}
+          setSelectedSection={setSelectedSection}
+        />
       </div>
       <ScrollArea className="border rounded-md flex-grow">
         <Table>

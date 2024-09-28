@@ -1,18 +1,6 @@
 import * as React from 'react'
-import {
-  ArrowUpCircle,
-  CheckCircle2,
-  Circle,
-  HelpCircle,
-  Library,
-  LibraryBig,
-  LucideIcon,
-  PlusCircle,
-  X,
-  XCircle,
-} from 'lucide-react'
-
-import { cn } from '@/lib/utils'
+import { PlusCircle, X } from 'lucide-react'
+import { Section, sections } from '@/data/sections'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -28,39 +16,13 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 
-type Status = {
-  value: string
-  label: string
+type ComboboxPopoverProps = {
+  selectedSection: Section | null
+  setSelectedSection: (section: Section | null) => void
 }
 
-const statuses: Status[] = [
-  {
-    value: 'ff',
-    label: 'Remedial Courses',
-  },
-  {
-    value: 'backlog',
-    label: 'University Requirements',
-  },
-  {
-    value: 'todo',
-    label: 'School Requirements',
-  },
-  {
-    value: 'in progress',
-    label: 'Program Requirements',
-  },
-  {
-    value: 'done',
-    label: 'Special Courses (General Track)',
-  },
-]
-
-export function ComboboxPopover() {
+export function ComboboxPopover({ selectedSection, setSelectedSection }: ComboboxPopoverProps) {
   const [open, setOpen] = React.useState(false)
-  const [selectedStatus, setSelectedStatus] = React.useState<Status | null>(
-    null
-  )
 
   return (
     <div className="flex items-center gap-2">
@@ -71,8 +33,8 @@ export function ComboboxPopover() {
             size="sm"
             className="border-dashed shadow-sm"
           >
-            {selectedStatus ? (
-              <>{selectedStatus.label}</>
+            {selectedSection ? (
+              <>{selectedSection.name}</>
             ) : (
               <p className="inline-flex items-center justify-center">
                 <PlusCircle className="scale-75" />{' '}
@@ -87,19 +49,16 @@ export function ComboboxPopover() {
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup>
-                {statuses.map((status) => (
+                {Object.values(sections).map((section) => (
                   <CommandItem
-                    key={status.value}
-                    value={status.value}
-                    onSelect={(value) => {
-                      setSelectedStatus(
-                        statuses.find((priority) => priority.value === value) ||
-                          null
-                      )
+                    key={section.id}
+                    value={section.id.toString()}
+                    onSelect={(id) => {
+                      setSelectedSection(sections[parseInt(id)] || null)
                       setOpen(false)
                     }}
                   >
-                    {status.label}
+                    {section.name}
                   </CommandItem>
                 ))}
               </CommandGroup>
@@ -107,10 +66,11 @@ export function ComboboxPopover() {
           </Command>
         </PopoverContent>
       </Popover>
-      {selectedStatus ? (
+      {selectedSection ? (
         <Button
           variant="ghost"
           className="h-9 inline-flex items-center justify-center p-1"
+          onClick={() => setSelectedSection(null)}
         >
           <p className="pl-2">Reset</p>
           <X className="scale-75" />
