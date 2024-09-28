@@ -25,6 +25,7 @@ import { Input } from '../ui/input'
 import { useSemesters } from '@/hooks/useSemesters'
 import { courseInSemester } from '@/lib/utils'
 import { Button } from '../ui/button'
+import { ComboboxPopover } from './SectionComboBox'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -63,9 +64,8 @@ export function DataTable<TData, TValue>({
 
   const handleAddCourses = () => {
     const selectedRows = table.getFilteredSelectedRowModel().rows
-    console.log(selectedRows)
     Object.values(selectedRows).map((row) => {
-      addCourseToSemester(parseInt(row.original.id), semesterId)
+      addCourseToSemester(semesterId, parseInt(row.original.id))
     })
     onCloseStudyPlan()
     table.setRowSelection({})
@@ -73,17 +73,18 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="py-2">
+      <div className='flex gap-2'>
         <Input
           placeholder="Filter courses..."
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+          value={(table.getColumn('code')?.getFilterValue() as string) ?? ''}
           onChange={(event: any) =>
-            table.getColumn('name')?.setFilterValue(event.target.value)
+            table.getColumn('code')?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm w-96 h-9 shadow-sm my-2"
         />
+        <ComboboxPopover />
       </div>
-      <ScrollArea className="flex-grow">
+      <ScrollArea className="border rounded-md flex-grow">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -138,9 +139,7 @@ export function DataTable<TData, TValue>({
         <Pagination table={table} />
       </div>
       <Button
-        onClick={
-          handleAddCourses
-        }
+        onClick={handleAddCourses}
         disabled={table.getFilteredSelectedRowModel().rows.length === 0}
       >
         Add Selected Courses

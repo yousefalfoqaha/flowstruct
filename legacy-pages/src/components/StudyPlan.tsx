@@ -8,6 +8,7 @@ import {
 } from './ui/dialog'
 import { DataTable } from './courses-table/DataTable'
 import { columns } from './courses-table/columns'
+import { DialogDescription } from '@radix-ui/react-dialog'
 
 type StudyPlanProps = {
   semesterId: number
@@ -24,7 +25,7 @@ export function StudyPlan({ semesterId, onCloseStudyPlan }: StudyPlanProps) {
     >
       <DialogContent className="min-w-[50rem] h-[50rem] flex flex-col">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className='text-xl'>
             Bachelor in Computer Science 2023/2024 Courses
           </DialogTitle>
         </DialogHeader>
