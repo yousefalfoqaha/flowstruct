@@ -98,8 +98,8 @@ export function StudyPlan({ semesterId, onCloseStudyPlan }: StudyPlanProps) {
             {selectedCourses.length !== 0 ? (
               <>
                 <div className="flex flex-col gap-2 w-full">
-                  <p>{selectedCourses.length} Course(s) selected:</p>
-                  <div className=" flex flex-wrap gap-1">
+                  <p className='text-sm'>{selectedCourses.length} Course(s) selected:</p>
+                  <div className=" flex flex-wrap gap-1 max-h-32 overflow-auto">
                     {selectedCourses.map((course) => {
                       return (
                         <Badge
