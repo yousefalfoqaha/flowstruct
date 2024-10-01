@@ -2,6 +2,7 @@ import { Course } from '@/data/courses'
 import { Semester } from '@/data/semesters'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { CourseStatus } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -26,11 +27,11 @@ export function getCourseStatus(
   selectedCourses: Course[],
   semesters: { [key: number]: Semester },
   selectedSemesterId: number
-) {
-  if (selectedCourses.includes(course)) return 'SELECTED'
+): CourseStatus {
+  if (selectedCourses.includes(course)) return CourseStatus.SELECTED
 
   const { inSemester } = courseInSemester(course.id, semesters)
-  if (inSemester) return 'ADDED'
+  if (inSemester) return CourseStatus.ADDED
 
   for (const prerequisiteId of course.prerequisiteIds) {
     const { inSemester, semester } = courseInSemester(prerequisiteId, semesters)
@@ -39,9 +40,9 @@ export function getCourseStatus(
       !semester ||
       semester.order >= semesters[selectedSemesterId].order
     ) {
-      return 'DISABLED'
+      return CourseStatus.DISABLED
     }
   }
 
-  return 'AVAILABLE'
+  return CourseStatus.AVAILABLE
 }
