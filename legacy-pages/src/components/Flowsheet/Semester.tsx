@@ -1,7 +1,7 @@
 import { courses } from '@/data/courses'
-import { Course } from './Course'
-import { useSemesters } from '../hooks/useSemesters'
-import { Button } from './ui/button'
+import { CourseCard } from './CourseCard'
+import { useSemesters } from '../../hooks/useSemesters'
+import { Button } from '../ui/button'
 import { CirclePlus } from 'lucide-react'
 
 type SemesterProps = {
@@ -48,7 +48,7 @@ export function Semester({
           if (!course) return null
           return (
             <li key={id} className="relative">
-              <Course
+              <CourseCard
                 code={course.code}
                 name={course.name}
                 creditHours={course.creditHours}

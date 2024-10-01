@@ -1,6 +1,6 @@
 import { CircleCheck, Info, Lock, Square, SquareCheck } from 'lucide-react'
-import { Button } from './ui/button'
-import { Badge } from './ui/badge'
+import { Button } from '../ui/button'
+import { Badge } from '../ui/badge'
 
 type CourseProps = {
   code: string
@@ -33,6 +33,7 @@ export function SectionCourse({
       break
     default:
   }
+
   return (
     <div className="group flex gap-2 py-3 border-b">
       {status === 'ADDED' || status === 'DISABLED' ? (

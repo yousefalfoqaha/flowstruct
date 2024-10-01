@@ -1,5 +1,5 @@
-import { SemestersContext } from "@/contexts/SemestersContext"
-import { useContext } from "react"
+import { SemestersContext } from '@/contexts/SemestersContext'
+import { useContext } from 'react'
 
 export function useSemesters() {
   const context = useContext(SemestersContext)

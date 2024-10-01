@@ -35,8 +35,7 @@ function semestersReducer(
       const course = courses[courseId]
       const semester = semesters[semesterId]
       const { inSemester } = courseInSemester(courseId, semesters)
-      if (!course) return alert(`Course not found`)
-      if (!semester) return alert(`Semester not found`)
+      if (!course || !semester) return alert('Course or semester not found')
       if (!inSemester) return alert(`${course.name} is not in a semester`)
 
       semester.courseIds.splice(semester.courseIds.indexOf(courseId), 1)
