@@ -9,8 +9,8 @@ export const sections: { [key: number]: Section } = {
   0: {
     id: 0,
     name: 'Remedial Courses',
-    requiredCreditHours: 0,
-    courseIds: [],
+    requiredCreditHours: 15,
+    courseIds: [50, 51, 52, 53],
   },
   1: {
     id: 1,
@@ -22,7 +22,7 @@ export const sections: { [key: number]: Section } = {
     id: 2,
     name: 'University Electives',
     requiredCreditHours: 6,
-    courseIds: [10],
+    courseIds: [],
   },
   3: {
     id: 3,

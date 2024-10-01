@@ -21,6 +21,7 @@ import { Button } from './ui/button'
 import { Badge } from './ui/badge'
 import { useSemesters } from '@/hooks/useSemesters'
 import { X } from 'lucide-react'
+import { courseInSemester } from '@/lib/utils'
 
 type StudyPlanProps = {
   semesterId: number
@@ -29,7 +30,7 @@ type StudyPlanProps = {
 
 export function StudyPlan({ semesterId, onCloseStudyPlan }: StudyPlanProps) {
   const [selectedCourses, setSelectedCourses] = React.useState<Course[]>([])
-  const { addCourseToSemester } = useSemesters()
+  const { semesters, addCourseToSemester } = useSemesters()
 
   const handleSelectCourse = (clickedCourse: Course) => {
     setSelectedCourses((prev) =>
@@ -46,7 +47,7 @@ export function StudyPlan({ semesterId, onCloseStudyPlan }: StudyPlanProps) {
         setSelectedCourses([])
       }}
     >
-      <DialogContent className="h-screen flex flex-col">
+      <DialogContent className="h-[50rem] flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-xl">
             Bachelor in Computer Science 2023/2024 Courses
@@ -73,14 +74,37 @@ export function StudyPlan({ semesterId, onCloseStudyPlan }: StudyPlanProps) {
                       {section.courseIds.map((id) => {
                         const course = courses[id]
                         if (!course) return
-                        let pending
-                        if (selectedCourses.includes(course)) pending = true
+
+                        let status = 'AVAILABLE'
+                        if (selectedCourses.includes(course))
+                          status = 'SELECTED'
+
+                        const { inSemester } = courseInSemester(
+                          course.id,
+                          semesters
+                        )
+                        if (inSemester) status = 'ADDED'
+
+                        course.prerequisiteIds.map((id) => {
+                          const { inSemester, semester } = courseInSemester(
+                            id,
+                            semesters
+                          )
+                          if (
+                            !inSemester ||
+                            !semester ||
+                            semester.order >= semesters[semesterId].order
+                          ) {
+                            status = 'DISABLED'
+                            return
+                          }
+                        })
                         return (
                           <SectionCourse
                             code={course.code}
                             name={course.name}
                             creditHours={course.creditHours}
-                            pending={pending}
+                            status={status}
                             onClick={() => handleSelectCourse(course)}
                           />
                         )

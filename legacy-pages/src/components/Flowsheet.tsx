@@ -21,6 +21,7 @@ export function Flowsheet() {
               <li key={semester.id}>
                 <Semester
                   id={semester.id}
+                  order={semester.order}
                   courseIds={semester.courseIds}
                   onOpenStudyPlan={() => setSelectedSemesterId(semester.id)}
                 />
