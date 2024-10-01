@@ -15,7 +15,7 @@ import {
 } from './ui/accordion'
 import { Section, sections } from '@/data/sections'
 import { courses, Course } from '@/data/courses'
-import { Course as SectionCourse } from './Course'
+import { SectionCourse } from './SectionCourse'
 import React from 'react'
 import { Button } from './ui/button'
 import { Badge } from './ui/badge'
@@ -73,14 +73,14 @@ export function StudyPlan({ semesterId, onCloseStudyPlan }: StudyPlanProps) {
                       {section.courseIds.map((id) => {
                         const course = courses[id]
                         if (!course) return
-                        let status = 'STUDY_PLAN'
-                        if (selectedCourses.includes(course)) status = 'PENDING'
+                        let pending
+                        if (selectedCourses.includes(course)) pending = true
                         return (
                           <SectionCourse
                             code={course.code}
                             name={course.name}
                             creditHours={course.creditHours}
-                            status={status}
+                            pending={pending}
                             onClick={() => handleSelectCourse(course)}
                           />
                         )
@@ -98,7 +98,9 @@ export function StudyPlan({ semesterId, onCloseStudyPlan }: StudyPlanProps) {
             {selectedCourses.length !== 0 ? (
               <>
                 <div className="flex flex-col gap-2 w-full">
-                  <p className='text-sm'>{selectedCourses.length} Course(s) selected:</p>
+                  <p className="text-sm">
+                    {selectedCourses.length} Course(s) selected:
+                  </p>
                   <div className=" flex flex-wrap gap-1 max-h-32 overflow-auto">
                     {selectedCourses.map((course) => {
                       return (
