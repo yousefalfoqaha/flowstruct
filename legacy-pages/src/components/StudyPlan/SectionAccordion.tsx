@@ -11,13 +11,13 @@ import { getCourseStatus } from '@/lib/utils'
 import { useSemesters } from '@/hooks/useSemesters'
 
 type SectionAccordionProps = {
-  semesterId: number
+  selectedSemesterId: number
   selectedCourses: Course[]
   onSelectCourse: (course: Course) => void
 }
 
 export function SectionAccordion({
-  semesterId,
+  selectedSemesterId,
   selectedCourses,
   onSelectCourse,
 }: SectionAccordionProps) {
@@ -49,7 +49,7 @@ export function SectionAccordion({
                   course,
                   selectedCourses,
                   semesters,
-                  semesterId
+                  selectedSemesterId
                 )
 
                 return (

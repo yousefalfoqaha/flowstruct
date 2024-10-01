@@ -15,16 +15,17 @@ export function courseInSemester(
     semester.courseIds.includes(courseId)
   )
 
-  let inSemester = false
-  if (semester) inSemester = true
-  return { inSemester, semester }
+  return {
+    inSemester: !!semester,
+    semester,
+  }
 }
 
 export function getCourseStatus(
   course: Course,
   selectedCourses: Course[],
   semesters: { [key: number]: Semester },
-  semesterId: number
+  selectedSemesterId: number
 ) {
   if (selectedCourses.includes(course)) return 'SELECTED'
 
@@ -36,7 +37,7 @@ export function getCourseStatus(
     if (
       !inSemester ||
       !semester ||
-      semester.order >= semesters[semesterId].order
+      semester.order >= semesters[selectedSemesterId].order
     ) {
       return 'DISABLED'
     }

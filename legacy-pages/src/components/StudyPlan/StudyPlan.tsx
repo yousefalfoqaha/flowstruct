@@ -8,24 +8,24 @@ import { SelectedCoursesDisplay } from './SelectedCoursesDisplay'
 import { useSelectedCourses } from '@/hooks/useSelectedCourses'
 
 type StudyPlanProps = {
-  semesterId: number
+  selectedSemesterId: number
   onCloseStudyPlan: () => void
 }
 
-export function StudyPlan({ semesterId, onCloseStudyPlan }: StudyPlanProps) {
+export function StudyPlan({ selectedSemesterId, onCloseStudyPlan }: StudyPlanProps) {
   const { addCourseToSemester } = useSemesters()
   const { selectedCourses, handleSelectCourse, clearSelectedCourses } =
     useSelectedCourses()
 
   const handleAddCourses = () => {
     selectedCourses.forEach((course: Course) =>
-      addCourseToSemester(semesterId, course.id)
+      addCourseToSemester(selectedSemesterId, course.id)
     )
   }
 
   return (
     <Dialog
-      open={!!semesterId}
+      open={!!selectedSemesterId}
       onOpenChange={() => {
         onCloseStudyPlan()
         clearSelectedCourses()
@@ -42,7 +42,7 @@ export function StudyPlan({ semesterId, onCloseStudyPlan }: StudyPlanProps) {
         </DialogHeader>
         <div className="overflow-y-auto h-full">
           <SectionAccordion
-            semesterId={semesterId}
+            selectedSemesterId={selectedSemesterId}
             selectedCourses={selectedCourses}
             onSelectCourse={handleSelectCourse}
           />
