@@ -16,11 +16,9 @@ export function SelectedCoursesDisplay({
 }: SelectedCoursesDisplayProps) {
   if (selectedCourses.length === 0) {
     return (
-      <div className="flex flex-col gap-3">
         <p className="text-muted-foreground my-auto text-center">
           No courses selected.
         </p>
-      </div>
     )
   }
 

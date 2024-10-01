@@ -12,7 +12,10 @@ type StudyPlanProps = {
   onCloseStudyPlan: () => void
 }
 
-export function StudyPlan({ selectedSemesterId, onCloseStudyPlan }: StudyPlanProps) {
+export function StudyPlan({
+  selectedSemesterId,
+  onCloseStudyPlan,
+}: StudyPlanProps) {
   const { addCourseToSemester } = useSemesters()
   const { selectedCourses, handleSelectCourse, clearSelectedCourses } =
     useSelectedCourses()
@@ -47,7 +50,7 @@ export function StudyPlan({ selectedSemesterId, onCloseStudyPlan }: StudyPlanPro
             onSelectCourse={handleSelectCourse}
           />
         </div>
-        <DialogFooter className="mt-auto pt-2 border-t">
+        <DialogFooter className="flex flex-col gap-1 pt-4 border-t">
           <SelectedCoursesDisplay
             selectedCourses={selectedCourses}
             onClearSelection={clearSelectedCourses}
@@ -57,7 +60,7 @@ export function StudyPlan({ selectedSemesterId, onCloseStudyPlan }: StudyPlanPro
             <Button
               onClick={handleAddCourses}
               disabled={selectedCourses.length === 0}
-              className="mt-auto"
+              className='mt-auto'
             >
               Add courses
             </Button>

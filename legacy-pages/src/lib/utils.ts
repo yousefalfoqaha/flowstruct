@@ -1,4 +1,4 @@
-import { Course } from '@/data/courses'
+import { Course, courses } from '@/data/courses'
 import { Semester } from '@/data/semesters'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -45,4 +45,34 @@ export function getCourseStatus(
   }
 
   return CourseStatus.AVAILABLE
+}
+
+export function recursiveRemove(
+  currentSemesterId: number,
+  courseId: number,
+  semesters: { [key: number]: Semester },
+  removeCourseFromSemester: (semesterId: number, courseId: number) => void
+) {
+  const currentSemester = semesters[currentSemesterId]
+
+  if (currentSemester.courseIds.includes(courseId)) {
+    removeCourseFromSemester(currentSemester.id, courseId)
+
+    Object.values(semesters).map((semester) => {
+      if (semester.order > currentSemester.order) {
+        semester.courseIds.forEach((id) => {
+          const semesterCourse = courses[id]
+
+          if (semesterCourse.prerequisiteIds.includes(courseId)) {
+            recursiveRemove(
+              semester.id,
+              semesterCourse.id,
+              semesters,
+              removeCourseFromSemester
+            )
+          }
+        })
+      }
+    })
+  }
 }
