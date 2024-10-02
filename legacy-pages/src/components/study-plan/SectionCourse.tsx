@@ -1,13 +1,15 @@
 import { CircleCheck, Info, Lock, Square, SquareCheck } from 'lucide-react'
 import { Button } from '../ui/button'
-import { Badge } from '../ui/badge'
 import { CourseStatus } from '@/lib/constants'
+import PrerequisiteBadges from './PrerequisiteBadges'
 
 type CourseProps = {
   code: string
   name: string
   creditHours: number
+  prerequisiteIds: number[]
   status: CourseStatus
+  prerequisiteIdsNeeded: number[]
   onClick?: () => void
 }
 
@@ -22,7 +24,9 @@ export function SectionCourse({
   code,
   name,
   creditHours,
+  prerequisiteIds,
   status,
+  prerequisiteIdsNeeded,
   onClick = () => {},
 }: CourseProps) {
   const IconComponent = STATUS_ICONS[status] || Square
@@ -40,21 +44,22 @@ export function SectionCourse({
       >
         <IconComponent className="scale-90" />
       </Button>
-      <div className="flex flex-col gap-1 w-full pl-1 my-auto">
-        <div className="flex items-center">
-          <p className="font-semibold">{code}</p>
-          <Badge variant="outline" className="ml-2">
-            {creditHours} Cr Hr
-          </Badge>
+      <div className="flex flex-col gap-3 w-full pl-1">
+        <div className="flex my-auto">
+          <p className="font-semibold pr-2 border-r">{code}</p>
+          <p className="ml-2">{name}</p>
         </div>
-        <p>{name}</p>
+        <PrerequisiteBadges
+          prerequisiteIds={prerequisiteIds}
+          prerequisiteIdsNeeded={prerequisiteIdsNeeded}
+        />
       </div>
       <Button
         variant="ghost"
         className="my-auto scale-75 h-12"
         aria-label={`More information about ${code}`}
       >
-        <Info className="h-5 w-5" />
+        <Info className="scale-90" />
       </Button>
     </div>
   )

@@ -8,7 +8,7 @@ import { Section, sections } from '@/data/sections'
 import { SectionCourse } from './SectionCourse'
 import { courses, Course } from '@/data/courses'
 import { useSemesters } from '@/hooks/useSemesters'
-import { getCourseStatus } from '@/lib/utils'
+import { getCourseStatus, getPrerequisitesNeeded } from '@/lib/utils'
 
 type SectionAccordionProps = {
   selectedSemesterId: number
@@ -52,13 +52,20 @@ export function SectionAccordion({
                   selectedSemesterId
                 )
 
+                const prerequisiteIdsNeeded = getPrerequisitesNeeded(
+                  course.id,
+                  semesters
+                )
+
                 return (
                   <SectionCourse
                     key={course.id}
                     code={course.code}
                     name={course.name}
                     creditHours={course.creditHours}
+                    prerequisiteIds={course.prerequisiteIds}
                     status={status}
+                    prerequisiteIdsNeeded={prerequisiteIdsNeeded}
                     onClick={() => onSelectCourse(course)}
                   />
                 )

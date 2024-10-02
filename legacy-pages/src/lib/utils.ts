@@ -8,6 +8,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+type SemestersMap = { [key: number]: Semester }
+
 export function courseInSemester(
   courseId: number,
   semesters: { [key: number]: Semester }
@@ -34,9 +36,13 @@ export function getCourseStatus(
   if (inSemester) return CourseStatus.ADDED
 
   for (const prerequisiteId of course.prerequisiteIds) {
-    const { inSemester, semester } = courseInSemester(prerequisiteId, semesters)
+    const { semester } = courseInSemester(prerequisiteId, semesters)
+    const preRequisiteIdsNeeded = getPrerequisitesNeeded(
+      prerequisiteId,
+      semesters
+    )
     if (
-      !inSemester ||
+      preRequisiteIdsNeeded.length !== 0 ||
       !semester ||
       semester.order >= semesters[selectedSemesterId].order
     ) {
@@ -45,6 +51,21 @@ export function getCourseStatus(
   }
 
   return CourseStatus.AVAILABLE
+}
+
+export function getPrerequisitesNeeded(
+  courseId: number,
+  semesters: SemestersMap
+): number[] {
+  const prerequisitesIds = courses[courseId].prerequisiteIds
+  const prerequisitesNeeded: number[] = []
+
+  prerequisitesIds.forEach((id) => {
+    const { inSemester } = courseInSemester(id, semesters)
+    if (!inSemester) prerequisitesNeeded.push(id)
+  })
+
+  return prerequisitesNeeded
 }
 
 export function recursiveRemove(
@@ -59,20 +80,18 @@ export function recursiveRemove(
     removeCourseFromSemester(currentSemester.id, courseId)
 
     Object.values(semesters).map((semester) => {
-      if (semester.order > currentSemester.order) {
-        semester.courseIds.forEach((id) => {
-          const semesterCourse = courses[id]
-
-          if (semesterCourse.prerequisiteIds.includes(courseId)) {
-            recursiveRemove(
-              semester.id,
-              semesterCourse.id,
-              semesters,
-              removeCourseFromSemester
-            )
-          }
-        })
-      }
+      semester.courseIds.forEach((id) => {
+        const semesterCourse = courses[id]
+        console.log(semesterCourse.prerequisiteIds.includes(courseId))
+        if (semesterCourse.prerequisiteIds.includes(courseId)) {
+          recursiveRemove(
+            semester.id,
+            semesterCourse.id,
+            semesters,
+            removeCourseFromSemester
+          )
+        }
+      })
     })
   }
 }
