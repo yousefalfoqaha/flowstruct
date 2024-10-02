@@ -2,7 +2,7 @@ import { studyPlan } from '@/data/studyPlan'
 import { useSemesters } from '../../hooks/useSemesters'
 import { Semester } from './Semester'
 import { useState } from 'react'
-import { StudyPlan } from '../StudyPlan/StudyPlan'
+import { StudyPlan } from '../study-plan/StudyPlan'
 
 export function Flowsheet() {
   const { semesters } = useSemesters()

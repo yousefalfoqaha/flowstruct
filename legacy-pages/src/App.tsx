@@ -1,4 +1,4 @@
-import { Flowsheet } from './components/Flowsheet/Flowsheet'
+import { Flowsheet } from './components/flowsheet/Flowsheet'
 import { SemestersProvider } from './providers/SemestersProvider'
 
 export default function App() {

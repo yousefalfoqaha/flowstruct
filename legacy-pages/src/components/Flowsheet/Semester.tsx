@@ -33,7 +33,14 @@ export function Semester({
                 code={course.code}
                 name={course.name}
                 creditHours={course.creditHours}
-                onClick={() => recursiveRemove(semesterId, course.id, semesters, removeCourseFromSemester)}
+                onClick={() =>
+                  recursiveRemove(
+                    semesterId,
+                    course.id,
+                    semesters,
+                    removeCourseFromSemester
+                  )
+                }
               />
             </li>
           )
