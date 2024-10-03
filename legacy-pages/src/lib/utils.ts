@@ -24,14 +24,11 @@ export function courseInSemester(
   }
 }
 
-export function getCourseStatus(
+export function getInitialCourseStatus(
   course: Course,
-  selectedCourses: Course[],
   semesters: { [key: number]: Semester },
-  selectedSemesterId: number
+  selectedSemesterId: number | null
 ): CourseStatus {
-  if (selectedCourses.includes(course)) return CourseStatus.SELECTED
-
   const { inSemester } = courseInSemester(course.id, semesters)
   if (inSemester) return CourseStatus.ADDED
 
@@ -44,6 +41,7 @@ export function getCourseStatus(
     if (
       preRequisiteIdsNeeded.length !== 0 ||
       !semester ||
+      !selectedSemesterId ||
       semester.order >= semesters[selectedSemesterId].order
     ) {
       return CourseStatus.DISABLED

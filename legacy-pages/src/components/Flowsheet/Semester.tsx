@@ -9,16 +9,14 @@ type SemesterProps = {
   id: number
   order: number
   courseIds: number[]
-  onOpenStudyPlan: () => void
 }
 
 export function Semester({
   id: semesterId,
   order,
   courseIds,
-  onOpenStudyPlan,
 }: SemesterProps) {
-  const { semesters, removeCourseFromSemester } = useSemesters()
+  const { semesters, removeCourseFromSemester, setSelectedSemesterId } = useSemesters()
 
   return (
     <section className="flex flex-col gap-1 w-36">
@@ -46,7 +44,11 @@ export function Semester({
           )
         })}
       </ul>
-      <Button variant="ghost" onClick={onOpenStudyPlan} className="flex gap-1">
+      <Button
+        variant="ghost"
+        onClick={() => setSelectedSemesterId(semesterId)}
+        className="flex gap-1"
+      >
         <CirclePlus className="scale-75" />
         <p>Add course</p>
       </Button>

@@ -1,14 +1,11 @@
 import { studyPlan } from '@/data/studyPlan'
 import { useSemesters } from '../../hooks/useSemesters'
 import { Semester } from './Semester'
-import { useState } from 'react'
 import { StudyPlan } from '../study-plan/StudyPlan'
+import { CourseStatusesProvider } from '@/providers/CourseStatusesProvider'
 
 export function Flowsheet() {
-  const { semesters } = useSemesters()
-  const [selectedSemesterId, setSelectedSemesterId] = useState<number | null>(
-    null
-  )
+  const { semesters, selectedSemesterId } = useSemesters()
 
   return (
     <>
@@ -23,7 +20,6 @@ export function Flowsheet() {
                   id={semester.id}
                   order={semester.order}
                   courseIds={semester.courseIds}
-                  onOpenStudyPlan={() => setSelectedSemesterId(semester.id)}
                 />
               </li>
             )
@@ -31,10 +27,9 @@ export function Flowsheet() {
         </ul>
       </section>
       {selectedSemesterId && (
-        <StudyPlan
-          selectedSemesterId={selectedSemesterId}
-          onCloseStudyPlan={() => setSelectedSemesterId(null)}
-        />
+        <CourseStatusesProvider>
+          <StudyPlan />
+        </CourseStatusesProvider>
       )}
     </>
   )

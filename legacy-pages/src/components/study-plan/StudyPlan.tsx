@@ -7,30 +7,25 @@ import { SectionAccordion } from './SectionAccordion'
 import { SelectedCoursesDisplay } from './SelectedCoursesDisplay'
 import { useSelectedCourses } from '@/hooks/useSelectedCourses'
 
-type StudyPlanProps = {
-  selectedSemesterId: number
-  onCloseStudyPlan: () => void
-}
+export function StudyPlan() {
+  const { addCourseToSemester, selectedSemesterId, setSelectedSemesterId } =
+    useSemesters()
 
-export function StudyPlan({
-  selectedSemesterId,
-  onCloseStudyPlan,
-}: StudyPlanProps) {
-  const { addCourseToSemester } = useSemesters()
   const { selectedCourses, handleSelectCourse, clearSelectedCourses } =
     useSelectedCourses()
 
   const handleAddCourses = () => {
+    if (!selectedSemesterId) return
     selectedCourses.forEach((course: Course) =>
       addCourseToSemester(selectedSemesterId, course.id)
     )
   }
-
+  console.log("Study Plan")
   return (
     <Dialog
       open={!!selectedSemesterId}
       onOpenChange={() => {
-        onCloseStudyPlan()
+        setSelectedSemesterId(null)
         clearSelectedCourses()
       }}
     >
@@ -45,7 +40,6 @@ export function StudyPlan({
         </DialogHeader>
         <div className="overflow-y-auto h-full">
           <SectionAccordion
-            selectedSemesterId={selectedSemesterId}
             selectedCourses={selectedCourses}
             onSelectCourse={handleSelectCourse}
           />
@@ -60,7 +54,7 @@ export function StudyPlan({
             <Button
               onClick={handleAddCourses}
               disabled={selectedCourses.length === 0}
-              className='mt-auto'
+              className="mt-auto"
             >
               Add courses
             </Button>

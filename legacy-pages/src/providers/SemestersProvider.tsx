@@ -3,6 +3,7 @@ import { courses } from '@/data/courses'
 import { initialSemesters, Semester } from '@/data/semesters'
 import { courseInSemester } from '@/lib/utils'
 import { Draft } from 'immer'
+import React from 'react'
 import { ReactNode } from 'react'
 import { useImmerReducer } from 'use-immer'
 
@@ -53,6 +54,9 @@ export function SemestersProvider({ children }: { children: ReactNode }) {
     semestersReducer,
     initialSemesters
   )
+  const [selectedSemesterId, setSelectedSemesterId] = React.useState<
+    number | null
+  >(null)
 
   const addCourseToSemester = (semesterId: number, courseId: number) => {
     dispatch({ type: 'ADD_COURSE', payload: { semesterId, courseId } })
@@ -68,6 +72,8 @@ export function SemestersProvider({ children }: { children: ReactNode }) {
         semesters,
         addCourseToSemester,
         removeCourseFromSemester,
+        selectedSemesterId,
+        setSelectedSemesterId,
       }}
     >
       {children}

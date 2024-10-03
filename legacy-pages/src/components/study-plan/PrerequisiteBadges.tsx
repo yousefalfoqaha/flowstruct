@@ -16,11 +16,15 @@ export default function PrerequisiteBadges({
         const prerequisiteCourse = courses[id]
 
         return (
-          <Badge
-            variant={prerequisiteIdsNeeded.includes(id) ? 'outline' : 'default'}
-          >
-            {prerequisiteCourse.name}
-          </Badge>
+          <li key={id}>
+            <Badge
+              variant={
+                prerequisiteIdsNeeded.includes(id) ? 'outline' : 'default'
+              }
+            >
+              {prerequisiteCourse.name}
+            </Badge>
+          </li>
         )
       })}
     </div>

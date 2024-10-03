@@ -1,34 +1,37 @@
-import { CircleCheck, Info, Lock, Square, SquareCheck } from 'lucide-react'
+import { CircleCheck, Info, Lock, Square } from 'lucide-react'
 import { Button } from '../ui/button'
 import { CourseStatus } from '@/lib/constants'
 import PrerequisiteBadges from './PrerequisiteBadges'
+import { useCourseStatuses } from '@/hooks/useCourseStatuses'
 
 type CourseProps = {
+  id: number
   code: string
   name: string
   creditHours: number
   prerequisiteIds: number[]
-  status: CourseStatus
   prerequisiteIdsNeeded: number[]
   onClick?: () => void
 }
 
 const STATUS_ICONS = {
-  [CourseStatus.SELECTED]: SquareCheck,
   [CourseStatus.ADDED]: CircleCheck,
   [CourseStatus.AVAILABLE]: Square,
   [CourseStatus.DISABLED]: Lock,
 }
 
 export function SectionCourse({
+  id: courseId,
   code,
   name,
   creditHours,
   prerequisiteIds,
-  status,
   prerequisiteIdsNeeded,
   onClick = () => {},
 }: CourseProps) {
+  const { getCourseStatus } = useCourseStatuses()
+  const status = getCourseStatus(courseId)
+
   const IconComponent = STATUS_ICONS[status] || Square
 
   return (
@@ -44,15 +47,21 @@ export function SectionCourse({
       >
         <IconComponent className="scale-90" />
       </Button>
-      <div className="flex flex-col gap-3 w-full pl-1">
-        <div className="flex my-auto">
-          <p className="font-semibold pr-2 border-r">{code}</p>
-          <p className="ml-2">{name}</p>
+      <div className="flex flex-col gap-2 w-full pl-1">
+        <div className="flex gap-2">
+          <p className="font-semibold pr-2 border-r my-auto">{code}</p>
+          <p>{name}</p>
         </div>
-        <PrerequisiteBadges
-          prerequisiteIds={prerequisiteIds}
-          prerequisiteIdsNeeded={prerequisiteIdsNeeded}
-        />
+        {prerequisiteIds.length !== 0 ? (
+          <ul>
+            <PrerequisiteBadges
+              prerequisiteIds={prerequisiteIds}
+              prerequisiteIdsNeeded={prerequisiteIdsNeeded}
+            />
+          </ul>
+        ) : (
+          <p className="text-muted-foreground">No pre-requisites</p>
+        )}
       </div>
       <Button
         variant="ghost"

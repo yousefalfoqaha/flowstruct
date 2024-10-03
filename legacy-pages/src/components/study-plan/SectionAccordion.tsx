@@ -8,20 +8,18 @@ import { Section, sections } from '@/data/sections'
 import { SectionCourse } from './SectionCourse'
 import { courses, Course } from '@/data/courses'
 import { useSemesters } from '@/hooks/useSemesters'
-import { getCourseStatus, getPrerequisitesNeeded } from '@/lib/utils'
+import { getPrerequisitesNeeded } from '@/lib/utils'
 
 type SectionAccordionProps = {
-  selectedSemesterId: number
   selectedCourses: Course[]
   onSelectCourse: (course: Course) => void
 }
 
 export function SectionAccordion({
-  selectedSemesterId,
   selectedCourses,
   onSelectCourse,
 }: SectionAccordionProps) {
-  const { semesters } = useSemesters()
+  const { semesters, selectedSemesterId } = useSemesters()
 
   return (
     <Accordion type="single" collapsible className="mx-1">
@@ -43,14 +41,8 @@ export function SectionAccordion({
             <div className="flex flex-col mt-2">
               {section.courseIds.map((id) => {
                 const course = courses[id]
-                if (!course) return null
-
-                const status = getCourseStatus(
-                  course,
-                  selectedCourses,
-                  semesters,
-                  selectedSemesterId
-                )
+                if (!course) return
+                if (!selectedSemesterId) return
 
                 const prerequisiteIdsNeeded = getPrerequisitesNeeded(
                   course.id,
@@ -60,11 +52,11 @@ export function SectionAccordion({
                 return (
                   <SectionCourse
                     key={course.id}
+                    id={course.id}
                     code={course.code}
                     name={course.name}
                     creditHours={course.creditHours}
                     prerequisiteIds={course.prerequisiteIds}
-                    status={status}
                     prerequisiteIdsNeeded={prerequisiteIdsNeeded}
                     onClick={() => onSelectCourse(course)}
                   />
