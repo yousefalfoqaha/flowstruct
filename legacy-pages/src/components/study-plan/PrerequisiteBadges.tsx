@@ -1,25 +1,29 @@
 import { courses } from '@/data/courses'
 import { Badge } from '../ui/badge'
+import { useCourseStatuses } from '@/hooks/useCourseStatuses'
+import { CourseStatus } from '@/lib/constants'
 
 type PrerequisiteBadges = {
   prerequisiteIds: number[]
-  prerequisiteIdsNeeded: number[]
 }
 
 export default function PrerequisiteBadges({
   prerequisiteIds,
-  prerequisiteIdsNeeded,
 }: PrerequisiteBadges) {
+  const { getCourseStatus } = useCourseStatuses()
+
   return (
     <div className="flex flex-wrap gap-1">
-      {prerequisiteIds.map((id) => {
-        const prerequisiteCourse = courses[id]
+      {prerequisiteIds.map((prereqId) => {
+        const prerequisiteCourse = courses[prereqId]
 
         return (
-          <li key={id}>
+          <li key={prereqId}>
             <Badge
               variant={
-                prerequisiteIdsNeeded.includes(id) ? 'outline' : 'default'
+                getCourseStatus(prereqId) === CourseStatus.ADDED
+                  ? 'default'
+                  : 'outline'
               }
             >
               {prerequisiteCourse.name}

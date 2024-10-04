@@ -10,7 +10,6 @@ type CourseProps = {
   name: string
   creditHours: number
   prerequisiteIds: number[]
-  prerequisiteIdsNeeded: number[]
   onClick?: () => void
 }
 
@@ -19,14 +18,12 @@ const STATUS_ICONS = {
   [CourseStatus.AVAILABLE]: Square,
   [CourseStatus.DISABLED]: Lock,
 }
-
 export function SectionCourse({
   id: courseId,
   code,
   name,
   creditHours,
   prerequisiteIds,
-  prerequisiteIdsNeeded,
   onClick = () => {},
 }: CourseProps) {
   const { getCourseStatus } = useCourseStatuses()
@@ -34,6 +31,7 @@ export function SectionCourse({
 
   const IconComponent = STATUS_ICONS[status] || Square
 
+  console.log(code)
   return (
     <div className="group flex gap-2 py-3 border-b">
       <Button
@@ -54,10 +52,7 @@ export function SectionCourse({
         </div>
         {prerequisiteIds.length !== 0 ? (
           <ul>
-            <PrerequisiteBadges
-              prerequisiteIds={prerequisiteIds}
-              prerequisiteIdsNeeded={prerequisiteIdsNeeded}
-            />
+            <PrerequisiteBadges prerequisiteIds={prerequisiteIds} />
           </ul>
         ) : (
           <p className="text-muted-foreground">No pre-requisites</p>

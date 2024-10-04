@@ -14,9 +14,9 @@ export function CourseStatusesProvider({
   const { semesters, selectedSemesterId } = useSemesters()
 
   const initialCourseStatuses = courseKeys.reduce((acc, key: string) => {
-    const parsedKey = parseInt(key)
-    acc[parsedKey] = getInitialCourseStatus(
-      courses[parsedKey],
+    const courseId = parseInt(key)
+    acc[courseId] = getInitialCourseStatus(
+      courses[courseId],
       semesters,
       selectedSemesterId
     )

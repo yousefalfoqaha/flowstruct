@@ -8,88 +8,75 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-type SemestersMap = { [key: number]: Semester }
+type SemestersMap = Record<number, Semester>
 
-export function courseInSemester(
-  courseId: number,
-  semesters: { [key: number]: Semester }
-): { inSemester: boolean; semester: Semester | undefined } {
+export function courseInSemester(courseId: number, semesters: SemestersMap) {
   const semester = Object.values(semesters).find((semester) =>
     semester.courseIds.includes(courseId)
   )
-
-  return {
-    inSemester: !!semester,
-    semester,
-  }
+  return { inSemester: Boolean(semester), semester }
 }
 
 export function getInitialCourseStatus(
   course: Course,
-  semesters: { [key: number]: Semester },
+  semesters: SemestersMap,
   selectedSemesterId: number | null
 ): CourseStatus {
   const { inSemester } = courseInSemester(course.id, semesters)
   if (inSemester) return CourseStatus.ADDED
 
-  for (const prerequisiteId of course.prerequisiteIds) {
+  const isPrerequisiteMet = course.prerequisiteIds.every((prerequisiteId) => {
     const { semester } = courseInSemester(prerequisiteId, semesters)
-    const preRequisiteIdsNeeded = getPrerequisitesNeeded(
+    const prerequisitesNeeded = getPrerequisitesNeeded(
       prerequisiteId,
       semesters
     )
-    if (
-      preRequisiteIdsNeeded.length !== 0 ||
-      !semester ||
-      !selectedSemesterId ||
-      semester.order >= semesters[selectedSemesterId].order
-    ) {
-      return CourseStatus.DISABLED
-    }
-  }
+    return (
+      prerequisitesNeeded.length === 0 &&
+      semester &&
+      selectedSemesterId &&
+      semester.order < semesters[selectedSemesterId].order
+    )
+  })
 
-  return CourseStatus.AVAILABLE
+  return isPrerequisiteMet ? CourseStatus.AVAILABLE : CourseStatus.DISABLED
 }
 
 export function getPrerequisitesNeeded(
   courseId: number,
   semesters: SemestersMap
 ): number[] {
-  const prerequisitesIds = courses[courseId].prerequisiteIds
-  const prerequisitesNeeded: number[] = []
-
-  prerequisitesIds.forEach((id) => {
-    const { inSemester } = courseInSemester(id, semesters)
-    if (!inSemester) prerequisitesNeeded.push(id)
-  })
-
-  return prerequisitesNeeded
+  return courses[courseId].prerequisiteIds.filter(
+    (id) => !courseInSemester(id, semesters).inSemester
+  )
 }
 
-export function recursiveRemove(
+export function removePrerequisiteTree(
   currentSemesterId: number,
   courseId: number,
-  semesters: { [key: number]: Semester },
+  semesters: SemestersMap,
   removeCourseFromSemester: (semesterId: number, courseId: number) => void
 ) {
-  const currentSemester = semesters[currentSemesterId]
+  const visited = new Set<number>()
 
-  if (currentSemester.courseIds.includes(courseId)) {
-    removeCourseFromSemester(currentSemester.id, courseId)
+  function dfs(semesterId: number, courseId: number) {
+    if (visited.has(courseId)) return
+    visited.add(courseId)
 
-    Object.values(semesters).map((semester) => {
+    const currentSemester = semesters[semesterId]
+
+    if (currentSemester.courseIds.includes(courseId)) {
+      removeCourseFromSemester(currentSemester.id, courseId)
+    }
+
+    Object.values(semesters).forEach((semester) => {
       semester.courseIds.forEach((id) => {
-        const semesterCourse = courses[id]
-        console.log(semesterCourse.prerequisiteIds.includes(courseId))
-        if (semesterCourse.prerequisiteIds.includes(courseId)) {
-          recursiveRemove(
-            semester.id,
-            semesterCourse.id,
-            semesters,
-            removeCourseFromSemester
-          )
+        if (courses[id].prerequisiteIds.includes(courseId)) {
+          dfs(semester.id, id)
         }
       })
     })
   }
+
+  dfs(currentSemesterId, courseId)
 }

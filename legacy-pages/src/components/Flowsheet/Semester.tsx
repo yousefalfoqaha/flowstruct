@@ -3,7 +3,7 @@ import { CourseCard } from './CourseCard'
 import { useSemesters } from '../../hooks/useSemesters'
 import { Button } from '../ui/button'
 import { CirclePlus } from 'lucide-react'
-import { recursiveRemove } from '@/lib/utils'
+import { removePrerequisiteTree } from '@/lib/utils'
 
 type SemesterProps = {
   id: number
@@ -11,12 +11,9 @@ type SemesterProps = {
   courseIds: number[]
 }
 
-export function Semester({
-  id: semesterId,
-  order,
-  courseIds,
-}: SemesterProps) {
-  const { semesters, removeCourseFromSemester, setSelectedSemesterId } = useSemesters()
+export function Semester({ id: semesterId, order, courseIds }: SemesterProps) {
+  const { semesters, removeCourseFromSemester, setSelectedSemesterId } =
+    useSemesters()
 
   return (
     <section className="flex flex-col gap-1 w-36">
@@ -32,7 +29,7 @@ export function Semester({
                 name={course.name}
                 creditHours={course.creditHours}
                 onClick={() =>
-                  recursiveRemove(
+                  removePrerequisiteTree(
                     semesterId,
                     course.id,
                     semesters,
