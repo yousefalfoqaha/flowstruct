@@ -5,7 +5,7 @@ import { StudyPlan } from '../study-plan/StudyPlan'
 import { CourseStatusesProvider } from '@/providers/CourseStatusesProvider'
 
 export function Flowsheet() {
-  const { semesters, selectedSemesterId } = useSemesters()
+  const { semesters, selectedSemester } = useSemesters()
 
   return (
     <>
@@ -26,7 +26,7 @@ export function Flowsheet() {
           })}
         </ul>
       </section>
-      {selectedSemesterId && (
+      {selectedSemester && (
         <CourseStatusesProvider>
           <StudyPlan />
         </CourseStatusesProvider>

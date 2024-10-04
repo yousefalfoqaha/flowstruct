@@ -1,4 +1,4 @@
-import { CircleCheck, Info, Lock, Square } from 'lucide-react'
+import { CircleCheck, Info, Lock, Square, SquareCheck } from 'lucide-react'
 import { Button } from '../ui/button'
 import { CourseStatus } from '@/lib/constants'
 import PrerequisiteBadges from './PrerequisiteBadges'
@@ -10,6 +10,7 @@ type CourseProps = {
   name: string
   creditHours: number
   prerequisiteIds: number[]
+  isSelected: boolean
   onClick?: () => void
 }
 
@@ -24,14 +25,13 @@ export function SectionCourse({
   name,
   creditHours,
   prerequisiteIds,
+  isSelected,
   onClick = () => {},
 }: CourseProps) {
   const { getCourseStatus } = useCourseStatuses()
   const status = getCourseStatus(courseId)
+  const IconComponent = isSelected ? SquareCheck : STATUS_ICONS[status]
 
-  const IconComponent = STATUS_ICONS[status] || Square
-
-  console.log(code)
   return (
     <div className="group flex gap-2 py-3 border-b">
       <Button

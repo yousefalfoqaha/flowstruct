@@ -8,24 +8,26 @@ import { SelectedCoursesDisplay } from './SelectedCoursesDisplay'
 import { useSelectedCourses } from '@/hooks/useSelectedCourses'
 
 export function StudyPlan() {
-  const { addCourseToSemester, selectedSemesterId, setSelectedSemesterId } =
-    useSemesters()
+  const {
+    addCourseToSelectedSemester,
+    selectedSemester,
+    clearSelectedSemester,
+  } = useSemesters()
 
   const { selectedCourses, handleSelectCourse, clearSelectedCourses } =
     useSelectedCourses()
 
   const handleAddCourses = () => {
-    if (!selectedSemesterId) return
     selectedCourses.forEach((course: Course) =>
-      addCourseToSemester(selectedSemesterId, course.id)
+      addCourseToSelectedSemester(selectedSemester, course.id)
     )
   }
-  console.log("Study Plan")
+
   return (
     <Dialog
-      open={!!selectedSemesterId}
+      open={!!selectedSemester}
       onOpenChange={() => {
-        setSelectedSemesterId(null)
+        clearSelectedSemester()
         clearSelectedCourses()
       }}
     >

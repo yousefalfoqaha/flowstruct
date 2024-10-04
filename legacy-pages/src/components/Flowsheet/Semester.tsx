@@ -3,7 +3,6 @@ import { CourseCard } from './CourseCard'
 import { useSemesters } from '../../hooks/useSemesters'
 import { Button } from '../ui/button'
 import { CirclePlus } from 'lucide-react'
-import { removePrerequisiteTree } from '@/lib/utils'
 
 type SemesterProps = {
   id: number
@@ -12,8 +11,7 @@ type SemesterProps = {
 }
 
 export function Semester({ id: semesterId, order, courseIds }: SemesterProps) {
-  const { semesters, removeCourseFromSemester, setSelectedSemesterId } =
-    useSemesters()
+  const { selectSemester, removePrerequisiteTree } = useSemesters()
 
   return (
     <section className="flex flex-col gap-1 w-36">
@@ -28,14 +26,7 @@ export function Semester({ id: semesterId, order, courseIds }: SemesterProps) {
                 code={course.code}
                 name={course.name}
                 creditHours={course.creditHours}
-                onClick={() =>
-                  removePrerequisiteTree(
-                    semesterId,
-                    course.id,
-                    semesters,
-                    removeCourseFromSemester
-                  )
-                }
+                onClick={() => removePrerequisiteTree(course.id)}
               />
             </li>
           )
@@ -43,7 +34,7 @@ export function Semester({ id: semesterId, order, courseIds }: SemesterProps) {
       </ul>
       <Button
         variant="ghost"
-        onClick={() => setSelectedSemesterId(semesterId)}
+        onClick={() => selectSemester(semesterId)}
         className="flex gap-1"
       >
         <CirclePlus className="scale-75" />
