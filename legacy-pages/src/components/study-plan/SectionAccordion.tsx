@@ -22,6 +22,7 @@ export function SectionAccordion({
   const { getCourseStatus } = useCourseStatuses()
 
   return (
+    // refactor number of available courses into separate "available courses indicator" component
     <Accordion type="single" collapsible className="mx-1">
       {Object.values(sections).map((section: Section) => {
         const availableCoursesCount = section.courseIds.reduce(
