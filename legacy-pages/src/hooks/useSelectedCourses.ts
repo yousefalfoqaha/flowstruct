@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import { Course, courses } from '@/data/courses'
+import { Course } from '@/data/courses'
 
 export function useSelectedCourses() {
-  const testCourse = courses[42]
-  const [selectedCourses, setSelectedCourses] = useState<Course[]>([testCourse])
+  const [selectedCourses, setSelectedCourses] = useState<Course[]>([])
 
   const handleSelectCourse = (clickedCourse: Course) => {
     setSelectedCourses((prev) =>
