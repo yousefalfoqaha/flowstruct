@@ -6,6 +6,8 @@ import { DialogTitle, DialogDescription, DialogClose } from '../ui/dialog'
 import { SectionAccordion } from './SectionAccordion'
 import { SelectedCoursesDisplay } from './SelectedCoursesDisplay'
 import { useSelectedCourses } from '@/hooks/useSelectedCourses'
+import { useCourseStatuses } from '@/hooks/useCourseStatuses'
+import { CourseStatus } from '@/lib/constants'
 
 export function StudyPlan() {
   const {
@@ -14,13 +16,18 @@ export function StudyPlan() {
     clearSelectedSemester,
   } = useSemesters()
 
+  const { getCourseStatus } = useCourseStatuses()
+
   const { selectedCourses, handleSelectCourse, clearSelectedCourses } =
     useSelectedCourses()
 
   const handleAddCourses = () => {
-    selectedCourses.forEach((course: Course) =>
+    selectedCourses.forEach((course: Course) => {
+      if (getCourseStatus(course.id) !== CourseStatus.AVAILABLE)
+        return alert(`${course.name} is not available`)
+
       addCourseToSelectedSemester(selectedSemester, course.id)
-    )
+    })
   }
 
   return (
