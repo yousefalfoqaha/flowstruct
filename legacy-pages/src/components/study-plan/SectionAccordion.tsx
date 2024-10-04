@@ -9,6 +9,7 @@ import { SectionCourse } from './SectionCourse'
 import { courses, Course } from '@/data/courses'
 import { useCourseStatuses } from '@/hooks/useCourseStatuses'
 import { CourseStatus } from '@/lib/constants'
+import { Dot } from 'lucide-react'
 
 type SectionAccordionProps = {
   selectedCourses: Course[]
@@ -43,30 +44,46 @@ export function SectionAccordion({
                 <p className="text-sm text-muted-foreground">
                   {section.requiredCreditHours} Cr Hr Remaining
                 </p>
-                <p>{availableCoursesCount} courses available</p>
+                {availableCoursesCount !== 0 ? (
+                  <div className="flex">
+                    <Dot className="text-green-500" />
+                    <p className="text-md my-auto">
+                      {availableCoursesCount} Course
+                      {availableCoursesCount === 1 ? '' : 's'} Available
+                    </p>
+                  </div>
+                ) : (
+                  ''
+                )}
               </div>
             </AccordionTrigger>
             <AccordionContent>
               <div className="flex flex-col mt-2">
-                {section.courseIds.map((id) => {
-                  const course = courses[id]
-                  if (!course) return
+                {section.courseIds.length !== 0 ? (
+                  section.courseIds.map((id) => {
+                    const course = courses[id]
+                    if (!course) return
 
-                  const isSelected = selectedCourses.includes(course)
+                    const isSelected = selectedCourses.includes(course)
 
-                  return (
-                    <SectionCourse
-                      key={course.id}
-                      id={course.id}
-                      code={course.code}
-                      name={course.name}
-                      creditHours={course.creditHours}
-                      prerequisiteIds={course.prerequisiteIds}
-                      isSelected={isSelected}
-                      onClick={() => onSelectCourse(course)}
-                    />
-                  )
-                })}
+                    return (
+                      <SectionCourse
+                        key={course.id}
+                        id={course.id}
+                        code={course.code}
+                        name={course.name}
+                        creditHours={course.creditHours}
+                        prerequisiteIds={course.prerequisiteIds}
+                        isSelected={isSelected}
+                        onClick={() => onSelectCourse(course)}
+                      />
+                    )
+                  })
+                ) : (
+                  <p className="py-3 text-center text-muted-foreground">
+                    No courses found
+                  </p>
+                )}
               </div>
             </AccordionContent>
           </AccordionItem>

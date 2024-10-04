@@ -44,7 +44,7 @@ export function StudyPlan() {
             Bachelor in Computer Science 2023/2024 Courses
           </DialogTitle>
           <DialogDescription>
-            Browse sections to add courses to the semester
+            Browse sections to add courses to semester {selectedSemester}
           </DialogDescription>
         </DialogHeader>
         <div className="overflow-y-auto h-full">
