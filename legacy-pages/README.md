@@ -4,7 +4,7 @@
 
 - prerequisiteMet refactor to utils
 
-- section credit hours requirement logic
+- useStudyPlan hook in one context combined with course statuses context (selected courses, course status, etc.)
 
 - courses can be placed in specific semesters
 
