@@ -12,4 +12,6 @@
 
 - german tracks filtering
 
+- edit mode (delete/add courses) and view mode (requisite highlighting)
+
 (made in react + typescript + vite)
