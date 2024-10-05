@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogFooter } from '../ui/dialog'
 import { Button } from '../ui/button'
-import { Course } from '@/data/courses'
+import { courses } from '@/data/courses'
 import { useSemesters } from '@/hooks/useSemesters'
 import { DialogTitle, DialogDescription, DialogClose } from '../ui/dialog'
 import { SectionAccordion } from './SectionAccordion'
@@ -22,11 +22,13 @@ export function StudyPlan() {
     useSelectedCourses()
 
   const handleAddCourses = () => {
-    selectedCourses.forEach((course: Course) => {
-      if (getCourseStatus(course.id) !== CourseStatus.AVAILABLE)
-        return alert(`${course.name} is not available`)
+    selectedCourses.forEach((selectedId: number) => {
+      if (getCourseStatus(selectedId) !== CourseStatus.AVAILABLE) {
+        const unavailableCourse = courses[selectedId]
+        return alert(`${unavailableCourse.name} is not available`)
+      }
 
-      addCourseToSelectedSemester(selectedSemester, course.id)
+      addCourseToSelectedSemester(selectedSemester, selectedId)
     })
   }
 

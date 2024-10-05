@@ -9,13 +9,13 @@ export const sections: { [key: number]: Section } = {
   0: {
     id: 0,
     name: 'Remedial Courses',
-    requiredCreditHours: 15,
+    requiredCreditHours: 12,
     courseIds: [50, 51, 52, 53],
   },
   1: {
     id: 1,
     name: 'University Requirements',
-    requiredCreditHours: 16,
+    requiredCreditHours: 21,
     courseIds: [1, 2, 3, 4, 5, 6, 7, 8, 9],
   },
   2: {
@@ -27,13 +27,13 @@ export const sections: { [key: number]: Section } = {
   3: {
     id: 3,
     name: 'School Requirements',
-    requiredCreditHours: 21,
+    requiredCreditHours: 27,
     courseIds: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22],
   },
   4: {
     id: 4,
     name: 'Program Requirements',
-    requiredCreditHours: 86,
+    requiredCreditHours: 79,
     courseIds: [
       23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
       41, 42, 43, 44, 45,
@@ -47,7 +47,7 @@ export const sections: { [key: number]: Section } = {
   },
   6: {
     id: 6,
-    name: 'Program  Electives',
+    name: 'Program Electives',
     requiredCreditHours: 12,
     courseIds: [],
   },

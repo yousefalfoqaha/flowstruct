@@ -53,7 +53,7 @@ export function CourseStatusesProvider({
   const getCourseStatus = (courseId: number) => {
     return courseStatuses[courseId]
   }
-
+  console.log(courseStatuses)
   return (
     <CourseStatusesContext.Provider value={{ courseStatuses, getCourseStatus }}>
       {children}

@@ -21,10 +21,10 @@ export default function AvailableCoursesIndicator({
   return (
     <div className="flex">
       <Dot className="text-green-500" />
-      <p className="text-md my-auto">
-        {availableCoursesCount} Course
-        {availableCoursesCount === 1 ? '' : 's'} Available
+      <p className="text-sm my-auto text-muted-foreground">
+        {availableCoursesCount} Available
       </p>
     </div>
   )
 }
+ 

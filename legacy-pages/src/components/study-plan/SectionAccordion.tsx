@@ -6,12 +6,12 @@ import {
 } from '../ui/accordion'
 import { Section, sections } from '@/data/sections'
 import { SectionCourse } from './SectionCourse'
-import { courses, Course } from '@/data/courses'
-import AvailableCoursesIndicator from './AvailableCoursesIndicator'
+import { courses } from '@/data/courses'
+import SectionCreditHoursRequirement from './SectionCreditHoursRequirement'
 
 type SectionAccordionProps = {
-  selectedCourses: Course[]
-  onSelectCourse: (course: Course) => void
+  selectedCourses: number[]
+  onSelectCourse: (clickedCourseId: number) => void
 }
 
 export function SectionAccordion({
@@ -27,13 +27,16 @@ export function SectionAccordion({
             value={`${section.id}`}
             className="border-none"
           >
-            <AccordionTrigger className="font-normal hover:bg-zinc-50 transition-all rounded-xl px-3 hover:shadow-md">
-              <div className="flex flex-col text-left">
-                <p>{section.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  {section.requiredCreditHours} Cr Hr Remaining
-                </p>
-                <AvailableCoursesIndicator courseIds={section.courseIds} />
+            <AccordionTrigger className="group font-normal hover:bg-zinc-50 transition-all rounded-xl px-3 hover:shadow-md">
+              <div className="flex flex-col w-full gap-1">
+                <div className="flex gap-2">
+                  <p className="mx-auto">{section.name}</p>
+                </div>
+                <SectionCreditHoursRequirement
+                  requiredCreditHours={section.requiredCreditHours}
+                  courseIds={section.courseIds}
+                  selectedCourses={selectedCourses}
+                />
               </div>
             </AccordionTrigger>
             <AccordionContent>
@@ -43,7 +46,7 @@ export function SectionAccordion({
                     const course = courses[id]
                     if (!course) return
 
-                    const isSelected = selectedCourses.includes(course)
+                    const isSelected = selectedCourses.includes(id)
 
                     return (
                       <SectionCourse
@@ -54,7 +57,7 @@ export function SectionAccordion({
                         creditHours={course.creditHours}
                         prerequisiteIds={course.prerequisiteIds}
                         isSelected={isSelected}
-                        onClick={() => onSelectCourse(course)}
+                        onClick={() => onSelectCourse(id)}
                       />
                     )
                   })

@@ -28,8 +28,7 @@ export function SectionCourse({
   isSelected,
   onClick = () => {},
 }: CourseProps) {
-  const { getCourseStatus } = useCourseStatuses()
-  const status = getCourseStatus(courseId)
+  const status = useCourseStatuses().getCourseStatus(courseId)
   const IconComponent = isSelected ? SquareCheck : STATUS_ICONS[status]
 
   return (
@@ -48,7 +47,10 @@ export function SectionCourse({
       <div className="flex flex-col gap-2 w-full pl-1">
         <div className="flex gap-2">
           <p className="font-semibold pr-2 border-r my-auto">{code}</p>
-          <p>{name}</p>
+          <p className='text-center'>{name}</p>
+          <p className="whitespace-nowrap my-auto pl-2 border-l">
+            {creditHours} Cr Hr
+          </p>
         </div>
         {prerequisiteIds.length !== 0 ? (
           <ul>
