@@ -7,9 +7,7 @@ import {
 import { Section, sections } from '@/data/sections'
 import { SectionCourse } from './SectionCourse'
 import { courses, Course } from '@/data/courses'
-import { useCourseStatuses } from '@/hooks/useCourseStatuses'
-import { CourseStatus } from '@/lib/constants'
-import { Dot } from 'lucide-react'
+import AvailableCoursesIndicator from './AvailableCoursesIndicator'
 
 type SectionAccordionProps = {
   selectedCourses: Course[]
@@ -20,18 +18,9 @@ export function SectionAccordion({
   selectedCourses,
   onSelectCourse,
 }: SectionAccordionProps) {
-  const { getCourseStatus } = useCourseStatuses()
-
   return (
-    // refactor number of available courses into separate "available courses indicator" component
     <Accordion type="single" collapsible className="mx-1">
       {Object.values(sections).map((section: Section) => {
-        const availableCoursesCount = section.courseIds.reduce(
-          (count, id) =>
-            getCourseStatus(id) === CourseStatus.AVAILABLE ? count + 1 : count,
-          0
-        )
-
         return (
           <AccordionItem
             key={section.id}
@@ -44,17 +33,7 @@ export function SectionAccordion({
                 <p className="text-sm text-muted-foreground">
                   {section.requiredCreditHours} Cr Hr Remaining
                 </p>
-                {availableCoursesCount !== 0 ? (
-                  <div className="flex">
-                    <Dot className="text-green-500" />
-                    <p className="text-md my-auto">
-                      {availableCoursesCount} Course
-                      {availableCoursesCount === 1 ? '' : 's'} Available
-                    </p>
-                  </div>
-                ) : (
-                  ''
-                )}
+                <AvailableCoursesIndicator courseIds={section.courseIds} />
               </div>
             </AccordionTrigger>
             <AccordionContent>
