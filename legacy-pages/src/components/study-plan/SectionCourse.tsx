@@ -1,8 +1,9 @@
 import { CircleCheck, Info, Lock, Square, SquareCheck } from 'lucide-react'
 import { Button } from '../ui/button'
 import { CourseStatus } from '@/lib/constants'
-import PrerequisiteBadges from './PrerequisiteBadges'
 import { useCourseStatuses } from '@/hooks/useCourseStatuses'
+import { Badge } from '../ui/badge'
+import { courses } from '@/data/courses'
 
 type CourseProps = {
   id: number
@@ -11,6 +12,7 @@ type CourseProps = {
   creditHours: number
   prerequisiteIds: number[]
   isSelected: boolean
+  sectionIsComplete: boolean
   onClick?: () => void
 }
 
@@ -19,6 +21,7 @@ const STATUS_ICONS = {
   [CourseStatus.AVAILABLE]: Square,
   [CourseStatus.DISABLED]: Lock,
 }
+
 export function SectionCourse({
   id: courseId,
   code,
@@ -26,9 +29,11 @@ export function SectionCourse({
   creditHours,
   prerequisiteIds,
   isSelected,
+  sectionIsComplete,
   onClick = () => {},
 }: CourseProps) {
-  const status = useCourseStatuses().getCourseStatus(courseId)
+  const { getCourseStatus } = useCourseStatuses()
+  const status = getCourseStatus(courseId)
   const IconComponent = isSelected ? SquareCheck : STATUS_ICONS[status]
 
   return (
@@ -38,7 +43,9 @@ export function SectionCourse({
         onClick={onClick}
         className="p-2 my-auto"
         disabled={
-          status === CourseStatus.ADDED || status === CourseStatus.DISABLED
+          status === CourseStatus.ADDED ||
+          status === CourseStatus.DISABLED ||
+          (sectionIsComplete && !isSelected)
         }
         aria-label={`Select course ${code}`}
       >
@@ -47,15 +54,29 @@ export function SectionCourse({
       <div className="flex flex-col gap-2 w-full pl-1">
         <div className="flex gap-2">
           <p className="font-semibold pr-2 border-r my-auto">{code}</p>
-          <p className='text-center'>{name}</p>
+          <p className="text-center">{name}</p>
           <p className="whitespace-nowrap my-auto pl-2 border-l">
             {creditHours} Cr Hr
           </p>
         </div>
         {prerequisiteIds.length !== 0 ? (
-          <ul>
-            <PrerequisiteBadges prerequisiteIds={prerequisiteIds} />
-          </ul>
+          <div className="flex flex-wrap gap-1">
+            {prerequisiteIds.map((prereqId) => {
+              const prerequisiteCourse = courses[prereqId]
+              return (
+                <Badge
+                  key={prereqId}
+                  variant={
+                    getCourseStatus(prereqId) === CourseStatus.ADDED
+                      ? 'default'
+                      : 'outline'
+                  }
+                >
+                  {prerequisiteCourse.name}
+                </Badge>
+              )
+            })}
+          </div>
         ) : (
           <p className="text-muted-foreground">No pre-requisites</p>
         )}

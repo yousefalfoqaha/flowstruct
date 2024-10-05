@@ -46,16 +46,30 @@ export function CourseStatusesProvider({
     return acc
   }, {} as { [key: number]: CourseStatus })
 
-  const [courseStatuses] = React.useState<{
+  const [courseStatuses, setCourseStatuses] = React.useState<{
     [key: number]: CourseStatus
   }>(initialCourseStatuses)
 
   const getCourseStatus = (courseId: number) => {
     return courseStatuses[courseId]
   }
-  console.log(courseStatuses)
+
+  const updateCourseStatus = (courseId: number, newStatus: CourseStatus) => {
+    const newCourseStatuses = Object.fromEntries(
+      Object.entries(courseStatuses).map(([currentId, status]) => {
+        if (parseInt(currentId) === courseId) {
+          return [currentId, newStatus]
+        }
+        return [currentId, status]
+      })
+    )
+    setCourseStatuses(newCourseStatuses)
+  }
+
   return (
-    <CourseStatusesContext.Provider value={{ courseStatuses, getCourseStatus }}>
+    <CourseStatusesContext.Provider
+      value={{ courseStatuses, getCourseStatus, updateCourseStatus }}
+    >
       {children}
     </CourseStatusesContext.Provider>
   )
