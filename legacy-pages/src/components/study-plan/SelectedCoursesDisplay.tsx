@@ -1,22 +1,21 @@
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
-import { X } from 'lucide-react'
+import { Plus, X } from 'lucide-react'
 import { courses } from '@/data/courses'
+import { useStudyPlan } from '@/hooks/useStudyPlan'
+import { DialogClose } from '../ui/dialog'
 
-type SelectedCoursesDisplayProps = {
-  selectedCourses: number[]
-  onClearSelection: () => void
-  onSelectCourse: (clickedCourseId: number) => void
-}
+export function SelectedCoursesDisplay() {
+  const {
+    selectedCourses,
+    handleSelectCourse,
+    clearSelectedCourses,
+    handleAddCourses,
+  } = useStudyPlan()
 
-export function SelectedCoursesDisplay({
-  selectedCourses,
-  onClearSelection,
-  onSelectCourse,
-}: SelectedCoursesDisplayProps) {
   if (selectedCourses.length === 0) {
     return (
-      <p className="text-muted-foreground my-auto text-center">
+      <p className="text-muted-foreground my-auto text-center w-full">
         No courses selected.
       </p>
     )
@@ -34,7 +33,7 @@ export function SelectedCoursesDisplay({
               <Badge
                 key={selectedCourse.id}
                 variant="secondary"
-                onClick={() => onSelectCourse(selectedId)}
+                onClick={() => handleSelectCourse(selectedId)}
                 className="cursor-pointer hover:bg-red-400/50 h-6"
               >
                 {selectedCourse.name}
@@ -42,11 +41,27 @@ export function SelectedCoursesDisplay({
             )
           })}
         </div>
+        <div className="flex gap-2">
+          <Button
+            onClick={clearSelectedCourses}
+            variant="outline"
+            className="w-6/12 flex gap-1"
+          >
+            <X className="scale-75" />
+            <p>Clear selection</p>
+          </Button>
+          <DialogClose asChild>
+            <Button
+              onClick={handleAddCourses}
+              disabled={selectedCourses.length === 0}
+              className="w-6/12 flex gap-1"
+            >
+              <Plus className="scale-75" />
+              <p>Add courses</p>
+            </Button>
+          </DialogClose>
+        </div>
       </div>
-      <Button onClick={onClearSelection} variant="ghost">
-        <X className="scale-75" />
-        <p>Clear selection</p>
-      </Button>
     </div>
   )
 }

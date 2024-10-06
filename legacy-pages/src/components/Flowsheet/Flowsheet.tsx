@@ -1,7 +1,6 @@
 import { useSemesters } from '../../hooks/useSemesters'
 import { Semester } from './Semester'
 import { StudyPlan } from '../study-plan/StudyPlan'
-import { CourseStatusesProvider } from '@/providers/CourseStatusesProvider'
 import {
   Card,
   CardContent,
@@ -9,13 +8,14 @@ import {
   CardHeader,
   CardTitle,
 } from '../ui/card'
+import StudyPlanProvider from '@/providers/StudyPlanProvider'
 
 export function Flowsheet() {
   const { semesters, selectedSemester } = useSemesters()
 
   return (
     <>
-      <Card className='h-screen'>
+      <Card className="h-screen">
         <CardHeader className="text-xl">
           <CardTitle>Bachelor of Computer Science Flowsheet</CardTitle>
           <CardDescription>
@@ -40,9 +40,9 @@ export function Flowsheet() {
         </CardContent>
       </Card>
       {selectedSemester && (
-        <CourseStatusesProvider>
+        <StudyPlanProvider>
           <StudyPlan />
-        </CourseStatusesProvider>
+        </StudyPlanProvider>
       )}
     </>
   )

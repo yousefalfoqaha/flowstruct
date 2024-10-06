@@ -1,17 +1,25 @@
+import { useSemesters } from '@/hooks/useSemesters'
 import { Button } from '../ui/button'
 
 type CourseProps = {
+  id: number
   code: string
   name: string
   creditHours: number
-  onClick?: () => void
 }
 
-export function CourseCard({ code, name, creditHours, onClick }: CourseProps) {
+export function CourseCard({
+  id: courseId,
+  code,
+  name,
+  creditHours,
+}: CourseProps) {
+  const { removePrerequisiteTree } = useSemesters()
+
   return (
     <Button
       variant="ghost"
-      onClick={onClick}
+      onClick={() => removePrerequisiteTree(courseId)}
       className="group text-left flex flex-col p-3 w-full h-36 rounded-md relative bg-zinc-200"
     >
       <header className="w-full font-semibold">{code}</header>

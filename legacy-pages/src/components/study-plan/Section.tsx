@@ -6,17 +6,15 @@ import {
 } from '../ui/accordion'
 import { SectionCourse } from './SectionCourse'
 import { CourseStatus } from '@/lib/constants'
-import { useCourseStatuses } from '@/hooks/useCourseStatuses'
 import { Dot } from 'lucide-react'
 import { Progress } from '../ui/progress'
+import { useStudyPlan } from '@/hooks/useStudyPlan'
 
 type SectionProps = {
   id: number
   name: string
   requiredCreditHours: number
   courseIds: number[]
-  selectedCourses: number[]
-  onSelectCourse: (clickedCourseId: number) => void
 }
 
 export default function Section({
@@ -24,18 +22,15 @@ export default function Section({
   name,
   requiredCreditHours,
   courseIds,
-  selectedCourses,
-  onSelectCourse,
 }: SectionProps) {
-  const { getCourseStatus } = useCourseStatuses()
+  const { getCourseStatus, selectedCourses } = useStudyPlan()
 
   const addedCreditHours = courseIds.reduce((count, currentCourse) => {
     if (
       getCourseStatus(currentCourse) === CourseStatus.ADDED ||
       selectedCourses.includes(currentCourse)
     ) {
-      const addedCourseCreditHours = courses[currentCourse].creditHours
-      return count + addedCourseCreditHours
+      return count + courses[currentCourse].creditHours
     }
     return count
   }, 0)
@@ -52,6 +47,7 @@ export default function Section({
         : count,
     0
   )
+
   return (
     <AccordionItem key={id} value={`${id}`} className="border-none">
       <AccordionTrigger className="group font-normal hover:bg-zinc-50 transition-all rounded-xl px-3 hover:shadow-md">
@@ -99,9 +95,7 @@ export default function Section({
                   name={course.name}
                   creditHours={course.creditHours}
                   prerequisiteIds={course.prerequisiteIds}
-                  isSelected={selectedCourses.includes(id)}
                   sectionIsComplete={sectionIsComplete}
-                  onClick={() => onSelectCourse(id)}
                 />
               )
             })

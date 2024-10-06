@@ -1,9 +1,9 @@
 import { CircleCheck, Info, Lock, Square, SquareCheck } from 'lucide-react'
 import { Button } from '../ui/button'
 import { CourseStatus } from '@/lib/constants'
-import { useCourseStatuses } from '@/hooks/useCourseStatuses'
 import { Badge } from '../ui/badge'
 import { courses } from '@/data/courses'
+import { useStudyPlan } from '@/hooks/useStudyPlan'
 
 type CourseProps = {
   id: number
@@ -11,9 +11,7 @@ type CourseProps = {
   name: string
   creditHours: number
   prerequisiteIds: number[]
-  isSelected: boolean
   sectionIsComplete: boolean
-  onClick?: () => void
 }
 
 const STATUS_ICONS = {
@@ -28,19 +26,19 @@ export function SectionCourse({
   name,
   creditHours,
   prerequisiteIds,
-  isSelected,
   sectionIsComplete,
-  onClick = () => {},
 }: CourseProps) {
-  const { getCourseStatus } = useCourseStatuses()
+  const { getCourseStatus, selectedCourses, handleSelectCourse } =
+    useStudyPlan()
   const status = getCourseStatus(courseId)
+  const isSelected = selectedCourses.includes(courseId)
   const IconComponent = isSelected ? SquareCheck : STATUS_ICONS[status]
 
   return (
     <div className="group flex gap-2 py-3 border-b">
       <Button
         variant="ghost"
-        onClick={onClick}
+        onClick={() => handleSelectCourse(courseId)}
         className="p-2 my-auto"
         disabled={
           status === CourseStatus.ADDED ||

@@ -11,13 +11,15 @@ type SemesterProps = {
 }
 
 export function Semester({ id: semesterId, order, courseIds }: SemesterProps) {
-  const { semesters, selectSemester, removePrerequisiteTree } = useSemesters()
+  const { semesters, selectSemester } = useSemesters()
 
-  const semester = semesters[semesterId]
-  const totalCreditHours = semester.courseIds.reduce((acc, currentCourse) => {
-    const course = courses[currentCourse]
-    return acc + course.creditHours
-  }, 0)
+  const totalCreditHours = semesters[semesterId].courseIds.reduce(
+    (acc, currentCourse) => {
+      const course = courses[currentCourse]
+      return acc + course.creditHours
+    },
+    0
+  )
 
   return (
     <section className="flex flex-col gap-1 w-36">
@@ -34,10 +36,10 @@ export function Semester({ id: semesterId, order, courseIds }: SemesterProps) {
           return (
             <li key={id} className="relative">
               <CourseCard
+                id={id}
                 code={course.code}
                 name={course.name}
                 creditHours={course.creditHours}
-                onClick={() => removePrerequisiteTree(course.id)}
               />
             </li>
           )
