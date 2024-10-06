@@ -82,7 +82,7 @@ export function DataTable<TData, TValue>({
     table.setRowSelection({})
     setSelectedSection(null)
   }
-  console.log(selectedSection)
+  
   return (
     <div className="flex flex-col h-full">
       <div className="flex gap-2">

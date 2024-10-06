@@ -22,7 +22,7 @@ export function StudyPlan({ semesterId, onCloseStudyPlan }: StudyPlanProps) {
         onCloseStudyPlan()
       }}
     >
-      <DialogContent className="min-w-[60rem] h-[50rem] flex flex-col">
+      <DialogContent className="max-w-4xl h-4/5 flex flex-col">
         <DialogHeader>
           <DialogTitle className='text-xl'>
             Bachelor in Computer Science 2023/2024 Courses
