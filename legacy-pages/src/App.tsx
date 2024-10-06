@@ -1,10 +1,5 @@
-import { Flowsheet } from './components/Flowsheet'
-import { SemestersProvider } from './providers/SemestersProvider'
+import { Flowsheet } from './components/flowsheet/Flowsheet'
 
 export default function App() {
-  return (
-    <SemestersProvider>
-      <Flowsheet />
-    </SemestersProvider>
-  )
+  return <Flowsheet />
 }
