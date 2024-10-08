@@ -5,10 +5,9 @@ import {
   AccordionTrigger,
 } from '../ui/accordion'
 import { SectionCourse } from './SectionCourse'
-import { CourseStatus } from '@/lib/constants'
 import { Dot } from 'lucide-react'
 import { Progress } from '../ui/progress'
-import { useStudyPlan } from '@/hooks/useStudyPlan'
+import { useSection } from '@/hooks/useSection'
 
 type SectionProps = {
   id: number
@@ -23,30 +22,8 @@ export default function Section({
   requiredCreditHours,
   courseIds,
 }: SectionProps) {
-  const { getCourseStatus, selectedCourses } = useStudyPlan()
-
-  const addedCreditHours = courseIds.reduce((count, currentCourse) => {
-    if (
-      getCourseStatus(currentCourse) === CourseStatus.ADDED ||
-      selectedCourses.includes(currentCourse)
-    ) {
-      return count + courses[currentCourse].creditHours
-    }
-    return count
-  }, 0)
-
-  const remainingCreditHours = requiredCreditHours - addedCreditHours
-  const sectionIsComplete = remainingCreditHours === 0
-
-  const availableCoursesCount = courseIds.reduce(
-    (count, id) =>
-      getCourseStatus(id) === CourseStatus.AVAILABLE &&
-      !selectedCourses.includes(id) &&
-      !sectionIsComplete
-        ? count + 1
-        : count,
-    0
-  )
+  const { availableCoursesCount, addedCreditHours, remainingCreditHours } =
+    useSection()
 
   return (
     <AccordionItem key={id} value={`${id}`} className="border-none">
@@ -58,7 +35,7 @@ export default function Section({
           <div className="flex flex-col gap-1">
             <div className="flex mx-auto">
               <p className="text-sm text-muted-foreground text-left my-auto">
-                {sectionIsComplete
+                {remainingCreditHours === 0
                   ? 'Completed'
                   : `${remainingCreditHours} Cr Hrs Remaining`}
               </p>
@@ -95,7 +72,7 @@ export default function Section({
                   name={course.name}
                   creditHours={course.creditHours}
                   prerequisiteIds={course.prerequisiteIds}
-                  sectionIsComplete={sectionIsComplete}
+                  sectionIsComplete={remainingCreditHours === 0}
                 />
               )
             })

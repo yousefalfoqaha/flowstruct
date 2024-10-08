@@ -5,6 +5,7 @@ import { sections, Section as SectionType } from '@/data/sections'
 import { Accordion } from '../ui/accordion'
 import Section from './Section'
 import { useStudyPlan } from '@/hooks/useStudyPlan'
+import SectionProvider from '@/providers/SectionProvider'
 
 export function StudyPlan() {
   const { isOpen, closeDialog } = useStudyPlan()
@@ -24,12 +25,14 @@ export function StudyPlan() {
           <Accordion type="single" collapsible className="mx-1">
             {Object.values(sections).map((section: SectionType) => {
               return (
-                <Section
-                  id={section.id}
-                  name={section.name}
-                  requiredCreditHours={section.requiredCreditHours}
-                  courseIds={section.courseIds}
-                />
+                <SectionProvider sectionId={section.id}>
+                  <Section
+                    id={section.id}
+                    name={section.name}
+                    requiredCreditHours={section.requiredCreditHours}
+                    courseIds={section.courseIds}
+                  />
+                </SectionProvider>
               )
             })}
           </Accordion>
