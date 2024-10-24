@@ -5,6 +5,7 @@ export type Course = {
   creditHours: number
   prerequisiteIds: number[]
   corequisiteIds: number[]
+  sectionId: number
 }
 
 export const courses: { [key: number]: Course } = {
@@ -13,24 +14,27 @@ export const courses: { [key: number]: Course } = {
     code: 'ARB100',
     name: 'Arabic',
     creditHours: 3,
-    prerequisiteIds: [52], // ARB0099
+    prerequisiteIds: [52],
     corequisiteIds: [],
+    sectionId: 1,
   },
   2: {
     id: 2,
     code: 'ENGL1001',
     name: 'Upper-Intermediate English',
     creditHours: 3,
-    prerequisiteIds: [50], // ENGL0099
+    prerequisiteIds: [50],
     corequisiteIds: [],
+    sectionId: 1,
   },
   3: {
     id: 3,
     code: 'ENGL1002',
     name: 'Advanced English',
     creditHours: 3,
-    prerequisiteIds: [2], // ENGL1001
+    prerequisiteIds: [2],
     corequisiteIds: [],
+    sectionId: 1,
   },
   4: {
     id: 4,
@@ -39,22 +43,25 @@ export const courses: { [key: number]: Course } = {
     creditHours: 3,
     prerequisiteIds: [],
     corequisiteIds: [],
+    sectionId: 1,
   },
   5: {
     id: 5,
     code: 'GERL102B1',
     name: 'German II B1-Track',
     creditHours: 3,
-    prerequisiteIds: [4], // GERL101B1
+    prerequisiteIds: [4],
     corequisiteIds: [],
+    sectionId: 1,
   },
   6: {
     id: 6,
     code: 'GERL102B2',
     name: 'German II B2-Track',
     creditHours: 3,
-    prerequisiteIds: [4], // GERL101B1
+    prerequisiteIds: [4],
     corequisiteIds: [],
+    sectionId: 1,
   },
   7: {
     id: 7,
@@ -63,70 +70,79 @@ export const courses: { [key: number]: Course } = {
     creditHours: 3,
     prerequisiteIds: [],
     corequisiteIds: [],
+    sectionId: 1,
   },
   8: {
     id: 8,
     code: 'NE101',
     name: 'National Education',
     creditHours: 3,
-    prerequisiteIds: [52, 50], // ARB0099, ENGL0099
+    prerequisiteIds: [52, 50],
     corequisiteIds: [],
+    sectionId: 1,
   },
   9: {
     id: 9,
     code: 'NEE101',
     name: 'National Education in English',
     creditHours: 3,
-    prerequisiteIds: [52, 50], // ARB0099, ENGL0099
+    prerequisiteIds: [52, 50],
     corequisiteIds: [],
+    sectionId: 1,
   },
   10: {
     id: 10,
     code: 'GERL201B1',
     name: 'German III B1-Track',
     creditHours: 3,
-    prerequisiteIds: [5, 6], // GERL102B1 or GERL102B2
+    prerequisiteIds: [5, 6],
     corequisiteIds: [],
+    sectionId: 3,
   },
   11: {
     id: 11,
     code: 'GERL201B2',
     name: 'German III B2-Track',
     creditHours: 3,
-    prerequisiteIds: [5, 6], // GERL102B1 or GERL102B2
+    prerequisiteIds: [5, 6],
     corequisiteIds: [],
+    sectionId: 3,
   },
   12: {
     id: 12,
     code: 'GERL202B1',
     name: 'German IV B1-Track',
     creditHours: 3,
-    prerequisiteIds: [10, 11], // GERL201B1 or GERL201B2
+    prerequisiteIds: [10, 11],
     corequisiteIds: [],
+    sectionId: 3,
   },
   13: {
     id: 13,
     code: 'GERL202B2',
     name: 'German IV B2-Track',
     creditHours: 3,
-    prerequisiteIds: [10, 11], // GERL201B1 or GERL201B2
+    prerequisiteIds: [10, 11],
     corequisiteIds: [],
+    sectionId: 3,
   },
   14: {
     id: 14,
     code: 'MATH101',
     name: 'Calculus I',
     creditHours: 3,
-    prerequisiteIds: [51], // MATH0099
+    prerequisiteIds: [51],
     corequisiteIds: [],
+    sectionId: 3,
   },
   15: {
     id: 15,
     code: 'MATH102',
     name: 'Calculus II',
     creditHours: 3,
-    prerequisiteIds: [14], // MATH101
+    prerequisiteIds: [14],
     corequisiteIds: [],
+    sectionId: 3,
   },
   16: {
     id: 16,
@@ -134,7 +150,8 @@ export const courses: { [key: number]: Course } = {
     name: 'Computing Fundamentals',
     creditHours: 3,
     prerequisiteIds: [],
-    corequisiteIds: [17], // CS1160
+    corequisiteIds: [17],
+    sectionId: 3,
   },
   17: {
     id: 17,
@@ -142,265 +159,297 @@ export const courses: { [key: number]: Course } = {
     name: 'Computing Fundamentals Lab',
     creditHours: 1,
     prerequisiteIds: [],
-    corequisiteIds: [16], // CS116
+    corequisiteIds: [16],
+    sectionId: 3,
   },
   18: {
     id: 18,
     code: 'CS117',
     name: 'Object-Oriented Programming',
     creditHours: 3,
-    prerequisiteIds: [16, 17], // CS116, CS1160
-    corequisiteIds: [19], // CS1170
+    prerequisiteIds: [16, 17],
+    corequisiteIds: [19],
+    sectionId: 3,
   },
   19: {
     id: 19,
     code: 'CS1170',
     name: 'Object-Oriented Programming Lab',
     creditHours: 1,
-    prerequisiteIds: [16, 17], // CS116, CS1160
-    corequisiteIds: [18], // CS117
+    prerequisiteIds: [16, 17],
+    corequisiteIds: [18],
+    sectionId: 3,
   },
   20: {
     id: 20,
     code: 'CE212',
     name: 'Digital Systems',
     creditHours: 3,
-    prerequisiteIds: [16, 51, 52, 50], // CS116, MATH0099, ARB0099, ENGL0099
+    prerequisiteIds: [16, 51, 52, 50],
     corequisiteIds: [],
+    sectionId: 3,
   },
   21: {
     id: 21,
     code: 'CE2120',
     name: 'Digital Systems Lab',
     creditHours: 1,
-    prerequisiteIds: [16, 51, 52, 50], // CS116, CE212, MATH0099, ARB0099, ENGL0099
+    prerequisiteIds: [16, 51, 52, 50],
     corequisiteIds: [20],
+    sectionId: 3,
   },
   22: {
     id: 22,
     code: 'EE317',
     name: 'Linear Algebra',
     creditHours: 3,
-    prerequisiteIds: [14, 15], // MATH101, MATH102
+    prerequisiteIds: [14, 15],
     corequisiteIds: [],
+    sectionId: 3,
   },
   23: {
     id: 23,
     code: 'GERL301B1',
     name: 'German V B1-Track',
     creditHours: 3,
-    prerequisiteIds: [12, 13], // GERL202B1 or GERL202B2
+    prerequisiteIds: [12, 13],
     corequisiteIds: [],
+    sectionId: 4,
   },
   24: {
     id: 24,
     code: 'GERL301B2',
     name: 'German V B2-Track',
     creditHours: 3,
-    prerequisiteIds: [12, 13], // GERL202B1 or GERL202B2
+    prerequisiteIds: [12, 13],
     corequisiteIds: [],
+    sectionId: 4,
   },
   25: {
     id: 25,
     code: 'GERL302B1',
     name: 'German VI B1-Track',
     creditHours: 3,
-    prerequisiteIds: [23, 24], // GERL301B1 or GERL301B2
+    prerequisiteIds: [23, 24],
     corequisiteIds: [],
+    sectionId: 4,
   },
   26: {
     id: 26,
     code: 'GERL302B2',
     name: 'German VI B2-Track',
     creditHours: 3,
-    prerequisiteIds: [23, 24], // GERL301B1 or GERL301B2
+    prerequisiteIds: [23, 24],
     corequisiteIds: [],
+    sectionId: 4,
   },
   27: {
     id: 27,
     code: 'IE0121',
     name: 'Probability and Statistics',
     creditHours: 3,
-    prerequisiteIds: [14], // MATH101
+    prerequisiteIds: [14],
     corequisiteIds: [],
+    sectionId: 4,
   },
   28: {
     id: 28,
     code: 'CS201',
     name: 'Discrete Structures',
     creditHours: 3,
-    prerequisiteIds: [51, 52, 50], // MATH0099, ARB0099, ENGL0099
+    prerequisiteIds: [51, 52, 50],
     corequisiteIds: [],
+    sectionId: 4,
   },
   29: {
     id: 29,
     code: 'CE201',
     name: 'Computer Architecture and Organization',
     creditHours: 3,
-    prerequisiteIds: [20, 51, 52, 50], // MATH0099, ARB0099, ENGL0099
+    prerequisiteIds: [20, 51, 52, 50],
     corequisiteIds: [],
+    sectionId: 4,
   },
   30: {
     id: 30,
     code: 'CS222',
     name: 'Theory of Algorithms',
     creditHours: 3,
-    prerequisiteIds: [16, 28, 52, 50, 51], // CS116, CS201, ARB0099, ENGL0099, MATH0099
+    prerequisiteIds: [16, 28, 52, 50, 51],
     corequisiteIds: [],
+    sectionId: 4,
   },
   31: {
     id: 31,
     code: 'CS223',
     name: 'Data Structures',
     creditHours: 3,
-    prerequisiteIds: [16, 52, 50, 51], // CS116, ARB0099, ENGL0099, MATH0099
+    prerequisiteIds: [16, 52, 50, 51],
     corequisiteIds: [],
+    sectionId: 4,
   },
   32: {
     id: 32,
     code: 'CS264',
     name: 'Visual Programming',
     creditHours: 3,
-    prerequisiteIds: [18, 33, 52, 50, 51], // CS117, CS263, ARB0099, ENGL0099, MATH0099
+    prerequisiteIds: [18, 33, 52, 50, 51],
     corequisiteIds: [],
+    sectionId: 4,
   },
   33: {
     id: 33,
     code: 'CS263',
     name: 'Database Management Systems',
     creditHours: 3,
-    prerequisiteIds: [18, 52, 50, 51], // CS117, ARB0099, ENGL0099, MATH0099
+    prerequisiteIds: [18, 52, 50, 51],
     corequisiteIds: [],
+    sectionId: 4,
   },
   34: {
     id: 34,
     code: 'CS323',
     name: 'Computational Theory',
     creditHours: 3,
-    prerequisiteIds: [30, 31], // CS222, CS223
+    prerequisiteIds: [30, 31],
     corequisiteIds: [],
+    sectionId: 4,
   },
   35: {
     id: 35,
     code: 'CS342',
     name: 'Software Engineering',
     creditHours: 3,
-    prerequisiteIds: [31], // CS223
+    prerequisiteIds: [31],
     corequisiteIds: [],
+    sectionId: 4,
   },
   36: {
     id: 36,
     code: 'CE352',
     name: 'Computer Networks',
     creditHours: 3,
-    prerequisiteIds: [29], // CE201
+    prerequisiteIds: [29],
     corequisiteIds: [],
+    sectionId: 4,
   },
   37: {
     id: 37,
     code: 'CS355',
     name: 'Web Technologies',
     creditHours: 3,
-    prerequisiteIds: [18, 33], // CS117, CS263
+    prerequisiteIds: [18, 33],
     corequisiteIds: [],
+    sectionId: 4,
   },
   38: {
     id: 38,
     code: 'CS356',
     name: 'Information Security',
     creditHours: 3,
-    prerequisiteIds: [31], // CS223
+    prerequisiteIds: [31],
     corequisiteIds: [],
+    sectionId: 4,
   },
   39: {
     id: 39,
     code: 'CE357',
     name: 'Operating Systems',
     creditHours: 3,
-    prerequisiteIds: [29], // CE201
+    prerequisiteIds: [29],
     corequisiteIds: [],
+    sectionId: 4,
   },
   40: {
     id: 40,
     code: 'CE3570',
     name: 'Operating Systems Lab',
     creditHours: 1,
-    prerequisiteIds: [29], // CE201
-    corequisiteIds: [39], // CE357
+    prerequisiteIds: [29],
+    corequisiteIds: [39],
+    sectionId: 4,
   },
   41: {
     id: 41,
     code: 'CS391',
     name: 'Field Training',
     creditHours: 0,
-    prerequisiteIds: [], // Dept. Approval
+    prerequisiteIds: [],
     corequisiteIds: [],
+    sectionId: 4,
   },
   42: {
     id: 42,
     code: 'CS416',
     name: 'Systems Programming',
     creditHours: 3,
-    prerequisiteIds: [31], // CS223
+    prerequisiteIds: [31],
     corequisiteIds: [],
+    sectionId: 4,
   },
   43: {
     id: 43,
     code: 'CS451',
     name: 'Artificial Intelligence',
     creditHours: 3,
-    prerequisiteIds: [30, 31], // CS222, CS223
+    prerequisiteIds: [30, 31],
     corequisiteIds: [],
+    sectionId: 4,
   },
   44: {
     id: 44,
     code: 'CS491',
     name: 'International Internship 20 weeks',
     creditHours: 12,
-    prerequisiteIds: [41], // CS391
+    prerequisiteIds: [41],
     corequisiteIds: [],
+    sectionId: 4,
   },
   45: {
     id: 45,
     code: 'CS492',
     name: 'Senior Project',
     creditHours: 3,
-    prerequisiteIds: [], // Dept. Approval
+    prerequisiteIds: [],
     corequisiteIds: [],
+    sectionId: 4,
   },
   46: {
     id: 46,
     code: 'CS330',
     name: 'Image Understanding',
     creditHours: 3,
-    prerequisiteIds: [31, 22], // CS223, EE317
+    prerequisiteIds: [31, 22],
     corequisiteIds: [],
+    sectionId: 5,
   },
   47: {
     id: 47,
     code: 'CS332',
     name: 'Computer Graphics',
     creditHours: 3,
-    prerequisiteIds: [31, 22], // CS223, EE317
+    prerequisiteIds: [31, 22],
     corequisiteIds: [],
+    sectionId: 5,
   },
   48: {
     id: 48,
     code: 'CS419',
     name: 'Compiler Construction',
     creditHours: 3,
-    prerequisiteIds: [30, 31], // CS222, CS223
+    prerequisiteIds: [30, 31],
     corequisiteIds: [],
+    sectionId: 5,
   },
   49: {
     id: 49,
     code: 'CS477',
     name: 'Mobile Computing',
     creditHours: 3,
-    prerequisiteIds: [18, 33], // CS117, CS263
+    prerequisiteIds: [18, 33],
     corequisiteIds: [],
+    sectionId: 5,
   },
-  // Additional entries for courses not in the original object but referenced in prerequisites
   50: {
     id: 50,
     code: 'ENGL0099',
@@ -408,6 +457,7 @@ export const courses: { [key: number]: Course } = {
     creditHours: 3,
     prerequisiteIds: [53],
     corequisiteIds: [],
+    sectionId: 0,
   },
   51: {
     id: 51,
@@ -416,6 +466,7 @@ export const courses: { [key: number]: Course } = {
     creditHours: 3,
     prerequisiteIds: [],
     corequisiteIds: [],
+    sectionId: 0,
   },
   52: {
     id: 52,
@@ -424,6 +475,7 @@ export const courses: { [key: number]: Course } = {
     creditHours: 3,
     prerequisiteIds: [],
     corequisiteIds: [],
+    sectionId: 0,
   },
   53: {
     id: 53,
@@ -432,5 +484,6 @@ export const courses: { [key: number]: Course } = {
     creditHours: 3,
     prerequisiteIds: [],
     corequisiteIds: [],
+    sectionId: 0,
   },
 }

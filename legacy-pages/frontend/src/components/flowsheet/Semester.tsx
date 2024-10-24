@@ -14,7 +14,7 @@ export function Semester({ id: semesterId, order }: SemesterProps) {
 
   const semesterCourses: number[] = []
 
-  courseMappings.forEach((key, value) => {
+  courseMappings.forEach((value, key) => {
     if (value === semesterId) semesterCourses.push(key)
   })
 

@@ -54,12 +54,13 @@ export function FlowsheetProvider({ children }: { children: ReactNode }) {
       visited.add(courseId)
 
       if (courseMappings.get(courseId)) removeCourseFromFlowsheet(courseId)
-    }
 
-    Object.keys(courseMappings).forEach((key) => {
-      const courseKey = parseInt(key)
-      if (courses[courseKey].prerequisiteIds.includes(courseId)) dfs(courseKey)
-    })
+      for (const mappedCourseId of courseMappings.keys()) {
+        if (courses[mappedCourseId]?.prerequisiteIds.includes(courseId)) {
+          dfs(mappedCourseId)
+        }
+      }
+    }
 
     dfs(courseId)
   }
