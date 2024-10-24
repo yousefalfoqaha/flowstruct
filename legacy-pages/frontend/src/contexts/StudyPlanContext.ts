@@ -6,9 +6,7 @@ interface StudyPlanContextType {
   handleSelectCourse: (clickedCourseId: number) => void
   clearSelectedCourses: () => void
   getCourseStatus: (courseId: number) => CourseStatus
-  updateCourseStatus: (courseId: number, newStatus: CourseStatus) => void
   handleAddCourses: () => void
-  isOpen: boolean
   closeDialog: () => void
 }
 

@@ -1,19 +1,24 @@
 import { courses } from '@/data/courses'
 import { CourseCard } from './CourseCard'
-import { useSemesters } from '../../hooks/useSemesters'
+import { useFlowsheet } from '../../hooks/useFlowsheet'
 import { Button } from '../ui/button'
 import { CirclePlus } from 'lucide-react'
 
 type SemesterProps = {
   id: number
   order: number
-  courseIds: number[]
 }
 
-export function Semester({ id: semesterId, order, courseIds }: SemesterProps) {
-  const { semesters, selectSemester } = useSemesters()
+export function Semester({ id: semesterId, order }: SemesterProps) {
+  const { courseMappings, selectSemester } = useFlowsheet()
 
-  const totalCreditHours = semesters[semesterId].courseIds.reduce(
+  const semesterCourses: number[] = []
+
+  courseMappings.forEach((key, value) => {
+    if (value === semesterId) semesterCourses.push(key)
+  })
+
+  const totalCreditHours = semesterCourses.reduce(
     (acc, currentCourse) => {
       const course = courses[currentCourse]
       return acc + course.creditHours
@@ -30,7 +35,7 @@ export function Semester({ id: semesterId, order, courseIds }: SemesterProps) {
         </p>
       </div>
       <ul className="flex flex-col gap-1">
-        {courseIds.map((id: number) => {
+        {semesterCourses.map((id: number) => {
           const course = courses[id]
           if (!course) return null
           return (

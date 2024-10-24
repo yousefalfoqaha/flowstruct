@@ -1,6 +1,7 @@
 import { StudyPlanContext } from '@/contexts/StudyPlanContext'
 import { Course, courses } from '@/data/courses'
-import { useSemesters } from '@/hooks/useSemesters'
+import { semesters } from '@/data/semesters'
+import { useFlowsheet } from '@/hooks/useFlowsheet'
 import { CourseStatus } from '@/lib/constants'
 import React from 'react'
 
@@ -12,15 +13,14 @@ export default function StudyPlanProvider({
   children,
 }: StudyPlanProviderProps) {
   const {
-    semesters,
-    courseInSemester,
+    courseMappings,
     selectedSemester,
     clearSelectedSemester,
     addCourseToSelectedSemester,
-  } = useSemesters()
-
-  const isOpen = selectedSemester !== null
-
+  } = useFlowsheet()
+  
+  const [selectedCourses, setSelectedCourses] = React.useState<number[]>([])
+  
   const handleAddCourses = () => {
     selectedCourses.forEach((selectedId: number) => {
       if (getCourseStatus(selectedId) !== CourseStatus.AVAILABLE) {
@@ -28,7 +28,9 @@ export default function StudyPlanProvider({
         return alert(`${unavailableCourse.name} is not available`)
       }
 
-      addCourseToSelectedSemester(selectedSemester, selectedId)
+      if (!selectedSemester) return alert('Semester not found')
+
+      addCourseToSelectedSemester(selectedId, selectedSemester)
     })
   }
 
@@ -36,29 +38,29 @@ export default function StudyPlanProvider({
     course: Course,
     selectedSemester: number | null
   ): CourseStatus => {
-    const { inSemester } = courseInSemester(course.id)
-    if (inSemester) return CourseStatus.ADDED
+    if (courseMappings.get(course.id)) return CourseStatus.ADDED
 
     // refactor into utils
     const isPrerequisiteMet = course.prerequisiteIds.every((prerequisiteId) => {
-      const { semester: semesterWithPrerequisite } =
-        courseInSemester(prerequisiteId)
+      const semesterWithPrerequisite = courseMappings.get(prerequisiteId)
+
       const prerequisitesNeeded = courses[
         prerequisiteId
-      ].prerequisiteIds.filter((id) => !courseInSemester(id).inSemester)
+      ].prerequisiteIds.filter((id) => !courseMappings.get(id))
 
       return (
         prerequisitesNeeded.length === 0 &&
         semesterWithPrerequisite &&
         selectedSemester &&
-        semesterWithPrerequisite.order < semesters[selectedSemester].order
+        semesters[semesterWithPrerequisite].order <
+          semesters[selectedSemester].order
       )
     })
 
     return isPrerequisiteMet ? CourseStatus.AVAILABLE : CourseStatus.DISABLED
   }
 
-  const initialCourseStatuses = Object.keys(courses).reduce(
+  const courseStatuses = Object.keys(courses).reduce(
     (acc, key: string) => {
       const courseId = parseInt(key)
       acc[courseId] = getInitialCourseStatus(
@@ -70,27 +72,10 @@ export default function StudyPlanProvider({
     {} as { [key: number]: CourseStatus }
   )
 
-  const [courseStatuses, setCourseStatuses] = React.useState<{
-    [key: number]: CourseStatus
-  }>(initialCourseStatuses)
-
   const getCourseStatus = (courseId: number) => {
     return courseStatuses[courseId]
   }
 
-  const updateCourseStatus = (courseId: number, newStatus: CourseStatus) => {
-    const newCourseStatuses = Object.fromEntries(
-      Object.entries(courseStatuses).map(([currentId, status]) => {
-        if (parseInt(currentId) === courseId) {
-          return [currentId, newStatus]
-        }
-        return [currentId, status]
-      })
-    )
-    setCourseStatuses(newCourseStatuses)
-  }
-
-  const [selectedCourses, setSelectedCourses] = React.useState<number[]>([])
 
   const handleSelectCourse = (clickedCourseId: number) => {
     setSelectedCourses((prev) =>
@@ -99,9 +84,9 @@ export default function StudyPlanProvider({
         : [...prev, clickedCourseId]
     )
   }
-
-  const clearSelectedCourses = () => setSelectedCourses([])
   
+  const clearSelectedCourses = () => setSelectedCourses([])
+
   const closeDialog = () => {
     clearSelectedSemester()
     clearSelectedCourses()
@@ -114,9 +99,7 @@ export default function StudyPlanProvider({
         handleSelectCourse,
         clearSelectedCourses,
         getCourseStatus,
-        updateCourseStatus,
         handleAddCourses,
-        isOpen,
         closeDialog,
       }}
     >

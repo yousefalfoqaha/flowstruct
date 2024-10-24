@@ -1,4 +1,4 @@
-import { useSemesters } from '@/hooks/useSemesters'
+import { useFlowsheet } from '@/hooks/useFlowsheet'
 import { Button } from '../ui/button'
 
 type CourseProps = {
@@ -14,7 +14,7 @@ export function CourseCard({
   name,
   creditHours,
 }: CourseProps) {
-  const { removePrerequisiteTree } = useSemesters()
+  const { removePrerequisiteTree } = useFlowsheet()
 
   return (
     <Button

@@ -1,8 +1,8 @@
-import { SemestersContext } from '@/contexts/SemestersContext'
+import { FlowsheetContext } from '@/contexts/FlowsheetContext'
 import { useContext } from 'react'
 
-export function useSemesters() {
-  const context = useContext(SemestersContext)
+export function useFlowsheet() {
+  const context = useContext(FlowsheetContext)
 
   if (!context) {
     throw new Error('SemestersContext must be used within a SemestersProvider')

@@ -4,14 +4,16 @@ import { SelectedCoursesDisplay } from './SelectedCoursesDisplay'
 import { sections, Section as SectionType } from '@/data/sections'
 import { Accordion } from '../ui/accordion'
 import Section from './Section'
-import { useStudyPlan } from '@/hooks/useStudyPlan'
 import SectionProvider from '@/providers/SectionProvider'
+import { useStudyPlan } from '@/hooks/useStudyPlan'
+import { useFlowsheet } from '@/hooks/useFlowsheet'
 
 export function StudyPlan() {
-  const { isOpen, closeDialog } = useStudyPlan()
-
+  const { closeDialog } = useStudyPlan()
+  const { selectedSemester } = useFlowsheet()
+  console.log(selectedSemester)
   return (
-    <Dialog open={isOpen} onOpenChange={closeDialog}>
+    <Dialog open={selectedSemester !== null} onOpenChange={closeDialog}>
       <DialogContent className="h-[50rem] flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-xl">
