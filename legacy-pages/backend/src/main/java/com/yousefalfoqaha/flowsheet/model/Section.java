@@ -13,25 +13,25 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "semester")
-public class Semester {
+@Table(name = "section")
+public class Section {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
-    private int order; // This represents the order of the semester
+    private String name; // Consider renaming this to label for clarity
 
     @ManyToOne
-    @JoinColumn(name = "flowsheet_id", nullable = false)
-    private Flowsheet flowsheet; // Each semester belongs to one flowsheet
+    @JoinColumn(name = "study_plan_id", nullable = false)
+    private StudyPlan studyPlan; // Each section belongs to one study plan
 
     @ManyToMany
     @JoinTable(
-            name = "semester_course_whitelist",
-            joinColumns = @JoinColumn(name = "semester_id"),
+            name = "section_course", // This table maps sections to courses
+            joinColumns = @JoinColumn(name = "section_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
-    private List<Course> courseWhitelist; // List of allowed courses for this semester
+    private List<Course> courses; // Represents the courses in this section
 }

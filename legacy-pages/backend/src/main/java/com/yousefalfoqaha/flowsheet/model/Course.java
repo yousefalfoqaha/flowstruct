@@ -6,27 +6,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "flowsheet")
-public class Flowsheet {
+@Table(name = "course")
+public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
-    private boolean isSuggested;
+    private String code;
 
-    @ManyToOne
-    @JoinColumn(name = "study_plan_id")
-    private StudyPlan studyPlan;
+    @Column(nullable = false)
+    private String name;
 
-    @OneToMany(mappedBy = "flowsheet", cascade = CascadeType.ALL)
-    private List<Semester> semesters; // Represents the semesters in the flowsheet
+    private int creditHours;
 }

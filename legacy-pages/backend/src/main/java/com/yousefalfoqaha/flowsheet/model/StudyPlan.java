@@ -13,20 +13,15 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "flowsheet")
-public class Flowsheet {
-
+@Table(name = "study_plan")
+public class StudyPlan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
-    private boolean isSuggested;
+    private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "study_plan_id")
-    private StudyPlan studyPlan;
-
-    @OneToMany(mappedBy = "flowsheet", cascade = CascadeType.ALL)
-    private List<Semester> semesters; // Represents the semesters in the flowsheet
+    @OneToMany(mappedBy = "studyPlan")
+    private List<Section> sections;
 }
