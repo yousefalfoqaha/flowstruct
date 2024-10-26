@@ -1,5 +1,6 @@
-package com.yousefalfoqaha.flowsheet.model;
+package com.yousefalfoqaha.flowsheet.semester;
 
+import com.yousefalfoqaha.flowsheet.studyplan.StudyPlan;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,18 +12,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "course")
-public class Course {
+@Table(name = "semester")
+public class Semester {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
-    private String code;
+    private int order;
 
-    @Column(nullable = false)
-    private String name;
-
-    private int creditHours;
+    @ManyToOne
+    @JoinColumn(name = "study_plan_id", nullable = false)
+    private StudyPlan studyPlan;
 }

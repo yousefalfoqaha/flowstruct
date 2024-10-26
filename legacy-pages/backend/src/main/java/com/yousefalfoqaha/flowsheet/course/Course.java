@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.flowsheet.model;
+package com.yousefalfoqaha.flowsheet.course;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,22 +6,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "study_plan")
-public class StudyPlan {
+@Table(name = "course")
+public class Course {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
+    private String code;
+
+    @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "studyPlan")
-    private List<Section> sections;
+    private int creditHours;
 }

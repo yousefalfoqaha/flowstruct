@@ -1,5 +1,7 @@
-package com.yousefalfoqaha.flowsheet.model;
+package com.yousefalfoqaha.flowsheet.section;
 
+import com.yousefalfoqaha.flowsheet.course.Course;
+import com.yousefalfoqaha.flowsheet.studyplan.StudyPlan;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,17 +23,20 @@ public class Section {
     private long id;
 
     @Column(nullable = false)
-    private String name; // Consider renaming this to label for clarity
+    private String name;
+
+    @Column(nullable = false)
+    private int requiredCreditHours;
 
     @ManyToOne
     @JoinColumn(name = "study_plan_id", nullable = false)
-    private StudyPlan studyPlan; // Each section belongs to one study plan
+    private StudyPlan studyPlan;
 
     @ManyToMany
     @JoinTable(
-            name = "section_course", // This table maps sections to courses
+            name = "section_course",
             joinColumns = @JoinColumn(name = "section_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
-    private List<Course> courses; // Represents the courses in this section
+    private List<Course> courses;
 }

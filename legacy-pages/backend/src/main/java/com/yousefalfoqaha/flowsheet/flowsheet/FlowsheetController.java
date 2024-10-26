@@ -1,17 +1,16 @@
-package com.yousefalfoqaha.flowsheet.controller;
+package com.yousefalfoqaha.flowsheet.flowsheet;
 
-import com.yousefalfoqaha.flowsheet.dto.StudentFlowsheetDTO;
-import com.yousefalfoqaha.flowsheet.service.FlowsheetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("gju/flowsheet")
 public class FlowsheetController {
-
     private final FlowsheetService flowsheetService;
 
     @Autowired
@@ -19,9 +18,9 @@ public class FlowsheetController {
         this.flowsheetService = flowsheetService;
     }
 
-    @GetMapping("{studentId}")
-    public StudentFlowsheetDTO getStudentFlowsheet(@PathVariable long studentId) {
-        return flowsheetService.getStudentFlowsheetByStudentId(studentId);
+    @GetMapping({"flowsheetUuid"})
+    public FlowsheetDTO getFlowsheetByUuid(@PathVariable UUID flowsheetUuid) {
+        return flowsheetService.getFlowsheetByUuid(flowsheetUuid);
     }
 
 }

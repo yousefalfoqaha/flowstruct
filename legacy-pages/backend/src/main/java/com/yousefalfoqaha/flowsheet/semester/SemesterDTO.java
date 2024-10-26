@@ -1,12 +1,10 @@
-package com.yousefalfoqaha.flowsheet.dto;
+package com.yousefalfoqaha.flowsheet.semester;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @AllArgsConstructor
 @Getter
@@ -14,5 +12,6 @@ import java.util.Set;
 @Data
 public class SemesterDTO {
     private long id;
-    private long position;
+    private long order;
+    private List<Long> mappedCourses;
 }

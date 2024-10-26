@@ -1,0 +1,65 @@
+{
+  "id": "UB51OS9V%S&@XC",
+  "isSuggested": false,
+  "password": "fuckGJU2005",
+  "studyPlan": {
+    "id": 1,
+    "program": "Computer Science",
+    "year": "2023/2024",
+    "track": "General",
+    "sections": [
+      {
+        "id": 1,
+        "title": "University Requirements",
+        "requiredCreditHours": 21,
+        "courses": [
+          {
+            "id": 1,
+            "code": "CS116",
+            "name": "Computing Fundamentals",
+            "creditHours": 3
+          },
+          {
+            "id": 2,
+            "code": "MATH206",
+            "name": "Differential Equations",
+            "creditHours": 3
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "School Requirements",
+        "requiredCreditHours": 27,
+        "courses": [
+          {
+            "id": 3,
+            "code": "CE212",
+            "name": "Digital Systems",
+            "creditHours": 3
+          },
+          {
+            "id": 4,
+            "code": "CE501",
+            "name": "Data Communication",
+            "creditHours": 2
+          }
+        ]
+      }
+    ],
+    "semesters": [
+      {
+        "id": 1,
+        "order": 1
+      },
+      {
+        "id": 2,
+        "order": 2
+      },
+      {
+        "id": 3,
+        "order": 3
+      }
+    ]
+  },
+}

@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.flowsheet.dto;
+package com.yousefalfoqaha.flowsheet.coursemapping;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Data
-public class StudentMappingDTO {
-    private long courseId;
-    private long semesterId;
+public class CourseMappingDTO {
+    private
 }
