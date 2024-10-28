@@ -1,9 +1,8 @@
 package com.yousefalfoqaha.flowsheet.studyplan;
 
+import com.yousefalfoqaha.flowsheet.course.CourseDTO;
 import com.yousefalfoqaha.flowsheet.section.SectionDTO;
-import com.yousefalfoqaha.flowsheet.semester.SemesterDTO;
 import lombok.*;
-
 import java.util.List;
 
 @AllArgsConstructor
@@ -13,4 +12,6 @@ import java.util.List;
 public class StudyPlanDTO {
     private long id;
     private String name;
+    private List<SectionDTO> sections;
+    private List<CourseDTO> courses;
 }

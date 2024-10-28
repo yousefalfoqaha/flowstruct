@@ -1,9 +1,7 @@
 package com.yousefalfoqaha.flowsheet.coursemapping;
 
-
 import com.yousefalfoqaha.flowsheet.course.Course;
 import com.yousefalfoqaha.flowsheet.flowsheet.Flowsheet;
-import com.yousefalfoqaha.flowsheet.semester.Semester;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,7 +28,6 @@ public class CourseMapping {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    @ManyToOne
-    @JoinColumn(name = "semester_id")
-    private Semester semester;
+    @Column(nullable = false)
+    private int columnIndex;
 }

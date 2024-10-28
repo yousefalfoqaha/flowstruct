@@ -1,7 +1,6 @@
 package com.yousefalfoqaha.flowsheet.studyplan;
 
 import com.yousefalfoqaha.flowsheet.section.Section;
-import com.yousefalfoqaha.flowsheet.semester.Semester;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "study_plan")
 public class StudyPlan {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -26,9 +26,6 @@ public class StudyPlan {
 
     @OneToMany(mappedBy = "studyPlan")
     private List<Section> sections;
-
-    @OneToMany(mappedBy = "studyPlan")
-    private List<Semester> semesters;
 
     @Column(nullable = false)
     private int years;
