@@ -30,4 +30,6 @@ public class CourseMapping {
 
     @Column(nullable = false)
     private int columnIndex;
+
+    private int rowIndex;
 }
