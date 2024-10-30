@@ -6,12 +6,6 @@ export type Section = {
 }
 
 export const sections: { [key: number]: Section } = {
-  0: {
-    id: 0,
-    name: 'Remedial Courses',
-    requiredCreditHours: 12,
-    courseIds: [50, 51, 52, 53],
-  },
   1: {
     id: 1,
     name: 'University Requirements',
@@ -22,7 +16,7 @@ export const sections: { [key: number]: Section } = {
     id: 2,
     name: 'University Electives',
     requiredCreditHours: 6,
-    courseIds: [],
+    courseIds: [74, 75, 76, 77, 78, 79, 80, 81],
   },
   3: {
     id: 3,
@@ -33,7 +27,7 @@ export const sections: { [key: number]: Section } = {
   4: {
     id: 4,
     name: 'Program Requirements',
-    requiredCreditHours: 79,
+    requiredCreditHours: 67,
     courseIds: [
       23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
       41, 42, 43, 44, 45,
@@ -49,6 +43,6 @@ export const sections: { [key: number]: Section } = {
     id: 6,
     name: 'Program Electives',
     requiredCreditHours: 12,
-    courseIds: [],
+    courseIds: [50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73],
   },
 }

@@ -16,7 +16,6 @@ import java.util.UUID;
 public class FlowsheetDTO {
     private UUID uuid;
     private boolean isSuggested;
-    private String password;
     private StudyPlanDTO studyPlan;
     private Map<Long, Integer> courseMappings;
 }

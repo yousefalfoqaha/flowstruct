@@ -28,4 +28,28 @@ export const semesters: { [key: number]: Semester } = {
     id: 6,
     order: 6,
   },
+  7: {
+    id: 7,
+    order: 7,
+  },
+  8: {
+    id: 8,
+    order: 8,
+  },
+  9: {
+    id: 9,
+    order: 9,
+  },
+  10: {
+    id: 10,
+    order: 10,
+  },
+  11: {
+    id: 11,
+    order: 11,
+  },
+  12: {
+    id: 12,
+    order: 12,
+  },
 }

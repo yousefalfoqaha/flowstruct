@@ -24,7 +24,7 @@ public class CourseMapping {
     @JoinColumn(name = "flowsheet_id")
     private Flowsheet flowsheet;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "course_id")
     private Course course;
 

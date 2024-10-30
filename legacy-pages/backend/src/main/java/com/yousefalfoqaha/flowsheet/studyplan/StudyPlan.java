@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.List;
 
 @AllArgsConstructor
@@ -24,7 +23,7 @@ public class StudyPlan {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "studyPlan")
+    @OneToMany(mappedBy = "studyPlan", cascade = CascadeType.ALL)
     private List<Section> sections;
 
     @Column(nullable = false)

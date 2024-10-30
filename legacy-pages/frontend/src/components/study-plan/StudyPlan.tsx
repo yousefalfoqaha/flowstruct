@@ -14,7 +14,7 @@ export function StudyPlan() {
   console.log(selectedSemester)
   return (
     <Dialog open={selectedSemester !== null} onOpenChange={closeDialog}>
-      <DialogContent className="h-[40rem] flex flex-col">
+      <DialogContent className="h-[50rem] flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-xl">
             Bachelor in Computer Science 2023/2024 Courses

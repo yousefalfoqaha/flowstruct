@@ -18,4 +18,8 @@ public class StudyPlanService {
     public List<Course> findAllCoursesByStudyPlanId(long studyPlanId) {
         return studyPlanRepository.findAllCoursesByStudyPlanId(studyPlanId);
     }
+
+    public StudyPlan createStudyPlan(StudyPlan studyPlan) {
+        return studyPlanRepository.save(studyPlan);
+    }
 }

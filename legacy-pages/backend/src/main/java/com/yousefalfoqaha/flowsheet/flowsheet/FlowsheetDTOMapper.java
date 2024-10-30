@@ -21,7 +21,6 @@ public class FlowsheetDTOMapper implements Function<Flowsheet, FlowsheetDTO> {
         return new FlowsheetDTO(
               f.getUuid(),
               f.isSuggested(),
-              f.getPassword(),
               studyPlanDTOMapper.apply(f.getStudyPlan()),
               f.getCourseMappings().stream()
                       .collect(Collectors.toMap(
