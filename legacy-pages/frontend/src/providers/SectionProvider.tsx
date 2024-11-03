@@ -27,13 +27,12 @@ export default function SectionProvider({
   }, 0)
 
   const remainingCreditHours = requiredCreditHours - addedCreditHours
-  const sectionIsComplete = remainingCreditHours === 0
 
   const availableCoursesCount = courseIds.reduce(
     (count, id) =>
       getCourseStatus(id) === CourseStatus.AVAILABLE &&
       !selectedCourses.includes(id) &&
-      !sectionIsComplete
+      remainingCreditHours !== 0
         ? count + 1
         : count,
     0
