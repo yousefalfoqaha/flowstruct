@@ -1,4 +1,4 @@
-import { courses } from '@/data/courses'
+import { Course, courses } from '@/data/courses'
 import {
   AccordionContent,
   AccordionItem,
@@ -13,14 +13,14 @@ type SectionProps = {
   id: number
   name: string
   requiredCreditHours: number
-  courseIds: number[]
+  courses: Course[]
 }
 
 export default function Section({
   id,
   name,
   requiredCreditHours,
-  courseIds,
+  courses,
 }: SectionProps) {
   const { availableCoursesCount, addedCreditHours, remainingCreditHours } =
     useSection()
@@ -59,9 +59,8 @@ export default function Section({
       </AccordionTrigger>
       <AccordionContent>
         <div className="flex flex-col mt-2">
-          {courseIds.length !== 0 ? (
-            courseIds.map((id) => {
-              const course = courses[id]
+          {courses.length !== 0 ? (
+            courses.map((course) => {
               if (!course) return
 
               return (
