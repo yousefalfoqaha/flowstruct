@@ -17,7 +17,7 @@ import lombok.Setter;
 public class CourseMapping {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne
@@ -27,9 +27,6 @@ public class CourseMapping {
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "course_id")
     private Course course;
-
-    @Column(nullable = false)
-    private int columnIndex;
 
     private int rowIndex;
 }

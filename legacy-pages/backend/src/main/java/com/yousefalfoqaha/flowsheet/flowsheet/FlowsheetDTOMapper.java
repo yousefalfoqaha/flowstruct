@@ -20,13 +20,11 @@ public class FlowsheetDTOMapper implements Function<Flowsheet, FlowsheetDTO> {
     public FlowsheetDTO apply(Flowsheet f) {
         return new FlowsheetDTO(
               f.getUuid(),
-              f.isSuggested(),
-              studyPlanDTOMapper.apply(f.getStudyPlan()),
-              f.getCourseMappings().stream()
-                      .collect(Collectors.toMap(
-                              m -> m.getCourse().getId(),
-                              CourseMapping::getColumnIndex
-                      ))
+              studyPlanDTOMapper.apply(f.getStudyPlan())
+//              f.getCourseMappings().stream()
+//                      .collect(Collectors.toMap(
+//                              m -> m.getCourse().getId()
+//                      ))
         );
     }
 }

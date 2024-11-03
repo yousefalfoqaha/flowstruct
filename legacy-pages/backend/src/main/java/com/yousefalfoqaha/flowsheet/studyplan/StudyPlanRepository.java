@@ -10,12 +10,4 @@ import java.util.List;
 
 @Repository
 public interface StudyPlanRepository extends JpaRepository<StudyPlan, Long> {
-
-    @Query(
-            "SELECT c " +
-            "FROM Section s " +
-            "JOIN s.courses c " +
-            "WHERE s.studyPlan.id = :studyPlanId"
-    )
-    List<Course> findAllCoursesByStudyPlanId(@Param("studyPlanId") long studyPlanId);
 }

@@ -13,5 +13,4 @@ public class StudyPlanDTO {
     private long id;
     private String name;
     private List<SectionDTO> sections;
-    private List<CourseDTO> courses;
 }

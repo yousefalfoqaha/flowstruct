@@ -15,7 +15,6 @@ import java.util.UUID;
 @Data
 public class FlowsheetDTO {
     private UUID uuid;
-    private boolean isSuggested;
     private StudyPlanDTO studyPlan;
-    private Map<Long, Integer> courseMappings;
+//    private Map<Long, Integer> courseMappings;
 }

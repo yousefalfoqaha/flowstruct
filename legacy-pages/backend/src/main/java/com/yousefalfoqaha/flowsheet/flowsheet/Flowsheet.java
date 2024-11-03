@@ -22,9 +22,6 @@ public class Flowsheet {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
 
-    @Column(nullable = false)
-    private boolean isSuggested;
-
     private String password;
 
     @ManyToOne
