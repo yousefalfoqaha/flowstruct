@@ -13,4 +13,6 @@ public class CourseDTO {
     private String code;
     private String name;
     private int creditHours;
+    private List<Long> prerequisiteIds;
+    private List<Long> corequisiteIds;
 }

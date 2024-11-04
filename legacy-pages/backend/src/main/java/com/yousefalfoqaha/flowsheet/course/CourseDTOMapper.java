@@ -12,7 +12,15 @@ public class CourseDTOMapper implements Function<Course, CourseDTO> {
                 c.getId(),
                 c.getCode(),
                 c.getName(),
-                c.getCreditHours()
+                c.getCreditHours(),
+                c.getPrerequisites()
+                        .stream()
+                        .map(Course::getId)
+                        .toList(),
+                c.getCorequisites()
+                        .stream()
+                        .map(Course::getId)
+                        .toList()
         );
     }
 }

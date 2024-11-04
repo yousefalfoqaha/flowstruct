@@ -1,12 +1,7 @@
 package com.yousefalfoqaha.flowsheet.studyplan;
-
-import com.yousefalfoqaha.flowsheet.course.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class StudyPlanService {
