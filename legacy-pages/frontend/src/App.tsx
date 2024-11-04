@@ -3,8 +3,8 @@ import { FlowsheetProvider } from './providers/FlowsheetProvider'
 
 export default function App() {
   return (
-  <FlowsheetProvider>
-    <Flowsheet />
-  </FlowsheetProvider>
-)
+    <FlowsheetProvider>
+      <Flowsheet />
+    </FlowsheetProvider>
+  )
 }

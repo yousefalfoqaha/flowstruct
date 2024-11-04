@@ -6,7 +6,7 @@ import { ReactNode } from 'react'
 
 export function FlowsheetProvider({ children }: { children: ReactNode }) {
   const [courseMappings, setCourseMappings] = React.useState(
-    new Map<number, number>()
+    new Map<number, number>([[1, 1]])
   )
 
   const [selectedSemester, setSelectedSemester] = React.useState<number | null>(

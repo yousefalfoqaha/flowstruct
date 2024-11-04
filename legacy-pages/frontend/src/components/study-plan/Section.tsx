@@ -1,4 +1,4 @@
-import { Course, courses } from '@/data/courses'
+import { Course } from '@/data/courses'
 import {
   AccordionContent,
   AccordionItem,
@@ -60,7 +60,7 @@ export default function Section({
       <AccordionContent>
         <div className="flex flex-col mt-2">
           {courses.length !== 0 ? (
-            courses.map((course) => {
+            courses.map((course: Course) => {
               if (!course) return
 
               return (

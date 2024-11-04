@@ -1,7 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogFooter } from '../ui/dialog'
 import { DialogTitle, DialogDescription } from '../ui/dialog'
 import { SelectedCoursesDisplay } from './SelectedCoursesDisplay'
-import { Section as SectionType } from '@/data/sections'
 import { Accordion } from '../ui/accordion'
 import Section from './Section'
 import SectionProvider from '@/providers/SectionProvider'
@@ -12,6 +11,7 @@ import { useQuery } from '@tanstack/react-query'
 export function StudyPlan() {
   const { closeDialog } = useStudyPlan()
   const { selectedSemester } = useFlowsheet()
+
   const { data: studyPlan } = useQuery({
     queryKey: ['studyplan'],
     queryFn: () =>
@@ -20,7 +20,7 @@ export function StudyPlan() {
 
   return (
     <Dialog open={selectedSemester !== null} onOpenChange={closeDialog}>
-      <DialogContent className="h-[50rem] flex flex-col">
+      <DialogContent className="h-5/6 flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-xl">
             Bachelor in Computer Science 2023/2024 Courses
@@ -31,7 +31,7 @@ export function StudyPlan() {
         </DialogHeader>
         <div className="overflow-y-auto h-full">
           <Accordion type="single" collapsible className="mx-1">
-            {studyPlan.sections.map((section: any) => {
+            {studyPlan?.sections?.map((section: any) => {
               return (
                 <SectionProvider sectionId={section.id}>
                   <Section
