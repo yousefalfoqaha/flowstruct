@@ -1,7 +1,8 @@
+import { Course } from '@/data/courses'
 import { createContext } from 'react'
 
 interface SectionContextType {
-  availableCoursesCount: number
+  availableCourses: Course[]
   addedCreditHours: number
   remainingCreditHours: number
 }

@@ -7,6 +7,7 @@ import SectionProvider from '@/providers/SectionProvider'
 import { useStudyPlan } from '@/hooks/useStudyPlan'
 import { useFlowsheet } from '@/hooks/useFlowsheet'
 import { useQuery } from '@tanstack/react-query'
+import { Section as SectionType } from '@/data/sections'
 
 export function StudyPlan() {
   const { closeDialog } = useStudyPlan()
@@ -19,7 +20,7 @@ export function StudyPlan() {
   })
 
   return (
-    <Dialog open={selectedSemester !== null} onOpenChange={closeDialog}>
+    <Dialog open={!!selectedSemester} onOpenChange={closeDialog}>
       <DialogContent className="h-5/6 flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-xl">
@@ -31,9 +32,9 @@ export function StudyPlan() {
         </DialogHeader>
         <div className="overflow-y-auto h-full">
           <Accordion type="single" collapsible className="mx-1">
-            {studyPlan?.sections?.map((section: any) => {
+            {studyPlan?.sections?.map((section: SectionType) => {
               return (
-                <SectionProvider sectionId={section.id}>
+                <SectionProvider section={section}>
                   <Section
                     id={section.id}
                     name={section.name}

@@ -22,7 +22,7 @@ export default function Section({
   requiredCreditHours,
   courses,
 }: SectionProps) {
-  const { availableCoursesCount, addedCreditHours, remainingCreditHours } =
+  const { availableCourses, addedCreditHours, remainingCreditHours } =
     useSection()
 
   return (
@@ -39,11 +39,11 @@ export default function Section({
                   ? 'Completed'
                   : `${remainingCreditHours} Cr Hrs Remaining`}
               </p>
-              {availableCoursesCount !== 0 ? (
+              {availableCourses.length !== 0 ? (
                 <div className="flex">
                   <Dot className="text-green-500" />
                   <p className="text-sm my-auto text-muted-foreground">
-                    {availableCoursesCount} Available
+                    {availableCourses.length} Available
                   </p>
                 </div>
               ) : (

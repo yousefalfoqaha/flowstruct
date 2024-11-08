@@ -20,9 +20,6 @@ public class Semester {
     private long id;
 
     @Column(nullable = false)
-    private SemesterOrder name;
-
-    @Column(nullable = false)
     private int columnIndex;
 
     @ManyToOne
@@ -33,13 +30,13 @@ public class Semester {
         int remainder = columnIndex % 3;
         switch (remainder) {
             case 0: {
-                if (columnIndex >= 3) return SemesterOrder.SUMMER;
-                if (columnIndex == 1) return SemesterOrder.FIRST;
-                if (columnIndex == 2) return SemesterOrder.SECOND;
+                if (columnIndex >= 3) return SemesterOrder.Summer;
+                if (columnIndex == 1) return SemesterOrder.First;
+                if (columnIndex == 2) return SemesterOrder.Second;
             }
             break;
-            case 1: return SemesterOrder.FIRST;
-            case 2: return SemesterOrder.SECOND;
+            case 1: return SemesterOrder.First;
+            case 2: return SemesterOrder.Second;
         }
 
         throw new RuntimeException("Semester has invalid position");

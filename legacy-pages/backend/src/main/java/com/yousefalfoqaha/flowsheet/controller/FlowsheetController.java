@@ -19,8 +19,8 @@ public class FlowsheetController {
         this.flowsheetService = flowsheetService;
     }
 
-    @GetMapping({"flowsheetUuid"})
+    @GetMapping("/{flowsheetUuid}")
     public FlowsheetDTO getFlowsheetByUuid(@PathVariable UUID flowsheetUuid) {
-        return flowsheetService.getFlowsheetByUuid(flowsheetUuid);
+        return flowsheetService.getFlowsheet(flowsheetUuid);
     }
 }

@@ -16,6 +16,6 @@ public class FlowsheetDTO {
     private UUID uuid;
     private String name;
     private List<SemesterDTO> semesters;
-    private Map<Long, CourseMappingDTO> courseMappings;
+    private Map<Long, Long> courseMappings;
     private List<CourseDTO> courses;
 }

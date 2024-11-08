@@ -19,7 +19,7 @@ public class CourseMapping {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "flowsheet_id")
+    @JoinColumn(name = "flowsheet_uuid")
     private Flowsheet flowsheet;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
@@ -29,7 +29,4 @@ public class CourseMapping {
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "semester_id")
     private Semester semester;
-
-    @Column(nullable = false)
-    private int rowIndex;
 }

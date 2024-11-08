@@ -20,7 +20,7 @@ public class FlowsheetService {
         this.flowsheetDTOMapper = flowsheetDTOMapper;
     }
 
-    public FlowsheetDTO getFlowsheetByUuid(UUID flowsheetUuid) {
+    public FlowsheetDTO getFlowsheet(UUID flowsheetUuid) {
         Flowsheet flowsheet = flowsheetRepository
                 .findById(flowsheetUuid)
                 .orElseThrow(() -> new NoSuchElementException("Flowsheet not found"));

@@ -1,46 +1,49 @@
 import { SectionContext } from '@/contexts/SectionContext'
-import { courses } from '@/data/courses'
-import { sections } from '@/data/sections'
+import { Course } from '@/data/courses'
+import { Section } from '@/data/sections'
 import { useStudyPlan } from '@/hooks/useStudyPlan'
 import { CourseStatus } from '@/lib/constants'
 
 type SectionProviderProps = {
   children: React.ReactNode
-  sectionId: number
+  section: Section
 }
 
 export default function SectionProvider({
   children,
-  sectionId,
+  section,
 }: SectionProviderProps) {
-  const { courseIds, requiredCreditHours } = sections[sectionId]
+  const { courses, requiredCreditHours } = section
   const { getCourseStatus, selectedCourses } = useStudyPlan()
 
-  const addedCreditHours = courseIds.reduce((count, currentCourse) => {
+  const addedCreditHours = courses.reduce((count, currentCourse) => {
     if (
-      getCourseStatus(currentCourse) === CourseStatus.ADDED ||
-      selectedCourses.includes(currentCourse)
+      getCourseStatus(currentCourse.id) === CourseStatus.ADDED ||
+      selectedCourses.includes(currentCourse.id)
     ) {
-      return count + courses[currentCourse].creditHours
+      return count + currentCourse.creditHours
     }
     return count
   }, 0)
 
   const remainingCreditHours = requiredCreditHours - addedCreditHours
 
-  const availableCoursesCount = courseIds.reduce(
-    (count, id) =>
-      getCourseStatus(id) === CourseStatus.AVAILABLE &&
-      !selectedCourses.includes(id) &&
+  const availableCourses: Course[] = []
+
+  courses.forEach((course: Course) => {
+    if (
+      getCourseStatus(course.id) === CourseStatus.AVAILABLE &&
+      !selectedCourses.includes(course.id) &&
       remainingCreditHours !== 0
-        ? count + 1
-        : count,
-    0
-  )
+    )
+      availableCourses.push(course)
+  })
+
+  console.log(requiredCreditHours)
 
   return (
     <SectionContext.Provider
-      value={{ availableCoursesCount, addedCreditHours, remainingCreditHours }}
+      value={{ availableCourses, addedCreditHours, remainingCreditHours }}
     >
       {children}
     </SectionContext.Provider>
