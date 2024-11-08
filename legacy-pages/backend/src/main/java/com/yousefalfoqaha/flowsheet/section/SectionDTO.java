@@ -16,5 +16,5 @@ public class SectionDTO {
     private long id;
     private String name;
     private int creditHoursRequired;
-    private List<CourseDTO> courses;
+    private int availableCoursesCount;
 }

@@ -19,9 +19,7 @@ public class SectionDTOMapper implements Function<Section, SectionDTO> {
                 s.getId(),
                 s.getName(),
                 s.getRequiredCreditHours(),
-                s.getCourses().stream()
-                        .map(courseDTOMapper)
-                        .toList()
+
         );
     }
 }
