@@ -1,7 +1,5 @@
-package com.yousefalfoqaha.flowsheet.coursemapping;
+package com.yousefalfoqaha.flowsheet.model;
 
-import com.yousefalfoqaha.flowsheet.course.Course;
-import com.yousefalfoqaha.flowsheet.flowsheet.Flowsheet;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +15,7 @@ import lombok.Setter;
 public class CourseMapping {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne
@@ -28,5 +26,10 @@ public class CourseMapping {
     @JoinColumn(name = "course_id")
     private Course course;
 
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "semester_id")
+    private Semester semester;
+
+    @Column(nullable = false)
     private int rowIndex;
 }

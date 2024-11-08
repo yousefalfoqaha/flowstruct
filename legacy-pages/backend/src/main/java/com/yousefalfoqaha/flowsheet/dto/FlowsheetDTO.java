@@ -1,11 +1,10 @@
-package com.yousefalfoqaha.flowsheet.flowsheet;
+package com.yousefalfoqaha.flowsheet.dto;
 
-import com.yousefalfoqaha.flowsheet.studyplan.StudyPlanDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -15,6 +14,8 @@ import java.util.UUID;
 @Data
 public class FlowsheetDTO {
     private UUID uuid;
-    private StudyPlanDTO studyPlan;
-//    private Map<Long, Integer> courseMappings;
+    private String name;
+    private List<SemesterDTO> semesters;
+    private Map<Long, CourseMappingDTO> courseMappings;
+    private List<CourseDTO> courses;
 }

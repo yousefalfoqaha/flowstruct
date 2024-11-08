@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.flowsheet.course;
+package com.yousefalfoqaha.flowsheet.dto;
 
 import lombok.*;
 

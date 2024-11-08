@@ -1,7 +1,5 @@
-package com.yousefalfoqaha.flowsheet.flowsheet;
+package com.yousefalfoqaha.flowsheet.model;
 
-import com.yousefalfoqaha.flowsheet.coursemapping.CourseMapping;
-import com.yousefalfoqaha.flowsheet.studyplan.StudyPlan;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

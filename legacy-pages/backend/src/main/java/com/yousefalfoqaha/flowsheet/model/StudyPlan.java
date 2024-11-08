@@ -1,6 +1,5 @@
-package com.yousefalfoqaha.flowsheet.studyplan;
+package com.yousefalfoqaha.flowsheet.model;
 
-import com.yousefalfoqaha.flowsheet.section.Section;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +25,6 @@ public class StudyPlan {
     @OneToMany(mappedBy = "studyPlan", cascade = CascadeType.ALL)
     private List<Section> sections;
 
-    @Column(nullable = false)
-    private int years;
+    @OneToMany(mappedBy = "studyPlan", cascade = CascadeType.ALL)
+    private List<Semester> semesters;
 }

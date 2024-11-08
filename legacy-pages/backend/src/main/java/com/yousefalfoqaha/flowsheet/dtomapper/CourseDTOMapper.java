@@ -1,5 +1,7 @@
-package com.yousefalfoqaha.flowsheet.course;
+package com.yousefalfoqaha.flowsheet.dtomapper;
 
+import com.yousefalfoqaha.flowsheet.dto.CourseDTO;
+import com.yousefalfoqaha.flowsheet.model.Course;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;

@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.flowsheet.course;
+package com.yousefalfoqaha.flowsheet.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

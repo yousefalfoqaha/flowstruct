@@ -1,5 +1,7 @@
-package com.yousefalfoqaha.flowsheet.studyplan;
+package com.yousefalfoqaha.flowsheet.controller;
 
+import com.yousefalfoqaha.flowsheet.dto.StudyPlanDTO;
+import com.yousefalfoqaha.flowsheet.service.StudyPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +19,6 @@ public class StudyPlanController {
 
     @GetMapping("/{studyPlanId}")
     public StudyPlanDTO getStudyPlanById(@PathVariable long studyPlanId) {
-        return studyPlanService.getStudyPlanById(studyPlanId);
+        return studyPlanService.getStudyPlan(studyPlanId);
     }
-
 }
