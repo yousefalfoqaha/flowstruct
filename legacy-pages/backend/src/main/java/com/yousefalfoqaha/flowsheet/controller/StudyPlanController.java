@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/studyplan")
 @CrossOrigin(origins = "http://localhost:5173")
 public class StudyPlanController {
-
     private final StudyPlanService studyPlanService;
 
     @Autowired
