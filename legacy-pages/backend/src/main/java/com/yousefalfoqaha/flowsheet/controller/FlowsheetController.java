@@ -1,12 +1,11 @@
 package com.yousefalfoqaha.flowsheet.controller;
 
+import com.yousefalfoqaha.flowsheet.dto.AddCoursesToFlowsheetRequest;
 import com.yousefalfoqaha.flowsheet.dto.FlowsheetDTO;
 import com.yousefalfoqaha.flowsheet.service.FlowsheetService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.UUID;
 
 @RestController
@@ -22,5 +21,13 @@ public class FlowsheetController {
     @GetMapping("/{flowsheetUuid}")
     public FlowsheetDTO getFlowsheetByUuid(@PathVariable UUID flowsheetUuid) {
         return flowsheetService.getFlowsheet(flowsheetUuid);
+    }
+
+    @PostMapping("/{flowsheetUuid}")
+    public void addCoursesToFlowsheet(
+            @RequestBody AddCoursesToFlowsheetRequest request,
+            @PathVariable UUID flowsheetUuid
+    ) {
+        flowsheetService.addCourses(request, flowsheetUuid);
     }
 }

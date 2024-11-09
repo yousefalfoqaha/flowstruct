@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.flowsheet.model;
 
+import com.yousefalfoqaha.flowsheet.enums.DegreeType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +21,15 @@ public class StudyPlan {
     private long id;
 
     @Column(nullable = false)
-    private String name;
+    private DegreeType degree;
+
+    @Column(nullable = false)
+    private String major;
+
+    @Column(nullable = false)
+    private int academicYear;
+
+    private String track;
 
     @OneToMany(mappedBy = "studyPlan", cascade = CascadeType.ALL)
     private List<Section> sections;

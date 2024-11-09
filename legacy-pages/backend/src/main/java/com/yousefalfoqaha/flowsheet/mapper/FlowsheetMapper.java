@@ -25,27 +25,27 @@ public class FlowsheetMapper implements Function<Flowsheet, FlowsheetDTO> {
 
     @Override
     public FlowsheetDTO apply(Flowsheet f) {
-        Map<Long, Long> courseMappingMap = new HashMap<>();
-        List<CourseDTO> mappedCourses = new ArrayList<>();
+        Map<Long, Long> courseMappings = new HashMap<>();
+        List<CourseDTO> courses = new ArrayList<>();
 
         f.getCourseMappings().forEach(cm -> {
-            Course mappedCourse = cm.getCourse();
-            mappedCourses.add(courseMapper.apply(mappedCourse));
-            courseMappingMap.put(
-                    mappedCourse.getId(),
+            Course course = cm.getCourse();
+            courses.add(courseMapper.apply(course));
+            courseMappings.put(
+                    course.getId(),
                     cm.getSemester().getId()
             );
         });
 
         return new FlowsheetDTO(
                 f.getUuid(),
-                f.getStudyPlan().getName() + " Flowsheet",
+                f.getStudyPlan().getMajor() + " Flowsheet",
                 f.getStudyPlan().getSemesters()
                         .stream()
                         .map(semesterMapper)
                         .toList(),
-                courseMappingMap,
-                mappedCourses
+                courseMappings,
+                courses
         );
     }
 }

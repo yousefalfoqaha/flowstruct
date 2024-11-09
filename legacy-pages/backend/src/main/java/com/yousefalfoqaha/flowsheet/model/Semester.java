@@ -22,6 +22,8 @@ public class Semester {
     @Column(nullable = false)
     private int columnIndex;
 
+    private int creditHourLimit;
+
     @ManyToOne
     @JoinColumn(name = "study_plan_id")
     private StudyPlan studyPlan;
@@ -37,6 +39,21 @@ public class Semester {
             break;
             case 1: return SemesterOrder.First;
             case 2: return SemesterOrder.Second;
+        }
+
+        throw new RuntimeException("Semester has invalid position");
+    }
+
+    public int getCreditHourLimit() {
+        int remainder = columnIndex % 3;
+        switch (remainder) {
+            case 0: {
+                if (columnIndex >= 3) return 9;
+                if (columnIndex == 1) return 21;
+                if (columnIndex == 2) return 21;
+            }
+            break;
+            case 1, 2: return 21;
         }
 
         throw new RuntimeException("Semester has invalid position");

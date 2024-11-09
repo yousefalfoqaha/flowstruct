@@ -20,8 +20,6 @@ public class Flowsheet {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
 
-    private String password;
-
     @ManyToOne
     @JoinColumn(name = "study_plan_id")
     private StudyPlan studyPlan;
