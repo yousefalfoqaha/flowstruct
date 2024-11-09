@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.flowsheet.dtomapper;
+package com.yousefalfoqaha.flowsheet.mapper;
 
 import com.yousefalfoqaha.flowsheet.dto.SectionDTO;
 import com.yousefalfoqaha.flowsheet.model.Course;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.function.Function;
 
 @Service
-public class SectionDTOMapper implements Function<Section, SectionDTO> {
+public class SectionMapper implements Function<Section, SectionDTO> {
 
     @Override
     public SectionDTO apply(Section s) {

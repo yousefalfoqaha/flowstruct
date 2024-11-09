@@ -2,7 +2,7 @@ package com.yousefalfoqaha.flowsheet.service;
 
 import com.yousefalfoqaha.flowsheet.model.Flowsheet;
 import com.yousefalfoqaha.flowsheet.dto.FlowsheetDTO;
-import com.yousefalfoqaha.flowsheet.dtomapper.FlowsheetDTOMapper;
+import com.yousefalfoqaha.flowsheet.mapper.FlowsheetMapper;
 import com.yousefalfoqaha.flowsheet.repository.FlowsheetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,12 +12,12 @@ import java.util.UUID;
 @Service
 public class FlowsheetService {
     private final FlowsheetRepository flowsheetRepository;
-    private final FlowsheetDTOMapper flowsheetDTOMapper;
+    private final FlowsheetMapper flowsheetMapper;
 
     @Autowired
-    public FlowsheetService(FlowsheetRepository flowsheetRepository, FlowsheetDTOMapper flowsheetDTOMapper) {
+    public FlowsheetService(FlowsheetRepository flowsheetRepository, FlowsheetMapper flowsheetMapper) {
         this.flowsheetRepository = flowsheetRepository;
-        this.flowsheetDTOMapper = flowsheetDTOMapper;
+        this.flowsheetMapper = flowsheetMapper;
     }
 
     public FlowsheetDTO getFlowsheet(UUID flowsheetUuid) {
@@ -25,6 +25,6 @@ public class FlowsheetService {
                 .findById(flowsheetUuid)
                 .orElseThrow(() -> new NoSuchElementException("Flowsheet not found"));
 
-        return flowsheetDTOMapper.apply(flowsheet);
+        return flowsheetMapper.apply(flowsheet);
     }
 }

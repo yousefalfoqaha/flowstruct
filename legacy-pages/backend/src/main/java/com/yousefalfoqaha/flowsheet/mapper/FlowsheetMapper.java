@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.flowsheet.dtomapper;
+package com.yousefalfoqaha.flowsheet.mapper;
 
 import com.yousefalfoqaha.flowsheet.dto.CourseDTO;
 import com.yousefalfoqaha.flowsheet.dto.FlowsheetDTO;
@@ -13,14 +13,14 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class FlowsheetDTOMapper implements Function<Flowsheet, FlowsheetDTO> {
-    private final CourseDTOMapper courseDTOMapper;
-    private final SemesterDTOMapper semesterDTOMapper;
+public class FlowsheetMapper implements Function<Flowsheet, FlowsheetDTO> {
+    private final CourseMapper courseMapper;
+    private final SemesterMapper semesterMapper;
 
     @Autowired
-    public FlowsheetDTOMapper(CourseDTOMapper courseDTOMapper, SemesterDTOMapper semesterDTOMapper) {
-        this.courseDTOMapper = courseDTOMapper;
-        this.semesterDTOMapper = semesterDTOMapper;
+    public FlowsheetMapper(CourseMapper courseMapper, SemesterMapper semesterMapper) {
+        this.courseMapper = courseMapper;
+        this.semesterMapper = semesterMapper;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class FlowsheetDTOMapper implements Function<Flowsheet, FlowsheetDTO> {
 
         f.getCourseMappings().forEach(cm -> {
             Course mappedCourse = cm.getCourse();
-            mappedCourses.add(courseDTOMapper.apply(mappedCourse));
+            mappedCourses.add(courseMapper.apply(mappedCourse));
             courseMappingMap.put(
                     mappedCourse.getId(),
                     cm.getSemester().getId()
@@ -42,7 +42,7 @@ public class FlowsheetDTOMapper implements Function<Flowsheet, FlowsheetDTO> {
                 f.getStudyPlan().getName() + " Flowsheet",
                 f.getStudyPlan().getSemesters()
                         .stream()
-                        .map(semesterDTOMapper)
+                        .map(semesterMapper)
                         .toList(),
                 courseMappingMap,
                 mappedCourses

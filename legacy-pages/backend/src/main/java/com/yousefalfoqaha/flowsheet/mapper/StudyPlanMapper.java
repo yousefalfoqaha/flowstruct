@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.flowsheet.dtomapper;
+package com.yousefalfoqaha.flowsheet.mapper;
 
 import com.yousefalfoqaha.flowsheet.dto.StudyPlanDTO;
 import com.yousefalfoqaha.flowsheet.model.StudyPlan;
@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 import java.util.function.Function;
 
 @Service
-public class StudyPlanDTOMapper implements Function<StudyPlan, StudyPlanDTO> {
-    private final SectionDTOMapper sectionDTOMapper;
-    private final CourseDTOMapper courseDTOMapper;
+public class StudyPlanMapper implements Function<StudyPlan, StudyPlanDTO> {
+    private final SectionMapper sectionMapper;
+    private final CourseMapper courseMapper;
 
     @Autowired
-    public StudyPlanDTOMapper(SectionDTOMapper sectionDTOMapper, CourseDTOMapper courseDTOMapper) {
-        this.sectionDTOMapper = sectionDTOMapper;
-        this.courseDTOMapper = courseDTOMapper;
+    public StudyPlanMapper(SectionMapper sectionMapper, CourseMapper courseMapper) {
+        this.sectionMapper = sectionMapper;
+        this.courseMapper = courseMapper;
     }
 
     @Override
@@ -24,12 +24,12 @@ public class StudyPlanDTOMapper implements Function<StudyPlan, StudyPlanDTO> {
                 sp.getName(),
                 sp.getSections()
                         .stream()
-                        .map(sectionDTOMapper)
+                        .map(sectionMapper)
                         .toList(),
                 sp.getSections()
                         .stream()
                         .flatMap(section -> section.getCourses().stream())
-                        .map(courseDTOMapper)
+                        .map(courseMapper)
                         .toList()
         );
     }

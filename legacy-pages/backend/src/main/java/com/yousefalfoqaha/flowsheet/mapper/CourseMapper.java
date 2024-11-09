@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.flowsheet.dtomapper;
+package com.yousefalfoqaha.flowsheet.mapper;
 
 import com.yousefalfoqaha.flowsheet.dto.CourseDTO;
 import com.yousefalfoqaha.flowsheet.model.Course;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.function.Function;
 
 @Service
-public class CourseDTOMapper implements Function<Course, CourseDTO> {
+public class CourseMapper implements Function<Course, CourseDTO> {
     @Override
     public CourseDTO apply(Course c) {
         return new CourseDTO(
