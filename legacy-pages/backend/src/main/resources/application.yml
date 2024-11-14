@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: flowsheet
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/flowsheet
+    username: postgres
+    password: admin
+
+  sql:
+    init:
+      mode: always
