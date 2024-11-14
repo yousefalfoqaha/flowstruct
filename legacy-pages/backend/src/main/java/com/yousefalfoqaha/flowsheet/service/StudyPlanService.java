@@ -34,6 +34,12 @@ public class StudyPlanService {
     }
 
     public List<Course> getStudyPlanCourses(long studyPlanId, List<Long> courseIds) {
+        var studyPlanCourses = studyPlanRepository.findCoursesInStudyPlan(studyPlanId, courseIds);
+
+        if (studyPlanCourses.size() != courseIds.size()) {
+            throw new RuntimeException("Course(s) were not found in the study plan");
+        }
+
         return studyPlanRepository.findCoursesInStudyPlan(studyPlanId, courseIds);
     }
 }

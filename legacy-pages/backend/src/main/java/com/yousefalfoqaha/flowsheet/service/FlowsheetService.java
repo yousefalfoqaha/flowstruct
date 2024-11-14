@@ -2,17 +2,16 @@ package com.yousefalfoqaha.flowsheet.service;
 
 import com.yousefalfoqaha.flowsheet.dto.AddCoursesToFlowsheetRequest;
 import com.yousefalfoqaha.flowsheet.model.Course;
-import com.yousefalfoqaha.flowsheet.model.CourseMapping;
 import com.yousefalfoqaha.flowsheet.model.Flowsheet;
 import com.yousefalfoqaha.flowsheet.dto.FlowsheetDTO;
 import com.yousefalfoqaha.flowsheet.mapper.FlowsheetMapper;
+import com.yousefalfoqaha.flowsheet.model.Semester;
 import com.yousefalfoqaha.flowsheet.repository.FlowsheetRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class FlowsheetService {
@@ -51,39 +50,45 @@ public class FlowsheetService {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Semester not found"));
 
-        var mappedCourses = flowsheet.getCourseMappings()
-                .stream()
-                .collect(Collectors.toMap(
-                        CourseMapping::getCourse,
-                        CourseMapping::getSemester
-                ));
+        var mappedCourses = flowsheet.getCourseMappings();
 
-        List<Course> studyPlanCourses = studyPlanService.getStudyPlanCourses(
+        var studyPlanCourses = studyPlanService.getStudyPlanCourses(
                 flowsheet.getStudyPlan().getId(),
                 request.courseIds()
         );
 
-        if (studyPlanCourses.size() != request.courseIds().size()) {
-            throw new RuntimeException("Course(s) were not found in the study plan");
-        }
+        checkSemesterCreditHourLimit(semester, mappedCourses, studyPlanCourses);
+        checkPrerequisiteOrder(semester, mappedCourses, studyPlanCourses);
+    }
 
-        int totalCreditHours = mappedCourses.entrySet()
+    public void checkSemesterCreditHourLimit(
+            Semester semester,
+            Map<Course, Semester> mappedCourses,
+            List<Course> toBeAddedCourses
+    ) {
+        int totalSemesterCreditHours = mappedCourses.entrySet()
                 .stream()
                 .filter(c -> c.getValue().getId() == semester.getId())
                 .mapToInt(c -> c.getKey().getCreditHours())
                 .sum();
 
-        int creditHoursToBeAdded = studyPlanCourses
+        int creditHoursToBeAdded = toBeAddedCourses
                 .stream()
                 .mapToInt(Course::getCreditHours)
                 .sum();
 
-        if (creditHoursToBeAdded + totalCreditHours > semester.getCreditHourLimit()) {
+        if (creditHoursToBeAdded + totalSemesterCreditHours > semester.getCreditHourLimit()) {
             throw new RuntimeException("Cannot add more courses than the credit hour limit of this semester");
         }
+    }
 
-        studyPlanCourses.forEach(course -> {
-            if (mappedCourses.get(course) != null) {
+    public void checkPrerequisiteOrder(
+            Semester semester,
+            Map<Course, Semester> mappedCourses,
+            List<Course> toBeAddedCourses
+    ) {
+        toBeAddedCourses.forEach(course -> {
+            if (mappedCourses.containsKey(course)) {
                 throw new RuntimeException("Course already mapped");
             }
 
