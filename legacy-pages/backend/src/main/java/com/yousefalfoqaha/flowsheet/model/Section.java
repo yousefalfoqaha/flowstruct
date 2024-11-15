@@ -1,40 +1,18 @@
 package com.yousefalfoqaha.flowsheet.model;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.MappedCollection;
+import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.List;
+import java.util.Set;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@Entity
-@Table(name = "section")
-public class Section {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private int requiredCreditHours;
-
-    @ManyToOne
-    @JoinColumn(name = "study_plan_id", nullable = false)
-    private StudyPlan studyPlan;
-
-    @ManyToMany
-    @JoinTable(
-            name = "section_course",
-            joinColumns = @JoinColumn(name = "section_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id")
-    )
-    private List<Course> courses;
+@Table("section")
+public record Section(
+        @Id
+        long id,
+        String name,
+        int requiredCreditHours,
+        @MappedCollection(idColumn = "section_id")
+        Set<SectionCourse> courses
+) {
 }

@@ -19,8 +19,8 @@ INSERT INTO semester (id, column_index, study_plan_id) VALUES
 (3, 3, 1),
 (4, 4, 1);
 
-INSERT INTO flowsheet (uuid, password, study_plan_id) VALUES
-('a1bdb173-b30a-4baa-9dbe-bdf3108f4d76', 'fuckgju2005', 1);
+INSERT INTO flowsheet (uuid, study_plan_id) VALUES
+('a1bdb173-b30a-4baa-9dbe-bdf3108f4d76', 1);
 
 INSERT INTO course_mapping (id, flowsheet_uuid, course_id, semester_id) VALUES
 (1, 'a1bdb173-b30a-4baa-9dbe-bdf3108f4d76', 2, 1),

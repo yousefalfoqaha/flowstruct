@@ -1,39 +1,22 @@
 package com.yousefalfoqaha.flowsheet.model;
 
-import com.yousefalfoqaha.flowsheet.enums.DegreeType;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.MappedCollection;
+import org.springframework.data.relational.core.mapping.Table;
+
 import java.util.List;
+import java.util.Map;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@Entity
-@Table(name = "study_plan")
-public class StudyPlan {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @Column(nullable = false)
-    private DegreeType degree;
-
-    @Column(nullable = false)
-    private String major;
-
-    @Column(nullable = false)
-    private int academicYear;
-
-    private String track;
-
-    @OneToMany(mappedBy = "studyPlan", cascade = CascadeType.ALL)
-    private List<Section> sections;
-
-    @OneToMany(mappedBy = "studyPlan", cascade = CascadeType.ALL)
-    private List<Semester> semesters;
+@Table("study_plan")
+public record StudyPlan(
+        @Id
+        long id,
+        String name,
+        @MappedCollection(idColumn = "study_plan_id", keyColumn = "id")
+        Map<Long, Section> sections,
+        @JsonIgnore
+        @MappedCollection(idColumn = "study_plan_id", keyColumn = "id")
+        Map<Long, Semester> semesters
+) {
 }

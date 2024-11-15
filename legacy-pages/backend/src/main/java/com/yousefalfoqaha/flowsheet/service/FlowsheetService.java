@@ -7,7 +7,6 @@ import com.yousefalfoqaha.flowsheet.dto.FlowsheetDTO;
 import com.yousefalfoqaha.flowsheet.mapper.FlowsheetMapper;
 import com.yousefalfoqaha.flowsheet.model.Semester;
 import com.yousefalfoqaha.flowsheet.repository.FlowsheetRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +37,6 @@ public class FlowsheetService {
         return flowsheetMapper.apply(flowsheet);
     }
 
-    @Transactional
     public void addCourses(AddCoursesToFlowsheetRequest request, UUID flowsheetUuid) {
         var flowsheet = flowsheetRepository
                 .findById(flowsheetUuid)
