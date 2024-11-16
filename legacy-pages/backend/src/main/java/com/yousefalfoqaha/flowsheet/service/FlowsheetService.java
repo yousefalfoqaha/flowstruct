@@ -2,7 +2,7 @@ package com.yousefalfoqaha.flowsheet.service;
 
 import com.yousefalfoqaha.flowsheet.dto.AddCoursesToFlowsheetRequest;
 import com.yousefalfoqaha.flowsheet.model.Course;
-import com.yousefalfoqaha.flowsheet.model.Flowsheet;
+import com.yousefalfoqaha.flowsheet.model.Student;
 import com.yousefalfoqaha.flowsheet.dto.FlowsheetDTO;
 import com.yousefalfoqaha.flowsheet.mapper.FlowsheetMapper;
 import com.yousefalfoqaha.flowsheet.model.Semester;
@@ -30,7 +30,7 @@ public class FlowsheetService {
     }
 
     public FlowsheetDTO getFlowsheet(UUID flowsheetUuid) {
-        Flowsheet flowsheet = flowsheetRepository
+        Student flowsheet = flowsheetRepository
                 .findById(flowsheetUuid)
                 .orElseThrow(() -> new NoSuchElementException("Flowsheet not found"));
 

@@ -1,4 +1,3 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TYPE prerequisite_relation AS ENUM ('AND', 'OR');
 
 CREATE TABLE course (
@@ -50,26 +49,26 @@ CREATE TABLE section (
 CREATE TABLE section_course (
     section_id INT,
     course_id INT,
-    whitelisted_semester_id INT
     PRIMARY KEY (section_id, course_id),
     FOREIGN KEY (section_id) REFERENCES section(id) ON DELETE CASCADE,
-    FOREIGN KEY (course_id) REFERENCES course(id) ON DELETE CASCADE,
-    FOREIGN KEY (whitelisted_semester_id) REFERENCES semester(id) ON DELETE CASCADE
+    FOREIGN KEY (course_id) REFERENCES course(id) ON DELETE CASCADE
 );
 
-CREATE TABLE flowsheet (
-    uuid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    is_suggested BOOLEAN DEFAULT FALSE,
+CREATE TABLE student (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    email VARCHAR(255),
+    password VARCHAR(255),
     study_plan_id INT,
-    FOREIGN KEY (study_plan_id) REFERENCES study_plan(id) ON DELETE CASCADE
+    FOREIGN KEY (study_plan_id) REFERENCES study_plan(id) ON DELETE SET NULL
 );
 
 CREATE TABLE course_mapping (
     id SERIAL PRIMARY KEY,
-    flowsheet_uuid UUID,
+    student_id INT,
     semester_id INT,
     course_id INT,
-    FOREIGN KEY (flowsheet_uuid) REFERENCES flowsheet(uuid) ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE,
     FOREIGN KEY (semester_id) REFERENCES semester(id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES course(id) ON DELETE CASCADE
 );

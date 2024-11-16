@@ -6,7 +6,6 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Table("prerequisite")
 public record Prerequisite(
-        @JsonIgnore
         long courseId,
         long requisiteId,
         RelationType relation

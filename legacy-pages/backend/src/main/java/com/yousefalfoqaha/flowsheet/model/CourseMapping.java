@@ -7,7 +7,6 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Table("course_mapping")
 public record CourseMapping(
-        @JsonIgnore
         long courseId,
         long semesterId,
         int rowIndex
