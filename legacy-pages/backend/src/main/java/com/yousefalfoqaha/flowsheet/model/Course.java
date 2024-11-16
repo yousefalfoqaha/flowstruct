@@ -14,6 +14,6 @@ public record Course (
         int creditHours,
         boolean isRemedial,
         @MappedCollection(idColumn = "course_id")
-        Set<Prerequisite> prerequisites
+        Set<CoursePrerequisite> prerequisites
 ) {
 }

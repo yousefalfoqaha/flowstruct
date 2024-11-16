@@ -1,11 +1,9 @@
 package com.yousefalfoqaha.flowsheet.repository;
 
-import com.yousefalfoqaha.flowsheet.model.Student;
+import com.yousefalfoqaha.flowsheet.model.Course;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
 @Repository
-public interface FlowsheetRepository extends CrudRepository<Student, UUID> {
+public interface CourseRepository extends CrudRepository<Course, Long> {
 }

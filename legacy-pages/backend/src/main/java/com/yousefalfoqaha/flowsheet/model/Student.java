@@ -10,7 +10,6 @@ import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.Map;
-import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,8 +19,10 @@ import java.util.UUID;
 public class Student {
         @Id
         long id;
-        boolean isSuggested;
+        String name;
+        String email;
+        String password;
         AggregateReference<StudyPlan, Long> studyPlan;
         @MappedCollection(idColumn = "student_id", keyColumn = "course_id")
-        Map<Long, CourseMapping> courseMappings;
+        Map<Long, StudentMapping> studentMappings;
 }
