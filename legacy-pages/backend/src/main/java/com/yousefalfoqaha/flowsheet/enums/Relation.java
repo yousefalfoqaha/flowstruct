@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.flowsheet.enums;
 
-public enum RelationType {
+public enum Relation {
     AND,
     OR
 }

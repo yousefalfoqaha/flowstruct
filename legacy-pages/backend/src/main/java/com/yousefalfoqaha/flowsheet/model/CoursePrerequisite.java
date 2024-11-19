@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.flowsheet.model;
 
-import com.yousefalfoqaha.flowsheet.enums.RelationType;
+import com.yousefalfoqaha.flowsheet.enums.Relation;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -9,6 +9,6 @@ public record CoursePrerequisite(
         @Column("prerequisite_id")
         long prerequisiteId,
         @Column("relation")
-        RelationType relation
+        Relation relation
 ) {
 }

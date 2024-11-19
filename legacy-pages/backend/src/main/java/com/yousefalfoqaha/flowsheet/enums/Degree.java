@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.flowsheet.enums;
 
-public enum DegreeType {
+public enum Degree {
     BACHELOR,
     MASTER,
     PHD

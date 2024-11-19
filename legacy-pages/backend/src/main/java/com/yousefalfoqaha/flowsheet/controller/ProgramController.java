@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.flowsheet.controller;
 
-import com.yousefalfoqaha.flowsheet.model.Program;
+import com.yousefalfoqaha.flowsheet.dto.ProgramCardDTO;
 import com.yousefalfoqaha.flowsheet.service.ProgramService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ public class ProgramController {
     }
 
     @GetMapping
-    public List<Program> getAllPrograms() {
-        return programService.getAllPrograms();
+    public List<ProgramCardDTO> getAllProgramCards() {
+        return programService.getAllProgramCards();
     }
 }

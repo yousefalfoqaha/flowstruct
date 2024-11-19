@@ -1,7 +1,7 @@
 package com.yousefalfoqaha.flowsheet.model;
 
 
-import com.yousefalfoqaha.flowsheet.enums.DegreeType;
+import com.yousefalfoqaha.flowsheet.enums.Degree;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
@@ -17,7 +17,7 @@ public record Program (
     @Column("name")
     String name,
     @Column("degree")
-    DegreeType degree,
+    Degree degree,
     @MappedCollection(idColumn = "program_id")
     Set<StudyPlan> studyPlans
 ) {
