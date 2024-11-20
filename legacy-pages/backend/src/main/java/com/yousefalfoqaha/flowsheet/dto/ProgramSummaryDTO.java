@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.flowsheet.dto;
 
-public record ProgramCardDTO(
+public record ProgramSummaryDTO(
         long id,
         String name,
         String degree

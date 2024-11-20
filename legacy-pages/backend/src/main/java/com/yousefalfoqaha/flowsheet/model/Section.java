@@ -19,7 +19,7 @@ public record Section(
         String name,
         @Column("required_credit_hours")
         int requiredCreditHours,
-        @MappedCollection(idColumn = "section_id")
-        Set<SectionCourse> courseIds
+        @MappedCollection(idColumn = "section")
+        Set<SectionCourse> courses
 ) {
 }

@@ -21,7 +21,7 @@ public record StudyPlan(
         int startAcademicYear,
         @Column("end_academic_year")
         int endAcademicYear,
-        @MappedCollection(idColumn = "study_plan_id")
+        @MappedCollection(idColumn = "study_plan")
         Set<Section> sections
 ) {
 }

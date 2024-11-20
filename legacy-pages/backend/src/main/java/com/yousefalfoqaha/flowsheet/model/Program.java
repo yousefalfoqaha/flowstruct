@@ -18,7 +18,7 @@ public record Program (
     String name,
     @Column("degree")
     Degree degree,
-    @MappedCollection(idColumn = "program_id")
+    @MappedCollection(idColumn = "program")
     Set<StudyPlan> studyPlans
 ) {
 }

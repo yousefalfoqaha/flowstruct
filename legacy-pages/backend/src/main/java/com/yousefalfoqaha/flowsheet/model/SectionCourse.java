@@ -6,7 +6,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Table("section_course")
 public record SectionCourse (
-        @Column("course_id")
-        AggregateReference<Course, Long> courseId
+        @Column("course")
+        AggregateReference<Course, Long> course
 ) {
 }

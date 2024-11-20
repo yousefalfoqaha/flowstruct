@@ -39,12 +39,12 @@ CREATE TABLE program (
 );
 
 CREATE TABLE course_prerequisite (
-    course_id INT NOT NULL,
-    prerequisite_id INT NOT NULL,
+    course INT NOT NULL,
+    prerequisite INT NOT NULL,
     relation prerequisite_enum,
-    PRIMARY KEY (course_id, prerequisite_id),
-    FOREIGN KEY (course_id) REFERENCES course(id) ON DELETE CASCADE,
-    FOREIGN KEY (prerequisite_id) REFERENCES course(id) ON DELETE CASCADE
+    PRIMARY KEY (course, prerequisite),
+    FOREIGN KEY (course) REFERENCES course(id) ON DELETE CASCADE,
+    FOREIGN KEY (prerequisite) REFERENCES course(id) ON DELETE CASCADE
 );
 
 CREATE TABLE study_plan (
@@ -53,38 +53,41 @@ CREATE TABLE study_plan (
     track VARCHAR(255),
     start_academic_year INT NOT NULL,
     end_academic_year INT NOT NULL,
-    program_id INT NOT NULL,
-    FOREIGN KEY (program_id) REFERENCES program(id) ON DELETE CASCADE
+    program INT NOT NULL,
+    UNIQUE (start_academic_year, program),
+    FOREIGN KEY (program) REFERENCES program(id) ON DELETE CASCADE
 );
 
 CREATE TABLE section (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     required_credit_hours INT,
-    study_plan_id INT NOT NULL,
-    FOREIGN KEY (study_plan_id) REFERENCES study_plan(id) ON DELETE CASCADE
+    study_plan INT NOT NULL,
+    FOREIGN KEY (study_plan) REFERENCES study_plan(id) ON DELETE CASCADE
 );
 
 CREATE TABLE section_course (
-    section_id INT NOT NULL,
-    course_id INT NOT NULL,
-    PRIMARY KEY (section_id, course_id),
-    FOREIGN KEY (section_id) REFERENCES section(id) ON DELETE CASCADE,
-    FOREIGN KEY (course_id) REFERENCES course(id) ON DELETE CASCADE
+    section INT NOT NULL,
+    course INT NOT NULL,
+    PRIMARY KEY (section, course),
+    FOREIGN KEY (section) REFERENCES section(id) ON DELETE CASCADE,
+    FOREIGN KEY (course) REFERENCES course(id) ON DELETE CASCADE
 );
 
 CREATE TABLE student (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255),
-    study_plan_id INT,
-    FOREIGN KEY (study_plan_id) REFERENCES study_plan(id) ON DELETE SET NULL
+    program INT,
+    study_plan INT,
+    FOREIGN KEY (program) REFERENCES program(id) ON DELETE SET NULL,
+    FOREIGN KEY (study_plan) REFERENCES study_plan(id) ON DELETE SET NULL
 );
 
 CREATE TABLE planned_course (
-    student_id INT NOT NULL,
-    academic_period_id INT NOT NULL,
-    course_id INT NOT NULL,
-    FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE,
-    FOREIGN KEY (academic_period_id) REFERENCES academic_period(id) ON DELETE CASCADE,
-    FOREIGN KEY (course_id) REFERENCES course(id) ON DELETE CASCADE
+    student INT NOT NULL,
+    academic_period INT NOT NULL,
+    course INT NOT NULL,
+    FOREIGN KEY (student) REFERENCES student(id) ON DELETE CASCADE,
+    FOREIGN KEY (academic_period) REFERENCES academic_period(id) ON DELETE CASCADE,
+    FOREIGN KEY (course) REFERENCES course(id) ON DELETE CASCADE
 );

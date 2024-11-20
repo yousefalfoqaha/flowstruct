@@ -24,8 +24,10 @@ public class Student {
         long id;
         @Column("name")
         String name;
-        @Column("study_plan_id")
+        @Column("program")
+        AggregateReference<Program, Long> program;
+        @Column("study_plan")
         AggregateReference<StudyPlan, Long> studyPlan;
-        @MappedCollection(idColumn = "student_id")
+        @MappedCollection(idColumn = "student")
         List<PlannedCourse> plannedCourses;
 }

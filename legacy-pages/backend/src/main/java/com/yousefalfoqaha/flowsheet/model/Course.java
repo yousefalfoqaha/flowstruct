@@ -19,7 +19,7 @@ public record Course (
         int creditHours,
         @Column("is_remedial")
         boolean isRemedial,
-        @MappedCollection(idColumn = "course_id")
-        Set<CoursePrerequisite> coursePrerequisites
+        @MappedCollection(idColumn = "course")
+        Set<CoursePrerequisite> prerequisites
 ) {
 }

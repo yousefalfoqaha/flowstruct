@@ -6,9 +6,9 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Table("planned_course")
 public record PlannedCourse (
-        @Column("course_id")
-        AggregateReference<Course, Long> courseId,
-        @Column("academic_period_id")
-        AggregateReference<AcademicPeriod, Long> academicPeriodId
+        @Column("course")
+        AggregateReference<Course, Long> course,
+        @Column("academic_period")
+        AggregateReference<AcademicPeriod, Long> academicPeriod
 ) {
 }
