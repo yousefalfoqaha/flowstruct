@@ -4,12 +4,13 @@ import com.yousefalfoqaha.flowsheet.dto.ProgramSummaryDTO;
 import com.yousefalfoqaha.flowsheet.dto.SectionDTO;
 import com.yousefalfoqaha.flowsheet.dto.StudyPlanDTO;
 import com.yousefalfoqaha.flowsheet.dto.StudyPlanSummaryDTO;
+import com.yousefalfoqaha.flowsheet.exception.ProgramNotFoundException;
+import com.yousefalfoqaha.flowsheet.exception.StudyPlanNotFoundException;
 import com.yousefalfoqaha.flowsheet.repository.ProgramRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class ProgramService {
@@ -33,7 +34,7 @@ public class ProgramService {
 
     public List<StudyPlanSummaryDTO> getStudyPlansList(long programId) {
         var program = programRepository.findById(programId)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new ProgramNotFoundException(
                         "Program with id " + programId + " was not found."
                 ));
 
@@ -50,7 +51,7 @@ public class ProgramService {
 
     public StudyPlanDTO getStudyPlan(long programId, long studyPlanId) {
         var program = programRepository.findById(programId)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new ProgramNotFoundException(
                         "Program with id " + programId + " was not found."
                 ));
 
@@ -58,8 +59,8 @@ public class ProgramService {
                 .stream()
                 .filter(sp -> sp.id() == studyPlanId)
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException(
-                        "No study plan with id " + studyPlanId + " found in program"
+                .orElseThrow(() -> new StudyPlanNotFoundException(
+                        "study plan with id " + studyPlanId + " was not found in program"
                 ));
 
         return new StudyPlanDTO(
