@@ -1,39 +1,27 @@
 package com.yousefalfoqaha.flowsheet.model;
 
-import com.yousefalfoqaha.flowsheet.enums.DegreeType;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.MappedCollection;
+import org.springframework.data.relational.core.mapping.Table;
+
 import java.util.List;
+import java.util.Set;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@Entity
-@Table(name = "study_plan")
-public class StudyPlan {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @Column(nullable = false)
-    private DegreeType degree;
-
-    @Column(nullable = false)
-    private String major;
-
-    @Column(nullable = false)
-    private int academicYear;
-
-    private String track;
-
-    @OneToMany(mappedBy = "studyPlan", cascade = CascadeType.ALL)
-    private List<Section> sections;
-
-    @OneToMany(mappedBy = "studyPlan", cascade = CascadeType.ALL)
-    private List<Semester> semesters;
+@Table("study_plan")
+public record StudyPlan(
+        @Id
+        @Column("id")
+        long id,
+        @Column("name")
+        String name,
+        @Column("track")
+        String track,
+        @Column("start_academic_year")
+        int startAcademicYear,
+        @Column("end_academic_year")
+        int endAcademicYear,
+        @MappedCollection(idColumn = "study_plan")
+        Set<Section> sections
+) {
 }
