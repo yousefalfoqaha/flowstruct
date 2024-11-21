@@ -13,7 +13,8 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import {useQuery} from "@tanstack/react-query";
+import {StudyPlanDropdown} from "@/components/main/StudyPlanDropdown.tsx";
+import {useProgramListState} from "@/state/programList.ts";
 
 type Program = {
     id: number;
@@ -21,83 +22,67 @@ type Program = {
     degree: string;
 };
 
-export function Main() {
-    const {data: programs, isPending, error} = useQuery<Program[]>({
-        queryKey: ['programs'],
-        queryFn: async () => {
-            const res = await fetch('http://localhost:8080/api/v1/programs');
-            if (!res.ok) throw new Error('Network response was not ok');
-            return res.json();
-        },
-    });
-    const [open, setOpen] = React.useState(false);
-    const [selectedProgram, setSelectedProgram] = React.useState<Program | null>(null);
-
-    return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-                <Button variant="outline" className="w-[150px] justify-start">
-                    {selectedProgram ? selectedProgram.name + " " + selectedProgram.degree : 'Select a program...'}
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0" align="start">
-                <ProgramList
-                    programs={programs}
-                    isPending={isPending}
-                    error={error}
-                    setOpen={setOpen}
-                    setSelectedProgram={setSelectedProgram}
-                />
-            </PopoverContent>
-        </Popover>
-    );
-}
-
-type ProgramListProps = {
-    programs: Program[] | undefined;
-    error: unknown;
-    isPending: boolean;
-    setOpen: (open: boolean) => void;
-    setSelectedProgram: (program: Program | null) => void;
+export type StudyPlan = {
+    id: number;
+    name: string;
+    startAcademicYear: number;
+    track: string;
 };
 
-function ProgramList({
-                         programs,
-                         error,
-                         isPending,
-                         setOpen,
-                         setSelectedProgram,
-                     }: ProgramListProps) {
+export function Main() {
+    const [selectedProgram, setSelectedProgram] = React.useState<Program | null>(null);
+    const [selectedStudyPlan, setSelectedStudyPlan] = React.useState<StudyPlan | null>(null);
+    const [open, setOpen] = React.useState(false);
+    const { queryResult: programList } = useProgramListState();
+
     return (
-        <Command>
-            <CommandInput placeholder="Filter programs..."/>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <CommandList>
-                {
-                    isPending
-                        ? "Loading..."
-                        : <CommandGroup>
-                            {programs?.map((program) => (
-                                <CommandItem
-                                    key={program.id}
-                                    value={program.id.toString()}
-                                    onSelect={(value) => {
-                                        setSelectedProgram(
-                                            programs.find((p) => p.id.toString() === value) || null
-                                        );
-                                        setOpen(false);
-                                    }}
-                                >
-                                    {program.name + " " + program.degree
-                                        .toLowerCase()
-                                        .charAt(0)
-                                        .toUpperCase() + program.degree.slice(1)}
-                                </CommandItem>
-                            ))}
-                        </CommandGroup>
-                }
-                {error ? "An error occurred." : null}
-            </CommandList>
-        </Command>
+        <>
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                    <Button variant="outline" className="w-[150px] justify-start">
+                        {selectedProgram ? selectedProgram.name : 'Select a program...'}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0" align="start">
+                    <Command>
+                        <CommandInput placeholder="Filter programs..."/>
+                        <CommandEmpty>No results found.</CommandEmpty>
+                        <CommandList>
+                            {
+                                programList.isPending
+                                    ? "Loading..."
+                                    : <CommandGroup>
+                                        {programList.data?.map((program) => (
+                                            <CommandItem
+                                                key={program.id}
+                                                value={program.id.toString()}
+                                                onSelect={(value) => {
+                                                    setSelectedProgram(
+                                                        programList.data.find((p) =>
+                                                            p.id.toString() === value) || null
+                                                    );
+                                                    setSelectedStudyPlan(null);
+                                                    setOpen(false);
+                                                }}
+                                            >
+                                                {program.name + " " + program.degree
+                                                    .toLowerCase()
+                                                    .charAt(0)
+                                                    .toUpperCase() + program.degree.slice(1)}
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                            }
+                            {programList.error ? "An error occurred." : null}
+                        </CommandList>
+                    </Command>
+                </PopoverContent>
+            </Popover>
+            <StudyPlanDropdown
+                selectedProgramId={selectedProgram?.id}
+                selectedStudyPlan={selectedStudyPlan}
+                setSelectedStudyPlan={setSelectedStudyPlan}
+            />
+        </>
     );
 }

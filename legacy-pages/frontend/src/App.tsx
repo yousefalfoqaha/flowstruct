@@ -1,4 +1,4 @@
-import { Main } from "./components/main/main"
+import { Main } from "./components/main/Main.tsx"
 
 export default function App() {
   return (
