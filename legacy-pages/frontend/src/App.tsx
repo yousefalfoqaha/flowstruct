@@ -1,10 +1,7 @@
-import { Flowsheet } from './components/flowsheet/Flowsheet'
-import { FlowsheetProvider } from './providers/FlowsheetProvider'
+import { Main } from "./components/main/main"
 
 export default function App() {
   return (
-    <FlowsheetProvider>
-      <Flowsheet />
-    </FlowsheetProvider>
+    <Main />
   )
 }
