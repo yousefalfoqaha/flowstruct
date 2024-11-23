@@ -2,19 +2,27 @@ DROP TABLE IF EXISTS program CASCADE;
 DROP TABLE IF EXISTS course CASCADE;
 DROP TABLE IF EXISTS academic_period CASCADE;
 DROP TABLE IF EXISTS course_prerequisite CASCADE;
-DROP TABLE IF EXISTS section_course CASCADE;
 DROP TABLE IF EXISTS study_plan CASCADE;
-DROP TABLE IF EXISTS section CASCADE;
+DROP TABLE IF EXISTS remedial_section CASCADE;
+DROP TABLE IF EXISTS university_section CASCADE;
+DROP TABLE IF EXISTS school_section CASCADE;
+DROP TABLE IF EXISTS program_section CASCADE;
+DROP TABLE IF EXISTS remedial_section_course CASCADE;
+DROP TABLE IF EXISTS university_section_course CASCADE;
+DROP TABLE IF EXISTS school_section_course CASCADE;
+DROP TABLE IF EXISTS program_section_course CASCADE;
 DROP TABLE IF EXISTS student CASCADE;
 DROP TABLE IF EXISTS planned_course CASCADE;
 
 DROP TYPE IF EXISTS semester_enum;
 DROP TYPE IF EXISTS degree_enum;
 DROP TYPE IF EXISTS prerequisite_enum;
+DROP TYPE IF EXISTS section_type_enum;
 
 CREATE TYPE semester_enum AS ENUM ('FIRST', 'SECOND', 'SUMMER');
 CREATE TYPE degree_enum AS ENUM ('BACHELOR', 'MASTER', 'PHD');
 CREATE TYPE prerequisite_enum AS ENUM ('AND', 'OR');
+CREATE TYPE section_type_enum AS ENUM ('REMEDIAL', 'UNIVERSITY', 'SCHOOL', 'PROGRAM');
 
 CREATE TABLE academic_period (
     id SERIAL PRIMARY KEY,
@@ -22,6 +30,11 @@ CREATE TABLE academic_period (
     semester semester_enum NOT NULL,
     UNIQUE (academic_year, semester)
 );
+
+CREATE TABLE school (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+)
 
 CREATE TABLE course (
     id SERIAL PRIMARY KEY,
@@ -35,7 +48,9 @@ CREATE TABLE program (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255),
     degree degree_enum,
-    UNIQUE (name, degree)
+    school INT NOT NULL,
+    UNIQUE (name, degree, school),
+    FOREIGN KEY school REFERENCES school(id)
 );
 
 CREATE TABLE course_prerequisite (
@@ -61,9 +76,13 @@ CREATE TABLE study_plan (
 CREATE TABLE section (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    required_credit_hours INT,
-    study_plan INT NOT NULL,
-    FOREIGN KEY (study_plan) REFERENCES study_plan(id) ON DELETE CASCADE
+    required_credit_hours INT NOT NULL,
+    version INT NOT NULL,
+    type section_type_enum NOT NULL,
+    school INT,
+    program INT,
+    FOREIGN KEY (school) REFERENCES school(id) ON DELETE CASCADE,
+    FOREIGN KEY (program) REFERENCES program(id) ON DELETE CASCADE
 );
 
 CREATE TABLE section_course (
