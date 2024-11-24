@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.flowsheet.program.dto.response;
 
-public record ProgramSummaryResponse(
+public record ProgramResponse(
         long id,
         String name,
         String degree

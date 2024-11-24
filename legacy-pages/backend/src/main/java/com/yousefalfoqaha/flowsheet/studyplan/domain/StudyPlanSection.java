@@ -1,6 +1,6 @@
-package com.yousefalfoqaha.flowsheet.section.domain;
+package com.yousefalfoqaha.flowsheet.studyplan.domain;
 
-import com.yousefalfoqaha.flowsheet.course.domain.Course;
+import com.yousefalfoqaha.flowsheet.section.domain.Section;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table("section_course")
-public class SectionCourse {
-    private AggregateReference<Course, Long> course;
+@Table("study_plan_section")
+public class StudyPlanSection {
+    AggregateReference<Section, Long> section;
 }

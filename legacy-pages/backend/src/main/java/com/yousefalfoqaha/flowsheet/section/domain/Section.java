@@ -1,7 +1,7 @@
 package com.yousefalfoqaha.flowsheet.section.domain;
 
 import com.yousefalfoqaha.flowsheet.program.domain.Program;
-import com.yousefalfoqaha.flowsheet.school.School;
+import com.yousefalfoqaha.flowsheet.school.domain.School;
 import com.yousefalfoqaha.flowsheet.section.dto.request.CreateSectionRequest;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -25,10 +25,9 @@ public class Section {
     private SectionType type;
     private AggregateReference<School, Long> school;
     private AggregateReference<Program, Long> program;
-    @MappedCollection(idColumn = "section_id")
+    @MappedCollection(idColumn = "section")
     private Set<SectionCourse> courses;
 
-    // Factory method
     public static Section from(CreateSectionRequest request) {
         return switch (request.type()) {
             case UNIVERSITY, REMEDIAL -> Section.builder()

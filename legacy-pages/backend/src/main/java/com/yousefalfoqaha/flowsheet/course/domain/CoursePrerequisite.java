@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.flowsheet.course;
+package com.yousefalfoqaha.flowsheet.course.domain;
 
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Column;

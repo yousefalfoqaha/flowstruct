@@ -1,5 +1,6 @@
-package com.yousefalfoqaha.flowsheet.school;
+package com.yousefalfoqaha.flowsheet.school.repository;
 
+import com.yousefalfoqaha.flowsheet.school.domain.School;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 

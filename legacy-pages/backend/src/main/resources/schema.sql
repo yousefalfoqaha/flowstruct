@@ -1,18 +1,13 @@
-DROP TABLE IF EXISTS program CASCADE;
-DROP TABLE IF EXISTS course CASCADE;
-DROP TABLE IF EXISTS academic_period CASCADE;
-DROP TABLE IF EXISTS course_prerequisite CASCADE;
-DROP TABLE IF EXISTS study_plan CASCADE;
-DROP TABLE IF EXISTS remedial_section CASCADE;
-DROP TABLE IF EXISTS university_section CASCADE;
-DROP TABLE IF EXISTS school_section CASCADE;
-DROP TABLE IF EXISTS program_section CASCADE;
-DROP TABLE IF EXISTS remedial_section_course CASCADE;
-DROP TABLE IF EXISTS university_section_course CASCADE;
-DROP TABLE IF EXISTS school_section_course CASCADE;
-DROP TABLE IF EXISTS program_section_course CASCADE;
-DROP TABLE IF EXISTS student CASCADE;
 DROP TABLE IF EXISTS planned_course CASCADE;
+DROP TABLE IF EXISTS student CASCADE;
+DROP TABLE IF EXISTS study_plan_section CASCADE;
+DROP TABLE IF EXISTS study_plan CASCADE;
+DROP TABLE IF EXISTS section_course CASCADE;
+DROP TABLE IF EXISTS section CASCADE;
+DROP TABLE IF EXISTS course_prerequisite CASCADE;
+DROP TABLE IF EXISTS course CASCADE;
+DROP TABLE IF EXISTS program CASCADE;
+DROP TABLE IF EXISTS school CASCADE;
 
 DROP TYPE IF EXISTS semester_enum;
 DROP TYPE IF EXISTS degree_enum;
@@ -27,7 +22,7 @@ CREATE TYPE section_type_enum AS ENUM ('REMEDIAL', 'UNIVERSITY', 'SCHOOL', 'PROG
 CREATE TABLE school (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL
-)
+);
 
 CREATE TABLE course (
     id SERIAL PRIMARY KEY,
@@ -43,7 +38,7 @@ CREATE TABLE program (
     degree degree_enum,
     school INT NOT NULL,
     UNIQUE (name, degree, school),
-    FOREIGN KEY school REFERENCES school(id)
+    FOREIGN KEY (school) REFERENCES school(id) ON DELETE CASCADE
 );
 
 CREATE TABLE course_prerequisite (
@@ -55,20 +50,9 @@ CREATE TABLE course_prerequisite (
     FOREIGN KEY (prerequisite) REFERENCES course(id) ON DELETE CASCADE
 );
 
-CREATE TABLE study_plan (
-    id SERIAL PRIMARY KEY,
-    track VARCHAR(255),
-    start_academic_year INT NOT NULL,
-    duration INT NOT NULL,
-    program INT NOT NULL,
-    UNIQUE (track, start_academic_year, program),
-    FOREIGN KEY (year) REFERENCES year(id) ON DELETE CASCADE,
-    FOREIGN KEY (program) REFERENCES program(id) ON DELETE CASCADE
-);
-
 CREATE TABLE section (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255),
     required_credit_hours INT NOT NULL,
     version INT NOT NULL,
     type section_type_enum NOT NULL,
@@ -76,15 +60,13 @@ CREATE TABLE section (
     program INT,
     FOREIGN KEY (school) REFERENCES school(id) ON DELETE CASCADE,
     FOREIGN KEY (program) REFERENCES program(id) ON DELETE CASCADE,
-    CONSTRAINT CHECK (
-        (
-            (school IS NOT NULL AND program IS NULL AND type = 'SCHOOL') OR
-            (program IS NOT NULL AND school IS NULL AND type = 'PROGRAM') OR
-            (school IS NULL AND program IS NULL)
-        )
+    CONSTRAINT section_type_check CHECK (
+        (school IS NOT NULL AND program IS NULL AND type = 'SCHOOL') OR
+        (program IS NOT NULL AND school IS NULL AND type = 'PROGRAM') OR
+        (school IS NULL AND program IS NULL)
     ),
-    CONSTRAINT CHECK (
-        type = 'REMEDIAL' AND required_credit_hours = 0
+    CONSTRAINT remedial_check CHECK (
+        NOT (type = 'REMEDIAL' AND required_credit_hours != 0)
     )
 );
 
@@ -94,6 +76,24 @@ CREATE TABLE section_course (
     PRIMARY KEY (section, course),
     FOREIGN KEY (section) REFERENCES section(id) ON DELETE CASCADE,
     FOREIGN KEY (course) REFERENCES course(id) ON DELETE CASCADE
+);
+
+CREATE TABLE study_plan (
+    id SERIAL PRIMARY KEY,
+    track VARCHAR(255),
+    start_academic_year INT NOT NULL,
+    duration INT NOT NULL,
+    program INT NOT NULL,
+    UNIQUE (track, start_academic_year, program),
+    FOREIGN KEY (program) REFERENCES program(id) ON DELETE CASCADE
+);
+
+CREATE TABLE study_plan_section (
+    study_plan INT NOT NULL,
+    section INT NOT NULL,
+    PRIMARY KEY (study_plan, section),
+    FOREIGN KEY (study_plan) REFERENCES study_plan(id) ON DELETE CASCADE,
+    FOREIGN KEY (section) REFERENCES section(id) ON DELETE CASCADE
 );
 
 CREATE TABLE student (

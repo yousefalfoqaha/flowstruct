@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.flowsheet.school;
+package com.yousefalfoqaha.flowsheet.school.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

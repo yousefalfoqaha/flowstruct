@@ -1,7 +1,7 @@
 package com.yousefalfoqaha.flowsheet.common;
 
 import com.yousefalfoqaha.flowsheet.program.exception.ProgramNotFoundException;
-import com.yousefalfoqaha.flowsheet.school.SchoolNotFoundException;
+import com.yousefalfoqaha.flowsheet.school.exception.SchoolNotFoundException;
 import com.yousefalfoqaha.flowsheet.section.exception.InvalidSectionException;
 import com.yousefalfoqaha.flowsheet.studyplan.exception.StudyPlanNotFoundException;
 import org.springframework.http.HttpStatus;

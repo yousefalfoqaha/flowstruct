@@ -1,7 +1,8 @@
 package com.yousefalfoqaha.flowsheet.program.controller;
 
-import com.yousefalfoqaha.flowsheet.program.dto.response.ProgramSummaryResponse;
+import com.yousefalfoqaha.flowsheet.program.dto.response.ProgramResponse;
 import com.yousefalfoqaha.flowsheet.program.service.ProgramService;
+import com.yousefalfoqaha.flowsheet.studyplan.dto.response.StudyPlanSummaryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +24,13 @@ public class ProgramController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProgramSummaryResponse>> getPrograms() {
+    public ResponseEntity<List<ProgramResponse>> getPrograms() {
         return new ResponseEntity<>(programService.getProgramsList(), HttpStatus.OK);
     }
 
     @GetMapping("/{programId}/study-plans")
-    public ResponseEntity<List<StudyPlanSummaryDTO>> getStudyPlans(@PathVariable long programId) {
-        return new ResponseEntity<>(programService.getStudyPlansList(programId), HttpStatus.OK);
+    public ResponseEntity<List<StudyPlanSummaryResponse>> getProgramStudyPlans(@PathVariable long programId) {
+        return new ResponseEntity<>(programService.getProgramStudyPlans(programId), HttpStatus.OK);
     }
 }
 
