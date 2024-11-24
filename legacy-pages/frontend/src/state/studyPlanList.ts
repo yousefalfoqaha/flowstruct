@@ -7,7 +7,7 @@ export type StudyPlan = {
     track: string;
 };
 
-export const useStudyPlanListState = (selectedProgramId: number | null) => {
+export const useStudyPlanListState = (selectedProgramId: number | undefined) => {
     return createGlobalState<StudyPlan[]>(
         ['studyPlans', selectedProgramId],
         async () => {

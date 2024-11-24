@@ -1,6 +1,6 @@
 import {createGlobalState} from "@/state/index.ts";
 
-type Program = {
+export type Program = {
     id: number;
     name: string;
     degree: string;

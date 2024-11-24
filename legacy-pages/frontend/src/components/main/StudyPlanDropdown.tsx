@@ -2,11 +2,11 @@ import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.t
 import {Button} from "@/components/ui/button.tsx";
 import * as React from "react";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command.tsx";
-import {StudyPlan} from "@/components/main/Main.tsx";
 import {useStudyPlanListState} from "@/state/studyPlanList.ts";
+import {StudyPlan} from "@/state/studyPlanList.ts";
 
 type StudyPlanDropdownProps = {
-    selectedProgramId: number | null;
+    selectedProgramId: number | undefined;
     selectedStudyPlan: StudyPlan | null;
     setSelectedStudyPlan: (studyPlan: StudyPlan | null) => void;
 }
@@ -28,7 +28,7 @@ export function StudyPlanDropdown({
                         {selectedStudyPlan ? selectedStudyPlan.startAcademicYear : 'Select a year...'}
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0" align="start">
+                <PopoverContent className="p-0" align="start">
                     <Command>
                         <CommandInput placeholder="Filter programs..."/>
                         <CommandEmpty>No results found.</CommandEmpty>
@@ -49,7 +49,8 @@ export function StudyPlanDropdown({
                                                     setOpen(false);
                                                 }}
                                             >
-                                                {studyPlan.startAcademicYear}
+                                                {studyPlan.startAcademicYear + "/" + (studyPlan.startAcademicYear + 1)}
+                                                {studyPlan.track ? " " + studyPlan.track + " Track" : ""}
                                             </CommandItem>
                                         ))}
                                     </CommandGroup>
