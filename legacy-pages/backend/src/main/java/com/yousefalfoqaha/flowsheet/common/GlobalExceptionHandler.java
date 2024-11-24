@@ -1,7 +1,9 @@
 package com.yousefalfoqaha.flowsheet.common;
 
-import com.yousefalfoqaha.flowsheet.program.ProgramNotFoundException;
-import com.yousefalfoqaha.flowsheet.studyplan.StudyPlanNotFoundException;
+import com.yousefalfoqaha.flowsheet.program.exception.ProgramNotFoundException;
+import com.yousefalfoqaha.flowsheet.school.SchoolNotFoundException;
+import com.yousefalfoqaha.flowsheet.section.exception.InvalidSectionException;
+import com.yousefalfoqaha.flowsheet.studyplan.exception.StudyPlanNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -27,6 +29,28 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(StudyPlanNotFoundException.class)
     public ResponseEntity<ErrorObject> handleStudyPlanNotFoundException(
             StudyPlanNotFoundException exception,
+            WebRequest request
+    ) {
+        return new ResponseEntity<ErrorObject>(
+                new ErrorObject(HttpStatus.NOT_FOUND.value(), exception.getMessage(), new Date()),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler(SchoolNotFoundException.class)
+    public ResponseEntity<ErrorObject> handleSchoolNotFoundException(
+            SchoolNotFoundException exception,
+            WebRequest request
+    ) {
+        return new ResponseEntity<ErrorObject>(
+                new ErrorObject(HttpStatus.NOT_FOUND.value(), exception.getMessage(), new Date()),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler(InvalidSectionException.class)
+    public ResponseEntity<ErrorObject> handleInvalidSectionException(
+            InvalidSectionException exception,
             WebRequest request
     ) {
         return new ResponseEntity<ErrorObject>(

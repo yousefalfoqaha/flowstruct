@@ -24,13 +24,6 @@ CREATE TYPE degree_enum AS ENUM ('BACHELOR', 'MASTER', 'PHD');
 CREATE TYPE prerequisite_enum AS ENUM ('AND', 'OR');
 CREATE TYPE section_type_enum AS ENUM ('REMEDIAL', 'UNIVERSITY', 'SCHOOL', 'PROGRAM');
 
-CREATE TABLE academic_period (
-    id SERIAL PRIMARY KEY,
-    academic_year INT NOT NULL,
-    semester semester_enum NOT NULL,
-    UNIQUE (academic_year, semester)
-);
-
 CREATE TABLE school (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL
@@ -64,12 +57,12 @@ CREATE TABLE course_prerequisite (
 
 CREATE TABLE study_plan (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
     track VARCHAR(255),
     start_academic_year INT NOT NULL,
-    end_academic_year INT NOT NULL,
+    duration INT NOT NULL,
     program INT NOT NULL,
-    UNIQUE (start_academic_year, program),
+    UNIQUE (track, start_academic_year, program),
+    FOREIGN KEY (year) REFERENCES year(id) ON DELETE CASCADE,
     FOREIGN KEY (program) REFERENCES program(id) ON DELETE CASCADE
 );
 
@@ -82,7 +75,17 @@ CREATE TABLE section (
     school INT,
     program INT,
     FOREIGN KEY (school) REFERENCES school(id) ON DELETE CASCADE,
-    FOREIGN KEY (program) REFERENCES program(id) ON DELETE CASCADE
+    FOREIGN KEY (program) REFERENCES program(id) ON DELETE CASCADE,
+    CONSTRAINT CHECK (
+        (
+            (school IS NOT NULL AND program IS NULL AND type = 'SCHOOL') OR
+            (program IS NOT NULL AND school IS NULL AND type = 'PROGRAM') OR
+            (school IS NULL AND program IS NULL)
+        )
+    ),
+    CONSTRAINT CHECK (
+        type = 'REMEDIAL' AND required_credit_hours = 0
+    )
 );
 
 CREATE TABLE section_course (
@@ -104,9 +107,9 @@ CREATE TABLE student (
 
 CREATE TABLE planned_course (
     student INT NOT NULL,
-    academic_period INT NOT NULL,
+    academic_year INT NOT NULL,
+    semester semester_enum NOT NULL,
     course INT NOT NULL,
     FOREIGN KEY (student) REFERENCES student(id) ON DELETE CASCADE,
-    FOREIGN KEY (academic_period) REFERENCES academic_period(id) ON DELETE CASCADE,
     FOREIGN KEY (course) REFERENCES course(id) ON DELETE CASCADE
 );
