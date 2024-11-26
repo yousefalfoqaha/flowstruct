@@ -1,9 +1,9 @@
 spring:
   application:
-    name: flowsheet
+    name: gju-plans
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/flowsheet
+    url: jdbc:postgresql://localhost:5432/gju_plans
     username: postgres
     password: admin
 

@@ -5,7 +5,7 @@ export function createGlobalState<T>(
     fetchFn: () => Promise<T>,
     options: {enabled?: boolean} = {}
 ) {
-    return function () {
+    return () => {
         const queryClient = useQueryClient();
 
         const queryResult = useQuery({
@@ -19,5 +19,5 @@ export function createGlobalState<T>(
         }
 
         return {queryResult, setData};
-    }
+    };
 }

@@ -1,6 +1,6 @@
 import {createGlobalState} from "@/state/index.ts";
 
-export type StudyPlan = {
+export type StudyPlanListItem = {
     id: number;
     name: string;
     startAcademicYear: number;
@@ -8,8 +8,8 @@ export type StudyPlan = {
 };
 
 export const useStudyPlanListState = (selectedProgramId: number | undefined) => {
-    return createGlobalState<StudyPlan[]>(
-        ['studyPlans', selectedProgramId],
+    return createGlobalState<StudyPlanListItem[]>(
+        ['studyPlanList', selectedProgramId],
         async () => {
             const response = await fetch(
                 `http://localhost:8080/api/v1/programs/${selectedProgramId}/study-plans`
@@ -18,5 +18,5 @@ export const useStudyPlanListState = (selectedProgramId: number | undefined) => 
             return response.json();
         },
         { enabled: !!selectedProgramId }
-    )();
+    );
 };
