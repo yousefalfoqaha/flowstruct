@@ -26,16 +26,16 @@ export function StudyPlanDropdown({
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button variant="outline" className="p-3">
-                        {
-                            selectedStudyPlanListItem
-                                ? selectedStudyPlanListItem.startAcademicYear + " - " + selectedStudyPlanListItem.track
-                                : (
-                                    <div className="flex flex-row gap-1 w-full">
-                                        <p>Select a study plan</p>
-                                        <ChevronDown className="ml-auto" />
-                                    </div>
-                                )
-                        }
+                        <div className="flex flex-row w-full">
+                            <p className="my-auto text-left pr-2">
+                                {
+                                    selectedStudyPlanListItem
+                                        ? `${selectedStudyPlanListItem.startAcademicYear}/${selectedStudyPlanListItem.startAcademicYear + 1} - ${selectedStudyPlanListItem.track}`
+                                        : "Pick a study plan"
+                                }
+                            </p>
+                            <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 my-auto" />
+                        </div>
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent align="start" className="p-0">
@@ -43,21 +43,21 @@ export function StudyPlanDropdown({
                         studyPlanList.isPending
                             ? "Loading..."
                             : <Command>
-                                <CommandInput placeholder="Filter programs..."/>
+                                <CommandInput placeholder="Filter study plans..."/>
                                 <CommandEmpty>No results found.</CommandEmpty>
                                 <CommandList>
                                     <CommandGroup>
-                                        {studyPlanList.data?.map((studyPlanListItem) => (
+                                        {studyPlanList.data?.map((li) => (
                                             <CommandItem
-                                                key={studyPlanListItem.id}
-                                                value={studyPlanListItem.startAcademicYear + " " + studyPlanListItem.track}
+                                                key={li.id}
+                                                value={li.startAcademicYear + " " + li.track}
                                                 onSelect={() => {
-                                                    setSelectedStudyPlanListItem(studyPlanListItem);
+                                                    setSelectedStudyPlanListItem(li);
                                                     setOpen(false);
                                                 }}
                                             >
-                                                {studyPlanListItem.startAcademicYear}
-                                                {studyPlanListItem.track ? " " + studyPlanListItem.track : ""}
+                                                {li.startAcademicYear + "/" + (li.startAcademicYear + 1)}
+                                                {li.track ? " - " + li.track : ""}
                                             </CommandItem>
                                         ))}
                                     </CommandGroup>

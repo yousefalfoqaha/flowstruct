@@ -5,6 +5,7 @@ import {Program} from "@/state/programList.ts";
 import {StudyPlanListItem} from "@/state/studyPlanList.ts";
 import {Button} from "@/components/ui/button.tsx";
 import {StudyPlan} from "@/components/main/StudyPlan.tsx";
+import logo from "@/assets/logo.png"
 
 export function Main() {
     const [selectedProgram, setSelectedProgram] = React.useState<Program | null>(null);
@@ -12,8 +13,9 @@ export function Main() {
     const [selectedStudyPlanId, setSelectedStudyPlanId] = React.useState<number | undefined>(undefined);
 
     return (
-        <div className="mx-auto flex flex-col gap-2 items-center">
-            <h1 className="text-4xl p-y-2 font-bold">GJU Plans</h1>
+        <div className="mx-auto flex flex-col gap-3 items-center justify-center w-full h-screen">
+            <img src={logo} alt="logo" width={120} height={120} className="absolute top-4 left-4" />
+            <h1 className="text-4xl font-bold">GJU Plans</h1>
             <div className="flex flex-wrap gap-1">
                 <ProgramDropdown
                     selectedProgram={selectedProgram}
@@ -32,7 +34,7 @@ export function Main() {
                     View Study Plan
                 </Button>
             </div>
-            <StudyPlan selectedStudyPlanId={selectedStudyPlanId} />
+            <StudyPlan selectedStudyPlanId={selectedStudyPlanId}/>
         </div>
     );
 }

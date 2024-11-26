@@ -24,20 +24,16 @@ export function ProgramDropdown({
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button variant="outline" className="p-3">
-                    {
-                        <div>
+                    <div className="flex flex-row w-full">
+                        <p className="my-auto text-left pr-2">
                             {
                                 selectedProgram
-                                    ? <p>{selectedProgram.name}</p>
-                                    : (
-                                        <div className="flex flex-row gap-1 w-full">
-                                            <p>Pick a program</p>
-                                            <ChevronDown className="ml-auto"/>
-                                        </div>
-                                    )
+                                    ? `${selectedProgram.degree} ${selectedProgram.name}`
+                                    : "Pick a program"
                             }
-                        </div>
-                    }
+                        </p>
+                        <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 my-auto" />
+                    </div>
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="p-0" align="start">
@@ -52,14 +48,14 @@ export function ProgramDropdown({
                                     {programList.data?.map((program) => (
                                         <CommandItem
                                             key={program.id}
-                                            value={program.name}
+                                            value={program.degree + " " + program.name}
                                             onSelect={() => {
                                                 setSelectedProgram(program);
                                                 resetSelectedStudyPlanItem();
                                                 setOpen(false);
                                             }}
                                         >
-                                            {program.name}
+                                            {`${program.degree} ${program.name}`}
                                         </CommandItem>
                                     ))}
                                 </CommandGroup>
