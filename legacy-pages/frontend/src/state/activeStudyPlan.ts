@@ -1,9 +1,11 @@
-import {createGlobalState} from "@/state/index.ts";
+import {useQuery} from "@tanstack/react-query";
+import {useStudyPlanSelection} from "@/hooks/useStudyPlanSelection.ts";
 
-export type SelectedStudyPlan = {
+export type StudyPlan = {
     id: number;
     startAcademicYear: number;
     duration: number;
+    track: string | null;
     sections: Section[];
     courses: Course[];
 };
@@ -24,16 +26,18 @@ export type Course = {
     prerequisites: { id: number; relation: string };
 }
 
-export const useSelectedStudyPlanState = (selectedStudyPlanId: number | undefined) => {
-    return createGlobalState<SelectedStudyPlan>(
-        ['studyPlan', selectedStudyPlanId],
-        async () => {
+export const useActiveStudyPlan = () => {
+    const {activeStudyPlan} = useStudyPlanSelection();
+
+    return useQuery<StudyPlan, Error>({
+        queryKey: ['studyPlan', activeStudyPlan?.id],
+        queryFn: async () => {
             const response = await fetch(
-                `http://localhost:8080/api/v1/study-plans/${selectedStudyPlanId}`
+                `http://localhost:8080/api/v1/study-plans/${activeStudyPlan?.id}`
             );
             if (!response.ok) throw new Error('Network response was not ok');
             return response.json();
         },
-        { enabled: !!selectedStudyPlanId }
-    );
-};
+        enabled: !!activeStudyPlan?.id
+    })
+}

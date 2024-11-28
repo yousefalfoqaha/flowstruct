@@ -15,8 +15,4 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("section_course")
 public class SectionCourse {
     private AggregateReference<Course, Long> course;
-
-    private int year;
-
-    private Semester semester;
 }

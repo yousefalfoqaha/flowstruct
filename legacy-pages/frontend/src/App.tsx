@@ -1,7 +1,10 @@
-import { Main } from "./components/main/Main.tsx"
+import {Search} from "@/components/search/Search.tsx";
+import {StudyPlanSelectionProvider} from "@/providers/StudyPlanSelectionProvider.tsx";
 
 export default function App() {
-  return (
-    <Main />
-  )
+    return <>
+        <StudyPlanSelectionProvider>
+            <Search/>
+        </StudyPlanSelectionProvider>
+    </>
 }

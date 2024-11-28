@@ -1,7 +1,9 @@
 package com.yousefalfoqaha.gjuplans.program;
 
 public enum Degree {
-    BACHELOR,
-    MASTER,
-    PHD
+    BSc,
+    BA,
+    MSc,
+    MA,
+    MBA
 }
