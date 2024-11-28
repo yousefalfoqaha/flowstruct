@@ -1,7 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
 import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanOptionResponse;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
@@ -16,5 +16,5 @@ public interface StudyPlanRepository extends ListCrudRepository<StudyPlan, Long>
             "FROM study_plan " +
             "WHERE program = :programId"
     )
-    public List<StudyPlanSummaryResponse> findAllStudyPlansByProgram(long programId);
+    public List<StudyPlanOptionResponse> findAllStudyPlansByProgram(long programId);
 }
