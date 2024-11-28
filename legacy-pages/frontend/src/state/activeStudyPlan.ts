@@ -1,6 +1,18 @@
 import {useQuery} from "@tanstack/react-query";
 import {useStudyPlanSelection} from "@/hooks/useStudyPlanSelection.ts";
 
+export enum SectionLevel {
+    UNIVERSITY = "UNIVERSITY",
+    SCHOOL = "SCHOOL",
+    PROGRAM = "PROGRAM",
+}
+
+export enum SectionType {
+    REQUIREMENT = "REQUIREMENT",
+    ELECTIVE = "ELECTIVE",
+    REMEDIAL = "REMEDIAL",
+}
+
 export type StudyPlan = {
     id: number;
     startAcademicYear: number;
@@ -12,10 +24,10 @@ export type StudyPlan = {
 
 export type Section = {
     id: number;
-    level: string;
-    type: string;
+    level: SectionLevel;
+    type: SectionType;
     name: string | null;
-    courseIds: number[];
+    courses: number[];
 };
 
 export type Course = {

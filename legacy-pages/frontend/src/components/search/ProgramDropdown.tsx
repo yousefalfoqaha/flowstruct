@@ -8,11 +8,8 @@ import {useStudyPlanSelection} from "@/hooks/useStudyPlanSelection.ts";
 
 export function ProgramDropdown() {
     const [open, setOpen] = React.useState(false);
-    const programOptions = useProgramOptions();
+    const {data: programOptions, isLoading, error} = useProgramOptions();
     const {selectedProgram, selectProgram} = useStudyPlanSelection();
-
-    if (programOptions.isLoading) return <div>Loading...</div>;
-    if (programOptions.error) return <div>An error occurred...</div>;
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -31,28 +28,32 @@ export function ProgramDropdown() {
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="p-0" align="start">
-                <Command>
-                    <CommandInput placeholder="Filter programs..."/>
-                    <CommandEmpty>No results found.</CommandEmpty>
-                    <CommandList>
-                        {
-                            <CommandGroup>
-                                {programOptions.data.map((p) => (
-                                    <CommandItem
-                                        key={p.id}
-                                        value={p.degree + " " + p.name}
-                                        onSelect={() => {
-                                            selectProgram(p);
-                                            setOpen(false);
-                                        }}
-                                    >
-                                        {`${p.degree} ${p.name}`}
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
-                        }
-                    </CommandList>
-                </Command>
+                {
+                    isLoading
+                        ? <div className="p-5 text-muted-foreground text-center">Loading...</div>
+                        : <Command>
+                            <CommandInput placeholder="Filter programs..."/>
+                            <CommandEmpty>No results found.</CommandEmpty>
+                            <CommandList>
+                                <CommandGroup>
+                                    {programOptions.map((program) => (
+                                        <CommandItem
+                                            key={program.id}
+                                            value={program.degree + " " + program.name}
+                                            onSelect={() => {
+                                                selectProgram(program);
+                                                setOpen(false);
+                                            }}
+                                        >
+                                            {`${program.degree} ${program.name}`}
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            </CommandList>
+                        </Command>
+                }
+                {error &&
+                    <div className="p-5 text-muted-foreground text-center">An error occurred.</div>}
             </PopoverContent>
         </Popover>
     )

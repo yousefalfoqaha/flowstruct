@@ -8,53 +8,58 @@ import {useStudyPlanSelection} from "@/hooks/useStudyPlanSelection.ts";
 
 export function StudyPlanDropdown() {
     const [open, setOpen] = React.useState(false);
-    const studyPlanOptions = useStudyPlanOptions();
-    const {selectedStudyPlan, selectStudyPlan} = useStudyPlanSelection();
+    const {data: studyPlanOptions, isLoading, error} = useStudyPlanOptions();
+    const {selectedStudyPlan, selectStudyPlan, selectedProgram} = useStudyPlanSelection();
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-                <Button variant="outline" className="p-3">
-                    <div className="flex flex-row w-full">
-                        <p className="my-auto text-left pr-2">
-                            {
-                                selectedStudyPlan
-                                    ? `${selectedStudyPlan.startAcademicYear}/${selectedStudyPlan.startAcademicYear + 1} - ${selectedStudyPlan.track}`
-                                    : "Pick a study plan"
-                            }
-                        </p>
-                        <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 my-auto"/>
-                    </div>
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent align="start" className="p-0">
-                {
-                    studyPlanOptions.isPending
-                        ? "Loading..."
-                        : <Command>
-                            <CommandInput placeholder="Filter study plans..."/>
-                            <CommandEmpty>No results found.</CommandEmpty>
-                            <CommandList>
-                                <CommandGroup>
-                                    {studyPlanOptions.data.map((sp) => (
-                                        <CommandItem
-                                            key={sp.id}
-                                            value={sp.startAcademicYear + " " + sp.track}
-                                            onSelect={() => {
-                                                selectStudyPlan(sp);
-                                                setOpen(false);
-                                            }}
-                                        >
-                                            {sp.startAcademicYear + "/" + (sp.startAcademicYear + 1)}
-                                            {sp.track ? " - " + sp.track : ""}
-                                        </CommandItem>
-                                    ))}
-                                </CommandGroup>
-                            </CommandList>
-                        </Command>
-                }
-                {studyPlanOptions.error ? "An error occurred." : null}
-            </PopoverContent>
-        </Popover>
+        selectedProgram && (
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                    <Button variant="outline" className="p-3">
+                        <div className="flex flex-row w-full">
+                            <p className="my-auto text-left pr-2">
+                                {
+                                    selectedStudyPlan
+                                        ? `${selectedStudyPlan.startAcademicYear}/${selectedStudyPlan.startAcademicYear + 1} - ${selectedStudyPlan.track}`
+                                        : "Pick a study plan"
+                                }
+                            </p>
+                            <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 my-auto"/>
+                        </div>
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="p-0">
+                    {
+                        isLoading
+                            ? <div className="p-5 text-muted-foreground text-center">Loading...</div>
+                            : (
+                                <Command>
+                                    <CommandInput placeholder="Filter study plans..."/>
+                                    <CommandEmpty>No results found.</CommandEmpty>
+                                    <CommandList>
+                                        <CommandGroup>
+                                            {studyPlanOptions.map((studyPlan) => (
+                                                <CommandItem
+                                                    key={studyPlan.id}
+                                                    value={studyPlan.startAcademicYear + " " + studyPlan.track}
+                                                    onSelect={() => {
+                                                        selectStudyPlan(studyPlan);
+                                                        setOpen(false);
+                                                    }}
+                                                >
+                                                    {studyPlan.startAcademicYear + "/" + (studyPlan.startAcademicYear + 1)}
+                                                    {studyPlan.track ? " - " + studyPlan.track : ""}
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            )
+                    }
+                    {error &&
+                      <div className="p-5 text-muted-foreground text-center">An error occurred.</div>}
+                </PopoverContent>
+            </Popover>
+        )
     );
 }
