@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.studyplan;
+package com.yousefalfoqaha.gjuplans.studyplan.domain;
 
 public enum SectionLevel {
     UNIVERSITY,

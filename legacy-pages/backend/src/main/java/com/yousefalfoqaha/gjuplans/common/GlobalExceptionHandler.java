@@ -1,7 +1,7 @@
 package com.yousefalfoqaha.gjuplans.common;
 
-import com.yousefalfoqaha.gjuplans.program.ProgramNotFoundException;
-import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanNotFoundException;
+import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
+import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

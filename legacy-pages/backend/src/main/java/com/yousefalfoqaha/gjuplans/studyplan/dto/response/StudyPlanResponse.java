@@ -1,6 +1,6 @@
-package com.yousefalfoqaha.gjuplans.studyplan;
+package com.yousefalfoqaha.gjuplans.studyplan.dto.response;
 
-import com.yousefalfoqaha.gjuplans.course.CourseResponse;
+import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
 
 import java.util.List;
 

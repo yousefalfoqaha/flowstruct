@@ -1,6 +1,6 @@
-package com.yousefalfoqaha.gjuplans.studyplan;
+package com.yousefalfoqaha.gjuplans.studyplan.domain;
 
-import com.yousefalfoqaha.gjuplans.program.Program;
+import com.yousefalfoqaha.gjuplans.program.domain.Program;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

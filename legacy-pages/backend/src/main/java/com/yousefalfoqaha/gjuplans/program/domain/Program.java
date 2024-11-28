@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.program;
+package com.yousefalfoqaha.gjuplans.program.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

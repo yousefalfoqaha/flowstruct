@@ -1,5 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
+import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;

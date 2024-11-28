@@ -1,6 +1,9 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
 import com.yousefalfoqaha.gjuplans.course.CourseService;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.SectionResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +47,7 @@ public class StudyPlanService {
                                 .stream()
                                 .flatMap(sec -> sec.getCourses().stream())
                                 .map(c -> c.getCourse().getId())
+                                .distinct()
                                 .toList()
                 )
         );

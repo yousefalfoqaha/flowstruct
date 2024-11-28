@@ -1,5 +1,7 @@
 package com.yousefalfoqaha.gjuplans.course;
 
+import com.yousefalfoqaha.gjuplans.course.dto.response.CoursePrerequisiteResponse;
+import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

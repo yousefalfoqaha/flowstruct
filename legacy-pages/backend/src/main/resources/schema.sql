@@ -12,7 +12,7 @@ DROP TYPE IF EXISTS section_level_enum;
 DROP TYPE IF EXISTS section_type_enum;
 
 CREATE TYPE semester_enum AS ENUM ('FIRST', 'SECOND', 'SUMMER');
-CREATE TYPE degree_enum AS ENUM ('BACHELOR', 'MASTER', 'PHD');
+CREATE TYPE degree_enum AS ENUM ('BSc', 'BA', 'MSc', 'MA', 'MBA');
 CREATE TYPE prerequisite_enum AS ENUM ('AND', 'OR');
 CREATE TYPE section_level_enum AS ENUM ('UNIVERSITY', 'SCHOOL', 'PROGRAM');
 CREATE TYPE section_type_enum AS ENUM ('REQUIREMENT', 'ELECTIVE', 'REMEDIAL');
@@ -64,8 +64,6 @@ CREATE TABLE section (
 CREATE TABLE section_course (
     section INT NOT NULL,
     course INT NOT NULL,
-    year INT,
-    semester semester_enum,
     PRIMARY KEY (section, course),
     FOREIGN KEY (section) REFERENCES section(id) ON DELETE CASCADE,
     FOREIGN KEY (course) REFERENCES course(id) ON DELETE CASCADE

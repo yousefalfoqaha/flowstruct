@@ -1,7 +1,8 @@
 package com.yousefalfoqaha.gjuplans.program;
 
+import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramSummaryResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanRepository;
-import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanSummaryResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +19,8 @@ public class ProgramService {
         this.studyPlanRepository = studyPlanRepository;
     }
 
-    public List<Program> getProgramsList() {
-        return programRepository.findAll();
+    public List<ProgramSummaryResponse> getProgramsList() {
+        return programRepository.findAllProgramSummaries();
     }
 
     public List<StudyPlanSummaryResponse> getProgramStudyPlans(long programId) {
