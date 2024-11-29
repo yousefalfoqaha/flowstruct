@@ -2,7 +2,7 @@ package com.yousefalfoqaha.gjuplans.program.dto.request;
 
 import jakarta.validation.constraints.NotEmpty;
 
-public record MakeProgramRequest(
+public record CreateProgramRequest(
 
     @NotEmpty(message = "Name cannot be empty.")
     String name,

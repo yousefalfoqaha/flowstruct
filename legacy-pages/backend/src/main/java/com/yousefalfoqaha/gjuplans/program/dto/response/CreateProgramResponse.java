@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.gjuplans.program.dto.response;
 
-public record MakeProgramResponse(
+public record CreateProgramResponse(
         Long id
 ) {
 }

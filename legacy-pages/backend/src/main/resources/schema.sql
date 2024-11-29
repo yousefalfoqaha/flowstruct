@@ -5,18 +5,6 @@ DROP TABLE IF EXISTS course_prerequisite CASCADE;
 DROP TABLE IF EXISTS course CASCADE;
 DROP TABLE IF EXISTS program CASCADE;
 
-DROP TYPE IF EXISTS semester_enum;
-DROP TYPE IF EXISTS degree_enum;
-DROP TYPE IF EXISTS prerequisite_enum;
-DROP TYPE IF EXISTS section_level_enum;
-DROP TYPE IF EXISTS section_type_enum;
-
-CREATE TYPE semester_enum AS ENUM ('FIRST', 'SECOND', 'SUMMER');
---CREATE TYPE degree_enum AS ENUM ('BSc', 'BA', 'MSc', 'MA', 'MBA');
-CREATE TYPE prerequisite_enum AS ENUM ('AND', 'OR');
-CREATE TYPE section_level_enum AS ENUM ('UNIVERSITY', 'SCHOOL', 'PROGRAM');
-CREATE TYPE section_type_enum AS ENUM ('REQUIREMENT', 'ELECTIVE', 'REMEDIAL');
-
 CREATE TABLE course (
     id SERIAL PRIMARY KEY,
     code VARCHAR(255),

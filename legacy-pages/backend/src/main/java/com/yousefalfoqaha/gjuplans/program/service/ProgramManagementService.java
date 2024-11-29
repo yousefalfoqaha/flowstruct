@@ -4,7 +4,7 @@ import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.program.ProgramRepository;
 import com.yousefalfoqaha.gjuplans.program.domain.Degree;
 import com.yousefalfoqaha.gjuplans.program.domain.Program;
-import com.yousefalfoqaha.gjuplans.program.dto.request.MakeProgramRequest;
+import com.yousefalfoqaha.gjuplans.program.dto.request.CreateProgramRequest;
 import com.yousefalfoqaha.gjuplans.program.exception.InvalidDegreeException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +16,10 @@ import java.util.Arrays;
 @Service
 public class ProgramManagementService {
     private final ProgramRepository programRepository;
-    private final ObjectValidator<MakeProgramRequest> makeProgramRequestValidator;
+    private final ObjectValidator<CreateProgramRequest> createProgramRequestValidator;
 
-    public Program makeProgram(MakeProgramRequest request) {
-        makeProgramRequestValidator.validate(request);
+    public Program createProgram(CreateProgramRequest request) {
+        createProgramRequestValidator.validate(request);
 
         Degree degree = Arrays.stream(Degree.values())
                 .filter(d -> d.toString().equalsIgnoreCase(request.degree()))

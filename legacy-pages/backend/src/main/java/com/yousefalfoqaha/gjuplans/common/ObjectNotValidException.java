@@ -1,12 +1,12 @@
 package com.yousefalfoqaha.gjuplans.common;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@RequiredArgsConstructor
+@Getter
 public class ObjectNotValidException extends RuntimeException {
     private final Set<String> errorMessages;
 }

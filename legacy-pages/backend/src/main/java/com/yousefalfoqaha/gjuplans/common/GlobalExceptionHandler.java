@@ -40,9 +40,7 @@ public class GlobalExceptionHandler {
     ) {
         return new ResponseEntity<>(
                 new ValidationErrorObject(
-                        HttpStatus.BAD_REQUEST.value(),
-                        exception.getErrorMessages(),
-                        new Date()
+                        HttpStatus.BAD_REQUEST.value(), exception.getErrorMessages(), new Date()
                 ),
                 HttpStatus.BAD_REQUEST
         );

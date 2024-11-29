@@ -1,8 +1,8 @@
 package com.yousefalfoqaha.gjuplans.program.service;
 
 import com.yousefalfoqaha.gjuplans.program.ProgramRepository;
-import com.yousefalfoqaha.gjuplans.program.dto.request.MakeProgramRequest;
-import com.yousefalfoqaha.gjuplans.program.dto.response.MakeProgramResponse;
+import com.yousefalfoqaha.gjuplans.program.dto.request.CreateProgramRequest;
+import com.yousefalfoqaha.gjuplans.program.dto.response.CreateProgramResponse;
 import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramOptionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanRepository;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanOptionResponse;
@@ -26,8 +26,8 @@ public class ProgramService {
         return studyPlanRepository.findAllStudyPlanOptionsByProgram(programId);
     }
 
-    public MakeProgramResponse makeProgram(MakeProgramRequest request) {
-        var newProgram = programManagementService.makeProgram(request);
-        return new MakeProgramResponse(newProgram.getId());
+    public CreateProgramResponse createProgram(CreateProgramRequest request) {
+        var newProgram = programManagementService.createProgram(request);
+        return new CreateProgramResponse(newProgram.getId());
     }
 }
