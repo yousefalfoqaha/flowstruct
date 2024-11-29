@@ -1,6 +1,8 @@
 package com.yousefalfoqaha.gjuplans.common;
 
+import com.yousefalfoqaha.gjuplans.program.exception.InvalidDegreeException;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
+import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,8 +42,37 @@ public class GlobalExceptionHandler {
                 new ValidationErrorObject(
                         HttpStatus.BAD_REQUEST.value(),
                         exception.getErrorMessages(),
-                        new Date()),
+                        new Date()
+                ),
                 HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(InvalidDegreeException.class)
+    public ResponseEntity<ErrorObject> handleInvalidDegreeException(
+            InvalidDegreeException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.BAD_REQUEST.value(),
+                        exception.getMessage(),
+                        new Date()
+                ),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(UniqueProgramException.class)
+    public ResponseEntity<ErrorObject> handleUniqueProgramException(
+            UniqueProgramException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.CONFLICT.value(),
+                        exception.getMessage(),
+                        new Date()
+                ),
+                HttpStatus.CONFLICT
         );
     }
 }

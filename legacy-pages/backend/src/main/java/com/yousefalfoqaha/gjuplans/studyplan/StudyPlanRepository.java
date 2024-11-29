@@ -16,5 +16,5 @@ public interface StudyPlanRepository extends ListCrudRepository<StudyPlan, Long>
             "FROM study_plan " +
             "WHERE program = :programId"
     )
-    public List<StudyPlanOptionResponse> findAllStudyPlansByProgram(long programId);
+    public List<StudyPlanOptionResponse> findAllStudyPlanOptionsByProgram(long programId);
 }

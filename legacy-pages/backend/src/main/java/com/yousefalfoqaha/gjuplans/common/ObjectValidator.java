@@ -1,6 +1,5 @@
 package com.yousefalfoqaha.gjuplans.common;
 
-import com.yousefalfoqaha.gjuplans.program.dto.request.MakeProgramRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -16,7 +15,7 @@ public class ObjectValidator<T> {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
 
-    public void validate(MakeProgramRequest object) {
+    public void validate(T object) {
         var errorMessages = validator.validate(object)
                 .stream()
                 .map(ConstraintViolation::getMessage)

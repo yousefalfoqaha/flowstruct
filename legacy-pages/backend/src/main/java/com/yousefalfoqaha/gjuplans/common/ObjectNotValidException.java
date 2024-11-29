@@ -1,9 +1,7 @@
 package com.yousefalfoqaha.gjuplans.common;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
 
