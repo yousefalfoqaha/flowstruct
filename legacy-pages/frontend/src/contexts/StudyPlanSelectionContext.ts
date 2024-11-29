@@ -8,7 +8,7 @@ type StudyPlanSelectionContextType = {
     selectProgram: (program: ProgramOption) => void;
     selectStudyPlan: (studyPlan: StudyPlanOption) => void;
     activeStudyPlan: StudyPlanOption | null;
-    setActiveStudyPlan: (studyPlan: StudyPlanOption | null) => void;
+    viewStudyPlan: (studyPlan: StudyPlanOption | null) => void;
 };
 
 export const StudyPlanSelectionContext =

@@ -3,7 +3,7 @@ import {Button} from "@/components/ui/button.tsx";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command.tsx";
 import * as React from "react";
 import {useProgramOptions} from "@/state/programOptions.ts";
-import {ChevronDown} from "lucide-react";
+import {ChevronDown, Plus} from "lucide-react";
 import {useStudyPlanSelection} from "@/hooks/useStudyPlanSelection.ts";
 
 export function ProgramDropdown() {
@@ -31,26 +31,34 @@ export function ProgramDropdown() {
                 {
                     isLoading
                         ? <div className="p-5 text-muted-foreground text-center">Loading...</div>
-                        : <Command>
-                            <CommandInput placeholder="Filter programs..."/>
-                            <CommandEmpty>{isError ? 'An error occurred.' : 'No results found.'}</CommandEmpty>
-                            <CommandList>
-                                <CommandGroup>
-                                    {programOptions.map((program) => (
-                                        <CommandItem
-                                            key={program.id}
-                                            value={program.degree + " " + program.name}
-                                            onSelect={() => {
-                                                selectProgram(program);
-                                                setOpen(false);
-                                            }}
-                                        >
-                                            {`${program.degree} ${program.name}`}
-                                        </CommandItem>
-                                    ))}
-                                </CommandGroup>
-                            </CommandList>
-                        </Command>
+                        : <>
+                            <Command>
+                                <CommandInput placeholder="Filter programs..."/>
+                                <CommandEmpty>{isError ? 'An error occurred.' : 'No results found.'}</CommandEmpty>
+                                <CommandList>
+                                    <CommandGroup className="p-2">
+                                        {programOptions.map((program) => (
+                                            <CommandItem
+                                                key={program.id}
+                                                value={program.degree + " " + program.name}
+                                                onSelect={() => {
+                                                    selectProgram(program);
+                                                    setOpen(false);
+                                                }}
+                                            >
+                                                {`${program.degree} ${program.name}`}
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </CommandList>
+                            </Command>
+                            <section className="p-2 border-t">
+                                <Button className="ml-auto flex gap-2 px-3">
+                                    <p className="h-full my-auto">Create New Program</p>
+                                    <Plus className="ml-auto"/>
+                                </Button>
+                            </section>
+                        </>
                 }
             </PopoverContent>
         </Popover>

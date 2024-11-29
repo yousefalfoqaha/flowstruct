@@ -3,15 +3,15 @@ import {useStudyPlanSelection} from "@/hooks/useStudyPlanSelection.ts";
 import {useActiveStudyPlan} from "@/state/activeStudyPlan.ts";
 
 export function ViewButton() {
-    const {selectedStudyPlan, setActiveStudyPlan} = useStudyPlanSelection();
+    const {selectedStudyPlan, viewStudyPlan} = useStudyPlanSelection();
     const activeStudyPlan = useActiveStudyPlan();
 
     return (
         <Button
             disabled={!selectedStudyPlan || activeStudyPlan.isLoading}
-            onClick={() => setActiveStudyPlan(selectedStudyPlan)}
+            onClick={() => viewStudyPlan(selectedStudyPlan)}
         >
-            {activeStudyPlan.isLoading ? "Loading..." : "View Study Plan"}
+            View Study Plan
         </Button>
     )
 }

@@ -18,6 +18,7 @@ export type StudyPlan = {
     startAcademicYear: number;
     duration: number;
     track: string | null;
+    program: number;
     sections: Section[];
     courses: Course[];
 };

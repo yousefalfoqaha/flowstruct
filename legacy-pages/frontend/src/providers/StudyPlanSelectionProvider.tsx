@@ -18,6 +18,12 @@ export function StudyPlanSelectionProvider({children}: { children: ReactNode }) 
         setSelectedStudyPlan(studyPlan);
     }
 
+    const viewStudyPlan = (studyPlan: StudyPlanOption | null) => {
+        setActiveStudyPlan(studyPlan);
+        setSelectedProgram(null);
+        setSelectedStudyPlan(null);
+    }
+
     return (
         <StudyPlanSelectionContext.Provider value={
             {
@@ -26,7 +32,7 @@ export function StudyPlanSelectionProvider({children}: { children: ReactNode }) 
                 selectProgram,
                 selectStudyPlan,
                 activeStudyPlan,
-                setActiveStudyPlan
+                viewStudyPlan
             }
         }>
             {children}
