@@ -8,7 +8,7 @@ import {useStudyPlanSelection} from "@/hooks/useStudyPlanSelection.ts";
 
 export function StudyPlanDropdown() {
     const [open, setOpen] = React.useState(false);
-    const {data: studyPlanOptions, isLoading, error} = useStudyPlanOptions();
+    const {data: studyPlanOptions, isLoading, isError} = useStudyPlanOptions();
     const {selectedStudyPlan, selectStudyPlan, selectedProgram} = useStudyPlanSelection();
 
     return (
@@ -35,7 +35,7 @@ export function StudyPlanDropdown() {
                             : (
                                 <Command>
                                     <CommandInput placeholder="Filter study plans..."/>
-                                    <CommandEmpty>No results found.</CommandEmpty>
+                                    <CommandEmpty>{isError ? 'An error occurred.' : 'No results found.'}</CommandEmpty>
                                     <CommandList>
                                         <CommandGroup>
                                             {studyPlanOptions.map((studyPlan) => (
@@ -56,8 +56,6 @@ export function StudyPlanDropdown() {
                                 </Command>
                             )
                     }
-                    {error &&
-                      <div className="p-5 text-muted-foreground text-center">An error occurred.</div>}
                 </PopoverContent>
             </Popover>
         )

@@ -1,4 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
+import * as React from "react";
+import {toast} from "@/hooks/use-toast.ts";
 
 export type ProgramOption = {
     id: number;
@@ -15,6 +17,15 @@ export const useProgramOptions = () => {
             return await response.json();
         }
     });
+    
+    React.useEffect(() => {
+        if (queryResult.error) {
+            toast({
+                title: queryResult.error?.message || "Something went wrong with your request",
+                variant: "destructive",
+            });
+        }
+    }, [queryResult.error, queryResult.error?.message]);
 
     return {
         ...queryResult,

@@ -8,14 +8,14 @@ export function StudyPlan() {
     return (
         studyPlan && (
             <div className="flex flex-col gap-3">
-                <Accordion type="single" collapsible className="w-72">
+                <Accordion type="single" collapsible className="w-96">
                     {
                         studyPlan.sections.length !== 0
                             ? (
                                 studyPlan.sections.map((section) => (
                                     <AccordionItem key={section.id} value={`${section.id}`}>
                                         <AccordionTrigger>
-                                            {getLevelLabel(section.level)} {getTypeLabel(section.type)}s
+                                            {getLevelLabel(section.level)} {getTypeLabel(section.type)}s ({section.name})
                                         </AccordionTrigger>
                                         <AccordionContent>
                                             {section.courses.map(courseId => {

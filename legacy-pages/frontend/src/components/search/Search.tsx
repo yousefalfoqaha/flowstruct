@@ -4,9 +4,9 @@ import {ViewButton} from "@/components/search/ViewButton.tsx";
 
 export function Search() {
     return (
-        <div className="flex flex-wrap gap-1">
-            <ProgramDropdown/>
-            <StudyPlanDropdown/>
+        <div className="flex flex-row gap-1">
+            <ProgramDropdown />
+            <StudyPlanDropdown />
             <ViewButton />
         </div>
     );

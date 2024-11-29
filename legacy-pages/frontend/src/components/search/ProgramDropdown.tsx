@@ -8,7 +8,7 @@ import {useStudyPlanSelection} from "@/hooks/useStudyPlanSelection.ts";
 
 export function ProgramDropdown() {
     const [open, setOpen] = React.useState(false);
-    const {data: programOptions, isLoading, error} = useProgramOptions();
+    const {data: programOptions, isLoading, isError} = useProgramOptions();
     const {selectedProgram, selectProgram} = useStudyPlanSelection();
 
     return (
@@ -33,7 +33,7 @@ export function ProgramDropdown() {
                         ? <div className="p-5 text-muted-foreground text-center">Loading...</div>
                         : <Command>
                             <CommandInput placeholder="Filter programs..."/>
-                            <CommandEmpty>No results found.</CommandEmpty>
+                            <CommandEmpty>{isError ? 'An error occurred.' : 'No results found.'}</CommandEmpty>
                             <CommandList>
                                 <CommandGroup>
                                     {programOptions.map((program) => (
@@ -52,8 +52,6 @@ export function ProgramDropdown() {
                             </CommandList>
                         </Command>
                 }
-                {error &&
-                    <div className="p-5 text-muted-foreground text-center">An error occurred.</div>}
             </PopoverContent>
         </Popover>
     )
