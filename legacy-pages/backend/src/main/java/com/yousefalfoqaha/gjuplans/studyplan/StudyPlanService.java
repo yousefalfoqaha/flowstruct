@@ -36,6 +36,7 @@ public class StudyPlanService {
                                 sec.getId(),
                                 sec.getLevel(),
                                 sec.getType(),
+                                sec.getName(),
                                 sec.getCourses()
                                         .stream()
                                         .map(c -> c.getCourse().getId())

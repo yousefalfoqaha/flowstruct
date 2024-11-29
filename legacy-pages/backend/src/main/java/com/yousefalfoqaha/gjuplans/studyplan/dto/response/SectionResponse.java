@@ -9,6 +9,7 @@ public record SectionResponse(
     long id,
     SectionLevel level,
     SectionType type,
+    String name,
     List<Long> courses
 ) {
 }
