@@ -9,8 +9,8 @@ export function StudyPlanSelectionProvider({children}: { children: ReactNode }) 
     const [selectedStudyPlan, setSelectedStudyPlan] = React.useState<StudyPlanOption | null>(null);
     const [activeStudyPlan, setActiveStudyPlan] = React.useState<StudyPlanOption | null>(null);
 
-    const selectProgram = (program: ProgramOption) => {
-        setSelectedProgram(program);
+    const selectProgram = (program: ProgramOption | null) => {
+        setSelectedProgram(program || null);
         setSelectedStudyPlan(null);
     }
 
