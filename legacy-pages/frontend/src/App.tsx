@@ -1,18 +1,15 @@
-import {StudyPlan} from "@/components/study-plan/StudyPlan.tsx";
 import {Toaster} from "@/components/ui/toaster.tsx";
-import {Button} from "@/components/ui/button.tsx";
-import {StudyPlanBrowser} from "@/components/study-plan-browser/StudyPlanBrowser.tsx";
+import {ProgramsGrid} from "@/components/programs-grid/ProgramsGrid.tsx";
 
 export default function App() {
     return (
         <>
-            <div className="h-screen flex flex-col gap-3 items-center justify-center">
-                <div className="flex flex-col gap-1 text-center">
-                    <h1 className="text-5xl font-bold text-gray-900 mt-5">GJU Plans</h1>
+            <div className="h-screen flex flex-col max-w-screen-xl mx-auto border">
+                <header className="flex flex-col gap-1 text-center m-5">
+                    <h1 className="text-5xl font-bold text-gray-900">GJU Guide</h1>
                     <p className="text-muted-foreground">The All-Inclusive Curriculum Visualizer</p>
-                </div>
-                <StudyPlanBrowser />
-                <StudyPlan/>
+                </header>
+                <ProgramsGrid />
             </div>
             <Toaster/>
         </>
