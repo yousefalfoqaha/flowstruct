@@ -1,22 +1,19 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
 import com.yousefalfoqaha.gjuplans.course.CourseService;
+import com.yousefalfoqaha.gjuplans.guide.GuideService;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.SectionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class StudyPlanService {
     private final StudyPlanRepository studyPlanRepository;
     private final CourseService courseService;
-
-    @Autowired
-    public StudyPlanService(StudyPlanRepository studyPlanRepository, CourseService courseService) {
-        this.studyPlanRepository = studyPlanRepository;
-        this.courseService = courseService;
-    }
+    private final GuideService guideService;
 
     public StudyPlanResponse getStudyPlan(long studyPlanId) {
         var studyPlan = studyPlanRepository.findById(studyPlanId)
@@ -43,6 +40,7 @@ public class StudyPlanService {
                                         .toList()
                         ))
                         .toList(),
+                guideService.getGuideByStudyPlan(studyPlanId),
                 courseService.getCoursesById(
                         studyPlan.getSections()
                                 .stream()
