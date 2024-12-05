@@ -1,10 +1,13 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanOptionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/study-plans")
@@ -15,6 +18,11 @@ public class StudyPlanController {
     @Autowired
     public StudyPlanController(StudyPlanService studyPlanService) {
         this.studyPlanService = studyPlanService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<StudyPlanOptionResponse>> getAllStudyPlans() {
+        return new ResponseEntity<>(studyPlanService.getAllStudyPlans(), HttpStatus.OK);
     }
 
     @GetMapping("/{studyPlanId}")

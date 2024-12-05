@@ -12,11 +12,9 @@ import java.util.List;
 public interface StudyPlanRepository extends ListCrudRepository<StudyPlan, Long> {
 
     @Query(
-            "SELECT sp.id, sp.start_academic_year, t.name AS track " +
+            "SELECT sp.id, sp.start_academic_year, t.name AS track, sp.program " +
                     "FROM study_plan sp " +
-                    "JOIN track t ON sp.id = t.study_plan " +
-                    "WHERE sp.program = :programId"
+                    "JOIN track t ON sp.id = t.study_plan"
     )
-    public List<StudyPlanOptionResponse> findAllStudyPlanOptionsByProgram(long programId);
-
+    public List<StudyPlanOptionResponse> findAllStudyPlans();
 }

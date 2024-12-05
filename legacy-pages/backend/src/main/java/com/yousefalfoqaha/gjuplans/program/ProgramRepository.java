@@ -12,7 +12,7 @@ import java.util.List;
 public interface ProgramRepository extends ListCrudRepository<Program, Long> {
 
     @Query("SELECT id, name, degree FROM program")
-    List<ProgramOptionResponse> findAllProgramOptions();
+    List<ProgramOptionResponse> findAllPrograms();
 
     boolean existsByNameAndDegree(String name, String degree);
 }

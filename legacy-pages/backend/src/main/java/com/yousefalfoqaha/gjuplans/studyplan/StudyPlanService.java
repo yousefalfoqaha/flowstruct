@@ -16,8 +16,8 @@ public class StudyPlanService {
     private final StudyPlanRepository studyPlanRepository;
     private final CourseService courseService;
 
-    public List<StudyPlanOptionResponse> getProgramStudyPlans(long programId) {
-        return studyPlanRepository.findAllStudyPlanOptionsByProgram(programId);
+    public List<StudyPlanOptionResponse> getAllStudyPlans() {
+        return studyPlanRepository.findAllStudyPlans();
     }
 
     public StudyPlanResponse getStudyPlan(long studyPlanId) {
