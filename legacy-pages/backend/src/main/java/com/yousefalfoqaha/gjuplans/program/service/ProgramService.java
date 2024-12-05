@@ -5,6 +5,7 @@ import com.yousefalfoqaha.gjuplans.program.dto.request.CreateProgramRequest;
 import com.yousefalfoqaha.gjuplans.program.dto.response.CreateProgramResponse;
 import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramOptionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanRepository;
+import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanService;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanOptionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import java.util.List;
 @Service
 public class ProgramService {
     private final ProgramRepository programRepository;
-    private final StudyPlanRepository studyPlanRepository;
+    private final StudyPlanService studyPlanService;
     private final ProgramManagementService programManagementService;
 
     public List<ProgramOptionResponse> getProgramOptions() {
@@ -23,7 +24,7 @@ public class ProgramService {
     }
 
     public List<StudyPlanOptionResponse> getStudyPlanOptionsByProgram(long programId) {
-        return studyPlanRepository.findAllStudyPlanOptionsByProgram(programId);
+        return studyPlanService.getProgramStudyPlans(programId);
     }
 
     public CreateProgramResponse createProgram(CreateProgramRequest request) {

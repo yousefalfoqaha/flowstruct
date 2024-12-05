@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.program.domain;
+package com.yousefalfoqaha.gjuplans.studyplan.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,13 +11,9 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table("program")
-public class Program {
-
-    @Id
-    private Long id;
+@Table("track")
+public class Track {
+    private String code;
 
     private String name;
-
-    private Degree degree;
 }

@@ -36,7 +36,7 @@ public class ProgramManagementService {
                 new Program(
                         null,
                         request.name(),
-                        degree.toString()
+                        degree
                 ));
     }
 }

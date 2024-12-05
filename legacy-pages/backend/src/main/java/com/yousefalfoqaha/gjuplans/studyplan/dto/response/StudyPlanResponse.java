@@ -1,18 +1,18 @@
 package com.yousefalfoqaha.gjuplans.studyplan.dto.response;
 
 import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
-import com.yousefalfoqaha.gjuplans.guide.dto.response.GuideResponse;
 
 import java.util.List;
+import java.util.Map;
 
 public record StudyPlanResponse(
         long id,
-        String track,
         int startAcademicYear,
         int duration,
+        TrackResponse track,
         long program,
         List<SectionResponse> sections,
-        GuideResponse guide,
+        Map<Long, GuideCourseResponse> guideCourses,
         List<CourseResponse> courses
 ) {
 }

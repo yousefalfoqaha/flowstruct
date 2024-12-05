@@ -16,12 +16,16 @@ import java.util.Set;
 @Setter
 @Table("course")
 public class Course {
+
         @Id
         long id;
+
         String code;
+
         String name;
+
         int creditHours;
-        boolean isRemedial;
+
         @MappedCollection(idColumn = "course")
         Set<CoursePrerequisite> prerequisites;
 }

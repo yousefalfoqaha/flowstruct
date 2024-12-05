@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.guide.domain;
+package com.yousefalfoqaha.gjuplans.studyplan.domain;
 
 public enum Semester {
     FIRST,

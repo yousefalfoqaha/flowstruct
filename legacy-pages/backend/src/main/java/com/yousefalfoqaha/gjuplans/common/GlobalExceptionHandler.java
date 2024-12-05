@@ -1,6 +1,5 @@
 package com.yousefalfoqaha.gjuplans.common;
 
-import com.yousefalfoqaha.gjuplans.guide.GuideNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.InvalidDegreeException;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
@@ -72,20 +71,6 @@ public class GlobalExceptionHandler {
                         new Date()
                 ),
                 HttpStatus.CONFLICT
-        );
-    }
-
-    @ExceptionHandler(GuideNotFoundException.class)
-    public ResponseEntity<ErrorObject> handleGuideNotFoundException(
-            GuideNotFoundException exception
-    ) {
-        return new ResponseEntity<>(
-                new ErrorObject(
-                        HttpStatus.NOT_FOUND.value(),
-                        exception.getMessage(),
-                        new Date()
-                ),
-                HttpStatus.NOT_FOUND
         );
     }
 }

@@ -1,73 +1,51 @@
--- Insert some programs
-INSERT INTO program (name, degree) VALUES
-('Computer Engineering', 'BSc'),
-('Software Engineering', 'BSc'),
-('Business Administration', 'MBA'),
-('Data Science', 'MSc');
+-- Insert programs
+INSERT INTO program (code, name, degree) VALUES
+('CS', 'Bachelor of Science in Computer Science', 'BACHELOR'),
+('CS', 'Master of Science in Computer Science', 'MASTER');
 
--- Insert some courses
-INSERT INTO course (code, name, credit_hours, is_remedial) VALUES
-('CS101', 'Introduction to Computer Science', 3, FALSE),
-('CS102', 'Data Structures and Algorithms', 3, FALSE),
-('CS103', 'Discrete Mathematics', 3, FALSE),
-('CS201', 'Computer Networks', 4, FALSE),
-('CS202', 'Database Systems', 4, FALSE),
-('CS301', 'Operating Systems', 4, FALSE),
-('BUS101', 'Introduction to Business', 3, FALSE),
-('BUS102', 'Business Communication', 3, FALSE),
-('DS101', 'Introduction to Data Science', 3, FALSE),
-('DS102', 'Machine Learning', 4, FALSE),
-('DS201', 'Data Visualization', 3, FALSE),
-('GERL101', 'German Language I', 3, TRUE),
-('GERL102', 'German Language II', 3, TRUE);
+-- Insert courses
+INSERT INTO course (code, name, credit_hours) VALUES
+('CS101', 'Introduction to Computer Science', 3),
+('CS102', 'Data Structures', 4),
+('CS201', 'Algorithms', 3),
+('CS301', 'Database Systems', 3),
+('CS302', 'Operating Systems', 4);
 
 -- Insert course prerequisites
 INSERT INTO course_prerequisite (course, prerequisite, relation) VALUES
-((SELECT id FROM course WHERE code = 'CS102'), (SELECT id FROM course WHERE code = 'CS101'), 'AND'),
-((SELECT id FROM course WHERE code = 'CS201'), (SELECT id FROM course WHERE code = 'CS102'), 'AND'),
-((SELECT id FROM course WHERE code = 'CS202'), (SELECT id FROM course WHERE code = 'CS101'), 'AND'),
-((SELECT id FROM course WHERE code = 'CS301'), (SELECT id FROM course WHERE code = 'CS202'), 'AND'),
-((SELECT id FROM course WHERE code = 'DS102'), (SELECT id FROM course WHERE code = 'DS101'), 'AND');
+(2, 1, 'AND'), -- Data Structures requires Introduction to Computer Science
+(3, 2, 'AND'), -- Algorithms requires Data Structures
+(4, 2, 'AND'), -- Database Systems requires Data Structures
+(5, 2, 'AND'); -- Operating Systems requires Data Structures
 
--- Insert some study plans
-INSERT INTO study_plan (track, start_academic_year, duration, program) VALUES
-('Engineering Track', 2024, 4, (SELECT id FROM program WHERE name = 'Computer Engineering' AND degree = 'BSc')),
-('Software Engineering Track', 2024, 4, (SELECT id FROM program WHERE name = 'Software Engineering' AND degree = 'BSc')),
-('Business Admin Track', 2024, 2, (SELECT id FROM program WHERE name = 'Business Administration' AND degree = 'MBA')),
-('Data Science Track', 2024, 2, (SELECT id FROM program WHERE name = 'Data Science' AND degree = 'MSc'));
+-- Insert study plan
+INSERT INTO study_plan (start_academic_year, duration, program) VALUES
+(2023, 4, 1),  -- Program ID 1: BSc in CS, start academic year 2023, duration 4 years
+(2023, 2, 2);  -- Program ID 2: MSc in CS, start academic year 2023, duration 2 years
 
--- Insert sections for study plans
+-- Insert tracks
+INSERT INTO track (study_plan, code, name) VALUES
+(1, 'A', 'Software Engineering Track'),
+(2, 'B', 'Artificial Intelligence Track');
+
+-- Insert sections
 INSERT INTO section (level, type, required_credit_hours, name, study_plan) VALUES
-('PROGRAM', 'REQUIREMENT', 18, 'Computer Science Core Courses', (SELECT id FROM study_plan WHERE track = 'Engineering Track' AND start_academic_year = 2024)),
-('PROGRAM', 'REQUIREMENT', 12, 'Data Science Core Courses', (SELECT id FROM study_plan WHERE track = 'Data Science Track' AND start_academic_year = 2024)),
-('UNIVERSITY', 'REQUIREMENT', 6, 'University General Requirements', (SELECT id FROM study_plan WHERE track = 'Engineering Track' AND start_academic_year = 2024)),
-('SCHOOL', 'REQUIREMENT', 6, 'School Requirements', (SELECT id FROM study_plan WHERE track = 'Software Engineering Track' AND start_academic_year = 2024));
+('PROGRAM', 'REQUIREMENT', 3, 'Core Computer Science Courses', 1),
+('PROGRAM', 'ELECTIVE', 3, 'Elective Courses', 1),
+('PROGRAM', 'REQUIREMENT', 4, 'Core AI Courses', 2),
+('PROGRAM', 'ELECTIVE', 3, 'Elective Courses', 2);
 
--- Insert courses for sections
+-- Insert section courses
 INSERT INTO section_course (section, course) VALUES
-((SELECT id FROM section WHERE name = 'Computer Science Core Courses'), (SELECT id FROM course WHERE code = 'CS101')),
-((SELECT id FROM section WHERE name = 'Computer Science Core Courses'), (SELECT id FROM course WHERE code = 'CS102')),
-((SELECT id FROM section WHERE name = 'Computer Science Core Courses'), (SELECT id FROM course WHERE code = 'CS201')),
-((SELECT id FROM section WHERE name = 'Data Science Core Courses'), (SELECT id FROM course WHERE code = 'DS101')),
-((SELECT id FROM section WHERE name = 'Data Science Core Courses'), (SELECT id FROM course WHERE code = 'DS102')),
-((SELECT id FROM section WHERE name = 'University General Requirements'), (SELECT id FROM course WHERE code = 'BUS101')),
-((SELECT id FROM section WHERE name = 'University General Requirements'), (SELECT id FROM course WHERE code = 'GERL101')),
-((SELECT id FROM section WHERE name = 'School Requirements'), (SELECT id FROM course WHERE code = 'BUS102')),
-((SELECT id FROM section WHERE name = 'School Requirements'), (SELECT id FROM course WHERE code = 'GERL102'));
+(1, 2), -- Data Structures is part of Core Computer Science Courses
+(1, 3), -- Algorithms is part of Core Computer Science Courses
+(2, 4), -- Database Systems is part of Elective Courses
+(3, 5), -- Operating Systems is part of Core AI Courses
+(4, 1); -- Introduction to Computer Science is part of Elective Courses
 
--- Insert electives
-INSERT INTO section (level, type, required_credit_hours, name, study_plan) VALUES
-('PROGRAM', 'ELECTIVE', 6, 'Engineering Electives', (SELECT id FROM study_plan WHERE track = 'Engineering Track' AND start_academic_year = 2024)),
-('PROGRAM', 'ELECTIVE', 6, 'Software Engineering Electives', (SELECT id FROM study_plan WHERE track = 'Software Engineering Track' AND start_academic_year = 2024));
-
--- Insert courses for electives
-INSERT INTO section_course (section, course) VALUES
-((SELECT id FROM section WHERE name = 'Engineering Electives'), (SELECT id FROM course WHERE code = 'CS301')),
-((SELECT id FROM section WHERE name = 'Software Engineering Electives'), (SELECT id FROM course WHERE code = 'CS202'));
-
--- Insert remedial courses (e.g., German courses)
-INSERT INTO section (level, type, required_credit_hours, name, study_plan) VALUES
-('PROGRAM', 'REMEDIAL', 3, 'German Language Remedial', (SELECT id FROM study_plan WHERE track = 'Engineering Track' AND start_academic_year = 2024));
-
-INSERT INTO section_course (section, course) VALUES
-((SELECT id FROM section WHERE name = 'German Language Remedial'), (SELECT id FROM course WHERE code = 'GERL101'));
+-- Insert guide courses
+INSERT INTO guide_course (course, year, semester, study_plan) VALUES
+(2, 1, 'FIRST', 1), -- Data Structures, Year 1, First Semester
+(3, 1, 'SECOND', 1), -- Algorithms, Year 1, Second Semester
+(4, 1, 'FIRST', 2), -- Database Systems, Year 1, First Semester
+(5, 2, 'SECOND', 2); -- Operating Systems, Year 2, Second Semester
