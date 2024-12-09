@@ -1,0 +1,49 @@
+---
+const {id, code, name, creditHours, prerequisites} = Astro.props;
+---
+
+<sticky-note
+    id={id}
+    data-prerequisites={JSON.stringify(prerequisites)}
+>
+    <div class="sticky-note relative font-sketch bg-lime-200 shadow w-40 h-40 p-3 hover:bg-blue-100 transition-all">
+        <h1 class="font-bold text-lg">{code}</h1>
+        <p class="line-clamp-3">{name}</p>
+        <p class="text-sm absolute bottom-3 right-3 opacity-60">{creditHours} Cr.</p>
+    </div>
+</sticky-note>
+
+<script>
+    import type { CoursePrerequisite } from "../types";
+
+    class StickyNote extends HTMLElement {
+        connectedCallback() {
+            const prerequisites: Record<number, CoursePrerequisite> = JSON.parse(
+                this.dataset.prerequisites || '{}'
+            );
+
+            this.addEventListener('mouseenter', () => highlightPrerequisites(prerequisites));
+            this.addEventListener('mouseleave', () => resetHighlights());
+        }
+    }
+
+    function highlightPrerequisites(prerequisites: Record<number, CoursePrerequisite>) {
+        Object.entries(prerequisites).forEach(([key]) => {
+            const element = document.querySelector(
+                `sticky-note[id="${key}"]`
+            )?.firstElementChild;
+            if (!element) return;
+
+            element.classList.add('bg-orange-200');
+        });
+    }
+
+    function resetHighlights() {
+        const stickyNotes = document.querySelectorAll('.sticky-note');
+        stickyNotes.forEach(n => {
+            n.classList.remove('bg-orange-200');
+        })
+    }
+
+    customElements.define('sticky-note', StickyNote);
+</script>
