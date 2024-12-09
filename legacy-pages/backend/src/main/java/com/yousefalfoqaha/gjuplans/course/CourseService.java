@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
@@ -16,24 +18,27 @@ public class CourseService {
         this.courseRepository = courseRepository;
     }
 
-    public List<CourseResponse> getCoursesById(List<Long> courseIds) {
+    public Map<Long, CourseResponse> getCoursesById(List<Long> courseIds) {
         var courses = courseRepository.findAllById(courseIds);
 
         return courses
                 .stream()
-                .map(c -> new CourseResponse(
-                        c.getId(),
-                        c.getCode(),
-                        c.getName(),
-                        c.getCreditHours(),
-                        c.getPrerequisites()
-                                .stream()
-                                .map(pr -> new CoursePrerequisiteResponse(
-                                        pr.getPrerequisite().getId(),
-                                        pr.getRelation()
+                .collect(Collectors.toMap(
+                        c -> c.getId(),
+                        c -> new CourseResponse(
+                                c.getId(),
+                                c.getCode(),
+                                c.getName(),
+                                c.getCreditHours(),
+                                c.getPrerequisites()
+                                        .stream()
+                                        .collect(Collectors.toMap(
+                                                pr -> pr.getPrerequisite().getId(),
+                                                pr -> new CoursePrerequisiteResponse(
+                                                        pr.getPrerequisite().getId(),
+                                                        pr.getRelation()
+                                        ))
                                 ))
-                                .toList()
-                ))
-                .toList();
+                ));
     }
 }

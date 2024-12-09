@@ -25,7 +25,7 @@ INSERT INTO study_plan (start_academic_year, duration, program) VALUES
 
 -- Insert tracks
 INSERT INTO track (study_plan, code, name) VALUES
-(1, 'A', 'Software Engineering Track'),
+--(1, 'A', 'Software Engineering Track'),
 (2, 'B', 'Artificial Intelligence Track');
 
 -- Insert sections

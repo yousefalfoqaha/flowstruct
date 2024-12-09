@@ -14,13 +14,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/programs")
-@CrossOrigin("http://localhost:5173/")
+@CrossOrigin("http://localhost:4321/")
 public class ProgramController {
     private final ProgramService programService;
 
     @GetMapping
     public ResponseEntity<List<ProgramOptionResponse>> getAllPrograms() {
-        return new ResponseEntity<>(programService.getAllPrograms(), HttpStatus.OK);
+        return new ResponseEntity<>(programService.getAllProgramOptions(), HttpStatus.OK);
     }
 
     @PostMapping

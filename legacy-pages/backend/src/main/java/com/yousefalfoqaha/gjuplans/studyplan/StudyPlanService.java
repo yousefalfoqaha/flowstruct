@@ -17,7 +17,18 @@ public class StudyPlanService {
     private final CourseService courseService;
 
     public List<StudyPlanOptionResponse> getAllStudyPlans() {
-        return studyPlanRepository.findAllStudyPlans();
+        return studyPlanRepository.findAllStudyPlanOptions()
+                .stream()
+                .map(o -> new StudyPlanOptionResponse(
+                        o.id(),
+                        o.startAcademicYear(),
+                        o.trackCode() == null ? null : new TrackResponse(
+                                o.trackCode(),
+                                o.trackName()
+                        ),
+                        o.program()
+                ))
+                .toList();
     }
 
     public StudyPlanResponse getStudyPlan(long studyPlanId) {
@@ -30,9 +41,9 @@ public class StudyPlanService {
                 studyPlan.getId(),
                 studyPlan.getStartAcademicYear(),
                 studyPlan.getDuration(),
-                new TrackResponse(
-                        studyPlan.getTrack().getCode(),
-                        studyPlan.getTrack().getName()
+                studyPlan.getTrack() == null ? null : new TrackResponse(
+                                studyPlan.getTrack().getCode(),
+                                studyPlan.getTrack().getName()
                 ),
                 studyPlan.getProgram().getId(),
                 studyPlan.getSections()
@@ -54,6 +65,7 @@ public class StudyPlanService {
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
                                 entry -> new GuideCourseResponse(
+                                        entry.getValue().getCourse().getId(),
                                         entry.getValue().getYear(),
                                         entry.getValue().getSemester()
                                 )

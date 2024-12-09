@@ -1,12 +1,12 @@
 package com.yousefalfoqaha.gjuplans.course.dto.response;
 
-import java.util.List;
+import java.util.Map;
 
 public record CourseResponse(
         long id,
         String code,
         String name,
         int creditHours,
-        List<CoursePrerequisiteResponse> prerequisites
+        Map<Long, CoursePrerequisiteResponse> prerequisites
 ) {
 }

@@ -13,6 +13,6 @@ public record StudyPlanResponse(
         long program,
         List<SectionResponse> sections,
         Map<Long, GuideCourseResponse> guideCourses,
-        List<CourseResponse> courses
+        Map<Long, CourseResponse> courses
 ) {
 }
