@@ -63,7 +63,7 @@ CREATE TABLE section (
     level enum_section_level NOT NULL,
     type enum_section_type NOT NULL,
     required_credit_hours INT NOT NULL,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255),
     study_plan INT NOT NULL,
     FOREIGN KEY (study_plan) REFERENCES study_plan(id)
 );

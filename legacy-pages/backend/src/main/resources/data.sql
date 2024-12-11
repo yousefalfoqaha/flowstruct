@@ -1,51 +1,55 @@
--- Insert programs
+-- Insert program
 INSERT INTO program (code, name, degree) VALUES
-('CS', 'Bachelor of Science in Computer Science', 'BACHELOR'),
-('CS', 'Master of Science in Computer Science', 'MASTER');
+('MECH', 'Mechanical and Maintenance Engineering', 'BACHELOR');
 
 -- Insert courses
 INSERT INTO course (code, name, credit_hours) VALUES
-('CS101', 'Introduction to Computer Science', 3),
-('CS102', 'Data Structures', 4),
-('CS201', 'Algorithms', 3),
-('CS301', 'Database Systems', 3),
-('CS302', 'Operating Systems', 4);
+('MECH5502', 'Building Automation', 3), -- 1
+('MECH3202', 'Computer Aided Thermal Engineering', 2), -- 2
+('ME0212', 'Electrical Circuits and Machines', 3), -- 3
+('PHYS104', 'Physics II', 3), -- 4
+('PHYS103', 'Physics I', 3), -- 5
+('MECH2202', 'Fluid Flow and Heat Transfer', 3), -- 6
+('MECH2201', 'Applied Thermodynamics', 3), -- 7
+('MATH205', 'Differential Equations', 3), -- 8
+('MATH102', 'Calculus II', 3), -- 9
+('MATH101', 'Calculus I', 3); -- 10
 
--- Insert course prerequisites
+
+-- Insert prerequisites
 INSERT INTO course_prerequisite (course, prerequisite, relation) VALUES
-(2, 1, 'AND'), -- Data Structures requires Introduction to Computer Science
-(3, 2, 'AND'), -- Algorithms requires Data Structures
-(4, 2, 'AND'), -- Database Systems requires Data Structures
-(5, 2, 'AND'); -- Operating Systems requires Data Structures
+(1, 2, 'AND'),
+(1, 3, 'AND'),
+(2, 6, 'AND'),
+(3, 4, 'AND'),
+(4, 5, 'AND'),
+(6, 8, 'AND'),
+(6, 7, 'AND'),
+(8, 9, 'AND'),
+(9, 10, 'AND');
 
 -- Insert study plan
 INSERT INTO study_plan (start_academic_year, duration, program) VALUES
-(2023, 4, 1),  -- Program ID 1: BSc in CS, start academic year 2023, duration 4 years
-(2023, 2, 2);  -- Program ID 2: MSc in CS, start academic year 2023, duration 2 years
+(2023, 5, 1); -- Program ID 1: BSc in Computer Science, start academic year 2023, duration 4 years
 
--- Insert tracks
 INSERT INTO track (study_plan, code, name) VALUES
---(1, 'A', 'Software Engineering Track'),
-(2, 'B', 'Artificial Intelligence Track');
+(1, 'THERMAL', 'Thermal Systems Track');
 
 -- Insert sections
 INSERT INTO section (level, type, required_credit_hours, name, study_plan) VALUES
-('PROGRAM', 'REQUIREMENT', 3, 'Core Computer Science Courses', 1),
-('PROGRAM', 'ELECTIVE', 3, 'Elective Courses', 1),
-('PROGRAM', 'REQUIREMENT', 4, 'Core AI Courses', 2),
-('PROGRAM', 'ELECTIVE', 3, 'Elective Courses', 2);
+('PROGRAM', 'REQUIREMENT', 15, 'Thermal Systems Track', 1), -- 1
+('PROGRAM', 'REQUIREMENT', 71, NULL, 1), -- 2
+('SCHOOL', 'REQUIREMENT', 46, NULL, 1); -- 3
 
 -- Insert section courses
 INSERT INTO section_course (section, course) VALUES
-(1, 2), -- Data Structures is part of Core Computer Science Courses
-(1, 3), -- Algorithms is part of Core Computer Science Courses
-(2, 4), -- Database Systems is part of Elective Courses
-(3, 5), -- Operating Systems is part of Core AI Courses
-(4, 1); -- Introduction to Computer Science is part of Elective Courses
-
--- Insert guide courses
-INSERT INTO guide_course (course, year, semester, study_plan) VALUES
-(2, 1, 'FIRST', 1), -- Data Structures, Year 1, First Semester
-(3, 1, 'SECOND', 1), -- Algorithms, Year 1, Second Semester
-(4, 1, 'FIRST', 2), -- Database Systems, Year 1, First Semester
-(5, 2, 'SECOND', 2); -- Operating Systems, Year 2, Second Semester
+(1, 1),
+(2, 2),
+(2, 3),
+(2, 6),
+(2, 7),
+(3, 4),
+(3, 5),
+(3, 8),
+(3, 9),
+(3, 10);
