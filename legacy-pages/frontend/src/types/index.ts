@@ -25,13 +25,9 @@ export type Course = {
     code: string;
     name: string;
     creditHours: number;
-    prerequisites: Record<number, CoursePrerequisite>
-}
-
-export type GuideCourse = {
-    course: number;
-    year: number;
-    semester: "FIRST" | "SECOND" | "SUMMER";
+    level: number;
+    prerequisites: Set<CoursePrerequisite>;
+    prerequisiteSequence: Set<CoursePrerequisite>;
 }
 
 export type Track = {
@@ -51,8 +47,7 @@ export type StudyPlan = {
     startAcademicYear: number;
     duration: number;
     track: Track | null;
-    program: number;
+    program: Program;
     sections: Section[];
-    guideCourses: Record<number, GuideCourse>;
     courses: Record<number, Course>;
 }

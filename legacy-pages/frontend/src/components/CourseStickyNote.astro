@@ -1,13 +1,14 @@
 ---
-const {id, code, name, creditHours, prerequisites} = Astro.props;
+const {id, code, name, creditHours, prerequisites, prerequisiteSequence} = Astro.props;
 ---
 
 <sticky-note
-    id={id}
-    data-prerequisites={JSON.stringify(prerequisites)}
+        id={id}
+        data-prerequisites={JSON.stringify(prerequisites)}
+        data-prerequisite-sequence={JSON.stringify(prerequisiteSequence)}
 >
-    <div class="sticky-note relative font-sketch bg-lime-200 shadow w-40 h-40 p-3 hover:bg-blue-100 transition-all">
-        <h1 class="font-bold text-lg">{code}</h1>
+    <div class="sticky-note relative bg-gray-200 shadow w-40 h-40 p-3 hover:bg-blue-200 transition-all rounded-md">
+        <h1 class="font-bold">{code}</h1>
         <p class="line-clamp-3">{name}</p>
         <p class="text-sm absolute bottom-3 right-3 opacity-60">{creditHours} Cr.</p>
     </div>
@@ -17,32 +18,50 @@ const {id, code, name, creditHours, prerequisites} = Astro.props;
     import type { CoursePrerequisite } from "../types";
 
     class StickyNote extends HTMLElement {
-        connectedCallback() {
-            const prerequisites: Record<number, CoursePrerequisite> = JSON.parse(
-                this.dataset.prerequisites || '{}'
-            );
+        constructor() {
+            super();
 
-            this.addEventListener('mouseenter', () => highlightPrerequisites(prerequisites));
-            this.addEventListener('mouseleave', () => resetHighlights());
+            const prerequisites: Set<CoursePrerequisite> = new Set(JSON.parse(
+                this.dataset.prerequisites || '[]'
+            ));
+
+            const prerequisiteSequence: Set<CoursePrerequisite> = new Set(JSON.parse(
+                this.dataset.prerequisiteSequence || '[]'
+            ));
+
+            this.addEventListener('mouseenter', () => {
+                this.highlightPrerequisiteSequence(prerequisiteSequence);
+                this.highlightPrerequisites(prerequisites);
+            });
+
+            this.addEventListener('mouseleave', () => this.resetHighlights());
         }
-    }
 
-    function highlightPrerequisites(prerequisites: Record<number, CoursePrerequisite>) {
-        Object.entries(prerequisites).forEach(([key]) => {
-            const element = document.querySelector(
-                `sticky-note[id="${key}"]`
-            )?.firstElementChild;
-            if (!element) return;
+        highlightPrerequisites(prerequisites: Set<CoursePrerequisite>) {
+            prerequisites.forEach(prerequisite => {
+                const stickyNote = document.querySelector(
+                    `sticky-note[id="${prerequisite.prerequisite}"] > div`
+                );
+                stickyNote?.classList.add('bg-orange-300');
+            });
+        }
 
-            element.classList.add('bg-orange-200');
-        });
-    }
+        highlightPrerequisiteSequence(prerequisiteSequence: Set<CoursePrerequisite>) {
+            prerequisiteSequence.forEach((prerequisite) => {
+                const stickyNote = document.querySelector(
+                    `sticky-note[id="${prerequisite.prerequisite}"] > div`
+                );
+                stickyNote?.classList.add('bg-yellow-200');
+            });
+        }
 
-    function resetHighlights() {
-        const stickyNotes = document.querySelectorAll('.sticky-note');
-        stickyNotes.forEach(n => {
-            n.classList.remove('bg-orange-200');
-        })
+        resetHighlights() {
+            const stickyNotes = document.querySelectorAll('sticky-note > div');
+            stickyNotes.forEach(n => {
+                n.classList.remove('bg-orange-300');
+                n.classList.remove('bg-yellow-200');
+            });
+        }
     }
 
     customElements.define('sticky-note', StickyNote);

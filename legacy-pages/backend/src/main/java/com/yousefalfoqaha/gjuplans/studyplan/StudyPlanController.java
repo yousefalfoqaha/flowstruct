@@ -1,7 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
-import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanOptionResponse;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanOptionResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

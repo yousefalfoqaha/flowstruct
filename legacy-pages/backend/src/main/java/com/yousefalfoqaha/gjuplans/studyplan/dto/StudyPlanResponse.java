@@ -1,6 +1,7 @@
-package com.yousefalfoqaha.gjuplans.studyplan.dto.response;
+package com.yousefalfoqaha.gjuplans.studyplan.dto;
 
-import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
+import com.yousefalfoqaha.gjuplans.course.dto.CourseResponse;
+import com.yousefalfoqaha.gjuplans.program.dto.ProgramResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -10,9 +11,8 @@ public record StudyPlanResponse(
         int startAcademicYear,
         int duration,
         TrackResponse track,
-        long program,
+        ProgramResponse program,
         List<SectionResponse> sections,
-        Map<Long, GuideCourseResponse> guideCourses,
         Map<Long, CourseResponse> courses
 ) {
 }

@@ -17,6 +17,8 @@ public class Program {
     @Id
     private Long id;
 
+    private String code;
+
     private String name;
 
     private Degree degree;

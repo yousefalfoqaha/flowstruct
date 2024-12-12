@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface ProgramRepository extends ListCrudRepository<Program, Long> {
 
-    @Query("SELECT id, name, degree FROM program")
+    @Query("SELECT id, code, name, degree FROM program")
     List<ProgramOptionProjection> findAllProgramOptions();
 
     boolean existsByNameAndDegree(String name, String degree);

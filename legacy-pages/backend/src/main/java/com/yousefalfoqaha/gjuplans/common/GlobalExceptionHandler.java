@@ -34,18 +34,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(ObjectNotValidException.class)
-    public ResponseEntity<ValidationErrorObject> handleObjectNotValidException(
-            ObjectNotValidException exception
-    ) {
-        return new ResponseEntity<>(
-                new ValidationErrorObject(
-                        HttpStatus.BAD_REQUEST.value(), exception.getErrorMessages(), new Date()
-                ),
-                HttpStatus.BAD_REQUEST
-        );
-    }
-
     @ExceptionHandler(InvalidDegreeException.class)
     public ResponseEntity<ErrorObject> handleInvalidDegreeException(
             InvalidDegreeException exception

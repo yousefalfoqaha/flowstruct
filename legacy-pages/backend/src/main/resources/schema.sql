@@ -5,18 +5,15 @@ DROP TABLE IF EXISTS section CASCADE;
 DROP TABLE IF EXISTS course_prerequisite CASCADE;
 DROP TABLE IF EXISTS course CASCADE;
 DROP TABLE IF EXISTS program CASCADE;
-DROP TABLE IF EXISTS guide_course CASCADE;
 
 DROP TYPE IF EXISTS enum_degree CASCADE;
 DROP TYPE IF EXISTS enum_section_level CASCADE;
 DROP TYPE IF EXISTS enum_section_type CASCADE;
-DROP TYPE IF EXISTS enum_semester CASCADE;
 DROP TYPE IF EXISTS enum_relation CASCADE;
 
 CREATE TYPE enum_degree AS ENUM ('BACHELOR', 'MASTER');
 CREATE TYPE enum_section_level AS ENUM ('UNIVERSITY', 'SCHOOL', 'PROGRAM');
 CREATE TYPE enum_section_type AS ENUM ('REQUIREMENT', 'ELECTIVE', 'REMEDIAL');
-CREATE TYPE enum_semester AS ENUM ('FIRST', 'SECOND', 'SUMMER');
 CREATE TYPE enum_relation AS ENUM ('AND', 'OR');
 
 CREATE TABLE course (
@@ -74,12 +71,4 @@ CREATE TABLE section_course (
     PRIMARY KEY (section, course),
     FOREIGN KEY (section) REFERENCES section(id) ON DELETE CASCADE,
     FOREIGN KEY (course) REFERENCES course(id) ON DELETE CASCADE
-);
-
-CREATE TABLE guide_course (
-    course INT NOT NULL,
-    year INT NOT NULL,
-    semester enum_semester NOT NULL,
-    study_plan INT NOT NULL,
-    FOREIGN KEY (study_plan) REFERENCES study_plan(id)
 );

@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.studyplan.dto.response;
+package com.yousefalfoqaha.gjuplans.studyplan.dto;
 
 import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionLevel;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionType;

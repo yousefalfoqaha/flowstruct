@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.course.dto.response;
+package com.yousefalfoqaha.gjuplans.course.dto;
 
 import com.yousefalfoqaha.gjuplans.course.domain.Relation;
 

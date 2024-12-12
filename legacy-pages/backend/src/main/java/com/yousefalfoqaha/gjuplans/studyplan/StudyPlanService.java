@@ -1,20 +1,23 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
 import com.yousefalfoqaha.gjuplans.course.CourseService;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.response.*;
+import com.yousefalfoqaha.gjuplans.program.ProgramService;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.SectionResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanOptionResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.TrackResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class StudyPlanService {
     private final StudyPlanRepository studyPlanRepository;
     private final CourseService courseService;
+    private final ProgramService programService;
 
     public List<StudyPlanOptionResponse> getAllStudyPlans() {
         return studyPlanRepository.findAllStudyPlanOptions()
@@ -45,7 +48,7 @@ public class StudyPlanService {
                                 studyPlan.getTrack().getCode(),
                                 studyPlan.getTrack().getName()
                 ),
-                studyPlan.getProgram().getId(),
+                programService.getProgram(studyPlan.getProgram().getId()),
                 studyPlan.getSections()
                         .stream()
                         .map(sec -> new SectionResponse(
@@ -59,17 +62,6 @@ public class StudyPlanService {
                                         .toList()
                         ))
                         .toList(),
-                studyPlan.getGuideCourses()
-                        .entrySet()
-                        .stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                entry -> new GuideCourseResponse(
-                                        entry.getValue().getCourse().getId(),
-                                        entry.getValue().getYear(),
-                                        entry.getValue().getSemester()
-                                )
-                        )),
                 courseService.getCoursesById(
                         studyPlan.getSections()
                                 .stream()

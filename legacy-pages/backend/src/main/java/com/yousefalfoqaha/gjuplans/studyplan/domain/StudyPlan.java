@@ -33,7 +33,4 @@ public class StudyPlan {
 
         @MappedCollection(idColumn = "study_plan", keyColumn = "id")
         private List<Section> sections;
-
-        @MappedCollection(idColumn = "study_plan", keyColumn = "course")
-        private Map<Long, GuideCourse> guideCourses;
 }

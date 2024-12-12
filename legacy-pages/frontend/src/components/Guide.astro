@@ -1,29 +1,34 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Year from "./Year.astro";
+import Level from "../components/Level.astro";
 import {$studyPlan, fetchStudyPlan} from "../stores/studyPlan";
+import {type Course} from "../types";
 
 await fetchStudyPlan(1);
 
 const studyPlan = $studyPlan.get();
 if (!studyPlan) return;
 
-const years = Array.from({length: studyPlan.duration}, (_, i) => i + 1);
-const guideCourses = Object.values(studyPlan.guideCourses);
----
+let currentLevel = 1;
+let levels: Map<number, Course[]> = new Map();
 
-<Layout>
-    <div class="flex flex-col gap-5">
-        <div class="flex flex-row gap-8">
-            {years.map((yr) => {
-                const yearCourses = guideCourses.filter(c => c.year === yr);
-                if (yearCourses.length === 0) return;
-                return <Year
-                        key={yr}
-                        year={studyPlan.startAcademicYear + yr - 1}
-                        yearCourses={yearCourses}
-                />
-            })}
-        </div>
+while (true) {
+    const levelCourses = Object.values(studyPlan.courses).filter(c => c.level === currentLevel);
+
+    if (levelCourses.length === 0) break;
+
+    levels.set(currentLevel, levelCourses);
+
+    currentLevel++;
+}
+---
+<div class="flex flex-col gap-5">
+    <div class="flex flex-row gap-8">
+        {Array.from(levels.entries()).map(([level, levelCourses]) => (
+            <Level
+                    key={level}
+                    level={level}
+                    courses={levelCourses}
+            />
+        ))}
     </div>
-</Layout>
+</div>
