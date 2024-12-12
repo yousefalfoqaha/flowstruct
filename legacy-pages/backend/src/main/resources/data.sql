@@ -1,8 +1,6 @@
--- Insert program
 INSERT INTO program (code, name, degree) VALUES
 ('MECH', 'Mechanical and Maintenance Engineering', 'BACHELOR');
 
--- Insert courses
 INSERT INTO course (code, name, credit_hours) VALUES
 ('MECH5502', 'Building Automation', 3), -- 1
 ('MECH3202', 'Computer Aided Thermal Engineering', 2), -- 2
@@ -15,8 +13,6 @@ INSERT INTO course (code, name, credit_hours) VALUES
 ('MATH102', 'Calculus II', 3), -- 9
 ('MATH101', 'Calculus I', 3); -- 10
 
-
--- Insert prerequisites
 INSERT INTO course_prerequisite (course, prerequisite, relation) VALUES
 (1, 2, 'AND'),
 (1, 3, 'AND'),
@@ -25,23 +21,21 @@ INSERT INTO course_prerequisite (course, prerequisite, relation) VALUES
 (4, 5, 'AND'),
 (6, 8, 'AND'),
 (6, 7, 'AND'),
+(7, 9, 'AND'),
 (8, 9, 'AND'),
 (9, 10, 'AND');
 
--- Insert study plan
 INSERT INTO study_plan (start_academic_year, duration, program) VALUES
-(2023, 5, 1); -- Program ID 1: BSc in Computer Science, start academic year 2023, duration 4 years
+(2023, 5, 1);
 
 INSERT INTO track (study_plan, code, name) VALUES
 (1, 'THERMAL', 'Thermal Systems Track');
 
--- Insert sections
 INSERT INTO section (level, type, required_credit_hours, name, study_plan) VALUES
 ('PROGRAM', 'REQUIREMENT', 15, 'Thermal Systems Track', 1), -- 1
 ('PROGRAM', 'REQUIREMENT', 71, NULL, 1), -- 2
 ('SCHOOL', 'REQUIREMENT', 46, NULL, 1); -- 3
 
--- Insert section courses
 INSERT INTO section_course (section, course) VALUES
 (1, 1),
 (2, 2),

@@ -46,53 +46,7 @@ public class CourseService {
                 ));
     }
 
-    private List<Long> getPrerequisiteSequence(
-            Long courseId,
-            Map<Long, Course> allCourses
-    ) {
-        Set<Long> visited = new HashSet<>();
-        Set<Long> cycle = new HashSet<>();
-        List<Long> prerequisiteSequence = new ArrayList<>();
-
-        Course course = allCourses.get(courseId);
-
-        if (course == null) {
-            return prerequisiteSequence;
-        }
-
-        findPrerequisites(course, allCourses, visited, cycle, prerequisiteSequence);
-
-        return prerequisiteSequence;
-    }
-
-    private void findPrerequisites(
-            Course course,
-            Map<Long, Course> allCourses,
-            Set<Long> visited,
-            Set<Long> cycle,
-            List<Long> prerequisiteSequence
-    ) {
-        if (visited.contains(course.getId())) {
-            return;
-        }
-
-        if (cycle.contains(course.getId())) {
-            throw new IllegalStateException("Cycle detected in prerequisites for course " + course.getCode());
-        }
-
-        visited.add(course.getId());
-        cycle.add(course.getId());
-
-        for (CoursePrerequisite prereq : course.getPrerequisites()) {
-            Course prereqCourse = allCourses.get(prereq.getPrerequisite().getId());
-
-            if (prereqCourse != null) {
-                findPrerequisites(prereqCourse, allCourses, visited, cycle, prerequisiteSequence);
-            }
-        }
-
-        prerequisiteSequence.add(course.getId());
-
-        cycle.remove(course.getId());
+    private Map<Long, List<Map<Long, CoursePrerequisite>>> getPrerequisiteSequence() {
+        
     }
 }
