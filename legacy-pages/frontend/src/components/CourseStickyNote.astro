@@ -7,13 +7,17 @@ const {id, code, name, creditHours, prerequisites, sequences} = Astro.props;
         data-prerequisites={JSON.stringify(prerequisites)}
         data-prerequisite-sequence={JSON.stringify(sequences.prerequisiteSequence)}
         data-postrequisite-sequence={JSON.stringify(sequences.postrequisiteSequence)}
+        class="min-w-44 w-full"
 >
-    <div class="sticky-note relative group bg-gray-200 shadow w-40 h-40 p-3 hover:bg-blue-200 transition-all">
-        <h1 class="font-bold">{code}</h1>
-        <p class="line-clamp-3">{name}</p>
-        <p class="text-sm absolute bottom-3 right-3 opacity-60">{creditHours} Cr.</p>
-        <i data-lucide="info" class="opacity-70 hover:opacity-50 absolute top-3 right-3 invisible group-hover:visible cursor-pointer" />
-        <div class="indicator absolute top-3 right-3 transition-all"></div>
+    <div class="relative h-36 bg-gray-200 p-4 py-3 hover:bg-blue-100 transition-colors group rounded-lg">
+        <h3 class="font-semibold text-lg mb-1">{code}</h3>
+        <p class="text-sm line-clamp-3">{name}</p>
+        <p class="absolute bottom-3 right-3 text-sm text-gray-600 font-semibold">{creditHours} Cr.</p>
+        <i
+                data-lucide="info"
+                class="opacity-0 size-5 absolute top-3 right-3 group-hover:opacity-100 cursor-pointer"
+        />
+        <div class="indicator absolute top-2 right-2"></div>
     </div>
 </sticky-note>
 

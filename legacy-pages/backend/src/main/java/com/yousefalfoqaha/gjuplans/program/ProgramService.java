@@ -33,8 +33,8 @@ public class ProgramService {
 
         return new ProgramResponse(
                 program.getId(),
-                program.getName(),
                 program.getCode(),
+                program.getName(),
                 program.getDegree()
         );
     }

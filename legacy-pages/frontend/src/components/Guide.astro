@@ -7,12 +7,14 @@ await fetchStudyPlan(1);
 
 const studyPlan = $studyPlan.get();
 if (!studyPlan) return;
+const {program, courses, track, startAcademicYear} = studyPlan;
+const degree = program.degree.charAt(0).toUpperCase() + program.degree.slice(1).toLowerCase();
 
 let currentLevel = 1;
 let levels: Map<number, Course[]> = new Map();
 
 while (true) {
-    const levelCourses = Object.values(studyPlan.courses).filter(c => c.sequences.level === currentLevel);
+    const levelCourses = Object.values(courses).filter(c => c.sequences.level === currentLevel);
 
     if (levelCourses.length === 0) break;
 
@@ -21,14 +23,21 @@ while (true) {
     currentLevel++;
 }
 ---
-<div class="flex flex-col gap-5">
-    <div class="flex flex-row gap-8">
+
+<div class="container flex flex-col gap-6 p-6 border-x h-full">
+    <header class="flex flex-col gap-1">
+        <h1 class="text-2xl font-bold">{degree}s in {program.name} ({program.code})</h1>
+        <h2 class="text-gray-600">
+            Study Plan {startAcademicYear}/{startAcademicYear + 1}
+            {track ? ` - ${track.name}` : ''}
+        </h2>
+    </header>
+    <div class="flex flex-row justify-center gap-2">
         {Array.from(levels.entries()).map(([level, levelCourses]) => (
-            <Level
-                    key={level}
-                    level={level}
-                    courses={levelCourses}
-            />
+                <Level
+                        level={level}
+                        courses={levelCourses}
+                />
         ))}
     </div>
 </div>
