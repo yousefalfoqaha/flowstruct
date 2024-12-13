@@ -7,8 +7,7 @@ public record CourseResponse(
         String code,
         String name,
         int creditHours,
-        int level,
         Set<CoursePrerequisiteResponse> prerequisites,
-        Set<CoursePrerequisiteResponse> prerequisiteSequence
+        CourseSequencesResponse sequences
 ) {
 }

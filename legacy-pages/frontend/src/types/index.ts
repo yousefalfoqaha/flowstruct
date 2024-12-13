@@ -20,14 +20,19 @@ export type CoursePrerequisite = {
     relation: "AND" | "OR";
 }
 
+export type CourseSequences = {
+    prerequisiteSequence: number[];
+    postrequisiteSequence: number[];
+    level: number;
+}
+
 export type Course = {
     id: number;
     code: string;
     name: string;
     creditHours: number;
-    level: number;
-    prerequisites: Set<CoursePrerequisite>;
-    prerequisiteSequence: Set<CoursePrerequisite>;
+    prerequisites: CoursePrerequisite[];
+    sequences: CourseSequences;
 }
 
 export type Track = {

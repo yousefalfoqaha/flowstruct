@@ -12,7 +12,7 @@ let currentLevel = 1;
 let levels: Map<number, Course[]> = new Map();
 
 while (true) {
-    const levelCourses = Object.values(studyPlan.courses).filter(c => c.level === currentLevel);
+    const levelCourses = Object.values(studyPlan.courses).filter(c => c.sequences.level === currentLevel);
 
     if (levelCourses.length === 0) break;
 

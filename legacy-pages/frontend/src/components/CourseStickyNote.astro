@@ -1,58 +1,92 @@
 ---
-const {id, code, name, creditHours, prerequisites, prerequisiteSequence} = Astro.props;
+const {id, code, name, creditHours, prerequisites, sequences} = Astro.props;
 ---
 
 <sticky-note
         id={id}
         data-prerequisites={JSON.stringify(prerequisites)}
-        data-prerequisite-sequence={JSON.stringify(prerequisiteSequence)}
+        data-prerequisite-sequence={JSON.stringify(sequences.prerequisiteSequence)}
+        data-postrequisite-sequence={JSON.stringify(sequences.postrequisiteSequence)}
 >
-    <div class="sticky-note relative bg-gray-200 shadow w-40 h-40 p-3 hover:bg-blue-200 transition-all rounded-md">
+    <div class="sticky-note relative group bg-gray-200 shadow w-40 h-40 p-3 hover:bg-blue-200 transition-all">
         <h1 class="font-bold">{code}</h1>
         <p class="line-clamp-3">{name}</p>
         <p class="text-sm absolute bottom-3 right-3 opacity-60">{creditHours} Cr.</p>
+        <i data-lucide="info" class="opacity-70 hover:opacity-50 absolute top-3 right-3 invisible group-hover:visible cursor-pointer" />
+        <div class="indicator absolute top-3 right-3 transition-all"></div>
     </div>
 </sticky-note>
 
 <script>
-    import type { CoursePrerequisite } from "../types";
+    import type {CoursePrerequisite} from "../types";
+    import {createElement, createIcons, Info, ChevronsRight, ChevronsLeft, ChevronLeft} from "lucide";
+
+    createIcons({icons: {Info}});
 
     class StickyNote extends HTMLElement {
         constructor() {
             super();
 
-            const prerequisites: Set<CoursePrerequisite> = new Set(JSON.parse(
-                this.dataset.prerequisites || '[]'
-            ));
-
-            const prerequisiteSequence: Set<CoursePrerequisite> = new Set(JSON.parse(
-                this.dataset.prerequisiteSequence || '[]'
-            ));
+            const prerequisites: CoursePrerequisite[] = JSON.parse(this.dataset.prerequisites || '[]');
+            const prerequisiteSequence: number[] = JSON.parse(this.dataset.prerequisiteSequence || '[]');
+            const postrequisiteSequence: number[] = JSON.parse(this.dataset.postrequisiteSequence || '[]');
 
             this.addEventListener('mouseenter', () => {
-                this.highlightPrerequisiteSequence(prerequisiteSequence);
                 this.highlightPrerequisites(prerequisites);
+                this.highlightPrerequisiteSequence(prerequisiteSequence);
+                this.highlightPostrequisiteSequence(postrequisiteSequence);
             });
 
             this.addEventListener('mouseleave', () => this.resetHighlights());
         }
 
-        highlightPrerequisites(prerequisites: Set<CoursePrerequisite>) {
+        highlightPrerequisites(prerequisites: CoursePrerequisite[]) {
             prerequisites.forEach(prerequisite => {
                 const stickyNote = document.querySelector(
                     `sticky-note[id="${prerequisite.prerequisite}"] > div`
                 );
-                stickyNote?.classList.add('bg-orange-300');
+                const indicator = stickyNote?.querySelector('.indicator');
+
+                if (!stickyNote || !indicator) return;
+
+                stickyNote.classList.add('bg-orange-300');
+
+                const chevronLeft = createElement(ChevronLeft);
+                indicator.appendChild(chevronLeft);
             });
         }
 
-        highlightPrerequisiteSequence(prerequisiteSequence: Set<CoursePrerequisite>) {
+        highlightPrerequisiteSequence(prerequisiteSequence: number[]) {
             prerequisiteSequence.forEach((prerequisite) => {
                 const stickyNote = document.querySelector(
-                    `sticky-note[id="${prerequisite.prerequisite}"] > div`
+                    `sticky-note[id="${prerequisite}"] > div`
                 );
-                stickyNote?.classList.add('bg-yellow-200');
+                const indicator = stickyNote?.querySelector('.indicator');
+
+                if (!stickyNote || !indicator || stickyNote.classList.contains('bg-orange-300')) return;
+
+                stickyNote.classList.add('bg-yellow-200');
+
+                const chevronsLeftIcon = createElement(ChevronsLeft);
+                indicator.appendChild(chevronsLeftIcon);
             });
+        }
+
+        highlightPostrequisiteSequence(postrequisiteSequence: number[]) {
+            postrequisiteSequence.forEach(postrequisite => {
+                const stickyNote = document.querySelector(
+                    `sticky-note[id="${postrequisite}"] > div`
+                );
+                const indicator = stickyNote?.querySelector('.indicator');
+
+                if (!stickyNote || !indicator) return;
+
+                stickyNote.classList.add('bg-sky-800');
+                stickyNote.classList.add('text-white');
+
+                const chevronsRight = createElement(ChevronsRight);
+                indicator.appendChild(chevronsRight);
+            })
         }
 
         resetHighlights() {
@@ -60,6 +94,11 @@ const {id, code, name, creditHours, prerequisites, prerequisiteSequence} = Astro
             stickyNotes.forEach(n => {
                 n.classList.remove('bg-orange-300');
                 n.classList.remove('bg-yellow-200');
+                n.classList.remove('bg-sky-800');
+                n.classList.remove('text-white');
+
+                const indicator = n.querySelector('.indicator');
+                if (indicator) indicator.innerHTML = '';
             });
         }
     }
