@@ -5,7 +5,7 @@ const {level, courses} = Astro.props;
 ---
 
 <div class="flex flex-col gap-2 w-full">
-    <h2 class="text-center font-semibold text-gray-600 text-sm">Level {level}</h2>
+    <h2 class="text-center font-semibold opacity-60 text-sm">Level {level}</h2>
     <div class="flex flex-wrap gap-2">
         {courses.map((course: Course) => (
                 <CourseStickyNote {...course} />

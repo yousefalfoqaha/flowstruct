@@ -5,19 +5,18 @@ const {id, code, name, creditHours, prerequisites, sequences} = Astro.props;
 <sticky-note
         id={id}
         data-prerequisites={JSON.stringify(prerequisites)}
-        data-prerequisite-sequence={JSON.stringify(sequences.prerequisiteSequence)}
-        data-postrequisite-sequence={JSON.stringify(sequences.postrequisiteSequence)}
+        data-sequences={JSON.stringify(sequences)}
         class="min-w-44 w-full"
 >
     <div class="relative h-36 bg-gray-200 p-4 py-3 hover:bg-blue-100 transition-colors group rounded-lg">
         <h3 class="font-semibold text-lg mb-1">{code}</h3>
         <p class="text-sm line-clamp-3">{name}</p>
-        <p class="absolute bottom-3 right-3 text-sm text-gray-600 font-semibold">{creditHours} Cr.</p>
+        <p class="absolute bottom-3 right-3 text-sm opacity-60 font-semibold">{creditHours} Cr.</p>
         <i
                 data-lucide="info"
-                class="opacity-0 size-5 absolute top-3 right-3 group-hover:opacity-100 cursor-pointer"
+                class="opacity-0 size-5 absolute top-3 right-3 hover:text-gray-600 group-hover:opacity-100 cursor-pointer transition-opacity"
         />
-        <div class="indicator absolute top-2 right-2"></div>
+        <div class="indicator absolute top-2 right-2" />
     </div>
 </sticky-note>
 
@@ -25,83 +24,78 @@ const {id, code, name, creditHours, prerequisites, sequences} = Astro.props;
     import type {CoursePrerequisite} from "../types";
     import {createElement, createIcons, Info, ChevronsRight, ChevronsLeft, ChevronLeft} from "lucide";
 
-    createIcons({icons: {Info}});
+    createIcons({icons: {Info, ChevronsRight, ChevronsLeft, ChevronLeft}});
 
     class StickyNote extends HTMLElement {
+        private prerequisites: CoursePrerequisite[];
+        private prerequisiteSequence: number[];
+        private postrequisiteSequence: number[];
+
         constructor() {
             super();
 
-            const prerequisites: CoursePrerequisite[] = JSON.parse(this.dataset.prerequisites || '[]');
-            const prerequisiteSequence: number[] = JSON.parse(this.dataset.prerequisiteSequence || '[]');
-            const postrequisiteSequence: number[] = JSON.parse(this.dataset.postrequisiteSequence || '[]');
+            const sequences = JSON.parse(this.dataset.sequences || '{}');
+            this.prerequisites = JSON.parse(this.dataset.prerequisites || '[]');
+            this.prerequisiteSequence = sequences.prerequisiteSequence || [];
+            this.postrequisiteSequence = sequences.postrequisiteSequence || [];
 
-            this.addEventListener('mouseenter', () => {
-                this.highlightPrerequisites(prerequisites);
-                this.highlightPrerequisiteSequence(prerequisiteSequence);
-                this.highlightPostrequisiteSequence(postrequisiteSequence);
-            });
-
-            this.addEventListener('mouseleave', () => this.resetHighlights());
+            this.addEventListener('mouseenter', this.highlightRelatedCourses);
+            this.addEventListener('mouseleave', this.resetHighlights);
         }
 
-        highlightPrerequisites(prerequisites: CoursePrerequisite[]) {
-            prerequisites.forEach(prerequisite => {
-                const stickyNote = document.querySelector(
-                    `sticky-note[id="${prerequisite.prerequisite}"] > div`
-                );
-                const indicator = stickyNote?.querySelector('.indicator');
+        private highlightRelatedCourses = () => {
+            const notesToHighlight = [
+                ...this.prerequisites.map(p => ({
+                    id: p.prerequisite,
+                    classes: ['bg-orange-300'],
+                    icon: ChevronLeft
+                })),
+                ...this.prerequisiteSequence
+                    .slice(this.prerequisites.length)
+                    .map(id => ({
+                        id,
+                        classes: ['bg-yellow-200'],
+                        icon: ChevronsLeft
+                    })),
+                ...this.postrequisiteSequence.map(id => ({
+                    id,
+                    classes: ['bg-sky-800', 'text-white'],
+                    icon: ChevronsRight
+                }))
+            ];
 
+            notesToHighlight.forEach(({id, classes, icon}) => {
+                const stickyNote = document.querySelector(`sticky-note[id="${id}"] > div`);
+                const indicator = stickyNote?.querySelector('.indicator');
                 if (!stickyNote || !indicator) return;
 
-                stickyNote.classList.add('bg-orange-300');
+                stickyNote.classList.add(...classes);
 
-                const chevronLeft = createElement(ChevronLeft);
-                indicator.appendChild(chevronLeft);
+                const iconElement = createElement(icon);
+                iconElement.classList.add(
+                    'opacity-0',
+                    'transition-opacity',
+                    'duration-300'
+                );
+                indicator.appendChild(iconElement);
+
+                requestAnimationFrame(() => {
+                    iconElement.classList.remove('opacity-0');
+                });
             });
         }
 
-        highlightPrerequisiteSequence(prerequisiteSequence: number[]) {
-            prerequisiteSequence.forEach((prerequisite) => {
-                const stickyNote = document.querySelector(
-                    `sticky-note[id="${prerequisite}"] > div`
-                );
-                const indicator = stickyNote?.querySelector('.indicator');
-
-                if (!stickyNote || !indicator || stickyNote.classList.contains('bg-orange-300')) return;
-
-                stickyNote.classList.add('bg-yellow-200');
-
-                const chevronsLeftIcon = createElement(ChevronsLeft);
-                indicator.appendChild(chevronsLeftIcon);
-            });
-        }
-
-        highlightPostrequisiteSequence(postrequisiteSequence: number[]) {
-            postrequisiteSequence.forEach(postrequisite => {
-                const stickyNote = document.querySelector(
-                    `sticky-note[id="${postrequisite}"] > div`
-                );
-                const indicator = stickyNote?.querySelector('.indicator');
-
-                if (!stickyNote || !indicator) return;
-
-                stickyNote.classList.add('bg-sky-800');
-                stickyNote.classList.add('text-white');
-
-                const chevronsRight = createElement(ChevronsRight);
-                indicator.appendChild(chevronsRight);
-            })
-        }
-
-        resetHighlights() {
+        private resetHighlights = () => {
             const stickyNotes = document.querySelectorAll('sticky-note > div');
-            stickyNotes.forEach(n => {
-                n.classList.remove('bg-orange-300');
-                n.classList.remove('bg-yellow-200');
-                n.classList.remove('bg-sky-800');
-                n.classList.remove('text-white');
+            stickyNotes.forEach(note => {
+                note.classList.remove(
+                    'bg-orange-300',
+                    'bg-yellow-200',
+                    'bg-sky-800',
+                    'text-white'
+                );
 
-                const indicator = n.querySelector('.indicator');
+                const indicator = note.querySelector('.indicator');
                 if (indicator) indicator.innerHTML = '';
             });
         }
