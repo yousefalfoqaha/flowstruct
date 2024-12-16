@@ -65,16 +65,16 @@ public class CourseService {
             }
 
             var courseSequences = courseSequencesMap.get(courseId);
-            var coursePrerequisiteSequences = courseSequencesMap.get(prerequisiteId);
+            var prerequisiteCourseSequences = courseSequencesMap.get(prerequisiteId);
 
             courseSequences.getPrerequisiteSequence()
-                    .addAll(coursePrerequisiteSequences.getPrerequisiteSequence());
+                    .addAll(prerequisiteCourseSequences.getPrerequisiteSequence());
             courseSequences.getPrerequisiteSequence().add(prerequisiteId);
 
-            coursePrerequisiteSequences.getPostrequisiteSequence().add(courseId);
+            prerequisiteCourseSequences.getPostrequisiteSequence().add(courseId);
 
-            if (courseSequences.getLevel() <= coursePrerequisiteSequences.getLevel()) {
-                courseSequences.setLevel(coursePrerequisiteSequences.getLevel() + 1);
+            if (courseSequences.getLevel() <= prerequisiteCourseSequences.getLevel()) {
+                courseSequences.setLevel(prerequisiteCourseSequences.getLevel() + 1);
             }
         }
 
@@ -87,18 +87,18 @@ public class CourseService {
             Map<Long, CourseSequences> courseSequencesMap
     ) {
         var courseSequences = courseSequencesMap.get(courseId);
-        var coursePostrequisites = new HashSet<>(courseSequences.getPostrequisiteSequence());
+        var postrequisiteCourses = new HashSet<>(courseSequences.getPostrequisiteSequence());
 
-        for (var postrequisiteId : coursePostrequisites) {
+        for (var postrequisiteId : postrequisiteCourses) {
             if (!visited.contains(postrequisiteId)) {
                 traversePostrequisites(postrequisiteId, visited, courseSequencesMap);
             }
 
-            var coursePostrequisiteSequences = courseSequencesMap.get(postrequisiteId);
+            var postrequisiteCourseSequences = courseSequencesMap.get(postrequisiteId);
 
             courseSequences.getPostrequisiteSequence().add(postrequisiteId);
             courseSequences.getPostrequisiteSequence()
-                    .addAll(coursePostrequisiteSequences.getPostrequisiteSequence());
+                    .addAll(postrequisiteCourseSequences.getPostrequisiteSequence());
         }
 
         visited.add(courseId);
