@@ -2,8 +2,8 @@ package com.yousefalfoqaha.gjuplans.studyplan.dto;
 
 public record StudyPlanOptionResponse(
         long id,
-        int startAcademicYear,
-        TrackResponse track,
+        int year,
+        String track,
         long program
 ) {
 }

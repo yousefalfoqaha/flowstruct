@@ -12,9 +12,8 @@ import java.util.List;
 public interface StudyPlanRepository extends CrudRepository<StudyPlan, Long> {
 
     @Query(
-            "SELECT sp.id, sp.start_academic_year, t.code AS track_code, t.name AS track_name, sp.program " +
-            "FROM study_plan sp " +
-            "LEFT JOIN track t ON sp.id = t.study_plan;"
+            "SELECT id, year, track ,program " +
+            "FROM study_plan"
     )
     List<StudyPlanOptionProjection> findAllStudyPlanOptions();
 }

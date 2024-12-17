@@ -1,7 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan.domain;
 
 public enum SectionLevel {
-    UNIVERSITY,
-    SCHOOL,
-    PROGRAM
+    University,
+    School,
+    Program
 }

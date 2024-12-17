@@ -5,7 +5,6 @@ import com.yousefalfoqaha.gjuplans.program.ProgramService;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.SectionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanOptionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanResponse;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.TrackResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,11 +23,8 @@ public class StudyPlanService {
                 .stream()
                 .map(o -> new StudyPlanOptionResponse(
                         o.id(),
-                        o.startAcademicYear(),
-                        o.trackCode() == null ? null : new TrackResponse(
-                                o.trackCode(),
-                                o.trackName()
-                        ),
+                        o.year(),
+                        o.track(),
                         o.program()
                 ))
                 .toList();
@@ -42,12 +38,9 @@ public class StudyPlanService {
 
         return new StudyPlanResponse(
                 studyPlan.getId(),
-                studyPlan.getStartAcademicYear(),
+                studyPlan.getYear(),
                 studyPlan.getDuration(),
-                studyPlan.getTrack() == null ? null : new TrackResponse(
-                                studyPlan.getTrack().getCode(),
-                                studyPlan.getTrack().getName()
-                ),
+                studyPlan.getTrack(),
                 programService.getProgram(studyPlan.getProgram().getId()),
                 studyPlan.getSections()
                         .stream()

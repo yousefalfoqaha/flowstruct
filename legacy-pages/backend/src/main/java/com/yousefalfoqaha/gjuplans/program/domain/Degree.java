@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.gjuplans.program.domain;
 
 public enum Degree {
-    BACHELOR,
-    MASTER
+    Bachelor,
+    Master
 }

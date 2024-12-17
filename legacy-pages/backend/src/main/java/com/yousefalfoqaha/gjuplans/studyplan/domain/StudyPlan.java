@@ -23,11 +23,11 @@ public class StudyPlan {
         @Id
         private long id;
 
-        private int startAcademicYear;
+        private int year;
 
         private int duration;
 
-        private Track track;
+        private String track;
 
         private AggregateReference<Program, Long> program;
 

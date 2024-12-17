@@ -14,9 +14,9 @@ DROP TYPE IF EXISTS section_type CASCADE;
 DROP TYPE IF EXISTS relation CASCADE;
 DROP TYPE IF EXISTS teaching_method CASCADE;
 
-CREATE TYPE degree AS ENUM ('BACHELOR', 'MASTER');
-CREATE TYPE section_level AS ENUM ('UNIVERSITY', 'SCHOOL', 'PROGRAM');
-CREATE TYPE section_type AS ENUM ('REQUIREMENT', 'ELECTIVE', 'REMEDIAL');
+CREATE TYPE degree AS ENUM ('Bachelor', 'Master');
+CREATE TYPE section_level AS ENUM ('University', 'School', 'Program');
+CREATE TYPE section_type AS ENUM ('Requirement', 'Elective', 'Remedial');
 CREATE TYPE relation AS ENUM ('AND', 'OR');
 CREATE TYPE teaching_method AS ENUM ('Face-to-face', 'Blended', 'Online');
 
@@ -64,17 +64,11 @@ CREATE TABLE course_corequisite (
 
 CREATE TABLE study_plan (
     id SERIAL PRIMARY KEY,
-    start_academic_year INT NOT NULL,
+    year INT NOT NULL,
     duration INT NOT NULL,
+    track VARCHAR(255),
     program INT NOT NULL,
     FOREIGN KEY (program) REFERENCES program(id) ON DELETE CASCADE
-);
-
-CREATE TABLE track (
-    study_plan INT PRIMARY KEY,
-    code VARCHAR(255) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    FOREIGN KEY (study_plan) REFERENCES study_plan(id) ON DELETE CASCADE
 );
 
 CREATE TABLE section (
