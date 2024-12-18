@@ -7,7 +7,7 @@ await fetchStudyPlan(1);
 
 const studyPlan = $studyPlan.get();
 if (!studyPlan) return;
-const {program, courses, track, startAcademicYear} = studyPlan;
+const {program, courses, track, year} = studyPlan;
 const degree = program.degree.charAt(0).toUpperCase() + program.degree.slice(1).toLowerCase();
 
 let currentLevel = 1;
@@ -28,8 +28,8 @@ while (true) {
     <header class="flex flex-col gap-1">
         <h1 class="text-2xl font-bold">{degree}s in {program.name} ({program.code})</h1>
         <h2 class="opacity-60">
-            Study Plan {startAcademicYear}/{startAcademicYear + 1}
-            {track ? ` - ${track.name}` : ''}
+            {year}/{year + 1}
+            {track ? ` - ${track}` : ''}
         </h2>
     </header>
     <div class="flex flex-row justify-center gap-2">

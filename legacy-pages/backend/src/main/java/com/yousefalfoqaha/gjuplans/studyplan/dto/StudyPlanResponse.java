@@ -9,7 +9,6 @@ import java.util.Map;
 public record StudyPlanResponse(
         long id,
         int year,
-        int duration,
         String track,
         ProgramResponse program,
         List<SectionResponse> sections,

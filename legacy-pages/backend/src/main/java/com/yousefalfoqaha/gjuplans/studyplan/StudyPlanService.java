@@ -39,7 +39,6 @@ public class StudyPlanService {
         return new StudyPlanResponse(
                 studyPlan.getId(),
                 studyPlan.getYear(),
-                studyPlan.getDuration(),
                 studyPlan.getTrack(),
                 programService.getProgram(studyPlan.getProgram().getId()),
                 studyPlan.getSections()

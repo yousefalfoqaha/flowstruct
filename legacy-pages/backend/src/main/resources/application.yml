@@ -6,7 +6,3 @@ spring:
     url: jdbc:postgresql://localhost:5432/gju_plans
     username: postgres
     password: admin
-
-  sql:
-    init:
-      mode: always
