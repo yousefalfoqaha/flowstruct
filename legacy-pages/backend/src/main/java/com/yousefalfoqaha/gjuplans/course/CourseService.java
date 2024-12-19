@@ -5,6 +5,8 @@ import com.yousefalfoqaha.gjuplans.course.domain.CourseSequences;
 import com.yousefalfoqaha.gjuplans.course.dto.CoursePrerequisiteResponse;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseResponse;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseSequencesResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionType;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.SectionCourseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +18,12 @@ import java.util.stream.Collectors;
 public class CourseService {
     private final CourseRepository courseRepository;
 
-    public Map<Long, CourseResponse> getCoursesById(List<Long> courseIds) {
-        Map<Long, Course> courses = courseRepository.findAllById(courseIds)
+    public Map<Long, CourseResponse> getCoursesBySections(Map<Long, SectionCourseResponse> sectionCoursesMap) {
+        Map<Long, Course> courses = courseRepository.findAllById(sectionCoursesMap.keySet())
                 .stream()
                 .collect(Collectors.toMap(Course::getId, course -> course));
 
-        Map<Long, CourseSequences> courseSequencesMap = buildCourseSequences(courses);
+        Map<Long, CourseSequences> courseSequencesMap = buildCourseSequences(courses, sectionCoursesMap);
 
         return courses
                 .values()
@@ -40,6 +42,10 @@ public class CourseService {
                                                 prerequisite.getRelation()
                                         ))
                                         .collect(Collectors.toSet()),
+                                course.getCorequisites()
+                                        .stream()
+                                        .map(corequisite -> corequisite.getCorequisite().getId())
+                                        .collect(Collectors.toSet()),
                                 new CourseSequencesResponse(
                                         courseSequencesMap.get(course.getId()).getPrerequisiteSequence(),
                                         courseSequencesMap.get(course.getId()).getPostrequisiteSequence(),
@@ -53,7 +59,8 @@ public class CourseService {
             long courseId,
             Map<Long, Course> courses,
             Set<Long> visited,
-            Map<Long, CourseSequences> courseSequencesMap
+            Map<Long, CourseSequences> courseSequencesMap,
+            Map<Long, SectionCourseResponse> sectionCoursesMap
     ) {
         var course = courses.get(courseId);
 
@@ -61,7 +68,12 @@ public class CourseService {
             var prerequisiteId = prerequisite.getPrerequisite().getId();
 
             if (!visited.contains(prerequisiteId)) {
-                traversePrerequisites(prerequisiteId, courses, visited, courseSequencesMap);
+                traversePrerequisites(
+                        prerequisiteId,
+                        courses, visited,
+                        courseSequencesMap,
+                        sectionCoursesMap
+                );
             }
 
             var courseSequences = courseSequencesMap.get(courseId);
@@ -73,7 +85,10 @@ public class CourseService {
 
             prerequisiteCourseSequences.getPostrequisiteSequence().add(courseId);
 
-            if (courseSequences.getLevel() <= prerequisiteCourseSequences.getLevel()) {
+            if (
+                    courseSequences.getLevel() <= prerequisiteCourseSequences.getLevel()
+                    && sectionCoursesMap.get(prerequisiteId).sectionType().equals(SectionType.Requirement)
+            ) {
                 courseSequences.setLevel(prerequisiteCourseSequences.getLevel() + 1);
             }
         }
@@ -104,7 +119,10 @@ public class CourseService {
         visited.add(courseId);
     }
 
-    private Map<Long, CourseSequences> buildCourseSequences(Map<Long, Course> courses) {
+    private Map<Long, CourseSequences> buildCourseSequences(
+            Map<Long, Course> courses,
+            Map<Long, SectionCourseResponse> sectionCoursesMap
+    ) {
         Set<Long> visited = new HashSet<>();
         Map<Long, CourseSequences> courseSequencesMap = new HashMap<>();
 
@@ -116,15 +134,27 @@ public class CourseService {
         }
 
         for (var courseId : courses.keySet()) {
-            if (!visited.contains(courseId)) {
-                traversePrerequisites(courseId, courses, visited, courseSequencesMap);
+            if (
+                    !visited.contains(courseId)
+                    && sectionCoursesMap.get(courseId).sectionType().equals(SectionType.Requirement)
+            ) {
+                traversePrerequisites(
+                        courseId,
+                        courses,
+                        visited,
+                        courseSequencesMap,
+                        sectionCoursesMap
+                );
             }
         }
 
         visited.clear();
 
         for (var courseId : courses.keySet()) {
-            if (!visited.contains(courseId)) {
+            if (
+                    !visited.contains(courseId)
+                    && sectionCoursesMap.get(courseId).sectionType().equals(SectionType.Requirement)
+            ) {
                 traversePostrequisites(courseId, visited, courseSequencesMap);
             }
         }

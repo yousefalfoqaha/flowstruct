@@ -8,6 +8,7 @@ public record CourseResponse(
         String name,
         int creditHours,
         Set<CoursePrerequisiteResponse> prerequisites,
+        Set<Long> corequisites,
         CourseSequencesResponse sequences
 ) {
 }

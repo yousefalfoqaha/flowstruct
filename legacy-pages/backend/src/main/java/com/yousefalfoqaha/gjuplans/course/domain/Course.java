@@ -26,6 +26,17 @@ public class Course {
 
         int creditHours;
 
+        int ects;
+
+        int lectureHours;
+
+        int practicalHours;
+
+        CourseType type;
+
         @MappedCollection(idColumn = "course")
         Set<CoursePrerequisite> prerequisites;
+
+        @MappedCollection(idColumn = "course")
+        Set<CourseCorequisite> corequisites;
 }
