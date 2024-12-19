@@ -2,7 +2,7 @@ package com.yousefalfoqaha.gjuplans.studyplan;
 
 import com.yousefalfoqaha.gjuplans.course.CourseService;
 import com.yousefalfoqaha.gjuplans.program.ProgramService;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.SectionCourseResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionType;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.SectionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanOptionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanResponse;
@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -39,38 +37,28 @@ public class StudyPlanService {
                         "Study plan with id " + studyPlanId + " was not found."
                 ));
 
-        Map<Long, SectionCourseResponse> sectionCoursesMap = studyPlan.getSections()
+        var sections = studyPlan.getSections()
                 .stream()
-                .flatMap(sec -> sec.getCourses()
-                        .stream()
-                        .map(c -> Map.entry(
-                                c.getCourse().getId(),
-                                new SectionCourseResponse(
-                                        c.getCourse().getId(),
-                                        sec.getType()
-                                )
-                        )))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .map(sec -> new SectionResponse(
+                        sec.getId(),
+                        sec.getLevel(),
+                        sec.getType(),
+                        sec.getRequiredCreditHours(),
+                        sec.getName(),
+                        sec.getCourses()
+                                .stream()
+                                .map(c -> c.getCourse().getId())
+                                .toList()
+                ))
+                .toList();
 
         return new StudyPlanResponse(
                 studyPlan.getId(),
                 studyPlan.getYear(),
                 studyPlan.getTrack(),
                 programService.getProgram(studyPlan.getProgram().getId()),
-                studyPlan.getSections()
-                        .stream()
-                        .map(sec -> new SectionResponse(
-                                sec.getId(),
-                                sec.getLevel(),
-                                sec.getType(),
-                                sec.getName(),
-                                sec.getCourses()
-                                        .stream()
-                                        .map(c -> c.getCourse().getId())
-                                        .toList()
-                        ))
-                        .toList(),
-                courseService.getCoursesBySections(sectionCoursesMap)
+                sections,
+                courseService.getCoursesBySections(sections)
         );
     }
 }

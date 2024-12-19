@@ -24,6 +24,8 @@ public class Section {
 
     private SectionType type;
 
+    private int requiredCreditHours;
+
     private String name;
 
     @MappedCollection(idColumn = "section", keyColumn = "course")

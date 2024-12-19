@@ -51,7 +51,7 @@ const {id, code, name, creditHours, prerequisites, sequences} = Astro.props;
                     icon: ChevronLeft
                 })),
                 ...this.prerequisiteSequence
-                    .slice(this.prerequisites.length)
+                    .filter(id => !this.prerequisiteSequence.includes(id))
                     .map(id => ({
                         id,
                         classes: ['bg-yellow-200'],

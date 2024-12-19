@@ -12,7 +12,7 @@ export enum SemesterType {
 export type Program = {
     code: string;
     name: string;
-    degree: "BACHELOR" | "MASTER";
+    degree: "Bachelor" | "Master";
 }
 
 export type CoursePrerequisite = {
@@ -42,14 +42,16 @@ export type Track = {
 
 export type Section = {
     id: number;
-    level: "PROGRAM" | "SCHOOL" | "UNIVERSITY";
-    type: "REQUIREMENT" | "ELECTIVE" | "COMPULSORY";
+    level: "Program" | "School" | "University";
+    type: "Requirement" | "Elective" | "Remedial";
+    requiredCreditHours: number;
+    name: string | null;
     courses: number[];
 }
 
 export type StudyPlan = {
     id: number;
-    startAcademicYear: number;
+    year: number;
     duration: number;
     track: Track | null;
     program: Program;

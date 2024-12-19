@@ -9,6 +9,7 @@ public record SectionResponse(
     long id,
     SectionLevel level,
     SectionType type,
+    int requiredCreditHours,
     String name,
     List<Long> courses
 ) {
