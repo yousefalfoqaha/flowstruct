@@ -6,9 +6,9 @@ const {id, code, name, creditHours, prerequisites, sequences} = Astro.props;
         id={id}
         data-prerequisites={JSON.stringify(prerequisites)}
         data-sequences={JSON.stringify(sequences)}
-        class="min-w-44 w-full"
+        class=""
 >
-    <div class="relative h-36 bg-gray-200 p-4 py-3 hover:bg-blue-100 transition-colors group rounded-lg">
+    <div class="relative h-36 bg-gray-200 p-4 py-3 hover:bg-blue-100 transition-colors group">
         <h3 class="font-semibold text-lg mb-1">{code}</h3>
         <p class="text-sm line-clamp-3">{name}</p>
         <p class="absolute bottom-3 right-3 text-sm opacity-60 font-semibold">{creditHours} Cr.</p>
@@ -21,23 +21,20 @@ const {id, code, name, creditHours, prerequisites, sequences} = Astro.props;
 </sticky-note>
 
 <script>
-    import type {CoursePrerequisite} from "../types";
+    import type {CoursePrerequisite, CourseSequences} from "../types";
     import {createElement, createIcons, Info, ChevronsRight, ChevronsLeft, ChevronLeft} from "lucide";
 
     createIcons({icons: {Info, ChevronsRight, ChevronsLeft, ChevronLeft}});
 
     class StickyNote extends HTMLElement {
         private prerequisites: CoursePrerequisite[];
-        private prerequisiteSequence: number[];
-        private postrequisiteSequence: number[];
+        private sequences: CourseSequences;
 
         constructor() {
             super();
 
-            const sequences = JSON.parse(this.dataset.sequences || '{}');
             this.prerequisites = JSON.parse(this.dataset.prerequisites || '[]');
-            this.prerequisiteSequence = sequences.prerequisiteSequence || [];
-            this.postrequisiteSequence = sequences.postrequisiteSequence || [];
+            this.sequences = JSON.parse(this.dataset.sequences || '{}');
 
             this.addEventListener('mouseenter', this.highlightRelatedCourses);
             this.addEventListener('mouseleave', this.resetHighlights);
@@ -50,14 +47,13 @@ const {id, code, name, creditHours, prerequisites, sequences} = Astro.props;
                     classes: ['bg-orange-300'],
                     icon: ChevronLeft
                 })),
-                ...this.prerequisiteSequence
-                    .filter(id => !this.prerequisiteSequence.includes(id))
+                ...this.sequences.prerequisiteSequence
                     .map(id => ({
                         id,
                         classes: ['bg-yellow-200'],
                         icon: ChevronsLeft
                     })),
-                ...this.postrequisiteSequence.map(id => ({
+                ...this.sequences.postrequisiteSequence.map(id => ({
                     id,
                     classes: ['bg-sky-800', 'text-white'],
                     icon: ChevronsRight

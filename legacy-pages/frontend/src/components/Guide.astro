@@ -4,31 +4,38 @@ import {$studyPlan, fetchStudyPlan} from "../stores/studyPlan";
 import {type Course} from "../types";
 
 await fetchStudyPlan(1);
-
 const studyPlan = $studyPlan.get();
 if (!studyPlan) return;
-const {program, courses, track, year, sections} = studyPlan;
+
+const {
+    program,
+    courses,
+    track,
+    year,
+    sections
+} = studyPlan;
 
 let currentLevel = 1;
 let levels: Map<number, Course[]> = new Map();
-let requiredCourseIds= sections
+
+const guideCourseIds= sections
     .filter(sec => sec.type === "Requirement")
     .flatMap(sec => sec.courses);
 
 while (true) {
-    const levelCourses = requiredCourseIds
+    const levelCourses = guideCourseIds
         .map(id => courses[id])
-        .filter(course => course && course.sequences.level === currentLevel);
+        .filter(course => course && course.sequences.level === currentLevel)
+        .sort((a, b) => b.sequences.postrequisiteSequence.length - a.sequences.postrequisiteSequence.length);
 
     if (levelCourses.length === 0) break;
 
     levels.set(currentLevel, levelCourses);
-
     currentLevel++;
 }
 ---
 
-<div class="max-w-screen-2xl flex flex-col gap-6 p-6 border-x h-full">
+<div class="flex flex-col gap-6 p-6 border h-full">
     <header class="flex flex-col gap-1">
         <h1 class="text-2xl font-bold">{program.degree}s in {program.name} ({program.code})</h1>
         <h2 class="opacity-60">
@@ -36,7 +43,7 @@ while (true) {
             {track ? ` - ${track}` : ''}
         </h2>
     </header>
-    <div class="flex flex-row justify-center gap-2">
+    <div class="flex flex-row gap-6 border overflow-x-scroll p-6">
         {Array.from(levels.entries()).map(([level, levelCourses]) => (
                 <Level
                         level={level}

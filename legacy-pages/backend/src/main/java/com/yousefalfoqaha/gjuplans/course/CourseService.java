@@ -5,8 +5,6 @@ import com.yousefalfoqaha.gjuplans.course.domain.CourseSequences;
 import com.yousefalfoqaha.gjuplans.course.dto.CoursePrerequisiteResponse;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseResponse;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseSequencesResponse;
-import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionType;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.SectionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,30 +16,14 @@ import java.util.stream.Collectors;
 public class CourseService {
     private final CourseRepository courseRepository;
 
-    public Map<Long, CourseResponse> getCoursesBySections(List<SectionResponse> sections) {
-        var allCourseIds = sections
-                .stream()
-                .flatMap(sec -> sec.courses().stream())
-                .collect(Collectors.toSet());
-
-        Map<Long, Course> courses = courseRepository.findAllById(allCourseIds)
+    public Map<Long, CourseResponse> getCoursesById(List<Long> courseIds) {
+        Map<Long, Course> courses = courseRepository.findAllById(courseIds)
                 .stream()
                 .collect(Collectors.toMap(Course::getId, course -> course));
 
-        var compulsoryCourseIds = sections
-                .stream()
-                .filter(sec -> sec.type().equals(SectionType.Requirement))
-                .flatMap(sec -> sec.courses().stream())
-                .collect(Collectors.toSet());
+        Map<Long, CourseSequences> courseSequencesMap = buildCourseSequences(courses);
 
-        var compulsoryCourses = courses.entrySet().stream()
-                .filter(entry -> compulsoryCourseIds.contains(entry.getKey()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        Map<Long, CourseSequences> courseSequencesMap = buildCourseSequences(compulsoryCourses);
-
-        return courses
-                .values()
+        return courses.values()
                 .stream()
                 .collect(Collectors.toMap(
                         Course::getId,
@@ -54,6 +36,7 @@ public class CourseService {
                                 course.getLectureHours(),
                                 course.getPracticalHours(),
                                 course.getType(),
+                                course.isRemedial(),
                                 course.getPrerequisites()
                                         .stream()
                                         .map(prerequisite -> new CoursePrerequisiteResponse(
@@ -66,12 +49,14 @@ public class CourseService {
                                         .map(corequisite -> corequisite.getCorequisite().getId())
                                         .collect(Collectors.toSet()),
                                 new CourseSequencesResponse(
-                                        courseSequencesMap.getOrDefault(course.getId(), new CourseSequences(new HashSet<>(), new HashSet<>(), 1))
-                                                .getPrerequisiteSequence(),
-                                        courseSequencesMap.getOrDefault(course.getId(), new CourseSequences(new HashSet<>(), new HashSet<>(), 1))
-                                                .getPostrequisiteSequence(),
-                                        courseSequencesMap.getOrDefault(course.getId(), new CourseSequences(new HashSet<>(), new HashSet<>(), 1))
-                                                .getLevel()
+                                        courseSequencesMap.get(course.getId()).getPrerequisiteSequence()
+                                                .stream()
+                                                .filter(prereqId -> course.getPrerequisites()
+                                                        .stream()
+                                                        .noneMatch(p -> p.getPrerequisite().getId().equals(prereqId)))
+                                                .collect(Collectors.toSet()),
+                                        courseSequencesMap.get(course.getId()).getPostrequisiteSequence(),
+                                        courseSequencesMap.get(course.getId()).getLevel()
                                 )
                         )
                 ));
@@ -84,22 +69,24 @@ public class CourseService {
             Map<Long, CourseSequences> courseSequencesMap
     ) {
         var course = courses.get(courseId);
-        if (course == null) return;
 
         for (var prerequisite : course.getPrerequisites()) {
             var prerequisiteId = prerequisite.getPrerequisite().getId();
 
-            if (!visited.contains(prerequisiteId) || courses.get(prerequisiteId) != null) {
+            if (courses.get(prerequisiteId).isRemedial()) {
+                continue;
+            }
+
+            if (!visited.contains(prerequisiteId)) {
                 traversePrerequisites(prerequisiteId, courses, visited, courseSequencesMap);
             }
 
             var courseSequences = courseSequencesMap.get(courseId);
             var prerequisiteCourseSequences = courseSequencesMap.get(prerequisiteId);
-            if (prerequisiteCourseSequences == null) return;
 
-            courseSequences.getPrerequisiteSequence().addAll(
-                    prerequisiteCourseSequences.getPrerequisiteSequence()
-            );
+            courseSequences.getPrerequisiteSequence()
+                    .addAll(prerequisiteCourseSequences.getPrerequisiteSequence());
+
             courseSequences.getPrerequisiteSequence().add(prerequisiteId);
 
             prerequisiteCourseSequences.getPostrequisiteSequence().add(courseId);
@@ -114,6 +101,7 @@ public class CourseService {
 
     private void traversePostrequisites(
             long courseId,
+            Map<Long, Course> courses,
             Set<Long> visited,
             Map<Long, CourseSequences> courseSequencesMap
     ) {
@@ -121,8 +109,12 @@ public class CourseService {
         var postrequisiteCourses = new HashSet<>(courseSequences.getPostrequisiteSequence());
 
         for (var postrequisiteId : postrequisiteCourses) {
+            if (courses.get(postrequisiteId).isRemedial()) {
+                continue;
+            }
+
             if (!visited.contains(postrequisiteId)) {
-                traversePostrequisites(postrequisiteId, visited, courseSequencesMap);
+                traversePostrequisites(postrequisiteId, courses, visited, courseSequencesMap);
             }
 
             var postrequisiteCourseSequences = courseSequencesMap.get(postrequisiteId);
@@ -146,17 +138,17 @@ public class CourseService {
             );
         }
 
-        for (var courseId : courses.keySet()) {
-            if (!visited.contains(courseId)) {
-                traversePrerequisites(courseId, courses, visited, courseSequencesMap);
+        for (var course : courses.values()) {
+            if (!visited.contains(course.getId()) && !course.isRemedial()) {
+                traversePrerequisites(course.getId(), courses, visited, courseSequencesMap);
             }
         }
 
         visited.clear();
 
-        for (var courseId : courses.keySet()) {
-            if (!visited.contains(courseId)) {
-                traversePostrequisites(courseId, visited, courseSequencesMap);
+        for (var course : courses.values()) {
+            if (!visited.contains(course.getId()) && !course.isRemedial()) {
+                traversePostrequisites(course.getId(), courses, visited, courseSequencesMap);
             }
         }
 

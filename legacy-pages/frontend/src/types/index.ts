@@ -18,6 +18,7 @@ export type Program = {
 export type CoursePrerequisite = {
     prerequisite: number;
     relation: "AND" | "OR";
+    isRemedial: boolean;
 }
 
 export type CourseSequences = {
@@ -31,6 +32,11 @@ export type Course = {
     code: string;
     name: string;
     creditHours: number;
+    ects: number;
+    lectureHours: number;
+    practicalHours: number;
+    type: "F2F" | "BLD" | "OL";
+    isRemedial: boolean;
     prerequisites: CoursePrerequisite[];
     sequences: CourseSequences;
 }

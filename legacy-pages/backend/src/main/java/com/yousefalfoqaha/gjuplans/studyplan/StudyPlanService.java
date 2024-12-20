@@ -2,7 +2,6 @@ package com.yousefalfoqaha.gjuplans.studyplan;
 
 import com.yousefalfoqaha.gjuplans.course.CourseService;
 import com.yousefalfoqaha.gjuplans.program.ProgramService;
-import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionType;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.SectionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanOptionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanResponse;
@@ -37,28 +36,33 @@ public class StudyPlanService {
                         "Study plan with id " + studyPlanId + " was not found."
                 ));
 
-        var sections = studyPlan.getSections()
-                .stream()
-                .map(sec -> new SectionResponse(
-                        sec.getId(),
-                        sec.getLevel(),
-                        sec.getType(),
-                        sec.getRequiredCreditHours(),
-                        sec.getName(),
-                        sec.getCourses()
-                                .stream()
-                                .map(c -> c.getCourse().getId())
-                                .toList()
-                ))
-                .toList();
-
         return new StudyPlanResponse(
                 studyPlan.getId(),
                 studyPlan.getYear(),
                 studyPlan.getTrack(),
                 programService.getProgram(studyPlan.getProgram().getId()),
-                sections,
-                courseService.getCoursesBySections(sections)
+                studyPlan.getSections()
+                        .stream()
+                        .map(sec -> new SectionResponse(
+                                sec.getId(),
+                                sec.getLevel(),
+                                sec.getType(),
+                                sec.getRequiredCreditHours(),
+                                sec.getName(),
+                                sec.getCourses()
+                                        .stream()
+                                        .map(c -> c.getCourse().getId())
+                                        .toList()
+                        ))
+                        .toList(),
+                courseService.getCoursesById(
+                        studyPlan.getSections()
+                                .stream()
+                                .flatMap(sec -> sec.getCourses().stream())
+                                .map(c -> c.getCourse().getId())
+                                .distinct()
+                                .toList()
+                )
         );
     }
 }
