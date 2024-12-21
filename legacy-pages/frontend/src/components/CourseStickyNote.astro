@@ -1,20 +1,20 @@
 ---
-const {id, code, name, creditHours, prerequisites, sequences} = Astro.props;
+const {id, code, name, creditHours, type, prerequisites, sequences} = Astro.props;
 ---
 
 <sticky-note
         id={id}
         data-prerequisites={JSON.stringify(prerequisites)}
         data-sequences={JSON.stringify(sequences)}
-        class=""
 >
-    <div class="relative h-36 bg-gray-200 p-4 py-3 hover:bg-blue-100 transition-colors group">
-        <h3 class="font-semibold text-lg mb-1">{code}</h3>
+    <div class="relative h-32 bg-gray-200 p-3 py-2 hover:bg-blue-100 hover:text-black transition-colors group rounded-lg">
+        <h3 class="font-semibold">{code}</h3>
         <p class="text-sm line-clamp-3">{name}</p>
-        <p class="absolute bottom-3 right-3 text-sm opacity-60 font-semibold">{creditHours} Cr.</p>
+        <p class="absolute bottom-2 left-2 text-sm font-semibold group-hover:opacity-50 opacity-0 transition-opacity">{creditHours} Cr.</p>
+        <p class="absolute bottom-2 right-2 text-sm font-semibold group-hover:opacity-50 opacity-0 transition-opacity">{type}</p>
         <i
                 data-lucide="info"
-                class="opacity-0 size-5 absolute top-3 right-3 hover:text-gray-600 group-hover:opacity-100 cursor-pointer transition-opacity"
+                class="opacity-0 size-5 absolute top-2 right-2 hover:text-gray-600 group-hover:opacity-100 cursor-pointer transition-opacity"
         />
         <div class="indicator absolute top-2 right-2" />
     </div>

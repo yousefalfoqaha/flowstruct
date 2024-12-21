@@ -1,7 +1,7 @@
 ---
-import Level from "../components/Level.astro";
 import {$studyPlan, fetchStudyPlan} from "../stores/studyPlan";
 import {type Course} from "../types";
+import CourseStickyNote from "./CourseStickyNote.astro";
 
 await fetchStudyPlan(1);
 const studyPlan = $studyPlan.get();
@@ -15,24 +15,19 @@ const {
     sections
 } = studyPlan;
 
-let currentLevel = 1;
-let levels: Map<number, Course[]> = new Map();
-
-const guideCourseIds= sections
+const requirementCourses = sections
     .filter(sec => sec.type === "Requirement")
-    .flatMap(sec => sec.courses);
+    .flatMap(sec => sec.courses)
+    .map(id => courses[id])
+    .sort((a, b) => a.sequences.level - b.sequences.level);
 
-while (true) {
-    const levelCourses = guideCourseIds
-        .map(id => courses[id])
-        .filter(course => course && course.sequences.level === currentLevel)
-        .sort((a, b) => b.sequences.postrequisiteSequence.length - a.sequences.postrequisiteSequence.length);
+const levelHeaders = {
+    FOUNDATIONAL: "Foundational",
+    INTERMEDIATE: "Intermediate",
+    ADVANCED: "Advanced"
+};
 
-    if (levelCourses.length === 0) break;
-
-    levels.set(currentLevel, levelCourses);
-    currentLevel++;
-}
+const coursesPerLevelCount = Math.ceil(requirementCourses.length / 3);
 ---
 
 <div class="flex flex-col gap-6 p-6 border h-full">
@@ -43,12 +38,53 @@ while (true) {
             {track ? ` - ${track}` : ''}
         </h2>
     </header>
-    <div class="flex flex-row gap-6 border overflow-x-scroll p-6">
-        {Array.from(levels.entries()).map(([level, levelCourses]) => (
-                <Level
-                        level={level}
-                        courses={levelCourses}
-                />
-        ))}
+    <div class="relative flex flex-row gap-1 overflow-auto">
+        {Object.entries(levelHeaders).map(([key, levelName], index) => {
+            const start = index * coursesPerLevelCount;
+            const end = start + coursesPerLevelCount;
+
+            const levelCourses = requirementCourses
+                .slice(start, end)
+                .sort((a, b) =>
+                    b.sequences.postrequisiteSequence.length - a.sequences.postrequisiteSequence.length
+                );
+
+            const totalCreditHours = levelCourses.reduce((sum: number, course: Course) =>
+                sum + course.creditHours, 0
+            );
+
+            const minLevel = levelCourses[0]?.sequences.level;
+            const maxLevel = levelCourses[levelCourses.length - 1]?.sequences.level;
+
+            return (
+                    <div class="flex flex-col gap-1 w-full">
+                        <h3 class="p-3 text-center bg-zinc-500 text-white font-semibold rounded-lg">
+                            {levelName} ({totalCreditHours} Cr.)
+                        </h3>
+                        <div class="relative flex flex-row gap-1">
+                            {Array.from({length: maxLevel - minLevel + 1}, (_, i) => minLevel + i).map(level => {
+                                const subLevelCourses = levelCourses.filter(c => c.sequences.level === level);
+                                const columns = Math.ceil(subLevelCourses.length / 5);
+
+                                return (
+                                        <div class="flex flex-col">
+                                            <!--<h4 class="text-center font-semibold opacity-60 text-sm">-->
+                                            <!--    Level {level}-->
+                                            <!--</h4>-->
+                                            <div
+                                                    class="grid gap-1"
+                                                    style={`grid-template-columns: repeat(${columns}, minmax(130px, 1fr));`}
+                                            >
+                                                {subLevelCourses.map(course => (
+                                                        <CourseStickyNote {...course}/>
+                                                ))}
+                                            </div>
+                                        </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+            );
+        })}
     </div>
 </div>
