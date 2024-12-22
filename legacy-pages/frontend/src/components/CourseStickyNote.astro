@@ -1,39 +1,53 @@
 ---
-const {id, code, name, creditHours, type, prerequisites, sequences} = Astro.props;
+const {id, code, name, creditHours, type, prerequisites, corequisites, sequences} = Astro.props;
 ---
 
 <sticky-note
         id={id}
         data-prerequisites={JSON.stringify(prerequisites)}
+        data-corequisites={JSON.stringify(corequisites)}
         data-sequences={JSON.stringify(sequences)}
 >
-    <div class="relative h-32 bg-gray-200 p-3 py-2 hover:bg-blue-100 hover:text-black transition-colors group rounded-lg">
+    <div class="relative h-32 bg-gray-200 p-3 py-2 hover:bg-blue-100 hover:text-black transition-colors group rounded-md">
         <h3 class="font-semibold">{code}</h3>
         <p class="text-sm line-clamp-3">{name}</p>
-        <p class="absolute bottom-2 left-2 text-sm font-semibold group-hover:opacity-50 opacity-0 transition-opacity">{creditHours} Cr.</p>
-        <p class="absolute bottom-2 right-2 text-sm font-semibold group-hover:opacity-50 opacity-0 transition-opacity">{type}</p>
+        <p class="absolute bottom-2 left-2 text-sm font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
+            {creditHours} Cr.
+        </p>
+        <p class="absolute bottom-2 right-2 text-sm font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
+            {type}
+        </p>
         <i
                 data-lucide="info"
-                class="opacity-0 size-5 absolute top-2 right-2 hover:text-gray-600 group-hover:opacity-100 cursor-pointer transition-opacity"
+                class="opacity-0 size-5 absolute top-2 right-2 hover:text-gray-500 group-hover:opacity-100 cursor-pointer transition-opacity"
         />
-        <div class="indicator absolute top-2 right-2" />
+        <div class="indicator absolute top-1 right-1" />
     </div>
 </sticky-note>
 
 <script>
     import type {CoursePrerequisite, CourseSequences} from "../types";
-    import {createElement, createIcons, Info, ChevronsRight, ChevronsLeft, ChevronLeft} from "lucide";
+    import {
+        createElement,
+        createIcons,
+        Info,
+        ArrowBigRightDash,
+        ArrowBigLeftDash,
+        ArrowBigLeft,
+        ArrowBigUp
+    } from "lucide";
 
-    createIcons({icons: {Info, ChevronsRight, ChevronsLeft, ChevronLeft}});
+    createIcons({icons: {Info, ArrowBigRightDash, ArrowBigLeftDash, ArrowBigLeft, ArrowBigUp}});
 
     class StickyNote extends HTMLElement {
         private prerequisites: CoursePrerequisite[];
+        private corequisites: number[];
         private sequences: CourseSequences;
 
         constructor() {
             super();
-
             this.prerequisites = JSON.parse(this.dataset.prerequisites || '[]');
+            this.corequisites = JSON.parse(this.dataset.corequisites || '[]');
             this.sequences = JSON.parse(this.dataset.sequences || '{}');
 
             this.addEventListener('mouseenter', this.highlightRelatedCourses);
@@ -42,21 +56,26 @@ const {id, code, name, creditHours, type, prerequisites, sequences} = Astro.prop
 
         private highlightRelatedCourses = () => {
             const notesToHighlight = [
-                ...this.prerequisites.map(p => ({
-                    id: p.prerequisite,
+                ...this.prerequisites.map(pr => ({
+                    id: pr.prerequisite,
                     classes: ['bg-orange-300'],
-                    icon: ChevronLeft
+                    icon: ArrowBigLeft
+                })),
+                ...this.corequisites.map(id => ({
+                    id: id,
+                    classes: ['bg-gray-400', 'text-white'],
+                    icon: ArrowBigUp
                 })),
                 ...this.sequences.prerequisiteSequence
                     .map(id => ({
                         id,
                         classes: ['bg-yellow-200'],
-                        icon: ChevronsLeft
+                        icon: ArrowBigLeftDash
                     })),
                 ...this.sequences.postrequisiteSequence.map(id => ({
                     id,
                     classes: ['bg-sky-800', 'text-white'],
-                    icon: ChevronsRight
+                    icon: ArrowBigRightDash
                 }))
             ];
 
@@ -88,6 +107,7 @@ const {id, code, name, creditHours, type, prerequisites, sequences} = Astro.prop
                     'bg-orange-300',
                     'bg-yellow-200',
                     'bg-sky-800',
+                    'bg-gray-400',
                     'text-white'
                 );
 
