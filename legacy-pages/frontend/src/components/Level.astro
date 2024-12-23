@@ -2,28 +2,15 @@
 import CourseStickyNote from "./CourseStickyNote.astro";
 import type {Course} from "../types";
 const {header, courses} = Astro.props;
-
-const minLevel = courses[0]?.sequences.level;
-const maxLevel = courses[courses.length - 1]?.sequences.level;
 ---
 
-<div class="flex flex-col gap-2 w-full">
-    <h3 class="p-2 text-center bg-zinc-500 text-white font-semibold rounded">
-        {header} Courses
-    </h3>
+<div class="flex flex-col gap-2">
+    <!--<h3 class="p-2 text-center bg-zinc-500 text-white font-semibold rounded">-->
+    <!--    {header} Courses-->
+    <!--</h3>-->
     <div class="relative flex flex-row gap-2">
-        {Array.from({length: maxLevel - minLevel + 1}, (_, i) => minLevel + i).map(level => {
-            const subLevelCourses = courses.filter((c: Course) => c.sequences.level === level);
-            const columns = Math.ceil(subLevelCourses.length / 5);
-
-            return (
-                    <div
-                            class="grid gap-2 rounded-xl h-fit"
-                            style={`grid-template-columns: repeat(${columns}, minmax(130px, 1fr));`}
-                    >
-                        {subLevelCourses.map((course: Course) => <CourseStickyNote {...course}/>)}
-                    </div>
-            );
-        })}
+        <div class={`grid grid-rows-${5} grid-flow-col gap-2`}>
+            {courses.map((course: Course) => <CourseStickyNote {...course}/>)}
+        </div>
     </div>
 </div>

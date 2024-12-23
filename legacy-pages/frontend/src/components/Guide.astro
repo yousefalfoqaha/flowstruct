@@ -1,11 +1,12 @@
 ---
+import Level from "../components/Level.astro";
 import {$studyPlan, fetchStudyPlan} from "../stores/studyPlan";
-import Level from "./Level.astro";
+import {type Course} from "../types";
 
 await fetchStudyPlan(1);
+
 const studyPlan = $studyPlan.get();
 if (!studyPlan) return;
-
 const {
     program,
     courses,
@@ -14,19 +15,68 @@ const {
     sections
 } = studyPlan;
 
-const requirementCourses = sections
+let currentLevel = 1;
+let levels: Map<number, Course[]> = new Map();
+let requiredCourses= sections
     .filter(sec => sec.type === "Requirement")
     .flatMap(sec => sec.courses)
-    .map(id => courses[id])
-    .sort((a, b) => a.sequences.level - b.sequences.level);
+    .map(id => courses[id]);
 
-const levelHeaders = {
-    FOUNDATIONAL: "Foundational",
-    INTERMEDIATE: "Intermediate",
-    ADVANCED: "Advanced"
+while (true) {
+    const levelCourses= requiredCourses.filter(course =>
+        course && course.sequences.level === currentLevel
+    );
+
+    if (levelCourses.length === 0) break;
+
+    levels.set(currentLevel, levelCourses);
+
+    currentLevel++;
+}
+
+const sortByCourseCode = (a, b) => {
+    const parseCode = (code) => {
+        const match = code.match(/^([A-Z]+)(\d+)/);
+        if (!match) return { dept: '', num: 0 };
+
+        const dept = match[1];
+        const fullNum = match[2];
+        const baseNum = parseInt(fullNum.replace(/0+$/, ''));
+        const secondaryNum = parseInt(fullNum);
+
+        const isGermanCourse = dept === 'GERL';
+        const isProgramCourse = dept === program.code;
+
+        return {
+            dept,
+            baseNum,
+            secondaryNum,
+            isGermanCourse,
+            isProgramCourse
+        };
+    };
+
+    const codeA = parseCode(a.code);
+    const codeB = parseCode(b.code);
+
+    if (codeA.isGermanCourse !== codeB.isGermanCourse) {
+        return codeB.isGermanCourse ? 1 : -1;
+    }
+
+    if (codeA.isProgramCourse !== codeB.isProgramCourse) {
+        return codeB.isProgramCourse ? 1 : -1;
+    }
+
+    if (codeA.dept !== codeB.dept) {
+        return codeA.dept.localeCompare(codeB.dept);
+    }
+
+    if (codeA.baseNum !== codeB.baseNum) {
+        return codeA.baseNum - codeB.baseNum;
+    }
+
+    return codeA.secondaryNum - codeB.secondaryNum;
 };
-
-const coursesPerLevelCount = Math.ceil(requirementCourses.length / 3);
 ---
 
 <div class="flex flex-col gap-6 p-6 border h-full">
@@ -37,18 +87,16 @@ const coursesPerLevelCount = Math.ceil(requirementCourses.length / 3);
             {track ? ` - ${track}` : ''}
         </h2>
     </header>
+
     <div class="relative flex flex-row gap-2 overflow-auto">
-        {Object.entries(levelHeaders).map(([key, header], index) => {
-            const start = index * coursesPerLevelCount;
-            const end = start + coursesPerLevelCount;
+        {Array.from(levels.entries()).map(([level, levelCourses]) => {
+            levelCourses.sort(sortByCourseCode);
 
-            const levelCourses = requirementCourses
-                .slice(start, end)
-                .sort((a, b) =>
-                    b.sequences.postrequisiteSequence.length - a.sequences.postrequisiteSequence.length
-                );
-
-            return <Level header={header} courses={levelCourses} />
+            return (<Level
+                    level={level}
+                    courses={levelCourses}
+                    programCode={program.code}
+            />)
         })}
     </div>
 </div>
