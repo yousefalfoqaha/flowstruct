@@ -9,7 +9,7 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
         data-corequisites={JSON.stringify(corequisites)}
         data-sequences={JSON.stringify(sequences)}
 >
-    <div class="cursor-pointer relative h-32 bg-gray-200 p-3 py-2 hover:bg-blue-100 hover:text-black transition-colors group rounded-md">
+    <div class="select-none cursor-pointer relative h-32 bg-gray-200 p-3 py-2 hover:bg-blue-100 hover:text-black transition-colors group rounded-md">
         <h3 class="font-semibold">{code}</h3>
         <p class="text-sm line-clamp-3">{name}</p>
         <p class="absolute bottom-2 left-2 text-sm font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
@@ -39,6 +39,7 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
     } from "lucide";
 
     createIcons({icons: {Info, ArrowBigRightDash, ArrowBigLeftDash, ArrowBigLeft, ArrowBigUp}});
+
     let selectedCourse: number | null = null;
 
     class StickyNote extends HTMLElement {
@@ -49,7 +50,7 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
 
         constructor() {
             super();
-            this.id = JSON.parse(this.dataset.id ?? '');
+            this.id = JSON.parse(this.dataset.id ?? 'null');
             this.prerequisites = JSON.parse(this.dataset.prerequisites || '[]');
             this.corequisites = JSON.parse(this.dataset.corequisites || '[]');
             this.sequences = JSON.parse(this.dataset.sequences || '{}');
