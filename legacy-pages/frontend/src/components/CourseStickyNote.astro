@@ -8,7 +8,7 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
         data-prerequisites={JSON.stringify(prerequisites)}
         data-corequisites={JSON.stringify(corequisites)}
         data-sequences={JSON.stringify(sequences)}
-        class="size-32"
+        class="size-32 transition-opacity duration-300 ease-in-out"
 >
     <div class="select-none cursor-pointer relative h-32 bg-gray-200 p-3 py-2 transition-colors group rounded">
         <h3 class="font-semibold">{code}</h3>
@@ -65,7 +65,7 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
                 }
                 selectedCourse = this.id;
 
-                this.querySelector('div')?.classList.add('bg-[#dbeafe]');
+                this.querySelector('div')?.classList.add('bg-[#dbeefe]');
                 this.highlightRelatedCourses();
             });
         }
@@ -120,7 +120,7 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
             const courseCards = document.querySelectorAll('course-card > div');
             courseCards.forEach(card => {
                 card.classList.remove(
-                    'bg-[#dbeafe]',
+                    'bg-[#dbeefe]',
                     'bg-orange-300',
                     'bg-yellow-200',
                     'bg-sky-800',

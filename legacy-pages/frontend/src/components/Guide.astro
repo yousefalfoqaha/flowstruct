@@ -1,7 +1,8 @@
 ---
-import Level from "../components/Level.astro";
 import {$studyPlan, fetchStudyPlan} from "../stores/studyPlan";
-import {type Course} from "../types";
+import {sortByCourseCode} from "../utils/sortByCourseCode";
+import Level from "./Level.astro";
+import SectionCombobox from "./SectionCombobox.astro";
 
 await fetchStudyPlan(1);
 
@@ -15,71 +16,17 @@ const {
     sections
 } = studyPlan;
 
-let currentLevel = 1;
-let levels: Map<number, Course[]> = new Map();
-let requiredCourses= sections
+const requiredCourses = sections
     .filter(sec => sec.type === "Requirement")
     .flatMap(sec => sec.courses)
-    .map(id => courses[id]);
+    .map(id => courses[id])
+    .sort((a, b) => a.sequences.level - b.sequences.level);
 
-while (true) {
-    const levelCourses= requiredCourses.filter(course =>
-        course && course.sequences.level === currentLevel
-    );
-
-    if (levelCourses.length === 0) break;
-
-    levels.set(currentLevel, levelCourses);
-
-    currentLevel++;
-}
-
-const sortByCourseCode = (a, b) => {
-    const parseCode = (code) => {
-        const match = code.match(/^([A-Z]+)(\d+)/);
-        if (!match) return { dept: '', num: 0 };
-
-        const dept = match[1];
-        const fullNum = match[2];
-        const baseNum = parseInt(fullNum.replace(/0+$/, ''));
-        const secondaryNum = parseInt(fullNum);
-
-        const isGermanCourse = dept === 'GERL';
-        const isProgramCourse = dept === program.code;
-
-        return {
-            dept,
-            baseNum,
-            secondaryNum,
-            isGermanCourse,
-            isProgramCourse
-        };
-    };
-
-    const codeA = parseCode(a.code);
-    const codeB = parseCode(b.code);
-
-    if (codeA.isGermanCourse !== codeB.isGermanCourse) {
-        return codeB.isGermanCourse ? 1 : -1;
-    }
-
-    if (codeA.isProgramCourse !== codeB.isProgramCourse) {
-        return codeB.isProgramCourse ? 1 : -1;
-    }
-
-    if (codeA.dept !== codeB.dept) {
-        return codeA.dept.localeCompare(codeB.dept);
-    }
-
-    if (codeA.baseNum !== codeB.baseNum) {
-        return codeA.baseNum - codeB.baseNum;
-    }
-
-    return codeA.secondaryNum - codeB.secondaryNum;
-};
+const minLevel = requiredCourses[0]?.sequences.level;
+const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
 ---
 
-<div class="flex flex-col gap-6 p-6 border h-full">
+<div class="flex flex-col gap-6 p-6 h-full w-full">
     <header class="flex flex-col gap-1">
         <h1 class="text-2xl font-bold">{program.degree}s in {program.name} ({program.code})</h1>
         <h2 class="opacity-60">
@@ -87,16 +34,22 @@ const sortByCourseCode = (a, b) => {
             {track ? ` - ${track}` : ''}
         </h2>
     </header>
+    <SectionCombobox sections={sections} />
+    <div class="flex flex-col gap-2 overflow-auto">
+        <div class="flex flex-row p-2 bg-gray-500 text-white font-semibold rounded text-center">
+            <p class="w-1/3">Foundational</p>
+            <p class="w-1/3">Intermediate</p>
+            <p class="w-1/3">Advanced</p>
+        </div>
 
-    <div class="relative flex flex-row gap-2 overflow-auto">
-        {Array.from(levels.entries()).map(([level, levelCourses]) => {
-            levelCourses.sort(sortByCourseCode);
+        <div class="relative flex flex-row gap-2 overflow-auto">
+            {Array.from({length: maxLevel - minLevel + 1}, (_, i) => minLevel + i).map(level => {
+                const levelCourses = requiredCourses
+                    .filter(c => c.sequences.level === level)
+                    .sort((a, b) => sortByCourseCode(a, b, program.code));
 
-            return (<Level
-                    level={level}
-                    courses={levelCourses}
-                    programCode={program.code}
-            />)
-        })}
+                return <Level courses={levelCourses}/>
+            })}
+        </div>
     </div>
 </div>
