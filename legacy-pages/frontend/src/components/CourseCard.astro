@@ -8,7 +8,7 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
         data-prerequisites={JSON.stringify(prerequisites)}
         data-corequisites={JSON.stringify(corequisites)}
         data-sequences={JSON.stringify(sequences)}
-        class="size-32 transition-opacity duration-300 ease-in-out"
+        class="size-32 transition-opacity duration-300 ease-in-out rounded"
 >
     <div class="select-none cursor-pointer relative h-32 bg-gray-200 p-3 py-2 transition-colors group rounded">
         <h3 class="font-semibold">{code}</h3>
@@ -31,15 +31,12 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
     import type {CoursePrerequisite, CourseSequences} from "../types";
     import {
         createElement,
-        createIcons,
         Info,
         ArrowBigRightDash,
         ArrowBigLeftDash,
         ArrowBigLeft,
         ArrowBigUp
     } from "lucide";
-
-    createIcons({icons: {Info, ArrowBigRightDash, ArrowBigLeftDash, ArrowBigLeft, ArrowBigUp}});
 
     let selectedCourse: number | null = null;
 
@@ -65,7 +62,7 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
                 }
                 selectedCourse = this.id;
 
-                this.querySelector('div')?.classList.add('bg-[#dbeefe]');
+                this.querySelector('div')?.classList.add('bg-[#dbeefe]', 'shadow-xl');
                 this.highlightRelatedCourses();
             });
         }
@@ -121,6 +118,7 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
             courseCards.forEach(card => {
                 card.classList.remove(
                     'bg-[#dbeefe]',
+                    'shadow-xl',
                     'bg-orange-300',
                     'bg-yellow-200',
                     'bg-sky-800',

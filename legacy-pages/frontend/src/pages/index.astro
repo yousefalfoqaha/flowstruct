@@ -4,7 +4,13 @@ import Guide from "../components/Guide.astro";
 ---
 
 <Layout>
-    <div class="h-screen max-w-screen-2xl mx-auto border">
+    <div class="min-h-screen max-w-screen-2xl mx-auto border">
         <Guide class="text-gray-800" />
     </div>
 </Layout>
+
+<script>
+    import {createIcons, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Info} from "lucide";
+
+    createIcons({icons: {ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Info}});
+</script>

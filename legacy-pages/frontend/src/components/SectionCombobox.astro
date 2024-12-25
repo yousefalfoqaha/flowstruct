@@ -4,7 +4,7 @@ const {sections} = Astro.props;
 ---
 
 <label>
-    <select name="Filter by section" class="section-select w-fit border p-2 rounded">
+    <select name="Filter by section" id="section-select" class="w-fit border p-2 rounded">
         <option data-section-sectionCourses="[]">All Sections</option>
         {sections
             .filter((sec: Section) => sec.type === 'Requirement')
@@ -17,7 +17,7 @@ const {sections} = Astro.props;
 </label>
 
 <script>
-    const selectElement = document.querySelector('.section-select');
+    const selectElement = document.getElementById('section-select');
 
     selectElement?.addEventListener('change', (e) => {
         const target = e.target as HTMLSelectElement;
@@ -40,12 +40,13 @@ const {sections} = Astro.props;
         sectionCourses.forEach(courseId => {
             const courseCard = document.querySelector(`course-card[id="${courseId}"]`);
             courseCard?.classList.remove('opacity-50');
+            courseCard?.classList.add('shadow');
         });
     }
 
     function resetFilter() {
         document.querySelectorAll('course-card').forEach(card => {
-            card.classList.remove('opacity-50');
+            card.classList.remove('opacity-50', 'shadow');
         });
     }
 </script>
