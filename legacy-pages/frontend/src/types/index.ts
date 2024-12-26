@@ -38,6 +38,7 @@ export type Course = {
     type: "F2F" | "BLD" | "OL";
     isRemedial: boolean;
     prerequisites: CoursePrerequisite[];
+    corequisites: number[];
     sequences: CourseSequences;
 }
 

@@ -28,6 +28,8 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
 ---
 
 <div class="flex flex-col gap-6 p-6 h-full w-full">
+
+    <!--Study plan header-->
     <header class="flex flex-col gap-1">
         <h1 class="text-2xl font-bold">{program.degree}s in {program.name} ({program.code})</h1>
         <h2 class="opacity-60">
@@ -37,6 +39,7 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
     </header>
 
     <div class="space-y-2 relative">
+        <!--Filters-->
         <div class="flex flex-col lg:flex-row gap-2">
             <div class="flex flex-col gap-1">
                 <SectionCombobox sections={sections}/>
@@ -57,31 +60,35 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
             </div>
         </div>
 
-        <div class="flex justify-between items-center select-none">
-            <p class="flex opacity-40 flex-shrink-0 mt-auto gap-1">
-                <i data-lucide="chevron-first"/> Foundational
-            </p>
-
-            <div class="flex items-center gap-3 flex-grow justify-center p-2">
+        <!-- Navigation container - now sticky -->
+        <div class="sticky top-0 z-10 py-2">
+            <div class="flex border rounded-lg bg-white shadow hover:shadow-md w-fit mx-auto">
                 <p id="left-navigator"
-                   class="my-auto pl-1 opacity-50 flex gap-2 hover:opacity-100 transition-opacity cursor-pointer select-none">
-                    <i data-lucide="step-back"/>
+                   class="hover:bg-gray-200 p-1 px-14 border-r my-auto opacity-50 flex gap-2 hover:opacity-100 transition-opacity cursor-pointer select-none">
+                    <i data-lucide="move-left"></i>
                 </p>
-                <p class="font-semibold my-auto text-nowrap">All Compulsory Courses</p>
                 <p id="right-navigator"
-                   class="my-auto pr-1 opacity-50 flex gap-2 hover:opacity-100 transition-opacity cursor-pointer select-none">
-                    <i data-lucide="step-forward"/>
+                   class="hover:bg-gray-200 p-1 px-14 my-auto opacity-50 flex gap-2 hover:opacity-100 transition-opacity cursor-pointer select-none">
+                    <i data-lucide="move-right"></i>
                 </p>
             </div>
-
-            <p class="flex opacity-40 flex-shrink-0 mt-auto gap-1">
-                Advanced <i data-lucide="chevron-last"/>
-            </p>
         </div>
 
+        <!--Courses grid-->
         <div class="relative">
-            <div id="left-hidden-gradient" class="pointer-events-none absolute left-0 group z-50 w-8 h-full bg-gradient-to-r from-white flex items-center justify-center cursor-pointer"/>
-            <div id="right-hidden-gradient" class="pointer-events-none  absolute right-0 group z-50 w-8 h-full bg-gradient-to-l from-white flex items-center justify-center cursor-pointer"/>
+            <div class="flex absolute top-[-2.5rem] w-full justify-between select-none p-2">
+                <p class="flex opacity-40 gap-1">
+                    <i data-lucide="chevron-first"></i> Foundational
+                </p>
+
+                <p class="flex opacity-40 gap-1">
+                    Advanced <i data-lucide="chevron-last"></i>
+                </p>
+            </div>
+            <div id="left-hidden-gradient"
+                 class="pointer-events-none absolute left-0 group z-50 w-8 h-full bg-gradient-to-r from-white flex items-center justify-center cursor-pointer"/>
+            <div id="right-hidden-gradient"
+                 class="pointer-events-none  absolute right-0 group z-50 w-8 h-full bg-gradient-to-l from-white flex items-center justify-center cursor-pointer"/>
 
             <div id="courses-grid" class="flex gap-2 overflow-hidden scroll-smooth">
                 {Array.from({length: maxLevel - minLevel + 1}, (_, i) => minLevel + i).map(level => {

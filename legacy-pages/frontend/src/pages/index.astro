@@ -1,16 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Guide from "../components/Guide.astro";
+import CourseDialog from "../components/CourseDialog.astro";
 ---
 
 <Layout>
     <div class="min-h-screen max-w-screen-2xl mx-auto border">
         <Guide class="text-gray-800" />
     </div>
+    <CourseDialog />
 </Layout>
 
 <script>
-    import {createIcons, StepForward, StepBack, Info, ChevronLast, ChevronFirst} from "lucide";
+    import {createIcons, MoveRight, MoveLeft, Info, ChevronLast, ChevronFirst} from "lucide";
 
-    createIcons({icons: {StepForward, StepBack, Info, ChevronLast, ChevronFirst}});
+    createIcons({icons: {MoveRight, MoveLeft, Info, ChevronLast, ChevronFirst}});
 </script>

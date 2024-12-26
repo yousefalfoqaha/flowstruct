@@ -1,13 +1,12 @@
 ---
-const {id, code, name, creditHours, type, prerequisites, corequisites, sequences} = Astro.props;
+const {id, code, name, creditHours, lectureHours, practicalHours, ects, type, prerequisites, corequisites, sequences} = Astro.props;
 ---
 
 <course-card
         id={id}
-        data-id={JSON.stringify(id)}
-        data-prerequisites={JSON.stringify(prerequisites)}
-        data-corequisites={JSON.stringify(corequisites)}
-        data-sequences={JSON.stringify(sequences)}
+        data-course={JSON.stringify({
+            id, code, name, creditHours, lectureHours, practicalHours, ects, type, prerequisites, corequisites, sequences
+        })}
         class="transition-opacity duration-300 ease-in-out rounded"
 >
     <div class="select-none cursor-pointer relative size-32 bg-gray-200 p-3 py-2 transition-colors group rounded">
@@ -19,10 +18,12 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
         <p class="absolute bottom-2 right-2 text-sm font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
             {type}
         </p>
-        <i
-                data-lucide="info"
-                class="opacity-0 size-5 absolute top-2 right-2 hover:text-gray-500 group-hover:opacity-100 cursor-pointer transition-opacity"
-        />
+        <p class="info-button">
+            <i
+                    data-lucide="info"
+                    class="opacity-0 size-5 absolute top-2 right-2 hover:text-gray-500 group-hover:opacity-100 cursor-pointer transition-opacity"
+            />
+        </p>
         <div class="indicator absolute top-1 right-1 group-hover:opacity-0 transition-opacity"/>
     </div>
 </course-card>
@@ -55,7 +56,7 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
 </style>
 
 <script>
-    import type {CoursePrerequisite, CourseSequences} from "../types";
+    import type {Course} from "../types";
     import {
         createElement,
         ArrowBigRightDash,
@@ -64,98 +65,122 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
         ArrowBigUp
     } from "lucide";
 
-        let selectedCourse: number | null = null;
+    let selectedCourse: number | null = null;
 
-        class CourseCard extends HTMLElement {
-            private readonly id: number;
-            private prerequisites: CoursePrerequisite[];
-            private corequisites: number[];
-            private sequences: CourseSequences;
+    class CourseCard extends HTMLElement {
+        private course: Course;
 
-            constructor() {
-                super();
-                this.id = JSON.parse(this.dataset.id ?? 'null');
-                this.prerequisites = JSON.parse(this.dataset.prerequisites || '[]');
-                this.corequisites = JSON.parse(this.dataset.corequisites || '[]');
-                this.sequences = JSON.parse(this.dataset.sequences || '{}');
+        constructor() {
+            super();
+            this.course = JSON.parse(this.dataset.course || '{}');
 
-                this.addEventListener('click', () => {
-                    this.resetHighlights();
+            this.addEventListener('click', () => {
+                this.resetHighlights();
 
-                    if (selectedCourse === this.id) {
-                        selectedCourse = null;
-                        return;
-                        }
-                    selectedCourse = this.id;
-
-                    this.querySelector('div')?.classList.add('selected');
-                    this.highlightRelatedCourses();
-                    this.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'center' });
-                    });
+                if (selectedCourse === this.course.id) {
+                    selectedCourse = null;
+                    return;
                 }
+                selectedCourse = this.course.id;
 
-            private highlightRelatedCourses = () => {
-                const coursesToHighlight = [
-                    ...this.prerequisites.map(pr => ({
-                        id: pr.prerequisite,
-                        className: 'prerequisite',
-                        icon: ArrowBigLeft
-                        })),
-                    ...this.corequisites.map(id => ({
-                        id: id,
-                        className: 'corequisite',
-                        icon: ArrowBigUp
-                        })),
-                    ...this.sequences.prerequisiteSequence
-                        .map(id => ({
+                this.querySelector('div')?.classList.add('selected');
+                this.highlightRelatedCourses();
+                this.scrollIntoView({behavior: 'smooth', inline: 'center', block: 'center'});
+            });
+
+            this.querySelector('.info-button')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.openDialog();
+            });
+        }
+
+        private openDialog = () => {
+            const dialog = document.getElementById('course-dialog') as HTMLDialogElement;
+            const dialogContent = dialog.querySelector('.course-dialog-content');
+            if (!dialog || !dialogContent) return;
+
+            dialog.showModal();
+
+            dialogContent.innerHTML = `
+                <p><span class="font-semibold">Code:</span> ${this.course.code}</p>
+                <p><span class="font-semibold">Name:</span> ${this.course.name}</p>
+                <p><span class="font-semibold">Credit Hours:</span> ${this.course.creditHours}</p>
+                <p><span class="font-semibold">ECTS:</span> ${this.course.ects}</p>
+        
+                <table class="text-center rounded border">
+                    <tr><th colspan="2" class="font-semibold border-b p-2 rounded-t bg-gray-600 text-white">Contact Hours</th></tr>
+                    <tr><th class="font-semibold p-2 pr-3">Lecture</th><th class="font-semibold p-2">Practical</th></tr>
+                    <tr class="border"><td>${this.course.lectureHours}</td><td>${this.course.practicalHours}</td></tr>
+                    <tr><td colspan="2" class="font-semilight border"><b>Total: </b>${this.course.lectureHours + this.course.practicalHours}</td></tr>
+                </table>
+        
+        
+                <p><span class="font-semibold">Teaching Method:</span> ${this.course.type}</p>
+            `;
+        }
+
+        private highlightRelatedCourses = () => {
+            const coursesToHighlight = [
+                ...this.course.prerequisites.map(pr => ({
+                    id: pr.prerequisite,
+                    className: 'prerequisite',
+                    icon: ArrowBigLeft
+                })),
+                ...this.course.corequisites.map(id => ({
+                    id: id,
+                    className: 'corequisite',
+                    icon: ArrowBigUp
+                })),
+                ...this.course.sequences.prerequisiteSequence
+                    .map(id => ({
                         id: id,
                         className: 'prerequisite-sequence',
                         icon: ArrowBigLeftDash
-                        })),
-                    ...this.sequences.postrequisiteSequence.map(id => ({
-                        id: id,
-                        className: 'postrequisite-sequence',
-                        icon: ArrowBigRightDash
-                        }))
-                ];
+                    })),
+                ...this.course.sequences.postrequisiteSequence.map(id => ({
+                    id: id,
+                    className: 'postrequisite-sequence',
+                    icon: ArrowBigRightDash
+                }))
+            ];
 
-                coursesToHighlight.forEach(({id, className, icon}) => {
-                    const courseCard = document.querySelector(`course-card[id="${id}"] > div`);
-                    const indicator = courseCard?.querySelector('.indicator');
-                    if (!courseCard || !indicator) return;
+            coursesToHighlight.forEach(({id, className, icon}) => {
+                const courseCard = document.querySelector(`course-card[id="${id}"] > div`);
+                const indicator = courseCard?.querySelector('.indicator');
+                if (!courseCard || !indicator) return;
 
-                    courseCard.classList.add(className);
+                courseCard.classList.add(className);
 
-                    const iconElement = createElement(icon);
-                    iconElement.classList.add(
-                        'opacity-0',
-                        'transition-opacity',
-                        'duration-300'
-                        );
-                    indicator.appendChild(iconElement);
+                const iconElement = createElement(icon);
+                iconElement.classList.add(
+                    'opacity-0',
+                    'transition-opacity',
+                    'duration-300'
+                );
+                indicator.appendChild(iconElement);
 
-                    requestAnimationFrame(() => {
-                        iconElement.classList.remove('opacity-0');
-                        });
-                    });
-                }
+                requestAnimationFrame(() => {
+                    iconElement.classList.remove('opacity-0');
+                });
+            });
+        }
 
-            private resetHighlights = () => {
-                const courseCards = document.querySelectorAll('course-card > div');
-                courseCards.forEach(card => {
-                    card.classList.remove(
-                        'selected',
-                        'prerequisite',
-                        'corequisite',
-                        'prerequisite-sequence',
-                        'postrequisite-sequence'
-                        );
+        private resetHighlights = () => {
+            const courseCards = document.querySelectorAll('course-card > div');
+            courseCards.forEach(card => {
+                card.classList.remove(
+                    'selected',
+                    'prerequisite',
+                    'corequisite',
+                    'prerequisite-sequence',
+                    'postrequisite-sequence'
+                );
 
-                    const indicator = card.querySelector('.indicator');
-                    if (indicator) indicator.innerHTML = '';
-                    });
-                }
-            }
+                const indicator = card.querySelector('.indicator');
+                if (indicator) indicator.innerHTML = '';
+            });
+        }
+    }
 
-        customElements.define('course-card', CourseCard);
+    customElements.define('course-card', CourseCard);
 </script>
