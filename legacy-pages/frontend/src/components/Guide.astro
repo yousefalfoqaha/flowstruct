@@ -26,6 +26,7 @@ const requiredCourses = sections
 const minLevel = requiredCourses[0]?.sequences.level;
 const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
 ---
+
 <div class="flex flex-col gap-6 p-6 h-full w-full">
     <header class="flex flex-col gap-1">
         <h1 class="text-2xl font-bold">{program.degree}s in {program.name} ({program.code})</h1>
@@ -35,75 +36,76 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
         </h2>
     </header>
 
-    <div class="flex flex-col gap-2 relative">
-        <div class="space-y-2">
-            <div class="flex gap-2">
-                <div class="flex flex-col gap-1">
-                    <SectionCombobox sections={sections}/>
+    <div class="space-y-2 relative">
+        <div class="flex flex-col lg:flex-row gap-2">
+            <div class="flex flex-col gap-1">
+                <SectionCombobox sections={sections}/>
+            </div>
+            <div class="flex flex-col w-full gap-1">
+                <input type="text" class="w-full p-2 border rounded" placeholder="Search a Course..."/>
+            </div>
+            <div class="flex gap-2 text-nowrap my-auto pr-2 pl-1">
+                <label>German Track:</label>
+                <div>
+                    <input type="radio" id="b1" name="german-track" checked/>
+                    <label for="b1" class="opacity-60">B1</label>
                 </div>
-                <div class="flex flex-col w-full gap-1">
-                    <input type="text" class="w-full p-2 border rounded" placeholder="Search a Course..."/>
-                </div>
-                <div class="flex gap-2 text-nowrap my-auto pr-2 pl-1">
-                    <label>German Track: </label>
-                    <div>
-                        <input type="radio" id="b1" name="german-track" checked/>
-                        <label for="b1" class="opacity-60">B1</label>
-                    </div>
-                    <div>
-                        <input type="radio" id="b2" name="german-track"/>
-                        <label for="b2" class="opacity-60">B2</label>
-                    </div>
+                <div>
+                    <input type="radio" id="b2" name="german-track"/>
+                    <label for="b2" class="opacity-60">B2</label>
                 </div>
             </div>
+        </div>
 
-            <div class="flex border-b select-none">
-                <p class="sticky top-0 mr-auto my-auto pl-1 opacity-50 flex gap-2 hover:opacity-100 transition-opacity cursor-pointer select-none">
-                    <i data-lucide="chevrons-left"/>
-                    Foundational
+        <div class="flex justify-between items-center select-none">
+            <p class="flex opacity-40 flex-shrink-0 mt-auto gap-1">
+                <i data-lucide="chevron-first"/> Foundational
+            </p>
+
+            <div class="flex items-center gap-3 flex-grow justify-center p-2">
+                <p id="left-navigator"
+                   class="my-auto pl-1 opacity-50 flex gap-2 hover:opacity-100 transition-opacity cursor-pointer select-none">
+                    <i data-lucide="step-back"/>
                 </p>
-                <p class="mx-auto font-semibold p-2">All Compulsory Courses</p>
-                <p class="sticky top-0 ml-auto my-auto pr-1 opacity-50 flex gap-2 hover:opacity-100 transition-opacity cursor-pointer select-none">
-                    Advanced
-                    <i data-lucide="chevrons-right"/>
+                <p class="font-semibold my-auto text-nowrap">All Compulsory Courses</p>
+                <p id="right-navigator"
+                   class="my-auto pr-1 opacity-50 flex gap-2 hover:opacity-100 transition-opacity cursor-pointer select-none">
+                    <i data-lucide="step-forward"/>
                 </p>
             </div>
 
-            <div class="relative">
-                <div id="left-navigator" class="absolute left-0 group z-50 w-24 h-full bg-gradient-to-r from-white flex items-center justify-center cursor-pointer">
-                    <i
-                            data-lucide="chevron-left"
-                            class="size-14 group-hover:size-16 opacity-60 group-hover:opacity-100 transition-all duration-300 ease-in-out"/>
-                </div>
-                <div id="right-navigator" class="absolute right-0 group z-50 w-24 h-full bg-gradient-to-l from-white flex items-center justify-center cursor-pointer">
-                    <i
-                            data-lucide="chevron-right"
-                            class="size-14 group-hover:size-16 opacity-60 group-hover:opacity-100 transition-all duration-300 ease-in-out"/>
-                </div>
-                <div class="flex gap-2 overflow-hidden scroll-smooth" id="courses-grid">
-                    {Array.from({length: maxLevel - minLevel + 1}, (_, i) => minLevel + i).map(level => {
-                        const levelCourses = requiredCourses
-                            .filter(c => c.sequences.level === level)
-                            .sort((a, b) => sortByCourseCode(a, b, program.code));
+            <p class="flex opacity-40 flex-shrink-0 mt-auto gap-1">
+                Advanced <i data-lucide="chevron-last"/>
+            </p>
+        </div>
 
-                        if (levelCourses.length === 0) return;
-                        return (
-                                <div
-                                        class="grid grid-flow-col size-fit gap-2"
-                                        style={
-                                            `grid-template-rows: repeat(${
-                                                levelCourses.length <= 6
-                                                    ? levelCourses.length
-                                                    : Math.ceil(levelCourses.length / 3)
-                                            }, minmax(0, 1fr));`
-                                        }
-                                >
-                                    {levelCourses.map((course: Course) =>
-                                            <CourseCard {...course}/>)}
-                                </div>
-                        )
-                    })}
-                </div>
+        <div class="relative">
+            <div id="left-hidden-gradient" class="pointer-events-none absolute left-0 group z-50 w-8 h-full bg-gradient-to-r from-white flex items-center justify-center cursor-pointer"/>
+            <div id="right-hidden-gradient" class="pointer-events-none  absolute right-0 group z-50 w-8 h-full bg-gradient-to-l from-white flex items-center justify-center cursor-pointer"/>
+
+            <div id="courses-grid" class="flex gap-2 overflow-hidden scroll-smooth">
+                {Array.from({length: maxLevel - minLevel + 1}, (_, i) => minLevel + i).map(level => {
+                    const levelCourses = requiredCourses
+                        .filter(c => c.sequences.level === level)
+                        .sort((a, b) => sortByCourseCode(a, b, program.code));
+
+                    if (levelCourses.length === 0) return;
+                    return (
+                            <div
+                                    class="grid grid-flow-col size-fit gap-2"
+                                    style={
+                                        `grid-template-rows: repeat(${
+                                            levelCourses.length <= 6
+                                                ? levelCourses.length
+                                                : Math.ceil(levelCourses.length / 3)
+                                        }, minmax(0, 1fr));`
+                                    }
+                            >
+                                {levelCourses.map((course: Course) =>
+                                        <CourseCard {...course}/>)}
+                            </div>
+                    )
+                })}
             </div>
         </div>
     </div>
@@ -113,23 +115,28 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
     const coursesGrid = document.getElementById("courses-grid");
     const leftNavigator = document.getElementById('left-navigator');
     const rightNavigator = document.getElementById('right-navigator');
+    const leftHiddenGradient = document.getElementById('left-hidden-gradient');
+    const rightHiddenGradient = document.getElementById('right-hidden-gradient');
 
-    const SCROLL_AMOUNT = 300;
+    function getScrollAmount() {
+        if (!coursesGrid) return;
+        return coursesGrid.clientWidth * 0.6;
+    }
 
     function updateHorizontalNavigation() {
-        if (!coursesGrid || !leftNavigator || !rightNavigator) return;
+        if (!coursesGrid || !leftNavigator || !rightNavigator || !leftHiddenGradient || !rightHiddenGradient) return;
 
         const hiddenLeft = coursesGrid.scrollLeft;
         const hiddenRight = coursesGrid.scrollWidth - coursesGrid.clientWidth - coursesGrid.scrollLeft;
 
-        leftNavigator.style.display = hiddenLeft <= 0 ? 'none' : 'flex';
-        rightNavigator.style.display = hiddenRight <= 0 ? 'none' : 'flex';
+        leftHiddenGradient.style.display = hiddenLeft <= 0 ? 'none' : 'flex';
+        rightHiddenGradient.style.display = hiddenRight <= 0 ? 'none' : 'flex';
     }
 
     leftNavigator?.addEventListener('click', () => {
         if (!coursesGrid) return;
         coursesGrid.scrollBy({
-            left: -SCROLL_AMOUNT,
+            left: -getScrollAmount(),
             behavior: 'smooth'
         });
     });
@@ -137,7 +144,7 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
     rightNavigator?.addEventListener('click', () => {
         if (!coursesGrid) return;
         coursesGrid.scrollBy({
-            left: SCROLL_AMOUNT,
+            left: getScrollAmount(),
             behavior: 'smooth'
         });
     });
@@ -152,4 +159,5 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
     }
 
     updateHorizontalNavigation();
+
 </script>

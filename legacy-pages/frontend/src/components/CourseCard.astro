@@ -8,9 +8,9 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
         data-prerequisites={JSON.stringify(prerequisites)}
         data-corequisites={JSON.stringify(corequisites)}
         data-sequences={JSON.stringify(sequences)}
-        class="size-32 transition-opacity duration-300 ease-in-out rounded"
+        class="transition-opacity duration-300 ease-in-out rounded"
 >
-    <div class="select-none cursor-pointer relative h-32 bg-gray-200 p-3 py-2 transition-colors group rounded">
+    <div class="select-none cursor-pointer relative size-32 bg-gray-200 p-3 py-2 transition-colors group rounded">
         <h3 class="font-semibold">{code}</h3>
         <p class="text-sm line-clamp-3">{name}</p>
         <p class="absolute bottom-2 left-2 text-sm font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
@@ -23,114 +23,114 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
                 data-lucide="info"
                 class="opacity-0 size-5 absolute top-2 right-2 hover:text-gray-500 group-hover:opacity-100 cursor-pointer transition-opacity"
         />
-        <div class="indicator absolute top-1 right-1 group-hover:opacity-0 transition-opacity" />
+        <div class="indicator absolute top-1 right-1 group-hover:opacity-0 transition-opacity"/>
     </div>
 </course-card>
 
 <script>
     import type {CoursePrerequisite, CourseSequences} from "../types";
-    import {
-        createElement,
-        Info,
-        ArrowBigRightDash,
-        ArrowBigLeftDash,
-        ArrowBigLeft,
-        ArrowBigUp
-    } from "lucide";
+        import {
+            createElement,
+            ArrowBigRightDash,
+            ArrowBigLeftDash,
+            ArrowBigLeft,
+            ArrowBigUp
+            } from "lucide";
 
-    let selectedCourse: number | null = null;
+        let selectedCourse: number | null = null;
 
-    class CourseCard extends HTMLElement {
-        private readonly id: number;
-        private prerequisites: CoursePrerequisite[];
-        private corequisites: number[];
-        private sequences: CourseSequences;
+        class CourseCard extends HTMLElement {
+            private readonly id: number;
+            private prerequisites: CoursePrerequisite[];
+            private corequisites: number[];
+            private sequences: CourseSequences;
 
-        constructor() {
-            super();
-            this.id = JSON.parse(this.dataset.id ?? 'null');
-            this.prerequisites = JSON.parse(this.dataset.prerequisites || '[]');
-            this.corequisites = JSON.parse(this.dataset.corequisites || '[]');
-            this.sequences = JSON.parse(this.dataset.sequences || '{}');
+            constructor() {
+                super();
+                this.id = JSON.parse(this.dataset.id ?? 'null');
+                this.prerequisites = JSON.parse(this.dataset.prerequisites || '[]');
+                this.corequisites = JSON.parse(this.dataset.corequisites || '[]');
+                this.sequences = JSON.parse(this.dataset.sequences || '{}');
 
-            this.addEventListener('click', () => {
-                this.resetHighlights();
+                this.addEventListener('click', () => {
+                    this.resetHighlights();
 
-                if (selectedCourse === this.id) {
-                    selectedCourse = null;
-                    return;
+                    if (selectedCourse === this.id) {
+                        selectedCourse = null;
+                        return;
+                        }
+                    selectedCourse = this.id;
+
+                    this.querySelector('div')?.classList.add('bg-[#dbeffe]', 'shadow-xl');
+                    this.highlightRelatedCourses();
+                    this.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'center' });
+                    });
                 }
-                selectedCourse = this.id;
 
-                this.querySelector('div')?.classList.add('bg-[#dbeefe]', 'shadow-xl');
-                this.highlightRelatedCourses();
-            });
-        }
-
-        private highlightRelatedCourses = () => {
-            const coursesToHighlight = [
-                ...this.prerequisites.map(pr => ({
-                    id: pr.prerequisite,
-                    classes: ['bg-orange-300'],
-                    icon: ArrowBigLeft
-                })),
-                ...this.corequisites.map(id => ({
-                    id: id,
-                    classes: ['bg-gray-400', 'text-white'],
-                    icon: ArrowBigUp
-                })),
-                ...this.sequences.prerequisiteSequence
-                    .map(id => ({
+            private highlightRelatedCourses = () => {
+                const coursesToHighlight = [
+                    ...this.prerequisites.map(pr => ({
+                        id: pr.prerequisite,
+                        classes: ['bg-orange-300'],
+                        icon: ArrowBigLeft
+                        })),
+                    ...this.corequisites.map(id => ({
+                        id: id,
+                        classes: ['bg-gray-400', 'text-white'],
+                        icon: ArrowBigUp
+                        })),
+                    ...this.sequences.prerequisiteSequence
+                        .map(id => ({
                         id,
                         classes: ['bg-yellow-200'],
                         icon: ArrowBigLeftDash
-                    })),
-                ...this.sequences.postrequisiteSequence.map(id => ({
-                    id,
-                    classes: ['bg-sky-800', 'text-white'],
-                    icon: ArrowBigRightDash
-                }))
-            ];
+                        })),
+                    ...this.sequences.postrequisiteSequence.map(id => ({
+                        id,
+                        classes: ['bg-sky-800', 'text-white'],
+                        icon: ArrowBigRightDash
+                        }))
+                    ];
 
-            coursesToHighlight.forEach(({id, classes, icon}) => {
-                const courseCard = document.querySelector(`course-card[id="${id}"] > div`);
-                const indicator = courseCard?.querySelector('.indicator');
-                if (!courseCard || !indicator) return;
+                coursesToHighlight.forEach(({id, classes, icon}) => {
+                    const courseCard = document.querySelector(`course-card[id="${id}"] > div`);
+                    const indicator = courseCard?.querySelector('.indicator');
+                    if (!courseCard || !indicator) return;
 
-                courseCard.classList.add(...classes);
+                    courseCard.classList.add(...classes);
 
-                const iconElement = createElement(icon);
-                iconElement.classList.add(
-                    'opacity-0',
-                    'transition-opacity',
-                    'duration-300'
-                );
-                indicator.appendChild(iconElement);
+                    const iconElement = createElement(icon);
+                    iconElement.classList.add(
+                        'opacity-0',
+                        'transition-opacity',
+                        'duration-300'
+                        );
+                    indicator.appendChild(iconElement);
 
-                requestAnimationFrame(() => {
-                    iconElement.classList.remove('opacity-0');
-                });
-            });
-        }
+                    requestAnimationFrame(() => {
+                        iconElement.classList.remove('opacity-0');
+                        });
+                    });
+                }
 
-        private resetHighlights = () => {
-            const courseCards = document.querySelectorAll('course-card > div');
-            courseCards.forEach(card => {
-                card.classList.remove(
-                    'bg-[#dbeefe]',
-                    'shadow-xl',
-                    'bg-orange-300',
-                    'bg-yellow-200',
-                    'bg-sky-800',
-                    'bg-gray-400',
-                    'text-white'
-                );
+            private resetHighlights = () => {
+                const courseCards = document.querySelectorAll('course-card > div');
+                courseCards.forEach(card => {
+                    card.classList.remove(
+                        'bg-[#dbeffe]',
+                        'shadow-xl',
+                        'bg-orange-300',
+                        'bg-yellow-200',
+                        'bg-sky-800',
+                        'bg-gray-400',
+                        'text-white'
+                        );
 
-            const indicator = card.querySelector('.indicator');
-                if (indicator) indicator.innerHTML = '';
-            });
-        }
-    }
+                    const indicator = card.querySelector('.indicator');
+                    if (indicator) indicator.innerHTML = '';
+                    });
+                }
+            }
 
-    customElements.define('course-card', CourseCard);
+        customElements.define('course-card', CourseCard);
 </script>
