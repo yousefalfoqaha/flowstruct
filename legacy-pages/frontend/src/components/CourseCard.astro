@@ -27,15 +27,42 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
     </div>
 </course-card>
 
+<style>
+    .selected {
+        background-color: #bfdbfe;
+        --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        --tw-shadow-colored: 0 20px 25px -5px #0000, 0 8px 10px -6px #0000;
+        box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    }
+
+    .prerequisite {
+        background-color: #fdba74;
+    }
+
+    .corequisite {
+        background-color: #9ca3af;
+        color: #ffff;
+    }
+
+    .prerequisite-sequence {
+        background-color: #fef08a;
+    }
+
+    .postrequisite-sequence {
+        background-color: #075985;
+        color: #ffff;
+    }
+</style>
+
 <script>
     import type {CoursePrerequisite, CourseSequences} from "../types";
-        import {
-            createElement,
-            ArrowBigRightDash,
-            ArrowBigLeftDash,
-            ArrowBigLeft,
-            ArrowBigUp
-            } from "lucide";
+    import {
+        createElement,
+        ArrowBigRightDash,
+        ArrowBigLeftDash,
+        ArrowBigLeft,
+        ArrowBigUp
+    } from "lucide";
 
         let selectedCourse: number | null = null;
 
@@ -61,7 +88,7 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
                         }
                     selectedCourse = this.id;
 
-                    this.querySelector('div')?.classList.add('bg-[#dbeffe]', 'shadow-xl');
+                    this.querySelector('div')?.classList.add('selected');
                     this.highlightRelatedCourses();
                     this.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'center' });
                     });
@@ -71,33 +98,33 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
                 const coursesToHighlight = [
                     ...this.prerequisites.map(pr => ({
                         id: pr.prerequisite,
-                        classes: ['bg-orange-300'],
+                        className: 'prerequisite',
                         icon: ArrowBigLeft
                         })),
                     ...this.corequisites.map(id => ({
                         id: id,
-                        classes: ['bg-gray-400', 'text-white'],
+                        className: 'corequisite',
                         icon: ArrowBigUp
                         })),
                     ...this.sequences.prerequisiteSequence
                         .map(id => ({
-                        id,
-                        classes: ['bg-yellow-200'],
+                        id: id,
+                        className: 'prerequisite-sequence',
                         icon: ArrowBigLeftDash
                         })),
                     ...this.sequences.postrequisiteSequence.map(id => ({
-                        id,
-                        classes: ['bg-sky-800', 'text-white'],
+                        id: id,
+                        className: 'postrequisite-sequence',
                         icon: ArrowBigRightDash
                         }))
-                    ];
+                ];
 
-                coursesToHighlight.forEach(({id, classes, icon}) => {
+                coursesToHighlight.forEach(({id, className, icon}) => {
                     const courseCard = document.querySelector(`course-card[id="${id}"] > div`);
                     const indicator = courseCard?.querySelector('.indicator');
                     if (!courseCard || !indicator) return;
 
-                    courseCard.classList.add(...classes);
+                    courseCard.classList.add(className);
 
                     const iconElement = createElement(icon);
                     iconElement.classList.add(
@@ -117,13 +144,11 @@ const {id, code, name, creditHours, type, prerequisites, corequisites, sequences
                 const courseCards = document.querySelectorAll('course-card > div');
                 courseCards.forEach(card => {
                     card.classList.remove(
-                        'bg-[#dbeffe]',
-                        'shadow-xl',
-                        'bg-orange-300',
-                        'bg-yellow-200',
-                        'bg-sky-800',
-                        'bg-gray-400',
-                        'text-white'
+                        'selected',
+                        'prerequisite',
+                        'corequisite',
+                        'prerequisite-sequence',
+                        'postrequisite-sequence'
                         );
 
                     const indicator = card.querySelector('.indicator');
