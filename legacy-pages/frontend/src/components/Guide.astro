@@ -29,7 +29,7 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
 
 <div class="flex flex-col gap-6 p-6 h-full w-full">
 
-    <!--Study plan header-->
+    <!-- Study plan header -->
     <header class="flex flex-col gap-1">
         <h1 class="text-2xl font-bold">{program.degree}s in {program.name} ({program.code})</h1>
         <h2 class="opacity-60">
@@ -39,7 +39,7 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
     </header>
 
     <div class="space-y-2 relative">
-        <!--Filters-->
+        <!-- Filters -->
         <div class="flex flex-col lg:flex-row gap-2">
             <div class="flex flex-col gap-1">
                 <SectionCombobox sections={sections}/>
@@ -60,37 +60,37 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
             </div>
         </div>
 
-        <!-- Navigation container - now sticky -->
-        <div class="sticky top-0 z-10 py-2">
-            <div class="flex border rounded-lg bg-white shadow hover:shadow-md w-fit mx-auto">
+        <!-- Navigation arrows -->
+        <div class="sticky top-0 z-30 py-2">
+            <div class="flex border rounded-lg bg-white shadow-sm hover:shadow w-fit mx-auto">
                 <p id="left-navigator"
-                   class="hover:bg-gray-200 p-1 px-14 border-r my-auto opacity-50 flex gap-2 hover:opacity-100 transition-opacity cursor-pointer select-none">
+                   class="hover:bg-gray-200 rounded-l-lg p-1 px-14 border-r my-auto opacity-50 flex gap-2 hover:opacity-100 transition-opacity cursor-pointer select-none">
                     <i data-lucide="move-left"></i>
                 </p>
                 <p id="right-navigator"
-                   class="hover:bg-gray-200 p-1 px-14 my-auto opacity-50 flex gap-2 hover:opacity-100 transition-opacity cursor-pointer select-none">
+                   class="hover:bg-gray-200 rounded-r-lg p-1 px-14 my-auto opacity-50 flex gap-2 hover:opacity-100 transition-opacity cursor-pointer select-none">
                     <i data-lucide="move-right"></i>
                 </p>
             </div>
         </div>
 
-        <!--Courses grid-->
+        <!-- Courses grid -->
         <div class="relative">
-            <div class="flex absolute top-[-2.5rem] w-full justify-between select-none p-2">
-                <p class="flex opacity-40 gap-1">
+            <div class="flex md:absolute md:top-[-2.0rem] w-full gap-2 justify-between select-none mb-2">
+                <p class="flex opacity-40">
                     <i data-lucide="chevron-first"></i> Foundational
                 </p>
 
-                <p class="flex opacity-40 gap-1">
+                <p class="flex opacity-40">
                     Advanced <i data-lucide="chevron-last"></i>
                 </p>
             </div>
             <div id="left-hidden-gradient"
-                 class="pointer-events-none absolute left-0 group z-50 w-8 h-full bg-gradient-to-r from-white flex items-center justify-center cursor-pointer"/>
+                 class="sm:w-5 pointer-events-none absolute left-0 group z-20 w-8 h-full bg-gradient-to-r from-white flex items-center justify-center cursor-pointer"/>
             <div id="right-hidden-gradient"
-                 class="pointer-events-none  absolute right-0 group z-50 w-8 h-full bg-gradient-to-l from-white flex items-center justify-center cursor-pointer"/>
+                 class="sm:w-5 pointer-events-none  absolute right-0 group z-20 w-8 h-full bg-gradient-to-l from-white flex items-center justify-center cursor-pointer"/>
 
-            <div id="courses-grid" class="flex gap-2 overflow-hidden scroll-smooth">
+            <div id="courses-grid" class="flex gap-2 overflow-auto scroll-smooth">
                 {Array.from({length: maxLevel - minLevel + 1}, (_, i) => minLevel + i).map(level => {
                     const levelCourses = requiredCourses
                         .filter(c => c.sequences.level === level)
@@ -117,6 +117,17 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
         </div>
     </div>
 </div>
+
+<style>
+    #courses-grid {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;     /* Firefox */
+    }
+
+    #courses-grid::-webkit-scrollbar {
+        display: none;            /* Chrome, Safari and Opera */
+    }
+</style>
 
 <script>
     const coursesGrid = document.getElementById("courses-grid");

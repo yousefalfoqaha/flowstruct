@@ -18,12 +18,9 @@ const {id, code, name, creditHours, lectureHours, practicalHours, ects, type, pr
         <p class="absolute bottom-2 right-2 text-sm font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
             {type}
         </p>
-        <p class="info-button">
-            <i
-                    data-lucide="info"
-                    class="opacity-0 size-5 absolute top-2 right-2 hover:text-gray-500 group-hover:opacity-100 cursor-pointer transition-opacity"
-            />
-        </p>
+        <button class="info-button z-10 group-hover:opacity-100 hover:!opacity-50 opacity-0 absolute top-2 right-2 cursor-pointer transition-opacity">
+            <i data-lucide="info" class="size-5" />
+        </button>
         <div class="indicator absolute top-1 right-1 group-hover:opacity-0 transition-opacity"/>
     </div>
 </course-card>
@@ -90,11 +87,11 @@ const {id, code, name, creditHours, lectureHours, practicalHours, ects, type, pr
 
             this.querySelector('.info-button')?.addEventListener('click', (e) => {
                 e.stopPropagation();
-                this.openDialog();
+                this.openDialog(this.course);
             });
         }
 
-        private openDialog = () => {
+        private openDialog = (course: Course) => {
             const dialog = document.getElementById('course-dialog') as HTMLDialogElement;
             const dialogContent = dialog.querySelector('.course-dialog-content');
             if (!dialog || !dialogContent) return;
@@ -102,20 +99,20 @@ const {id, code, name, creditHours, lectureHours, practicalHours, ects, type, pr
             dialog.showModal();
 
             dialogContent.innerHTML = `
-                <p><span class="font-semibold">Code:</span> ${this.course.code}</p>
-                <p><span class="font-semibold">Name:</span> ${this.course.name}</p>
-                <p><span class="font-semibold">Credit Hours:</span> ${this.course.creditHours}</p>
-                <p><span class="font-semibold">ECTS:</span> ${this.course.ects}</p>
+                <p><span class="font-semibold">Code:</span> ${course.code}</p>
+                <p><span class="font-semibold">Name:</span> ${course.name}</p>
+                <p><span class="font-semibold">Credit Hours:</span> ${course.creditHours}</p>
+                <p><span class="font-semibold">ECTS:</span> ${course.ects}</p>
         
                 <table class="text-center rounded border">
                     <tr><th colspan="2" class="font-semibold border-b p-2 rounded-t bg-gray-600 text-white">Contact Hours</th></tr>
                     <tr><th class="font-semibold p-2 pr-3">Lecture</th><th class="font-semibold p-2">Practical</th></tr>
-                    <tr class="border"><td>${this.course.lectureHours}</td><td>${this.course.practicalHours}</td></tr>
-                    <tr><td colspan="2" class="font-semilight border"><b>Total: </b>${this.course.lectureHours + this.course.practicalHours}</td></tr>
+                    <tr class="border"><td>${course.lectureHours}</td><td>${course.practicalHours}</td></tr>
+                    <tr><td colspan="2" class="font-semilight border"><b>Total: </b>${course.lectureHours + course.practicalHours}</td></tr>
                 </table>
         
         
-                <p><span class="font-semibold">Teaching Method:</span> ${this.course.type}</p>
+                <p><span class="font-semibold">Teaching Method:</span> ${course.type}</p>
             `;
         }
 

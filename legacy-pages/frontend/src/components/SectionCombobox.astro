@@ -4,7 +4,11 @@ const {sections} = Astro.props;
 ---
 
 <label>
-    <select name="Filter by section" id="section-select" class="w-full border p-2 rounded">
+    <select
+            name="Filter by section"
+            id="section-select"
+            class="w-full border p-2 rounded"
+    >
         <option data-section-sectionCourses="[]">All Sections</option>
         {sections
             .filter((sec: Section) => sec.type === 'Requirement')
