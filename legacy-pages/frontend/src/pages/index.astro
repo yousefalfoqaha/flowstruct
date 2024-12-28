@@ -1,18 +1,42 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Guide from "../components/Guide.astro";
 import CourseDialog from "../components/CourseDialog.astro";
+import NavigationControls from "../components/NavigationControls.astro";
+import CourseGrid from "../components/CourseGrid.astro";
+import CourseFilters from "../components/CourseFilters.astro";
+import {$studyPlan, fetchStudyPlan} from "../stores/studyPlan";
+await fetchStudyPlan(1);
+
+const studyPlan = $studyPlan.get();
+if (!studyPlan) return;
+const {
+    program,
+    courses,
+    track,
+    year,
+    sections
+} = studyPlan;
 ---
 
 <Layout>
-    <div class="min-h-screen max-w-screen-2xl mx-auto border">
-        <Guide class="text-gray-800" />
+    <div class="flex flex-col gap-6 p-6 h-full w-full min-h-screen max-w-screen-2xl mx-auto border">
+        <header class="flex flex-col gap-1">
+            <h1 class="text-2xl font-bold">{program.degree}s in {program.name} ({program.code})</h1>
+            <h2 class="opacity-60">
+                {year}/{year + 1}
+                {track ? ` - ${track}` : ''}
+            </h2>
+        </header>
+        <div class="space-y-2 relative">
+            <CourseFilters sections={sections}/>
+            <CourseGrid sections={sections} courses={courses} program={program}/>
+        </div>
     </div>
-    <CourseDialog />
+    <CourseDialog/>
 </Layout>
 
 <script>
     import {createIcons, MoveRight, MoveLeft, Info, ChevronLast, ChevronFirst} from "lucide";
 
-    createIcons({icons: {MoveRight, MoveLeft, Info, ChevronLast, ChevronFirst}});
+        createIcons({icons: {MoveRight, MoveLeft, Info, ChevronLast, ChevronFirst}});
 </script>

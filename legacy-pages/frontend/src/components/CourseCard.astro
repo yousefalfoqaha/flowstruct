@@ -9,7 +9,7 @@ const {id, code, name, creditHours, lectureHours, practicalHours, ects, type, pr
         })}
         class="transition-opacity duration-300 ease-in-out rounded"
 >
-    <div class="select-none cursor-pointer relative size-32 bg-gray-200 p-3 py-2 transition-colors group rounded">
+    <div class="select-none hover:shadow-lg transition-all cursor-pointer relative size-32 bg-gray-200 p-3 py-2 group rounded">
         <h3 class="font-semibold">{code}</h3>
         <p class="text-sm line-clamp-3">{name}</p>
         <p class="absolute bottom-2 left-2 text-sm font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
@@ -99,36 +99,34 @@ const {id, code, name, creditHours, lectureHours, practicalHours, ects, type, pr
             dialog.showModal();
 
             dialogContent.innerHTML = `
-                <div class="space-y-2">
-                    <p><span class="font-semibold">Code: </span>${course.code}</p>
-                    <p><span class="font-semibold">Name: </span>${course.name}</p>
-                    <p><span class="font-semibold">Credit Hours: </span>${course.creditHours} Cr.</p>
-                    <p><span class="font-semibold">ECTS: </span>${course.ects} Cr.</p>
-                    <p><span class="font-semibold">Teaching Method: </span>${course.type}</p>
-            
-                    <table class="rounded-lg">
-                        <tr>
-                            <th colspan="2" class="font-semibold bg-gray-200 rounded-t p-1">Contact Hours</th>
-                        </tr>
-                        <tr>
-                            <th class="px-2 font-normal">Lecture</th>
-                            <th class="px-2 font-normal">Practical</th>
-                        </tr>
-                        <tr class="text-center">
-                            <td>${course.lectureHours} Hr.</td>
-                            <td>${course.practicalHours} Hr.</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" class="text-center border-t p-1">
-                                <span class="font-semibold">Total: </span>${course.lectureHours + course.practicalHours} Hrs/Week
-                            </td>
-                        </tr>
-                    </table>
+                <div class="space-y-4">
+                    <div class="flex gap-4">
+                        <div class="pr-4 border-r w-full space-y-2">
+                            <p><span class="font-semibold">Code: </span>${course.code}</p>
+                            <p><span class="font-semibold">Name: </span>${course.name}</p>
+                            <p><span class="font-semibold">Credit Hours: </span>${course.creditHours} Cr.</p>
+                            <p><span class="font-semibold">ECTS: </span>${course.ects} Cr.</p>
+                            <p><span class="font-semibold">Teaching Method: </span>${course.type}</p>
+                        </div>
                     
-                     
-                    <div>
-                        <h3 class="bg-sky-700 rounded text-white font-semibold p-1 text-center">Additional Note</h3>
-                        <p class="p-2">Field Training CS391 can be taken either in summer of the first/second year or between the two semesters.</p>
+                        <table class="rounded-lg">
+                            <tr>
+                                <th colspan="2" class="font-semibold bg-gray-200 rounded-t p-1">Contact Hours</th>
+                            </tr>
+                            <tr>
+                                <th class="px-2 font-normal">Lecture</th>
+                                <th class="px-2 font-normal">Practical</th>
+                            </tr>
+                            <tr class="text-center">
+                                <td>${course.lectureHours} Hr.</td>
+                                <td>${course.practicalHours} Hr.</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-center border-t p-1">
+                                    <span class="font-semibold">Total: <br/></span>${course.lectureHours + course.practicalHours} Hrs/Week
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             `;

@@ -14,7 +14,7 @@ const {sections} = Astro.props;
             .filter((sec: Section) => sec.type === 'Requirement')
             .map((section: Section) => (
                 <option data-section-courses={JSON.stringify(section.courses)}>
-                    {section.level} {section.type}s {section.name ? ` - ${section.name}` : ''}
+                    {section.level} {section.type}s {section.name ? ` - ${section.name}` : ''} ({section.requiredCreditHours} Cr.)
                 </option>
         ))}
     </select>
