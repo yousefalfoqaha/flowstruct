@@ -1,0 +1,91 @@
+---
+import type { Section } from "../types";
+const { sections } = Astro.props;
+---
+
+<div id="course-filter" class="flex flex-col md:flex-row gap-2">
+    <div class="relative flex items-center">
+        <select id="section-select" class="w-full border pl-3 p-2 pr-12 rounded appearance-none">
+            <option value="all" data-section-courses="[]">All Sections</option>
+            {sections
+                .filter((sec: Section) => sec.type === 'Requirement')
+                .map((section: Section) => (
+                        <option value={section.id} data-section-courses={JSON.stringify(section.courses)}>
+                            {section.level} {section.type}s {section.name ? ` - ${section.name}` : ''} ({section.requiredCreditHours} Cr.)
+                        </option>
+                ))}
+        </select>
+        <i data-lucide="chevron-down" class="absolute right-3 pointer-events-none text-gray-400"></i>
+    </div>
+
+    <div class="flex gap-2 w-full relative items-center">
+            <i data-lucide="search" class="absolute left-3 text-gray-400" />
+        <input
+                id="course-search-bar"
+                type="text"
+                class="w-full z-10 bg-transparent p-2 px-12 border rounded"
+                placeholder="Search a course..."
+        />
+        <button
+                id="clear-search-bar"
+                class="hidden z-20 absolute right-3 bg-white rounded transition-all text-gray-400 hover:text-gray-800"
+        >
+            <i data-lucide="x" />
+        </button>
+    </div>
+</div>
+
+<script>
+    const courseFilter = document.getElementById("course-filter");
+    const searchBar = courseFilter?.querySelector("#course-search-bar") as HTMLInputElement;
+    const clearButton = courseFilter?.querySelector("#clear-search-bar") as HTMLButtonElement;
+    const sectionCombobox = courseFilter?.querySelector("#section-select") as HTMLSelectElement;
+    const courseCards = document.querySelectorAll("course-card") as NodeListOf<HTMLElement>;
+
+    sectionCombobox?.addEventListener('change', (e) => {
+        const target = e.target as HTMLSelectElement;
+        const selectedOption = target.selectedOptions[0];
+        const sectionCourses = new Set(JSON.parse(selectedOption.dataset.sectionCourses || '[]'));
+
+        searchBar.value = "";
+        clearButton.classList.add('hidden');
+
+        if (sectionCourses.size === 0) {
+            courseCards.forEach(card => card.classList.remove('opacity-50', 'shadow'));
+            return;
+        }
+
+        courseCards.forEach(card => {
+            if (sectionCourses.has(parseInt(card.id))) {
+                card.classList.remove('opacity-50', 'shadow');
+            } else {
+                card.classList.add('opacity-50', 'shadow');
+            }
+        });
+    });
+
+    searchBar?.addEventListener("input", () => {
+        sectionCombobox.selectedIndex = 0;
+        const query = searchBar.value.toUpperCase();
+
+        if (query.length > 0) {
+            clearButton.classList.remove("hidden");
+        } else {
+            clearButton.classList.add("hidden");
+        }
+
+        courseCards.forEach(card => {
+            const course = JSON.parse(card.dataset.course || '{}');
+            const codeAndName = `${course.code} ${course.name}`.toUpperCase();
+
+            card.classList.toggle("opacity-50", !codeAndName.includes(query));
+        });
+    });
+
+    clearButton?.addEventListener("click", () => {
+        searchBar.value = "";
+        clearButton.classList.add("hidden");
+
+        courseCards.forEach(card => card.classList.remove("opacity-50"));
+    });
+</script>

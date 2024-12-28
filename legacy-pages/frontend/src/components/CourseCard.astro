@@ -1,11 +1,33 @@
 ---
-const {id, code, name, creditHours, lectureHours, practicalHours, ects, type, prerequisites, corequisites, sequences} = Astro.props;
+const {
+    id,
+    code,
+    name,
+    creditHours,
+    lectureHours,
+    practicalHours,
+    ects,
+    type,
+    prerequisites,
+    corequisites,
+    sequences
+} = Astro.props;
 ---
 
 <course-card
         id={id}
         data-course={JSON.stringify({
-            id, code, name, creditHours, lectureHours, practicalHours, ects, type, prerequisites, corequisites, sequences
+            id,
+            code,
+            name,
+            creditHours,
+            lectureHours,
+            practicalHours,
+            ects,
+            type,
+            prerequisites,
+            corequisites,
+            sequences
         })}
         class="transition-opacity duration-300 ease-in-out rounded"
 >
@@ -19,7 +41,7 @@ const {id, code, name, creditHours, lectureHours, practicalHours, ects, type, pr
             {type}
         </p>
         <button class="info-button z-10 group-hover:opacity-100 hover:!opacity-50 opacity-0 absolute top-2 right-2 cursor-pointer transition-opacity">
-            <i data-lucide="info" class="size-5" />
+            <i data-lucide="info" class="size-5"/>
         </button>
         <div class="indicator absolute top-1 right-1 group-hover:opacity-0 transition-opacity"/>
     </div>
@@ -60,12 +82,12 @@ const {id, code, name, creditHours, lectureHours, practicalHours, ects, type, pr
         ArrowBigLeftDash,
         ArrowBigLeft,
         ArrowBigUp
-    } from "lucide";
+        } from "lucide";
 
     let selectedCourse: number | null = null;
 
     class CourseCard extends HTMLElement {
-        private course: Course;
+        private readonly course: Course;
 
         constructor() {
             super();
@@ -87,49 +109,8 @@ const {id, code, name, creditHours, lectureHours, practicalHours, ects, type, pr
 
             this.querySelector('.info-button')?.addEventListener('click', (e) => {
                 e.stopPropagation();
-                this.openDialog(this.course);
+                window.showCourseDialog(this.course);
             });
-        }
-
-        private openDialog = (course: Course) => {
-            const dialog = document.getElementById('course-dialog') as HTMLDialogElement;
-            const dialogContent = dialog.querySelector('.course-dialog-content');
-            if (!dialog || !dialogContent) return;
-
-            dialog.showModal();
-
-            dialogContent.innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex gap-4">
-                        <div class="pr-4 border-r w-full space-y-2">
-                            <p><span class="font-semibold">Code: </span>${course.code}</p>
-                            <p><span class="font-semibold">Name: </span>${course.name}</p>
-                            <p><span class="font-semibold">Credit Hours: </span>${course.creditHours} Cr.</p>
-                            <p><span class="font-semibold">ECTS: </span>${course.ects} Cr.</p>
-                            <p><span class="font-semibold">Teaching Method: </span>${course.type}</p>
-                        </div>
-                    
-                        <table class="rounded-lg">
-                            <tr>
-                                <th colspan="2" class="font-semibold bg-gray-200 rounded-t p-1">Contact Hours</th>
-                            </tr>
-                            <tr>
-                                <th class="px-2 font-normal">Lecture</th>
-                                <th class="px-2 font-normal">Practical</th>
-                            </tr>
-                            <tr class="text-center">
-                                <td>${course.lectureHours} Hr.</td>
-                                <td>${course.practicalHours} Hr.</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="text-center border-t p-1">
-                                    <span class="font-semibold">Total: <br/></span>${course.lectureHours + course.practicalHours} Hrs/Week
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            `;
         }
 
         private highlightRelatedCourses = () => {
@@ -146,10 +127,10 @@ const {id, code, name, creditHours, lectureHours, practicalHours, ects, type, pr
                 })),
                 ...this.course.sequences.prerequisiteSequence
                     .map(id => ({
-                        id: id,
-                        className: 'prerequisite-sequence',
-                        icon: ArrowBigLeftDash
-                    })),
+                    id: id,
+                    className: 'prerequisite-sequence',
+                    icon: ArrowBigLeftDash
+                })),
                 ...this.course.sequences.postrequisiteSequence.map(id => ({
                     id: id,
                     className: 'postrequisite-sequence',

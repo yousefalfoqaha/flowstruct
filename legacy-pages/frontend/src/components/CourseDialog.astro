@@ -3,17 +3,74 @@
     <div class="course-dialog-header p-2 px-3 border-b text-center bg-gray-600 rounded-t text-white font-semibold">
         Course Details
     </div>
-    <div class="course-dialog-content p-4" />
+    <div class="course-dialog-content p-4">
+        <div class="space-y-4">
+            <div class="flex gap-4">
+                <div class="pr-4 border-r w-full space-y-2">
+                    <p><span class="font-semibold">Code: </span><span id="course-code"></span></p>
+                    <p><span class="font-semibold">Name: </span><span id="course-name"></span></p>
+                    <p><span class="font-semibold">Credit Hours: </span><span id="course-credits"></span> Cr.</p>
+                    <p><span class="font-semibold">ECTS: </span><span id="course-ects"></span> Cr.</p>
+                    <p><span class="font-semibold">Teaching Method: </span><span id="course-type"></span></p>
+                </div>
+
+                <table class="rounded-lg">
+                    <tr>
+                        <th colspan="2" class="font-semibold bg-gray-200 rounded-t p-1">Contact Hours</th>
+                    </tr>
+                    <tr>
+                        <th class="px-2 font-normal">Lecture</th>
+                        <th class="px-2 font-normal">Practical</th>
+                    </tr>
+                    <tr class="text-center">
+                        <td id="course-lecture"></td>
+                        <td id="course-practical"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="text-center border-t p-1">
+                            <span class="font-semibold">Total: <br/></span>
+                            <span id="course-total"></span> Hrs/Week
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
     <div class="p-2">
         <button class="course-dialog-close transition-all border p-2 rounded px-5 hover:bg-gray-100">Close</button>
     </div>
 </dialog>
 
 <script>
-    const dialog = document.getElementById('course-dialog') as HTMLDialogElement;
-    const closeButton = dialog.querySelector('.course-dialog-close');
+    import type { Course } from "../types";
 
-    closeButton?.addEventListener('click', () => {
+    const dialog = document.getElementById('course-dialog') as HTMLDialogElement;
+
+    declare global {
+        interface Window {
+            showCourseDialog: (course: Course) => void;
+        }
+    }
+
+    function showCourseDialog(course: any) {
+        const content = dialog.querySelector('.course-dialog-content') as HTMLElement;
+
+        content.querySelector('#course-code')!.textContent = course.code;
+        content.querySelector('#course-name')!.textContent = course.name;
+        content.querySelector('#course-credits')!.textContent = course.creditHours;
+        content.querySelector('#course-ects')!.textContent = course.ects;
+        content.querySelector('#course-type')!.textContent = course.type;
+        content.querySelector('#course-lecture')!.textContent = `${course.lectureHours} Hr.`;
+        content.querySelector('#course-practical')!.textContent = `${course.practicalHours} Hr.`;
+        content.querySelector('#course-total')!.textContent = course.lectureHours + course.practicalHours;
+
+        dialog.showModal();
+    }
+
+    window.showCourseDialog = showCourseDialog;
+
+    dialog.querySelector('.course-dialog-close')?.addEventListener('click', () => {
         dialog.close();
     });
+
 </script>

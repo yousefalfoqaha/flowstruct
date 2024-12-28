@@ -17,10 +17,10 @@ public class ProgramService {
         return programRepository.findAllProgramOptions()
                 .stream()
                 .map(o -> new ProgramOptionResponse(
-                        o.id(),
-                        o.code(),
-                        o.name(),
-                        o.degree()
+                        o.getId(),
+                        o.getCode(),
+                        o.getName(),
+                        o.getDegree()
                 ))
                 .toList();
     }
