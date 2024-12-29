@@ -29,21 +29,21 @@ const {
             corequisites,
             sequences
         })}
-        class="transition-opacity duration-300 ease-in-out rounded"
+        class="transition-opacity duration-300 ease-in-out text-xs sm:text-sm size-28 sm:size-32 rounded"
 >
-    <div class="select-none hover:shadow-lg transition-all cursor-pointer relative size-32 bg-gray-200 p-3 py-2 group rounded">
+    <div class="select-none hover:shadow-lg transition-all cursor-pointer relative size-full bg-gray-200 p-3 py-2 group rounded">
         <h3 class="font-semibold">{code}</h3>
-        <p class="text-sm line-clamp-3">{name}</p>
-        <p class="absolute bottom-2 left-2 text-sm font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
+        <p class="line-clamp-3">{name}</p>
+        <p class="absolute bottom-2 left-2 font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
             {creditHours} Cr.
         </p>
-        <p class="absolute bottom-2 right-2 text-sm font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
+        <p class="absolute bottom-2 right-2 font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
             {type}
         </p>
         <button class="info-button z-10 group-hover:opacity-100 hover:!opacity-50 opacity-0 absolute top-2 right-2 cursor-pointer transition-opacity">
-            <i data-lucide="info" class="size-5"/>
+            <i data-lucide="info" class="size-4 sm:size-5"/>
         </button>
-        <div class="indicator absolute top-1 right-1 group-hover:opacity-0 transition-opacity"/>
+        <i class="indicator absolute top-1 right-1 group-hover:opacity-0 transition-opacity"/>
     </div>
 </course-card>
 
@@ -149,7 +149,9 @@ const {
                 iconElement.classList.add(
                     'opacity-0',
                     'transition-opacity',
-                    'duration-300'
+                    'duration-300',
+                    'size-5',
+                    'sm:size-6'
                 );
                 indicator.appendChild(iconElement);
 

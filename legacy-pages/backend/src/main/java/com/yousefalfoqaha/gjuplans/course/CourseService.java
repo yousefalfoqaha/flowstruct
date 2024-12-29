@@ -60,7 +60,7 @@ public class CourseService {
                                 )
                         )
                 ));
-    }
+    }   
 
     private void traversePrerequisites(
             long courseId,
