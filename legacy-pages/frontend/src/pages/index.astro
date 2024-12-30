@@ -17,23 +17,50 @@ const {
 ---
 
 <Layout>
-    <div class="flex flex-col gap-6 p-6 min-w-screen min-h-screen max-w-screen-2xl mx-auto border">
-        <header class="flex flex-col gap-1">
-            <h1 class="text-2xl font-bold">{program.degree}s in {program.name} ({program.code})</h1>
-            <h2 class="opacity-60">
-                {year}/{year + 1}
-                {track ? ` - ${track}` : ''}
-            </h2>
-        </header>
-
+    <div class="flex flex-col gap-2 sm:gap-4 p-6 min-w-screen min-h-screen max-w-screen-2xl mx-auto border">
+        <section class="flex flex-col sm:flex-row gap-2">
+            <header class="flex flex-col gap-2">
+                <h1 class="text-2xl font-bold">{program.degree}s in {program.name} ({program.code})</h1>
+                <h2 class="opacity-60">
+                    {year}/{year + 1}
+                    {track ? ` - ${track}` : ''}
+                </h2>
+            </header>
+            <div class="flex sm:ml-auto gap-4 justify-between text-nowrap p-2">
+                <div class="flex my-auto gap-2 hover:text-gray-600 rounded size-fit p-2 cursor-pointer">
+                    <i data-lucide="info" /> <p>View Details</p>
+                </div>
+                <div class="flex my-auto gap-2 p-2 cursor-pointer hover:text-gray-600">
+                    <i data-lucide="circle-help" /> <p class="">How to Use</p>
+                </div>
+            </div>
+        </section>
         <StudyPlanGrid sections={sections} courses={courses} program={program}/>
-    </div>
+        <!--<div class="w-fit mx-auto">-->
+        <!--    <header class="bg-gray-600 text-white font-semibold p-2 rounded">-->
+        <!--        <h1 class="text-center">Additional Notes</h1>-->
+        <!--    </header>-->
+        <!--    <div class="space-y-1 p-2">-->
+        <!--        <p>-->
+        <!--            <strong>-</strong> <a href="https://www.gju.edu.jo/content/local-training-14477" target="_blank">CS391 Local training details</a>-->
+        <!--        </p>-->
+        <!--        <p>-->
+        <!--            <strong>-</strong> <a href="https://www.gju.edu.jo/content/german-year-regulations-14762" target="_blank">CS491 German Year/international internship details</a>-->
+        <!--        </p>-->
+        <!--        <p>-->
+        <!--            <strong>-</strong> <a href="http://www.gju.edu.jo/1" target="_blank">CS492 Senior project details</a>-->
+        <!--        </p>-->
+        <!--        <p>-->
 
+        <!--        </p>-->
+        <!--    </div>-->
+        <!--</div>-->
+    </div>
     <CourseDialog/>
 </Layout>
 
 <script>
-    import {createIcons, MoveRight, MoveLeft, Info, ChevronLast, ChevronFirst, ChevronDown, Search, X} from "lucide";
+    import {createIcons, MoveRight, MoveLeft, Info, ChevronLast, ChevronFirst, ChevronDown, Search, X, CircleHelp} from "lucide";
 
-    createIcons({icons: {MoveRight, MoveLeft, Info, ChevronLast, ChevronFirst, ChevronDown, Search, X}});
+    createIcons({icons: {MoveRight, MoveLeft, Info, ChevronLast, ChevronFirst, ChevronDown, Search, X, CircleHelp}});
 </script>

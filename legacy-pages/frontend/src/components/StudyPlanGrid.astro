@@ -20,7 +20,7 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
 <div class="space-y-2 relative">
     <CourseFilter sections={sections} />
 
-    <NavigationControls/>
+    <NavigationControls />
 
     <div class="relative">
         <div class="flex md:absolute md:top-[-1.7rem] text-sm w-full gap-2 justify-between select-none mb-2">
@@ -51,7 +51,7 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
                                 class="grid grid-flow-col size-fit gap-2"
                                 style={
                                     `grid-template-rows: repeat(${
-                                        levelCourses.length <= 6
+                                        levelCourses.length <= 4
                                             ? levelCourses.length
                                             : Math.ceil(levelCourses.length / 3)
                                     }, 1fr);`
@@ -63,6 +63,12 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
             })}
         </div>
     </div>
+    <div class="text-center opacity-50 text-sm p-1">
+        <p>
+            Remedial, elective, and practical courses are not included
+        </p>
+    </div>
+
 </div>
 
 <style>

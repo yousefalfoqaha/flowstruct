@@ -106,7 +106,7 @@ const {
                 this.highlightRelatedCourses();
                 this.scrollIntoView({behavior: 'smooth', inline: 'center', block: 'center'});
             });
-
+            //
             this.querySelector('.info-button')?.addEventListener('click', (e) => {
                 e.stopPropagation();
                 window.showCourseDialog(this.course);

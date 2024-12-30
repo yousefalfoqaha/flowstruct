@@ -30,6 +30,19 @@
         const hiddenLeft = coursesGrid.scrollLeft;
         const hiddenRight = coursesGrid.scrollWidth - coursesGrid.clientWidth - coursesGrid.scrollLeft;
 
+        if (hiddenLeft <= 0) {
+            leftNavigator.classList.add('opacity-50', 'pointer-events-none');
+        } else {
+            leftNavigator.classList.remove('opacity-50', 'pointer-events-none');
+        }
+
+        if (hiddenRight <= 0) {
+            rightNavigator.classList.add('opacity-50', 'pointer-events-none');
+        } else {
+            rightNavigator.classList.remove('opacity-50', 'pointer-events-none');
+        }
+        console.log(hiddenRight);
+
         leftHiddenGradient.style.display = hiddenLeft <= 0 ? 'none' : 'flex';
         rightHiddenGradient.style.display = hiddenRight <= 0 ? 'none' : 'flex';
     }
