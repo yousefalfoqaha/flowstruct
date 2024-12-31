@@ -19,11 +19,6 @@
     const leftHiddenGradient = document.getElementById('left-hidden-gradient');
     const rightHiddenGradient = document.getElementById('right-hidden-gradient');
 
-    function getScrollAmount() {
-        if (!coursesGrid) return;
-        return coursesGrid.clientWidth * 0.6;
-    }
-
     function updateHiddenGradients() {
         if (!coursesGrid || !leftNavigator || !rightNavigator || !leftHiddenGradient || !rightHiddenGradient) return;
 
@@ -50,7 +45,7 @@
     leftNavigator?.addEventListener('click', () => {
         if (!coursesGrid) return;
         coursesGrid.scrollBy({
-            left: -getScrollAmount(),
+            left: -coursesGrid.clientWidth * 0.6,
             behavior: 'smooth'
         });
     });
@@ -58,14 +53,12 @@
     rightNavigator?.addEventListener('click', () => {
         if (!coursesGrid) return;
         coursesGrid.scrollBy({
-            left: getScrollAmount(),
+            left: coursesGrid.clientWidth * 0.6,
             behavior: 'smooth'
         });
     });
 
-    const resizeObserver = new ResizeObserver(() => {
-        updateHiddenGradients();
-    });
+    const resizeObserver = new ResizeObserver(() => updateHiddenGradients);
 
     if (coursesGrid) {
         resizeObserver.observe(coursesGrid);

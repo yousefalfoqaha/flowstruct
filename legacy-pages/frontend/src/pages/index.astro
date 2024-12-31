@@ -27,13 +27,17 @@ const {
                 </h2>
             </header>
 
-            <div class="flex sm:ml-auto gap-2 text-nowrap p-2 text-sm justify-between">
-                <div class="flex my-auto gap-2 hover:text-gray-600 rounded size-fit p-2 cursor-pointer">
-                    <i data-lucide="info" class="size-5" /> <p>View Details</p>
-                </div>
-                <div class="flex my-auto gap-2 p-2 cursor-pointer hover:text-gray-600">
-                    <i data-lucide="circle-help" class="size-5" /> <p>How to Use</p>
-                </div>
+            <div class="flex sm:ml-auto justify-between gap-2 text-nowrap p-2 text-sm select-none">
+                <a
+                        href="https://www.gju.edu.jo/sites/default/files/Computer%20Science/programs/study_plan_all_tracks_2023-2024_updated.pdf"
+                        target="_blank"
+                        class="flex my-auto gap-2 hover:text-gray-600 rounded size-fit p-2 cursor-pointer"
+                >
+                    <i data-lucide="file-text" class="size-5" /> Study Plan PDF
+                </a>
+                <button class="flex my-auto gap-2 p-2 cursor-pointer hover:text-gray-600">
+                    <i data-lucide="circle-help" class="size-5" /> How to Use
+                </button>
             </div>
         </section>
 
@@ -44,7 +48,7 @@ const {
 </Layout>
 
 <script>
-    import {createIcons, MoveRight, MoveLeft, Info, ChevronLast, ChevronFirst, ChevronDown, Search, X, CircleHelp} from "lucide";
+    import {createIcons, MoveRight, MoveLeft, Info, ChevronLast, ChevronFirst, ChevronDown, Search, X, CircleHelp, FileText} from "lucide";
 
-    createIcons({icons: {MoveRight, MoveLeft, Info, ChevronLast, ChevronFirst, ChevronDown, Search, X, CircleHelp}});
+    createIcons({icons: {MoveRight, MoveLeft, Info, ChevronLast, ChevronFirst, ChevronDown, Search, X, CircleHelp, FileText}});
 </script>
