@@ -33,42 +33,39 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
             </p>
         </div>
 
-        <div id="left-hidden-gradient"
-             class="sm:w-5 pointer-events-none absolute left-0 z-20 w-8 h-full bg-gradient-to-r from-white"/>
-        <div id="right-hidden-gradient"
-             class="sm:w-5 pointer-events-none  absolute right-0 z-20 w-8 h-full bg-gradient-to-l from-white"/>
+        <div class="relative">
+            <div id="left-hidden-gradient"
+                 class="sm:w-5 pointer-events-none absolute left-0 z-20 w-8 h-full bg-gradient-to-r from-white"/>
+            <div id="right-hidden-gradient"
+                 class="sm:w-5 pointer-events-none  absolute right-0 z-20 w-8 h-full bg-gradient-to-l from-white"/>
 
-        <div id="courses-grid" class="flex gap-2 overflow-auto scroll-smooth">
-            {Array.from({length: maxLevel - minLevel + 1}, (_, i) => minLevel + i).map(level => {
-                const levelCourses = requiredCourses
-                    .filter(c => c.sequences.level === level)
-                    .sort((a, b) => sortByCourseCode(a, b, program.code));
+            <div id="courses-grid" class="flex gap-2 overflow-auto scroll-smooth">
+                {Array.from({length: maxLevel - minLevel + 1}, (_, i) => minLevel + i).map(level => {
+                    const levelCourses = requiredCourses
+                        .filter(c => c.sequences.level === level)
+                        .sort((a, b) => sortByCourseCode(a, b, program.code));
 
-                if (levelCourses.length === 0) return;
+                    if (levelCourses.length === 0) return;
 
-                return (
-                        <div
-                                class="grid grid-flow-col size-fit gap-2"
-                                style={
-                                    `grid-template-rows: repeat(${
-                                        levelCourses.length <= 4
-                                            ? levelCourses.length
-                                            : Math.ceil(levelCourses.length / 3)
-                                    }, 1fr);`
-                                }
-                        >
-                            {levelCourses.map((course: Course) => <CourseCard {...course}/>)}
-                        </div>
-                );
-            })}
+                    return (
+                            <div
+                                    class="grid grid-flow-col size-fit gap-2"
+                                    style={
+                                        `grid-template-rows: repeat(${
+                                            levelCourses.length <= 4
+                                                ? levelCourses.length
+                                                : Math.ceil(levelCourses.length / 3)
+                                        }, 1fr);`
+                                    }
+                            >
+                                {levelCourses.map((course: Course) => <CourseCard {...course}/>)}
+                            </div>
+                    );
+                })}
+            </div>
         </div>
     </div>
-    <div class="text-center opacity-50 text-sm p-1">
-        <p>
-            Remedial, elective, and practical courses are not included
-        </p>
-    </div>
-
+    <p class="text-center opacity-40 text-sm p-1">Remedial, elective, and department approval courses are not included</p>
 </div>
 
 <style>

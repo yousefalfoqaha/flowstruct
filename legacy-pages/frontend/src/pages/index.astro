@@ -26,36 +26,20 @@ const {
                     {track ? ` - ${track}` : ''}
                 </h2>
             </header>
-            <div class="flex sm:ml-auto gap-4 justify-between text-nowrap p-2">
+
+            <div class="flex sm:ml-auto gap-2 text-nowrap p-2 text-sm justify-between">
                 <div class="flex my-auto gap-2 hover:text-gray-600 rounded size-fit p-2 cursor-pointer">
-                    <i data-lucide="info" /> <p>View Details</p>
+                    <i data-lucide="info" class="size-5" /> <p>View Details</p>
                 </div>
                 <div class="flex my-auto gap-2 p-2 cursor-pointer hover:text-gray-600">
-                    <i data-lucide="circle-help" /> <p class="">How to Use</p>
+                    <i data-lucide="circle-help" class="size-5" /> <p>How to Use</p>
                 </div>
             </div>
         </section>
-        <StudyPlanGrid sections={sections} courses={courses} program={program}/>
-        <!--<div class="w-fit mx-auto">-->
-        <!--    <header class="bg-gray-600 text-white font-semibold p-2 rounded">-->
-        <!--        <h1 class="text-center">Additional Notes</h1>-->
-        <!--    </header>-->
-        <!--    <div class="space-y-1 p-2">-->
-        <!--        <p>-->
-        <!--            <strong>-</strong> <a href="https://www.gju.edu.jo/content/local-training-14477" target="_blank">CS391 Local training details</a>-->
-        <!--        </p>-->
-        <!--        <p>-->
-        <!--            <strong>-</strong> <a href="https://www.gju.edu.jo/content/german-year-regulations-14762" target="_blank">CS491 German Year/international internship details</a>-->
-        <!--        </p>-->
-        <!--        <p>-->
-        <!--            <strong>-</strong> <a href="http://www.gju.edu.jo/1" target="_blank">CS492 Senior project details</a>-->
-        <!--        </p>-->
-        <!--        <p>-->
 
-        <!--        </p>-->
-        <!--    </div>-->
-        <!--</div>-->
+        <StudyPlanGrid sections={sections} courses={courses} program={program}/>
     </div>
+
     <CourseDialog/>
 </Layout>
 

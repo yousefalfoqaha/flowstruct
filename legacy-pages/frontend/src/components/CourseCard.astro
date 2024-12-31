@@ -29,7 +29,7 @@ const {
             corequisites,
             sequences
         })}
-        class="transition-opacity duration-300 ease-in-out text-xs sm:text-sm w-[6.5rem] h-[6.5rem] sm:size-32 rounded"
+        class="transition-ALL duration-300 ease-in-out text-xs lg:text-sm w-[6.5rem] h-[6.5rem] lg:size-32 rounded"
 >
     <div class="select-none hover:shadow-lg transition-all cursor-pointer relative size-full bg-gray-200 p-3 py-2 group rounded">
         <h3 class="font-semibold">{code}</h3>
@@ -41,7 +41,7 @@ const {
             {type}
         </p>
         <button class="info-button z-10 group-hover:opacity-100 hover:!opacity-50 opacity-0 absolute top-2 right-2 cursor-pointer transition-opacity">
-            <i data-lucide="info" class="size-4 sm:size-5"/>
+            <i data-lucide="info" class="size-4 lg:size-5"/>
         </button>
         <i class="indicator absolute top-1 right-1 group-hover:opacity-0 transition-opacity"/>
     </div>
@@ -84,6 +84,7 @@ const {
         ArrowBigUp
         } from "lucide";
 
+    const courseCards = document.querySelectorAll('course-card > div');
     let selectedCourse: number | null = null;
 
     class CourseCard extends HTMLElement {
@@ -106,7 +107,7 @@ const {
                 this.highlightRelatedCourses();
                 this.scrollIntoView({behavior: 'smooth', inline: 'center', block: 'center'});
             });
-            //
+
             this.querySelector('.info-button')?.addEventListener('click', (e) => {
                 e.stopPropagation();
                 window.showCourseDialog(this.course);
@@ -151,7 +152,7 @@ const {
                     'transition-opacity',
                     'duration-300',
                     'size-5',
-                    'sm:size-6'
+                    'lg:size-6'
                 );
                 indicator.appendChild(iconElement);
 
@@ -162,7 +163,6 @@ const {
         }
 
         private resetHighlights = () => {
-            const courseCards = document.querySelectorAll('course-card > div');
             courseCards.forEach(card => {
                 card.classList.remove(
                     'selected',

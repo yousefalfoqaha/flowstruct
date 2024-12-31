@@ -41,11 +41,11 @@
         } else {
             rightNavigator.classList.remove('opacity-50', 'pointer-events-none');
         }
-        console.log(hiddenRight);
 
         leftHiddenGradient.style.display = hiddenLeft <= 0 ? 'none' : 'flex';
         rightHiddenGradient.style.display = hiddenRight <= 0 ? 'none' : 'flex';
     }
+
 
     leftNavigator?.addEventListener('click', () => {
         if (!coursesGrid) return;

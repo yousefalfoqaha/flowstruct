@@ -6,12 +6,15 @@ const { sections } = Astro.props;
 <div id="course-filter" class="flex flex-col md:flex-row gap-2">
     <div class="relative flex items-center">
         <select id="section-select" class="w-full border pl-3 p-2 pr-12 rounded appearance-none">
-            <option value="all" data-section-courses="[]">All Sections</option>
+            <option value="all" data-section-courses="[]">All Compulsory Sections</option>
             {sections
                 .filter((sec: Section) => sec.type === 'Requirement')
                 .map((section: Section) => (
                         <option value={section.id} data-section-courses={JSON.stringify(section.courses)}>
-                            {section.level} {section.type}s {section.name ? ` - ${section.name}` : ''} ({section.requiredCreditHours} Cr.)
+                            {section.name
+                                ? `${section.name}`
+                                : `${section.level} ${section.type}s`
+                            } ({section.requiredCreditHours} Cr. Required)
                         </option>
                 ))}
         </select>
