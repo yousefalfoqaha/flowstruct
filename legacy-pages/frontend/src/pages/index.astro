@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import CourseDialog from "../components/CourseDialog.astro";
 import StudyPlanGrid from "../components/StudyPlanGrid.astro";
 import {$studyPlan, fetchStudyPlan} from "../stores/studyPlan";
+import CourseCard from "../components/CourseCard.astro";
 await fetchStudyPlan(1);
 
 const studyPlan = $studyPlan.get();
@@ -17,7 +18,7 @@ const {
 ---
 
 <Layout>
-    <div class="flex flex-col gap-2 sm:gap-4 p-6 min-w-screen min-h-screen max-w-screen-2xl mx-auto border">
+    <div class="flex flex-col gap-6 p-6 min-w-screen min-h-screen max-w-screen-2xl mx-auto border">
         <section class="flex flex-col sm:flex-row gap-2">
             <header class="flex flex-col gap-2">
                 <h1 class="text-2xl font-bold">{program.degree}s in {program.name} ({program.code})</h1>
@@ -26,29 +27,67 @@ const {
                     {track ? ` - ${track}` : ''}
                 </h2>
             </header>
-
-            <div class="flex sm:ml-auto justify-between gap-2 text-nowrap p-2 text-sm select-none">
-                <a
-                        href="https://www.gju.edu.jo/sites/default/files/Computer%20Science/programs/study_plan_all_tracks_2023-2024_updated.pdf"
-                        target="_blank"
-                        class="flex my-auto gap-2 hover:text-gray-600 rounded size-fit p-2 cursor-pointer"
-                >
-                    <i data-lucide="file-text" class="size-5" /> Study Plan PDF
-                </a>
-                <button class="flex my-auto gap-2 p-2 cursor-pointer hover:text-gray-600">
-                    <i data-lucide="circle-help" class="size-5" /> How to Use
-                </button>
-            </div>
         </section>
 
         <StudyPlanGrid sections={sections} courses={courses} program={program}/>
+
+        <div class="flex flex-col text-center text-sm space-y-2 mx-auto">
+            <h1 class="font-semibold">Click/tap a course to highlight its...</h1>
+            <div class="flex gap-2 justify-center items-center flex-wrap">
+                <div class="p-2 pl-3 pr-4 rounded bg-yellow-200 flex justify-between gap-2">
+                    <i data-lucide="arrow-big-left-dash" /> Prerequisite Sequence
+                </div>
+                <div class="p-2 pl-3 pr-4 rounded bg-orange-300 flex justify-between gap-2">
+                    <i data-lucide="arrow-big-left" /> Prerequisite
+                </div>
+                <div class="p-2 pl-3 pr-4 rounded bg-gray-400 text-white flex justify-between gap-2">
+                    <i data-lucide="arrow-big-up" /> Corequisite
+                </div>
+                <div class="p-2 pl-3 pr-4 rounded bg-sky-800 text-white flex justify-between gap-2">
+                    <i data-lucide="arrow-big-right-dash" /> Postrequisite Sequence
+                </div>
+            </div>
+        </div>
     </div>
 
     <CourseDialog/>
 </Layout>
 
 <script>
-    import {createIcons, MoveRight, MoveLeft, Info, ChevronLast, ChevronFirst, ChevronDown, Search, X, CircleHelp, FileText} from "lucide";
+    import {
+        createIcons,
+        MoveRight,
+        MoveLeft,
+        Info,
+        ChevronLast,
+        ChevronFirst,
+        ChevronDown,
+        Search,
+        X,
+        CircleHelp,
+        FileText,
+        ArrowBigRightDash,
+        ArrowBigLeftDash,
+        ArrowBigLeft,
+        ArrowBigUp
+    } from "lucide";
 
-    createIcons({icons: {MoveRight, MoveLeft, Info, ChevronLast, ChevronFirst, ChevronDown, Search, X, CircleHelp, FileText}});
+    createIcons({
+        icons: {
+            MoveRight,
+            MoveLeft,
+            Info,
+            ChevronLast,
+            ChevronFirst,
+            ChevronDown,
+            Search,
+            X,
+            CircleHelp,
+            FileText,
+            ArrowBigRightDash,
+            ArrowBigLeftDash,
+            ArrowBigLeft,
+            ArrowBigUp
+        }
+    });
 </script>
