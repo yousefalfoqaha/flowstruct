@@ -31,19 +31,19 @@ const {
 
         <StudyPlanGrid sections={sections} courses={courses} program={program}/>
 
-        <div class="flex flex-col text-center text-sm space-y-2 mx-auto">
-            <h1 class="font-semibold">Click/tap a course to highlight its...</h1>
+        <div class="flex flex-col text-center text-sm space-y-2 mx-auto border-t p-6 w-full">
+            <h1 class="font-semibold mb-1">Click/tap a course to highlight its...</h1>
             <div class="flex gap-2 justify-center items-center flex-wrap">
-                <div class="p-2 pl-3 pr-4 rounded bg-yellow-200 flex justify-between gap-2">
+                <div class="p-1 px-3 pr-4 rounded bg-yellow-200 flex justify-between gap-1">
                     <i data-lucide="arrow-big-left-dash" /> Prerequisite Sequence
                 </div>
-                <div class="p-2 pl-3 pr-4 rounded bg-orange-300 flex justify-between gap-2">
+                <div class="p-1 px-3 pr-4 rounded bg-orange-300 flex justify-between gap-1">
                     <i data-lucide="arrow-big-left" /> Prerequisite
                 </div>
-                <div class="p-2 pl-3 pr-4 rounded bg-gray-400 text-white flex justify-between gap-2">
+                <div class="p-1 px-3 pr-4 rounded bg-gray-400 text-white flex justify-between gap-1">
                     <i data-lucide="arrow-big-up" /> Corequisite
                 </div>
-                <div class="p-2 pl-3 pr-4 rounded bg-sky-800 text-white flex justify-between gap-2">
+                <div class="p-1 px-3 pr-4 rounded bg-sky-800 text-white flex justify-between gap-1">
                     <i data-lucide="arrow-big-right-dash" /> Postrequisite Sequence
                 </div>
             </div>
