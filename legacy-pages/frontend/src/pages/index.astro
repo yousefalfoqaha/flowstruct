@@ -3,7 +3,6 @@ import Layout from '../layouts/Layout.astro';
 import CourseDialog from "../components/CourseDialog.astro";
 import StudyPlanGrid from "../components/StudyPlanGrid.astro";
 import {$studyPlan, fetchStudyPlan} from "../stores/studyPlan";
-import CourseCard from "../components/CourseCard.astro";
 await fetchStudyPlan(1);
 
 const studyPlan = $studyPlan.get();
@@ -18,7 +17,7 @@ const {
 ---
 
 <Layout>
-    <div class="flex flex-col gap-6 p-6 min-w-screen min-h-screen max-w-screen-2xl mx-auto border">
+    <div class="text-gray-800 flex flex-col gap-6 p-6 min-w-screen min-h-screen max-w-screen-2xl mx-auto border">
         <section class="flex flex-col sm:flex-row gap-2">
             <header class="flex flex-col gap-2">
                 <h1 class="text-2xl font-bold">{program.degree}s in {program.name} ({program.code})</h1>
@@ -31,20 +30,20 @@ const {
 
         <StudyPlanGrid sections={sections} courses={courses} program={program}/>
 
-        <div class="flex flex-col text-center text-sm space-y-2 mx-auto border-t p-6 w-full">
-            <h1 class="font-semibold mb-1">Click/tap a course to highlight its...</h1>
+        <div class="flex flex-col text-center text-sm space-y-2 w-full">
+            <h1 class="font-semibold">Click/tap a course to highlight its...</h1>
             <div class="flex gap-2 justify-center items-center flex-wrap">
-                <div class="p-1 px-3 pr-4 rounded bg-yellow-200 flex justify-between gap-1">
-                    <i data-lucide="arrow-big-left-dash" /> Prerequisite Sequence
+                <div class="p-1 px-3 pr-4 rounded bg-yellow-200 flex justify-between gap-1 items-center">
+                    <i data-lucide="arrow-big-left-dash" /> <p>Prerequisite Sequence</p>
                 </div>
-                <div class="p-1 px-3 pr-4 rounded bg-orange-300 flex justify-between gap-1">
-                    <i data-lucide="arrow-big-left" /> Prerequisite
+                <div class="p-1 px-3 pr-4 rounded bg-orange-300 flex justify-between gap-1 items-center">
+                    <i data-lucide="arrow-big-left" /> <p>Prerequisite</p>
                 </div>
-                <div class="p-1 px-3 pr-4 rounded bg-gray-400 text-white flex justify-between gap-1">
-                    <i data-lucide="arrow-big-up" /> Corequisite
+                <div class="p-1 px-3 pr-4 rounded bg-gray-400 text-white flex justify-between gap-1 items-center">
+                    <i data-lucide="arrow-big-up" /> <p>Corequisite</p>
                 </div>
-                <div class="p-1 px-3 pr-4 rounded bg-sky-800 text-white flex justify-between gap-1">
-                    <i data-lucide="arrow-big-right-dash" /> Postrequisite Sequence
+                <div class="p-1 px-3 pr-4 rounded bg-sky-800 text-white flex justify-between gap-1 items-center">
+                    <i data-lucide="arrow-big-right-dash" /> <p>Postrequisite Sequence</p>
                 </div>
             </div>
         </div>
@@ -64,8 +63,6 @@ const {
         ChevronDown,
         Search,
         X,
-        CircleHelp,
-        FileText,
         ArrowBigRightDash,
         ArrowBigLeftDash,
         ArrowBigLeft,
@@ -82,8 +79,6 @@ const {
             ChevronDown,
             Search,
             X,
-            CircleHelp,
-            FileText,
             ArrowBigRightDash,
             ArrowBigLeftDash,
             ArrowBigLeft,
