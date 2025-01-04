@@ -1,4 +1,4 @@
-import type {Course} from "../types/index.js";
+import type {Course} from "../types";
 
 export const sortByCourseCode = (a: Course, b: Course, programCode: string) => {
   const parseCode = (code: string) => {

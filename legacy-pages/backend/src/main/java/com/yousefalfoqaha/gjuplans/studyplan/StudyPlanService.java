@@ -19,13 +19,25 @@ public class StudyPlanService {
     private final ProgramService programService;
 
     public List<StudyPlanOptionResponse> getAllStudyPlans() {
-        return studyPlanRepository.findAllStudyPlanOptions()
+        return studyPlanRepository.findAllStudyPlans()
                 .stream()
                 .map(o -> new StudyPlanOptionResponse(
                         o.id(),
                         o.year(),
                         o.track(),
                         o.program()
+                ))
+                .toList();
+    }
+
+    public List<StudyPlanOptionResponse> getAllProgramStudyPlans(long programId) {
+        return studyPlanRepository.findAllProgramStudyPlans(programId)
+                .stream()
+                .map(sp -> new StudyPlanOptionResponse(
+                        sp.id(),
+                        sp.year(),
+                        sp.track(),
+                        sp.program()
                 ))
                 .toList();
     }
@@ -62,7 +74,8 @@ public class StudyPlanService {
                                 .map(c -> c.getCourse().getId())
                                 .distinct()
                                 .toList()
-                )
+                ),
+                getAllProgramStudyPlans(studyPlan.getProgram().getId())
         );
     }
 }

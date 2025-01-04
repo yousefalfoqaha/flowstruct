@@ -64,4 +64,12 @@ export type StudyPlan = {
     program: Program;
     sections: Section[];
     courses: Record<number, Course>;
+    otherStudyPlans: StudyPlan[];
+}
+
+export type StudyPlanOption = {
+    id: number;
+    year: number;
+    track: string;
+    program: number;
 }

@@ -12,6 +12,7 @@ public record StudyPlanResponse(
         String track,
         ProgramResponse program,
         List<SectionResponse> sections,
-        Map<Long, CourseResponse> courses
+        Map<Long, CourseResponse> courses,
+        List<StudyPlanOptionResponse> otherStudyPlans
 ) {
 }
