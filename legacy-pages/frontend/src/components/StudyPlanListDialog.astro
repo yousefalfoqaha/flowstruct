@@ -1,0 +1,54 @@
+<dialog id="study-plan-dialog" class="p-6 rounded-xl shadow-lg space-y-4">
+    <div class="space-y-4">
+        <header class="space-y-1">
+            <h1 class="text-lg font-semibold">All <span id="program-name" /> Study Plans</h1>
+            <h3 class="text-xs opacity-60">Select a study plan from the list to view its plan</h3>
+        </header>
+        <button class="all-programs-button flex gap-2 items-center p-2 hover:bg-gray-100 transition-all rounded pr-5 select-none">
+            <i data-lucide="chevron-left" />
+            <p>All Programs</p>
+        </button>
+    </div>
+</dialog>
+
+<script>
+    import type {Program, StudyPlanOption} from "../types";
+    import {createIcons, ChevronLeft} from "lucide";
+
+    createIcons({icons: {ChevronLeft}});
+
+    const dialog = document.getElementById("study-plan-dialog") as HTMLDialogElement;
+
+    declare global {
+        interface Window {
+            showStudyPlanListDialog: (program: Program, studyPlans: StudyPlanOption[]) => void;
+            closeStudyPlanListDialog: () => void;
+        }
+    }
+
+    function closeStudyPlanListDialog() {
+        dialog.close();
+    }
+
+    function backToAllPrograms() {
+        closeStudyPlanListDialog();
+        window.showProgramListDialog();
+    }
+
+    // Define the function
+    function showStudyPlanListDialog(program: Program, studyPlans: StudyPlanOption[]) {
+        if (!dialog) return;
+
+        window.closeProgramListDialog();
+        dialog.showModal();
+
+        dialog.querySelector('#program-name')!.textContent = program.name;
+    }
+
+    dialog.querySelector('.all-programs-button')?.addEventListener('click', () => {
+        backToAllPrograms();
+    })
+
+    window.showStudyPlanListDialog = showStudyPlanListDialog;
+    window.closeStudyPlanListDialog = closeStudyPlanListDialog;
+</script>

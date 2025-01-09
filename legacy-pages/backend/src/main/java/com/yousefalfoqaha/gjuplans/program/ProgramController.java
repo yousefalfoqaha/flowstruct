@@ -18,6 +18,6 @@ public class ProgramController {
     @GetMapping
     public ResponseEntity<List<ProgramOptionResponse>> getAllPrograms() {
         return new ResponseEntity<>(programService.getAllProgramOptions(), HttpStatus.OK);
-    }
+    
 }
 

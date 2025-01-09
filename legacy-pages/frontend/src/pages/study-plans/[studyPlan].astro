@@ -1,0 +1,115 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CourseDialog from "../../components/CourseDialog.astro";
+import StudyPlanGrid from "../../components/StudyPlanGrid.astro";
+import {$studyPlan, fetchStudyPlan} from "../../stores/studyPlan";
+
+export async function getStaticPaths() {
+    await fetchStudyPlan(1);
+
+    studyPlans.map(sp => {
+        return {}
+    })
+}
+
+const studyPlan = $studyPlan.get();
+if (!studyPlan) return;
+const {
+    program,
+    courses,
+    track,
+    year,
+    sections
+} = studyPlan;
+---
+
+<Layout>
+    <div class="space-y-6">
+        <section class="flex flex-col md:flex-row md:justify-between gap-4 md:items-center">
+            <header class="space-y-2 text-center md:text-left">
+                <h1 class="text-2xl font-bold">{program.degree}s in {program.name} ({program.code})</h1>
+                <h2 class="opacity-60">
+                    {year}/{year + 1}
+                    {track ? ` - ${track}` : ''}
+                </h2>
+            </header>
+
+            <div class="flex justify-center md:justify-end gap-2 items-center flex-wrap-reverse select-none">
+                <div class="flex items-center gap-3 p-2 px-3 size-fit cursor-pointer rounded hover:bg-gray-100 transition-all">
+                    <i data-lucide="list" class="size-5"/>
+                    <p class="text-nowrap">Other Study Plans</p>
+                </div>
+
+                <div class="flex items-center gap-2 p-2 pr-3 size-fit rounded hover:bg-gray-100 cursor-pointer">
+                    <i data-lucide="chevron-left" class="size-5"/>
+                    <p class="text-nowrap">All Programs</p>
+                </div>
+            </div>
+        </section>
+
+        <StudyPlanGrid sections={sections} courses={courses} program={program}/>
+
+        <div class="flex flex-col text-center text-sm space-y-2 w-full font-semibold">
+            <h1>Click a course to highlight its...</h1>
+            <div class="flex gap-2 justify-center items-center flex-wrap">
+                <div class="p-1 px-3 pr-4 rounded bg-yellow-200 flex justify-between gap-1 items-center">
+                    <i data-lucide="arrow-big-left-dash"/>
+                    <p>Prerequisite Sequence</p>
+                </div>
+                <div class="p-1 px-3 pr-4 rounded bg-orange-300 flex justify-between gap-1 items-center">
+                    <i data-lucide="arrow-big-left"/>
+                    <p>Prerequisite</p>
+                </div>
+                <div class="p-1 px-3 pr-4 rounded bg-gray-400 text-white flex justify-between gap-1 items-center">
+                    <i data-lucide="arrow-big-up"/>
+                    <p>Corequisite</p>
+                </div>
+                <div class="p-1 px-3 pr-4 rounded bg-sky-800 text-white flex justify-between gap-1 items-center">
+                    <i data-lucide="arrow-big-right-dash"/>
+                    <p>Postrequisite Sequence</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <CourseDialog/>
+</Layout>
+
+<script>
+    import {
+        createIcons,
+        MoveRight,
+        MoveLeft,
+        Info,
+        ChevronLast,
+        ChevronFirst,
+        ChevronDown,
+        Search,
+        X,
+        ArrowBigRightDash,
+        ArrowBigLeftDash,
+        ArrowBigLeft,
+        ArrowBigUp,
+        ChevronLeft,
+        List
+    } from "lucide";
+
+    createIcons({
+        icons: {
+            MoveRight,
+            MoveLeft,
+            Info,
+            ChevronLast,
+            ChevronFirst,
+            ChevronDown,
+            Search,
+            X,
+            ArrowBigRightDash,
+            ArrowBigLeftDash,
+            ArrowBigLeft,
+            ArrowBigUp,
+            ChevronLeft,
+            List
+        }
+    });
+</script>

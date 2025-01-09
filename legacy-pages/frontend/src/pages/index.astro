@@ -1,108 +1,107 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import CourseDialog from "../components/CourseDialog.astro";
-import StudyPlanGrid from "../components/StudyPlanGrid.astro";
-import {$studyPlan, fetchStudyPlan} from "../stores/studyPlan";
-await fetchStudyPlan(1);
+import type {Program, StudyPlanOption} from "../types";
+import Layout from "../layouts/Layout.astro";
+import StudyPlanListDialog from "../components/StudyPlanListDialog.astro";
+const programs: Program[] = await fetch(`http://localhost:8080/api/v1/programs`)
+    .then(res => res.json());
 
-const studyPlan = $studyPlan.get();
-if (!studyPlan) return;
-const {
-    program,
-    courses,
-    track,
-    year,
-    sections
-} = studyPlan;
+const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/study-plans`)
+    .then(res => res.json());
 ---
 
 <Layout>
-    <div class="text-gray-800 space-y-6 p-6 min-w-screen min-h-screen max-w-screen-2xl mx-auto border">
-        <section class="flex flex-col md:flex-row md:justify-between gap-4 md:items-center">
-            <header class="space-y-2 text-center md:text-left">
-                <h1 class="text-2xl font-bold">{program.degree}s in {program.name} ({program.code})</h1>
-                <h2 class="opacity-60">
-                    {year}/{year + 1}
-                    {track ? ` - ${track}` : ''}
-                </h2>
+    <div class="flex flex-col gap-2 justify-center items-center h-full text-gray-800">
+        <section class="flex flex-col gap-6 items-center">
+            <header class="space-y-1 text-center">
+                <h1 class="text-6xl font-bold">GJU Plans</h1>
+                <h3 class="opacity-60">The GJU study plan visualizer</h3>
             </header>
-
-            <div class="flex justify-center md:justify-end gap-2 items-center flex-wrap-reverse select-none">
-                <div class="flex items-center gap-3 p-2 px-3 size-fit cursor-pointer rounded hover:bg-gray-100 transition-all">
-                    <i data-lucide="list" class="size-5"/>
-                    <p class="text-nowrap">Other Study Plans</p>
-                </div>
-
-                <div class="flex items-center gap-2 p-2 pr-3 size-fit rounded hover:bg-gray-100 cursor-pointer">
-                    <i data-lucide="chevron-left" class="size-5"/>
-                    <p class="text-nowrap">All Programs</p>
-                </div>
-            </div>
+            <button
+                    id="open-program-dialog"
+                    class="flex items-center gap-2 p-2 border rounded w-fit px-3 pr-4 hover:bg-blue-100 hover:drop-shadow-md transition-all"
+            >
+                <i data-lucide="library-big" />
+                <p class="font-semibold text-nowrap">Pick a Program</p>
+            </button>
         </section>
-
-        <StudyPlanGrid sections={sections} courses={courses} program={program}/>
-
-        <div class="flex flex-col text-center text-sm space-y-2 w-full font-semibold">
-            <h1>Click a course to highlight its...</h1>
-            <div class="flex gap-2 justify-center items-center flex-wrap">
-                <div class="p-1 px-3 pr-4 rounded bg-yellow-200 flex justify-between gap-1 items-center">
-                    <i data-lucide="arrow-big-left-dash"/>
-                    <p>Prerequisite Sequence</p>
-                </div>
-                <div class="p-1 px-3 pr-4 rounded bg-orange-300 flex justify-between gap-1 items-center">
-                    <i data-lucide="arrow-big-left"/>
-                    <p>Prerequisite</p>
-                </div>
-                <div class="p-1 px-3 pr-4 rounded bg-gray-400 text-white flex justify-between gap-1 items-center">
-                    <i data-lucide="arrow-big-up"/>
-                    <p>Corequisite</p>
-                </div>
-                <div class="p-1 px-3 pr-4 rounded bg-sky-800 text-white flex justify-between gap-1 items-center">
-                    <i data-lucide="arrow-big-right-dash"/>
-                    <p>Postrequisite Sequence</p>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <CourseDialog/>
+    <dialog id="program-dialog" class="p-6 rounded-xl shadow-lg space-y-4">
+        <div class="space-y-4">
+            <header class="space-y-1">
+                <h1 class="text-lg font-semibold">All GJU Programs</h1>
+                <h3 class="text-xs opacity-60">Select a program from the list below to view its study plans</h3>
+            </header>
+
+            <div class="flex flex-col divide-y divide-gray-200 overflow-y-auto px-2 max-h-96 rounded">
+                {programs.map(program => (
+                        <div
+                                id={`program-${program.id}`}
+                                data-program={JSON.stringify(program)}
+                                data-study-plans={JSON.stringify(studyPlans.filter(sp => sp.program === program.id))}
+                                class="program-option flex py-3 gap-3 items-center"
+                        >
+                            <p class="font-bold rounded-lg p-1 px-4 bg-gray-100 text-xs">{program.code}</p>
+                            <p> {program.name} B.Sc</p>
+                            <button data-program={program} class="open-study-plans-dialog flex gap-2 ml-auto p-2 hover:scale-110 transition-all hover:text-gray-500 ">
+                                <i data-lucide="arrow-right-from-line" />
+                            </button>
+                        </div>
+                ))}
+            </div>
+        </div>
+
+            <button id="close-program-dialog" class="p-2 px-5 border rounded hover:bg-gray-100 transition-all">Close</button>
+    </dialog>
+    <StudyPlanListDialog />
+
 </Layout>
 
 <script>
-    import {
-        createIcons,
-        MoveRight,
-        MoveLeft,
-        Info,
-        ChevronLast,
-        ChevronFirst,
-        ChevronDown,
-        Search,
-        X,
-        ArrowBigRightDash,
-        ArrowBigLeftDash,
-        ArrowBigLeft,
-        ArrowBigUp,
-        ChevronLeft,
-        List
-    } from "lucide";
+    import {createIcons, LibraryBig, ArrowRightFromLine} from "lucide";
+    import type {Program, StudyPlanOption} from "../types";
 
-    createIcons({
-        icons: {
-            MoveRight,
-            MoveLeft,
-            Info,
-            ChevronLast,
-            ChevronFirst,
-            ChevronDown,
-            Search,
-            X,
-            ArrowBigRightDash,
-            ArrowBigLeftDash,
-            ArrowBigLeft,
-            ArrowBigUp,
-            ChevronLeft,
-            List
+    createIcons({icons: {LibraryBig, ArrowRightFromLine}});
+
+    const openProgramDialogButton = document.getElementById('open-program-dialog') as HTMLButtonElement;
+    const programDialog = document.getElementById('program-dialog') as HTMLDialogElement;
+    const programOptions = programDialog.querySelectorAll('.program-option');
+    const closeProgramDialogButton = document.getElementById('close-program-dialog') as HTMLButtonElement;
+
+    const openStudyPlansDialogButtons = document.querySelectorAll('.open-study-plans-dialog');
+
+    declare global {
+        interface Window {
+            closeProgramListDialog: () => void;
+            showProgramListDialog: () => void;
         }
+    }
+
+    function closeProgramListDialog() {
+        programDialog.close();
+    }
+
+    function showProgramListDialog() {
+        programDialog.showModal();
+    }
+
+    openProgramDialogButton.addEventListener('click', () => {
+        programDialog.showModal();
     });
+
+    closeProgramDialogButton.addEventListener('click', () => {
+        programDialog.close();
+    });
+
+    programOptions.forEach(element => {
+        const program: Program = JSON.parse(element.dataset.program || '{}');
+        const studyPlans: StudyPlanOption[] = JSON.parse(element.dataset.studyPlans || '[]');
+
+        element.querySelector('.open-study-plans-dialog')?.addEventListener('click', () => {
+            window.showStudyPlanListDialog(program, studyPlans);
+        });
+    });
+
+    window.closeProgramListDialog = closeProgramListDialog;
+    window.showProgramListDialog = showProgramListDialog;
 </script>

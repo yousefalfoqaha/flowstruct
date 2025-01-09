@@ -10,6 +10,7 @@ export enum SemesterType {
 }
 
 export type Program = {
+    id: number;
     code: string;
     name: string;
     degree: "Bachelor" | "Master";
