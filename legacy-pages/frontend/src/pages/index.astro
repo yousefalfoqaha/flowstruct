@@ -1,7 +1,7 @@
 ---
 import type {Program, StudyPlanOption} from "../types";
 import Layout from "../layouts/Layout.astro";
-import StudyPlanListDialog from "../components/StudyPlanListDialog.astro";
+
 const programs: Program[] = await fetch(`http://localhost:8080/api/v1/programs`)
     .then(res => res.json());
 
@@ -17,10 +17,10 @@ const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/
                 <h3 class="opacity-60">The GJU study plan visualizer</h3>
             </header>
             <button
-                    id="open-program-dialog"
+                    id="open-programs-dialog"
                     class="flex items-center gap-2 p-2 border rounded w-fit px-3 pr-4 hover:bg-blue-100 hover:drop-shadow-md transition-all"
             >
-                <i data-lucide="library-big" />
+                <i data-lucide="library-big"/>
                 <p class="font-semibold text-nowrap">Pick a Program</p>
             </button>
         </section>
@@ -35,73 +35,76 @@ const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/
 
             <div class="flex flex-col divide-y divide-gray-200 overflow-y-auto px-2 max-h-96 rounded">
                 {programs.map(program => (
-                        <div
-                                id={`program-${program.id}`}
-                                data-program={JSON.stringify(program)}
-                                data-study-plans={JSON.stringify(studyPlans.filter(sp => sp.program === program.id))}
-                                class="program-option flex py-3 gap-3 items-center"
-                        >
-                            <p class="font-bold rounded-lg p-1 px-4 bg-gray-100 text-xs">{program.code}</p>
-                            <p> {program.name} B.Sc</p>
-                            <button data-program={program} class="open-study-plans-dialog flex gap-2 ml-auto p-2 hover:scale-110 transition-all hover:text-gray-500 ">
-                                <i data-lucide="arrow-right-from-line" />
-                            </button>
-                        </div>
+                        <section>
+                            <div id={`program-${program.id}`}
+                                 data-program={JSON.stringify(program)}
+                                 data-study-plans={JSON.stringify(studyPlans.filter(sp => sp.program === program.id))}
+                                 class="program-option flex py-3 gap-4 items-center">
+                                <p class="font-bold rounded-lg p-1 px-4 bg-gray-100 text-xs">{program.code}</p>
+                                <p class=""> {program.name} B.Sc</p>
+
+                                <button class="open-study-plans-dialog 'flex gap-2 ml-auto p-2 hover:scale-110 transition-all hover:text-gray-500">
+                                    <i data-lucide="chevron-down"/>
+                                </button>
+                            </div>
+
+                            <div class="space-y-2">
+                                {studyPlans.filter(sp => sp.program === program.id).map(studyPlan => (
+                                        <div class="pb-4 px-4 text-sm">
+                                            <p>{`${studyPlan.year}/${studyPlan.year + 1}`} Study Plan <span>{studyPlan.track ? ` - ${studyPlan.track}` : ''}</span></p>
+                                        </div>
+                                ))}
+                            </div>
+                        </section>
                 ))}
             </div>
         </div>
 
-            <button id="close-program-dialog" class="p-2 px-5 border rounded hover:bg-gray-100 transition-all">Close</button>
+        <button id="close-programs-dialog" class="p-2 px-5 border rounded hover:bg-gray-100 transition-all">
+            Close
+        </button>
     </dialog>
-    <StudyPlanListDialog />
-
 </Layout>
 
 <script>
-    import {createIcons, LibraryBig, ArrowRightFromLine} from "lucide";
+    import {createIcons, LibraryBig, ChevronDown, ChevronLeft} from "lucide";
     import type {Program, StudyPlanOption} from "../types";
 
-    createIcons({icons: {LibraryBig, ArrowRightFromLine}});
+    createIcons({icons: {LibraryBig, ChevronDown, ChevronLeft}});
 
-    const openProgramDialogButton = document.getElementById('open-program-dialog') as HTMLButtonElement;
-    const programDialog = document.getElementById('program-dialog') as HTMLDialogElement;
-    const programOptions = programDialog.querySelectorAll('.program-option');
-    const closeProgramDialogButton = document.getElementById('close-program-dialog') as HTMLButtonElement;
+    const programsDialog = document.getElementById('program-dialog') as HTMLDialogElement;
+    const studyPlansDialog = document.getElementById("study-plans-dialog") as HTMLDialogElement;
 
-    const openStudyPlansDialogButtons = document.querySelectorAll('.open-study-plans-dialog');
+    programsDialog.showModal();
 
-    declare global {
-        interface Window {
-            closeProgramListDialog: () => void;
-            showProgramListDialog: () => void;
-        }
-    }
-
-    function closeProgramListDialog() {
-        programDialog.close();
-    }
-
-    function showProgramListDialog() {
-        programDialog.showModal();
-    }
-
-    openProgramDialogButton.addEventListener('click', () => {
-        programDialog.showModal();
+    document.getElementById('open-programs-dialog')?.addEventListener('click', () => {
+        programsDialog.showModal();
     });
 
-    closeProgramDialogButton.addEventListener('click', () => {
-        programDialog.close();
+    document.getElementById('close-programs-dialog')?.addEventListener('click', () => {
+        programsDialog.close();
     });
 
-    programOptions.forEach(element => {
+    programsDialog.querySelectorAll('.program-option').forEach(element => {
         const program: Program = JSON.parse(element.dataset.program || '{}');
         const studyPlans: StudyPlanOption[] = JSON.parse(element.dataset.studyPlans || '[]');
 
         element.querySelector('.open-study-plans-dialog')?.addEventListener('click', () => {
-            window.showStudyPlanListDialog(program, studyPlans);
+            showStudyPlansDialog(program, studyPlans);
         });
     });
 
-    window.closeProgramListDialog = closeProgramListDialog;
-    window.showProgramListDialog = showProgramListDialog;
+    function showStudyPlansDialog(selectedProgram: Program, studyPlans: StudyPlanOption[]) {
+        if (!studyPlansDialog) return;
+
+        programsDialog.close();
+        studyPlansDialog.showModal();
+
+        studyPlansDialog.querySelector('#selected-program-name')!.textContent = selectedProgram.name;
+    }
+
+    studyPlansDialog.querySelector('#all-programs-button')?.addEventListener('click', () => {
+        studyPlansDialog.close();
+        programsDialog.showModal();
+    });
 </script>

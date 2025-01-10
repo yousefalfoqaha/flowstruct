@@ -2,18 +2,20 @@
 import Layout from '../../layouts/Layout.astro';
 import CourseDialog from "../../components/CourseDialog.astro";
 import StudyPlanGrid from "../../components/StudyPlanGrid.astro";
-import {$studyPlan, fetchStudyPlan} from "../../stores/studyPlan";
+import type {StudyPlanOption} from "../../types";
 
 export async function getStaticPaths() {
-    await fetchStudyPlan(1);
+    const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/study-plans`)
+        .then(res => res.json());
 
-    studyPlans.map(sp => {
-        return {}
-    })
+    return studyPlans.map(studyPlan => ({
+        params: {studyPlanId: studyPlan.id.toString()}
+    }));
 }
 
-const studyPlan = $studyPlan.get();
-if (!studyPlan) return;
+const studyPlan = await fetch(`http://localhost:8080/api/v1/study-plans/${Astro.params.studyPlanId}`)
+    .then(res => res.json());
+
 const {
     program,
     courses,
