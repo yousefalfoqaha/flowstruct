@@ -1,19 +1,22 @@
 ---
 import type {Program, StudyPlanOption} from "../types";
 import Layout from "../layouts/Layout.astro";
+import ProgramAccordion from "../components/ProgramAccordion.astro";
+
 
 const programs: Program[] = await fetch(`http://localhost:8080/api/v1/programs`)
     .then(res => res.json());
+
 
 const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/study-plans`)
     .then(res => res.json());
 ---
 
-<Layout>
-    <div class="flex flex-col gap-2 justify-center items-center h-full text-gray-800">
+<Layout title="GJUPlans">
+    <div class="flex flex-col gap-2 p-6 min-h-screen border justify-center items-center text-gray-800">
         <section class="flex flex-col gap-6 items-center">
             <header class="space-y-1 text-center">
-                <h1 class="text-6xl font-bold">GJU Plans</h1>
+                <h1 class="text-6xl font-bold">GJUPlans</h1>
                 <h3 class="opacity-60">The GJU study plan visualizer</h3>
             </header>
             <button
@@ -21,46 +24,29 @@ const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/
                     class="flex items-center gap-2 p-2 border rounded w-fit px-3 pr-4 hover:bg-blue-100 hover:drop-shadow-md transition-all"
             >
                 <i data-lucide="library-big"/>
-                <p class="font-semibold text-nowrap">Pick a Program</p>
+                <p class="font-semibold text-nowrap mb-0.5">Browse Programs</p>
             </button>
         </section>
     </div>
 
     <dialog id="program-dialog" class="p-6 rounded-xl shadow-lg space-y-4">
-        <div class="space-y-4">
-            <header class="space-y-1">
-                <h1 class="text-lg font-semibold">All GJU Programs</h1>
+        <div class="space-y-4 max-w-screen-sm">
+            <header class="space-y-1 text-center sm:text-left">
+                <h1 class="font-semibold text-lg">All GJU Programs</h1>
                 <h3 class="text-xs opacity-60">Select a program from the list below to view its study plans</h3>
             </header>
 
-            <div class="flex flex-col divide-y divide-gray-200 overflow-y-auto px-2 max-h-96 rounded">
+            <div class="flex flex-col divide-y divide-gray-200 overflow-y-auto max-h-96 rounded">
                 {programs.map(program => (
-                        <section>
-                            <div id={`program-${program.id}`}
-                                 data-program={JSON.stringify(program)}
-                                 data-study-plans={JSON.stringify(studyPlans.filter(sp => sp.program === program.id))}
-                                 class="program-option flex py-3 gap-4 items-center">
-                                <p class="font-bold rounded-lg p-1 px-4 bg-gray-100 text-xs">{program.code}</p>
-                                <p class=""> {program.name} B.Sc</p>
-
-                                <button class="open-study-plans-dialog 'flex gap-2 ml-auto p-2 hover:scale-110 transition-all hover:text-gray-500">
-                                    <i data-lucide="chevron-down"/>
-                                </button>
-                            </div>
-
-                            <div class="space-y-2">
-                                {studyPlans.filter(sp => sp.program === program.id).map(studyPlan => (
-                                        <div class="pb-4 px-4 text-sm">
-                                            <p>{`${studyPlan.year}/${studyPlan.year + 1}`} Study Plan <span>{studyPlan.track ? ` - ${studyPlan.track}` : ''}</span></p>
-                                        </div>
-                                ))}
-                            </div>
-                        </section>
+                        <ProgramAccordion
+                            {...program}
+                            studyPlans={studyPlans.filter(sp => sp.program === program.id)}
+                        />
                 ))}
             </div>
         </div>
 
-        <button id="close-programs-dialog" class="p-2 px-5 border rounded hover:bg-gray-100 transition-all">
+        <button id="close-programs-dialog" class="select-none p-2 px-5 border rounded hover:bg-gray-100 transition-all">
             Close
         </button>
     </dialog>
@@ -68,14 +54,10 @@ const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/
 
 <script>
     import {createIcons, LibraryBig, ChevronDown, ChevronLeft} from "lucide";
-    import type {Program, StudyPlanOption} from "../types";
 
     createIcons({icons: {LibraryBig, ChevronDown, ChevronLeft}});
 
     const programsDialog = document.getElementById('program-dialog') as HTMLDialogElement;
-    const studyPlansDialog = document.getElementById("study-plans-dialog") as HTMLDialogElement;
-
-    programsDialog.showModal();
 
     document.getElementById('open-programs-dialog')?.addEventListener('click', () => {
         programsDialog.showModal();
@@ -84,27 +66,5 @@ const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/
     document.getElementById('close-programs-dialog')?.addEventListener('click', () => {
         programsDialog.close();
     });
-
-    programsDialog.querySelectorAll('.program-option').forEach(element => {
-        const program: Program = JSON.parse(element.dataset.program || '{}');
-        const studyPlans: StudyPlanOption[] = JSON.parse(element.dataset.studyPlans || '[]');
-
-        element.querySelector('.open-study-plans-dialog')?.addEventListener('click', () => {
-            showStudyPlansDialog(program, studyPlans);
-        });
-    });
-
-    function showStudyPlansDialog(selectedProgram: Program, studyPlans: StudyPlanOption[]) {
-        if (!studyPlansDialog) return;
-
-        programsDialog.close();
-        studyPlansDialog.showModal();
-
-        studyPlansDialog.querySelector('#selected-program-name')!.textContent = selectedProgram.name;
-    }
-
-    studyPlansDialog.querySelector('#all-programs-button')?.addEventListener('click', () => {
-        studyPlansDialog.close();
-        programsDialog.showModal();
-    });
 </script>
+

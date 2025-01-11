@@ -54,15 +54,15 @@ const { sections } = Astro.props;
         clearButton.classList.add('hidden');
 
         if (sectionCourses.size === 0) {
-            courseCards.forEach(card => card.classList.remove('opacity-50', 'shadow'));
+            courseCards.forEach(card => card.classList.remove('opacity-25', 'shadow'));
             return;
         }
 
         courseCards.forEach(card => {
             if (sectionCourses.has(parseInt(card.id))) {
-                card.classList.remove('opacity-50', 'shadow');
+                card.classList.remove('opacity-25', 'shadow');
             } else {
-                card.classList.add('opacity-50', 'shadow');
+                card.classList.add('opacity-25', 'shadow');
             }
         });
     });
@@ -80,8 +80,11 @@ const { sections } = Astro.props;
         courseCards.forEach(card => {
             const course = JSON.parse(card.dataset.course || '{}');
             const codeAndName = `${course.code} ${course.name}`.toUpperCase();
+            const match = codeAndName.includes(query);
 
-            card.classList.toggle("opacity-50", !codeAndName.includes(query));
+
+            card.classList.toggle("opacity-25", !match);
+            card.classList.toggle("shadow", !match);
         });
     });
 
@@ -89,6 +92,6 @@ const { sections } = Astro.props;
         searchBar.value = "";
         clearButton.classList.add("hidden");
 
-        courseCards.forEach(card => card.classList.remove("opacity-50"));
+        courseCards.forEach(card => card.classList.remove("opacity-25", "shadow"));
     });
 </script>
