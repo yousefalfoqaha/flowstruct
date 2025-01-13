@@ -3,6 +3,6 @@ spring:
     name: gju-plans
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/gju_plans
+    url: jdbc:postgresql://localhost:5432/gjuplans
     username: postgres
     password: admin
