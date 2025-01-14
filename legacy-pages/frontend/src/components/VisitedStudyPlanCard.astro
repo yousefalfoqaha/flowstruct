@@ -2,7 +2,7 @@
 const {id, year, track, programName} = Astro.props;
 ---
 
-<a href=`/study-plans/${id}` class="p-4 px-5 pb-5 flex flex-col flex-shrink-0 justify-between space-y-2 bg-gray-200 w-60 h-40 rounded-lg relative hover:bg-blue-100 transition-all hover:shadow-lg select-none cursor-pointer">
+<a href=`/study-plans/${id}` class="p-4 px-5 pb-5 flex flex-col flex-shrink-0 justify-between space-y-2 bg-gray-200 w-60 h-40 rounded-xl relative hover:bg-blue-100 transition-all hover:shadow-lg select-none cursor-pointer">
     <header class="space-y-1">
         <h1 class="font-semibold line-clamp-2">B.Sc. {programName}</h1>
         <section>
@@ -15,4 +15,3 @@ const {id, year, track, programName} = Astro.props;
         <i data-lucide="arrow-right" class="size-5"/>
     </footer>
 </a>
-

@@ -9,8 +9,8 @@ const {code, name, studyPlans} = Astro.props;
         <p class="program-code-chip font-bold rounded-lg p-1 mr-4 px-4 bg-gray-100 group-hover:bg-white transition-all text-xs">{code}</p>
         <p class="text-sm">{name}</p>
 
-        <p class="ml-auto p-2 group-hover:scale-110 transition-all">
-            <i data-lucide="chevron-down" class="size-5 transition-transform duration-300"/>
+        <p id="chevron" class="ml-auto p-2 group-hover:scale-110 transition-all duration-300">
+            <i data-lucide="chevron-down" class="size-5"/>
         </p>
     </div>
 
@@ -27,9 +27,9 @@ const {code, name, studyPlans} = Astro.props;
             ) : (
                     <div class="flex flex-wrap gap-2 p-4">
                         {studyPlans.map((studyPlan: StudyPlanOption) => (
-                                <a href={`http://localhost:4321/study-plans/${studyPlan.id}`} class="p-2 px-3 text-xs rounded-lg border font-semibold hover:bg-blue-100 transition-all size-fit cursor-pointer">
-                                    {`${studyPlan.year}/${studyPlan.year + 1}`}
-                                    <span>{studyPlan.track ? ` - ${studyPlan.track}` : ''}</span>
+                                <a href={`/study-plans/${studyPlan.id}`} class="p-2 px-3 text-sm rounded-lg border font-semibold hover:bg-blue-100 transition-all size-fit cursor-pointer">
+                                    <p>{`${studyPlan.year} / ${studyPlan.year + 1}`}</p>
+                                    <p class="font-normal opacity-60 text-xs">{studyPlan.track ? ` ${studyPlan.track}` : ''}</p>
                                 </a>
                         ))}
                     </div>
@@ -42,7 +42,7 @@ const {code, name, studyPlans} = Astro.props;
     document.querySelectorAll('.program-accordion').forEach(programAccordion => {
         const programOption = programAccordion.querySelector('.program-option');
         const studyPlansContainer = programAccordion.querySelector('.program-study-plans');
-        const chevron = programAccordion.querySelector('[data-lucide="chevron-down"]');
+        const chevron = programAccordion.querySelector('#chevron');
 
         programOption?.addEventListener('click', () => {
             if (!studyPlansContainer) return;

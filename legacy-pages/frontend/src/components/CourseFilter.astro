@@ -1,6 +1,6 @@
 ---
-import type { Section } from "../types";
-const { sections } = Astro.props;
+import type {Section} from "../types";
+const {sections} = Astro.props;
 ---
 
 <div id="course-filter" class="flex flex-col md:flex-row gap-2">
@@ -22,7 +22,7 @@ const { sections } = Astro.props;
     </div>
 
     <div class="flex gap-2 w-full relative items-center">
-            <i data-lucide="search" class="absolute left-3 text-gray-400" />
+        <i data-lucide="search" class="absolute left-3 text-gray-400"/>
         <input
                 id="course-search-bar"
                 type="text"
@@ -33,7 +33,7 @@ const { sections } = Astro.props;
                 id="clear-search-bar"
                 class="hidden z-20 absolute right-3 bg-white rounded transition-all text-gray-400 hover:text-gray-800"
         >
-            <i data-lucide="x" />
+            <i data-lucide="x"/>
         </button>
     </div>
 </div>

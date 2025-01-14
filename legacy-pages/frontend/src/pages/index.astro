@@ -14,68 +14,61 @@ const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/
 ---
 
 <Layout title="GJUPlans">
-    <div class="flex flex-col gap-6 p-6 min-h-screen border justify-center items-center text-gray-800">
-        <Image src={GJULogo} alt="GJU logo" width={50} />
+    <div class="flex flex-col gap-6 p-6 min-h-screen border text-gray-800">
+        <header class="flex  items-center gap-6 pb-6 w-full justify-center relative">
+            <a href="/" class="flex gap-3 items-center group hover:text-gray-500 transition-all">
+                <i data-lucide="home" class="group-hover:scale-110 transition-all size-5"/>
+                Home
+            </a>
 
-        <header class="space-y-1 text-center">
-            <h1 class="text-8xl font-bold">GJUPlans</h1>
-            <h3 class="">The GJU study plan visualizer</h3>
+            <a href="/about" class="flex gap-3 items-center group hover:text-gray-500 transition-all">
+                <i data-lucide="circle-help" class="group-hover:scale-110 transition-all size-5"/>
+                About
+            </a>
+
+            <button class="border rounded-full p-2 group hover:bg-gray-100 transition-all">
+                <i data-lucide="moon" class="group-hover:scale-110 size-5 transition-all"/>
+            </button>
         </header>
 
-        <button id="open-programs-dialog"
-                class="select-none flex items-center gap-2 p-2 border rounded w-fit px-3 pr-4 hover:bg-blue-100 hover:drop-shadow-md transition-all"
-        >
-            <i data-lucide="library-big"/>
-            <p class="font-semibold text-nowrap mb-0.5">Browse All Programs</p>
-        </button>
+        <div class="flex flex-col gap-6 items-center my-auto">
+            <header class="space-y-2 text-center mb-6">
+                <h1 class="text-6xl md:text-8xl font-bold">GJUPlans</h1>
+                <h3>An Interactive Study Plan Visualizer</h3>
+            </header>
 
-        <section class="flex flex-col gap-2 justify-center items-center w-2/3 mx-auto">
-            <div class="flex gap-2 opacity-60 items-center">
-                <i data-lucide="history" class="size-4" />
-                <h3 class="text-sm">Recently Visited</h3>
-            </div>
-            <div class="flex gap-2 items-stretch w-full relative">
-                <button id="left-navigator"
-                        class="hover:scale-125 transition-all p-2 flex items-center justify-center">
-                    <i data-lucide="chevron-left" class="size-8" />
+            <div class="flex flex-col-reverse gap-2 md:flex-row">
+                <div class="flex gap-2 w-full md:w-96 relative items-center">
+                    <i data-lucide="search" class="absolute left-5 text-gray-400"/>
+                    <input
+                            id="course-search-bar"
+                            type="text"
+                            class="w-full z-10 bg-transparent p-4 px-14 border rounded-xl"
+                            placeholder="Search a study plan..."
+                    />
+                </div>
+                <button id="open-programs-dialog"
+                        class="select-none flex items-center gap-4 p-4 w-full justify-center md:w-fit px-6 pr-7 border rounded-xl hover:bg-blue-100 hover:drop-shadow-md transition-all"
+                >
+                    <i data-lucide="library-big"/>
+                    <p class="font-semibold text-nowrap mb-0.5">All Programs</p>
                 </button>
+            </div>
 
-                <div class="relative flex-1 overflow-hidden">
-                    <div id="left-hidden-gradient"
-                         class="absolute left-0 z-10 w-8 h-full bg-gradient-to-r from-white pointer-events-none"></div>
-
-                    <div id="right-hidden-gradient"
-                         class="absolute right-0 z-10 w-8 h-full bg-gradient-to-l from-white pointer-events-none"></div>
-
-                        <div id="previously-visited" class="flex gap-2 overflow-x-auto w-full">
-                        <VisitedStudyPlanCard programName="Computer Science" {...studyPlans[0]}/>
-
-                        <VisitedStudyPlanCard programName="Mechanical and Maintenance Engineering"
-                                              id={2} year={2022} track="Thermal Systems Track"/>
-
-                        <VisitedStudyPlanCard programName="Business Intelligence and Data Analytics"
-                                              id={3} year={2024}/>
-
-                        <VisitedStudyPlanCard programName="Business Intelligence and Data Analytics"
-                                              id={3} year={2024}/>
-
-                        <VisitedStudyPlanCard programName="Business Intelligence and Data Analytics"
-                                              id={3} year={2024}/>
-
-                        <VisitedStudyPlanCard programName="Business Intelligence and Data Analytics"
-                                              id={3} year={2024}/>
-
-                        <VisitedStudyPlanCard programName="Business Intelligence and Data Analytics"
-                                              id={3} year={2024}/>
-                    </div>
+            <section class="flex flex-col gap-2 items-center">
+                <div class="flex gap-2 opacity-60 items-center text-xs">
+                    <i data-lucide="history" class="size-4"/>
+                    <h3>Last Visited: 1 month ago</h3>
                 </div>
 
-                <button id="right-navigator"
-                        class="hover:scale-125 transition-all p-2 flex items-center justify-center">
-                    <i data-lucide="chevron-right" class="size-8" />
-                </button>
-            </div>
-        </section>
+                <VisitedStudyPlanCard programName="Computer Science" {...studyPlans[0]}/>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer class="w-full text-xs text-center text-gray-500 mt-auto">
+            <p>Made by Yousef Mustafa &bull; © 2025</p>
+        </footer>
     </div>
 
     <dialog id="program-dialog" class="p-6 rounded-xl shadow-lg space-y-4">
@@ -99,6 +92,8 @@ const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/
             Close
         </button>
     </dialog>
+
+
 </Layout>
 
 <style>
@@ -114,9 +109,25 @@ const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/
 
 
 <script>
-    import {createIcons, LibraryBig, ChevronDown, ChevronLeft, ArrowRight, ChevronRight, History} from "lucide";
+    import {
+        createIcons,
+        LibraryBig,
+        ChevronDown,
+        ChevronLeft,
+        ArrowRight,
+        ChevronRight,
+        History,
+        Moon,
+        Home,
+        CircleHelp,
+        Search
+    } from "lucide";
 
-    createIcons({icons: {LibraryBig, ChevronDown, ChevronLeft, ArrowRight, ChevronRight, History}});
+    createIcons({
+        icons: {
+            LibraryBig, ChevronDown, ChevronLeft, ArrowRight, ChevronRight, History, Moon, Home, CircleHelp, Search
+        }
+    });
 
     const programsDialog = document.getElementById('program-dialog') as HTMLDialogElement;
 
@@ -127,55 +138,5 @@ const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/
     document.getElementById('close-programs-dialog')?.addEventListener('click', () => {
         programsDialog.close();
     });
-
-    const previouslyVisited = document.getElementById("previously-visited");
-    const leftNavigator = document.getElementById('left-navigator');
-    const rightNavigator = document.getElementById('right-navigator');
-    const leftHiddenGradient = document.getElementById('left-hidden-gradient');
-    const rightHiddenGradient = document.getElementById('right-hidden-gradient');
-
-    function updateHiddenGradients() {
-        if (!previouslyVisited ||
-            !leftNavigator ||
-            !rightNavigator ||
-            !leftHiddenGradient ||
-            !rightHiddenGradient
-        ) return;
-
-        const hiddenLeft = previouslyVisited.scrollLeft;
-        const hiddenRight = previouslyVisited.scrollWidth - previouslyVisited.clientWidth - previouslyVisited.scrollLeft;
-
-        leftNavigator.classList.toggle('invisible', hiddenLeft <= 0);
-        rightNavigator.classList.toggle('invisible', hiddenRight <= 0);
-
-        leftHiddenGradient.style.display = hiddenLeft <= 0 ? 'none' : 'flex';
-        rightHiddenGradient.style.display = hiddenRight <= 0 ? 'none' : 'flex';
-    }
-
-
-    leftNavigator?.addEventListener('click', () => {
-        if (!previouslyVisited) return;
-        previouslyVisited.scrollBy({
-            left: -previouslyVisited.clientWidth * 0.6,
-            behavior: 'smooth'
-        });
-    });
-
-    rightNavigator?.addEventListener('click', () => {
-        if (!previouslyVisited) return;
-        previouslyVisited.scrollBy({
-            left: previouslyVisited.clientWidth * 0.6,
-            behavior: 'smooth'
-        });
-    });
-
-    const resizeObserver = new ResizeObserver(() => updateHiddenGradients);
-
-    if (previouslyVisited) {
-        resizeObserver.observe(previouslyVisited);
-        previouslyVisited.addEventListener('scroll', updateHiddenGradients);
-    }
-
-    updateHiddenGradients();
 </script>
 
