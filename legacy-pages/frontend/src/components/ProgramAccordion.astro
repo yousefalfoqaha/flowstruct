@@ -1,11 +1,13 @@
 ---
 import type {StudyPlanOption} from "../types";
 
-const {code, name, studyPlans} = Astro.props;
+const {id, code, name, studyPlans} = Astro.props;
 ---
 
 <div class="program-accordion select-none">
-    <div class="program-option flex p-4 items-center group cursor-pointer hover:bg-gray-100 transition-all">
+    <div id=`program-${id}`
+         data-program={JSON.stringify({id, code, name})}
+         class="program-option flex p-4 items-center group cursor-pointer hover:bg-gray-100 transition-all">
         <p class="program-code-chip font-bold rounded-lg p-1 mr-4 px-4 bg-gray-100 group-hover:bg-white transition-all text-xs">{code}</p>
         <p class="text-sm">{name}</p>
 
@@ -17,7 +19,6 @@ const {code, name, studyPlans} = Astro.props;
     <div
             class="program-study-plans grid overflow-hidden transition-all duration-300"
             style="grid-template-rows: 0fr;"
-            data-study-plans={JSON.stringify(studyPlans)}
     >
         <div class="min-h-0">
             {studyPlans.length === 0 ? (
@@ -27,7 +28,10 @@ const {code, name, studyPlans} = Astro.props;
             ) : (
                     <div class="flex flex-wrap gap-2 p-4">
                         {studyPlans.map((studyPlan: StudyPlanOption) => (
-                                <a href={`/study-plans/${studyPlan.id}`} class="p-2 px-3 text-sm rounded-lg border font-semibold hover:bg-blue-100 transition-all size-fit cursor-pointer">
+                                <a id=`study-plan-${studyPlan.id}`
+                                   data-study-plan={JSON.stringify(studyPlan)}
+                                   href={`/study-plans/${studyPlan.id}`}
+                                   class="p-2 px-3 text-sm rounded-lg border font-semibold hover:bg-blue-100 transition-all size-fit cursor-pointer">
                                     <p>{`${studyPlan.year} / ${studyPlan.year + 1}`}</p>
                                     <p class="font-normal opacity-60 text-xs">{studyPlan.track ? ` ${studyPlan.track}` : ''}</p>
                                 </a>
@@ -56,4 +60,6 @@ const {code, name, studyPlans} = Astro.props;
             chevron?.classList.toggle('rotate-180');
         });
     });
+
+    console.log(document.querySelectorAll('#study-plan-*'));
 </script>
