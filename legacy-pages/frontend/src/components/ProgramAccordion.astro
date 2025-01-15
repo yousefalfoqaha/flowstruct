@@ -24,8 +24,16 @@ const {id, code, name, studyPlans} = Astro.props;
                     </p>
             ) : (
                     <div class="flex flex-wrap gap-2 p-4">
-                        {studyPlans.map((studyPlan: StudyPlanOption) =>
-                                <StudyPlanChip {...studyPlan}/>)}
+                        {studyPlans.map((studyPlan: StudyPlanOption) => (
+                                <study-plan-chip id={studyPlan.id}
+                                                 data-study-plan={JSON.stringify(studyPlan)}
+                                                 class="p-2 px-3 text-sm rounded-lg border font-semibold hover:bg-blue-100 transition-all size-fit cursor-pointer">
+                                    <a href={`/study-plans/${studyPlan.id}`}>
+                                        <p>{`${studyPlan.year} / ${studyPlan.year + 1}`}</p>
+                                        <p class="font-normal opacity-60 text-xs">{studyPlan.track ? ` ${studyPlan.track}` : ''}</p>
+                                    </a>
+                                </study-plan-chip>
+                        ))}
                     </div>
             )}
         </div>
