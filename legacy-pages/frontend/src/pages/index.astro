@@ -55,14 +55,7 @@ const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/
                 </button>
             </div>
 
-            <section class="flex flex-col gap-2 items-center">
-                <div class="flex gap-2 opacity-60 items-center text-xs">
-                    <i data-lucide="history" class="size-4"/>
-                    <h3>Last Visited: 1 month ago</h3>
-                </div>
-
-                <VisitedStudyPlanCard programName="Computer Science" {...studyPlans[0]}/>
-            </section>
+            <VisitedStudyPlanCard programName="Computer Science" {...studyPlans[0]}/>
         </div>
 
         <!-- Footer -->

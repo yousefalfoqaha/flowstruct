@@ -1,25 +1,22 @@
 ---
 import type {StudyPlanOption} from "../types";
+import StudyPlanChip from "./StudyPlanChip.astro";
 
 const {id, code, name, studyPlans} = Astro.props;
 ---
 
-<div class="program-accordion select-none">
-    <div id=`program-${id}`
-         data-program={JSON.stringify({id, code, name})}
-         class="program-option flex p-4 items-center group cursor-pointer hover:bg-gray-100 transition-all">
-        <p class="program-code-chip font-bold rounded-lg p-1 mr-4 px-4 bg-gray-100 group-hover:bg-white transition-all text-xs">{code}</p>
+<program-accordion id={id} data-program={JSON.stringify({id, code, name})}>
+    <div class="accordion-trigger flex p-4 items-center group cursor-pointer hover:bg-gray-100 transition-all">
+        <p class="code-chip font-bold rounded-lg p-1 mr-4 px-4 bg-gray-100 group-hover:bg-white transition-all text-xs">{code}</p>
         <p class="text-sm">{name}</p>
 
-        <p id="chevron" class="ml-auto p-2 group-hover:scale-110 transition-all duration-300">
+        <p class="chevron ml-auto p-2 group-hover:scale-110 transition-all duration-300">
             <i data-lucide="chevron-down" class="size-5"/>
         </p>
     </div>
 
-    <div
-            class="program-study-plans grid overflow-hidden transition-all duration-300"
-            style="grid-template-rows: 0fr;"
-    >
+    <div class="accordion-content grid overflow-hidden transition-all duration-300"
+         style="grid-template-rows: 0fr;">
         <div class="min-h-0">
             {studyPlans.length === 0 ? (
                     <p class="p-4 text-sm text-center opacity-60">
@@ -27,39 +24,34 @@ const {id, code, name, studyPlans} = Astro.props;
                     </p>
             ) : (
                     <div class="flex flex-wrap gap-2 p-4">
-                        {studyPlans.map((studyPlan: StudyPlanOption) => (
-                                <a id=`study-plan-${studyPlan.id}`
-                                   data-study-plan={JSON.stringify(studyPlan)}
-                                   href={`/study-plans/${studyPlan.id}`}
-                                   class="p-2 px-3 text-sm rounded-lg border font-semibold hover:bg-blue-100 transition-all size-fit cursor-pointer">
-                                    <p>{`${studyPlan.year} / ${studyPlan.year + 1}`}</p>
-                                    <p class="font-normal opacity-60 text-xs">{studyPlan.track ? ` ${studyPlan.track}` : ''}</p>
-                                </a>
-                        ))}
+                        {studyPlans.map((studyPlan: StudyPlanOption) =>
+                                <StudyPlanChip {...studyPlan}/>)}
                     </div>
             )}
         </div>
     </div>
-</div>
+</program-accordion>
 
 <script>
-    document.querySelectorAll('.program-accordion').forEach(programAccordion => {
-        const programOption = programAccordion.querySelector('.program-option');
-        const studyPlansContainer = programAccordion.querySelector('.program-study-plans');
-        const chevron = programAccordion.querySelector('#chevron');
+    class ProgramAccordion extends HTMLElement {
+        constructor() {
+            super();
+            const accordionTrigger = this.querySelector('.accordion-trigger');
+            const accordionContent = this.querySelector('.accordion-content');
 
-        programOption?.addEventListener('click', () => {
-            if (!studyPlansContainer) return;
+            accordionTrigger?.addEventListener('click', () => {
+                if (!accordionContent) return;
 
-            programOption.classList.toggle('bg-gray-100');
-            programOption.querySelector('.program-code-chip')?.classList.toggle('bg-white');
+                accordionTrigger?.classList.toggle('bg-gray-100');
+                accordionTrigger?.querySelector('.code-chip')?.classList.toggle('bg-white');
 
-            studyPlansContainer.style.gridTemplateRows =
-                studyPlansContainer.style.gridTemplateRows === '1fr' ? '0fr' : '1fr';
+                accordionContent.style.gridTemplateRows =
+                    accordionContent.style.gridTemplateRows === '1fr' ? '0fr' : '1fr';
 
-            chevron?.classList.toggle('rotate-180');
-        });
-    });
+                accordionTrigger?.querySelector('.chevron')?.classList.toggle('rotate-180');
+            });
+        }
+    }
 
-    console.log(document.querySelectorAll('#study-plan-*'));
+    customElements.define('program-accordion', ProgramAccordion);
 </script>

@@ -114,5 +114,12 @@ const {
             List
         }
     });
-</script>
 
+    const url = window.location.pathname;
+    const studyPlanId = url.split('/').pop();
+
+    localStorage.setItem('lastVisited', JSON.stringify({
+        id: studyPlanId,
+        timestamp: new Date().toISOString()
+    }));
+</script>
