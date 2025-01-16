@@ -5,7 +5,7 @@ const {sections} = Astro.props;
 
 <div id="course-filter" class="flex flex-col md:flex-row gap-2">
     <div class="relative flex items-center">
-        <select id="section-select" class="w-full border pl-3 p-2 pr-12 rounded appearance-none">
+        <select id="section-select" class="border h-full w-full md:w-96 p-4 pl-5 pr-14 rounded-xl appearance-none">
             <option value="all" data-section-courses="[]">All Compulsory Sections</option>
             {sections
                 .filter((sec: Section) => sec.type === 'Requirement')
@@ -18,20 +18,20 @@ const {sections} = Astro.props;
                         </option>
                 ))}
         </select>
-        <i data-lucide="chevron-down" class="absolute right-3 pointer-events-none text-gray-400"></i>
+        <i data-lucide="chevron-down" class="absolute right-5 pointer-events-none text-gray-400"></i>
     </div>
 
     <div class="flex gap-2 w-full relative items-center">
-        <i data-lucide="search" class="absolute left-3 text-gray-400"/>
+        <i data-lucide="search" class="absolute left-5 text-gray-400"/>
         <input
                 id="course-search-bar"
                 type="text"
-                class="w-full z-10 bg-transparent p-2 px-12 border rounded"
+                class="w-full z-10 bg-transparent p-4 px-14 border rounded-xl"
                 placeholder="Search a course..."
         />
         <button
                 id="clear-search-bar"
-                class="hidden z-20 absolute right-3 bg-white rounded transition-all text-gray-400 hover:text-gray-800"
+                class="hidden z-20 absolute right-5 bg-white rounded transition-all text-gray-400 hover:text-gray-800"
         >
             <i data-lucide="x"/>
         </button>

@@ -28,6 +28,15 @@ const {
 <Layout title={`${program.name} ${year}/${year + 1} ${track ? ` - ${track}` : ''} Study Plan`}>
     <div class="space-y-6 p-6 border min-h-screen">
         <section class="flex flex-col md:flex-row md:justify-between gap-4 md:items-center">
+            <div class="flex gap-6 justify-center">
+                <a href="/" class="flex gap-3 items-center group hover:text-gray-500 transition-all">
+                    <i data-lucide="home" class="group-hover:scale-110 transition-all size-5"/>
+                    Home
+                </a>
+                <button class="border rounded-full p-2 group hover:bg-gray-100 transition-all">
+                    <i data-lucide="moon" class="group-hover:scale-110 size-5 transition-all"/>
+                </button>
+            </div>
             <header class="space-y-2 text-center md:text-left">
                 <h1 class="text-2xl font-bold">{program.degree}s in {program.name} ({program.code})</h1>
                 <h2 class="opacity-60">
@@ -36,16 +45,13 @@ const {
                 </h2>
             </header>
 
-            <div class="flex text-sm justify-center md:justify-end gap-2 items-center flex-wrap-reverse select-none">
-                <div class="flex items-center gap-3 p-2 px-3 size-fit cursor-pointer rounded-xl hover:bg-gray-100 transition-all">
-                    <i data-lucide="list" class="size-4"/>
-                    <p class="text-nowrap mb-0.5">Other Study Plans</p>
-                </div>
+            <div class="flex text-sm justify-center md:justify-end gap-6 items-center flex-wrap-reverse select-none">
+                <button id="open-other-study-plans" class="flex gap-3 items-center group hover:text-gray-500 transition-all">
+                    <i data-lucide="list" class="group-hover:scale-110 transition-all size-5"/>
+                    Other Study Plans
+                </button>
 
-                <a href="/" class="flex items-center gap-2 p-2 pr-3 size-fit rounded-xl hover:bg-gray-100 cursor-pointer transition-all">
-                    <i data-lucide="chevron-left" class="size-4" />
-                    <p class="text-nowrap mb-0.5">All Programs</p>
-                </a>
+
             </div>
         </section>
 
@@ -54,19 +60,19 @@ const {
         <div class="flex flex-col text-center text-sm space-y-2 w-full font-semibold">
             <h1>Click a course then scroll left/right to highlight its...</h1>
             <div class="flex gap-2 justify-center flex-wrap">
-                <div class="p-1 px-3 pr-4 rounded bg-yellow-200 flex justify-between gap-1 items-center">
+                <div class="p-1 px-2 pr-4 lg:p-2 lg:px-3 lg:pr-5 rounded-lg bg-yellow-200 flex justify-between gap-2 items-center">
                     <i data-lucide="arrow-big-left-dash"/>
                     <p class="mb-0.5">Prerequisite Sequence</p>
                 </div>
-                <div class="p-1 px-3 pr-4 rounded bg-orange-300 flex justify-between gap-1 items-center">
+                <div class="p-1 px-2 pr-4 lg:p-2 lg:px-3 lg:pr-5 rounded-lg bg-orange-300 flex justify-between gap-2 items-center">
                     <i data-lucide="arrow-big-left"/>
                     <p class="mb-0.5">Prerequisite</p>
                 </div>
-                <div class="p-1 px-3 pr-4 rounded bg-gray-400 text-white flex justify-between gap-1 items-center">
+                <div class="p-1 px-2 pr-4 lg:p-2 lg:px-3 lg:pr-5 rounded-lg bg-gray-400 text-white flex justify-between gap-2 items-center">
                     <i data-lucide="arrow-big-up"/>
                     <p class="mb-0.5">Corequisite</p>
                 </div>
-                <div class="p-1 px-3 pr-4 rounded bg-sky-800 text-white flex justify-between gap-1 items-center">
+                <div class="p-1 px-2 pr-4 lg:p-2 lg:px-3 lg:pr-5 rounded-lg bg-sky-800 text-white flex justify-between gap-2 items-center">
                     <i data-lucide="arrow-big-right-dash"/>
                     <p class="mb-0.5">Postrequisite Sequence</p>
                 </div>
@@ -93,7 +99,10 @@ const {
         ArrowBigLeft,
         ArrowBigUp,
         ChevronLeft,
-        List
+        List,
+        Home,
+        CircleHelp,
+        Moon
     } from "lucide";
 
     createIcons({
@@ -111,7 +120,10 @@ const {
             ArrowBigLeft,
             ArrowBigUp,
             ChevronLeft,
-            List
+            List,
+            Home,
+            CircleHelp,
+            Moon
         }
     });
 

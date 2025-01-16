@@ -29,21 +29,21 @@ const {
             corequisites,
             sequences
         })}
-        class="transition-all duration-300 ease-in-out text-xs lg:text-sm w-[6.5rem] h-[6.5rem] lg:size-32 rounded"
+        class="transition-all duration-300 ease-in-out text-xs lg:text-sm w-[8rem] h-[6.9rem] lg:w-40 lg:h-[8.6rem] rounded-lg"
 >
-    <div class="select-none hover:shadow-lg transition-all cursor-pointer relative size-full bg-gray-200 p-3 py-2 group rounded">
-        <h3 class="font-semibold">{code}</h3>
+    <div class="select-none hover:shadow-lg transition-all cursor-pointer relative size-full bg-gray-200 lg:p-4 lg:py-3 p-3 py-2 group rounded-lg">
+        <h3 class="font-semibold mb-0.5 text-sm lg:text-base">{code}</h3>
         <p class="line-clamp-3">{name}</p>
-        <p class="absolute bottom-2 left-2 font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
+        <p class="absolute lg:bottom-3 lg:left-3 bottom-2 left-2 font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
             {creditHours} Cr.
         </p>
-        <p class="absolute bottom-2 right-2 font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
+        <p class="absolute lg:bottom-3 lg:right-3 bottom-2 right-2 font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
             {type}
         </p>
-        <button class="info-button z-10 group-hover:opacity-100 hover:!opacity-50 opacity-0 absolute top-2 right-2 cursor-pointer transition-opacity">
+        <button class="info-button z-10 group-hover:opacity-100 hover:!opacity-50 opacity-0 absolute lg:top-3 lg:right-3 top-2 right-2 cursor-pointer transition-opacity">
             <i data-lucide="info" class="size-4 lg:size-5"/>
         </button>
-        <i class="indicator absolute top-1 right-1 group-hover:opacity-0 transition-opacity"/>
+        <i class="indicator absolute lg:top-2 lg:right-2 top-[0.4rem] right-[0.4rem] group-hover:opacity-0 transition-opacity"/>
     </div>
 </course-card>
 

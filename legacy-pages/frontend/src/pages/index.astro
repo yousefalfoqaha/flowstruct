@@ -64,14 +64,14 @@ const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/
         </footer>
     </div>
 
-    <dialog id="program-dialog" class="p-6 rounded-xl shadow-lg space-y-4">
+    <dialog id="programs-dialog" class="p-6 rounded-xl shadow-lg space-y-4">
         <div class="space-y-4 max-w-screen-sm">
             <header class="space-y-1 text-center sm:text-left">
                 <h1 class="font-semibold text-lg">All GJU Programs</h1>
                 <h3 class="text-xs opacity-60">Select a program from the list below to view its study plans</h3>
             </header>
 
-            <div class="flex flex-col divide-y divide-gray-200 overflow-y-auto max-h-96 rounded">
+            <div class="flex flex-col divide-y divide-gray-200 overflow-y-auto max-h-96 rounded-xl">
                 {programs.map(program => (
                         <ProgramAccordion
                             {...program}
@@ -81,9 +81,9 @@ const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/
             </div>
         </div>
 
-        <button id="close-programs-dialog" class="select-none p-2 px-5 border rounded hover:bg-gray-100 transition-all">
-            Close
-        </button>
+        <div id="close-programs-dialog" class="absolute top-0 right-5 hover:text-gray-500 transition-all hover:scale-110 cursor-pointer">
+            <i data-lucide="X" />
+        </div>
     </dialog>
 
 
@@ -112,22 +112,23 @@ const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/
         Moon,
         Home,
         CircleHelp,
-        Search
+        Search,
+        X
     } from "lucide";
 
     createIcons({
         icons: {
-            LibraryBig, ChevronDown, ChevronLeft, ArrowRight, ChevronRight, History, Moon, Home, CircleHelp, Search
+            LibraryBig, ChevronDown, ChevronLeft, ArrowRight, ChevronRight, History, Moon, Home, CircleHelp, Search, X
         }
     });
 
-    const programsDialog = document.getElementById('program-dialog') as HTMLDialogElement;
+    const programsDialog = document.getElementById('programs-dialog') as HTMLDialogElement;
 
     document.getElementById('open-programs-dialog')?.addEventListener('click', () => {
         programsDialog.showModal();
     });
 
-    document.getElementById('close-programs-dialog')?.addEventListener('click', () => {
+    programsDialog.querySelector('#close-programs-dialog')?.addEventListener('click', () => {
         programsDialog.close();
     });
 </script>
