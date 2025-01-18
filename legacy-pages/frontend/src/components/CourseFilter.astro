@@ -67,25 +67,27 @@ const {sections} = Astro.props;
         });
     });
 
+    let debounceTimeout: number;
+
     searchBar?.addEventListener("input", () => {
-        sectionCombobox.selectedIndex = 0;
-        const query = searchBar.value.toUpperCase();
+        clearTimeout(debounceTimeout);
 
-        if (query.length > 0) {
-            clearButton.classList.remove("hidden");
-        } else {
-            clearButton.classList.add("hidden");
-        }
+        debounceTimeout = setTimeout(() => {
+            sectionCombobox.selectedIndex = 0;
+            const query = searchBar.value.toUpperCase();
 
-        courseCards.forEach(card => {
-            const course = JSON.parse(card.dataset.course || '{}');
-            const codeAndName = `${course.code} ${course.name}`.toUpperCase();
-            const match = codeAndName.includes(query);
+            clearButton.classList.toggle('hidden', !(query.length > 0));
+
+            courseCards.forEach(card => {
+                const course = JSON.parse(card.dataset.course || '{}');
+                const codeAndName = `${course.code} ${course.name}`.toUpperCase();
+                const match = codeAndName.includes(query);
 
 
-            card.classList.toggle("opacity-25", !match);
-            card.classList.toggle("shadow", !match);
-        });
+                card.classList.toggle("opacity-25", !match);
+                card.classList.toggle("shadow", !match);
+            });
+        }, 250);
     });
 
     clearButton?.addEventListener("click", () => {

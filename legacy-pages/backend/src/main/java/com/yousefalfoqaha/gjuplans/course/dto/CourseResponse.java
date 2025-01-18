@@ -1,6 +1,5 @@
 package com.yousefalfoqaha.gjuplans.course.dto;
 
-import com.yousefalfoqaha.gjuplans.course.domain.CoursePrerequisite;
 import com.yousefalfoqaha.gjuplans.course.domain.CourseType;
 
 import java.util.Set;

@@ -115,6 +115,12 @@ const {
         }
 
         private highlightRelatedCourses = () => {
+            // courseCards.forEach(card => {
+            //     card.classList.add('opacity-25');
+            // });
+
+            // this.querySelector('div')?.classList.remove('opacity-25');
+
             const coursesToHighlight = [
                 ...this.course.prerequisites.map(pr => ({
                     id: pr.prerequisite,
@@ -145,7 +151,7 @@ const {
                 if (!courseCard || !indicator) return;
 
                 courseCard.classList.add(className);
-
+                // courseCard.classList.remove('opacity-25');
                 const iconElement = createElement(icon);
                 iconElement.classList.add(
                     'opacity-0',
@@ -169,7 +175,8 @@ const {
                     'prerequisite',
                     'corequisite',
                     'prerequisite-sequence',
-                    'postrequisite-sequence'
+                    'postrequisite-sequence',
+                    // 'opacity-25'
                 );
 
                 const indicator = card.querySelector('.indicator');

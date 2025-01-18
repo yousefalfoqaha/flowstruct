@@ -1,0 +1,115 @@
+---
+import type {Program} from "../types";
+const {programs} = Astro.props;
+---
+
+<div id="study-plan-filter" class=" w-full md:w-96 relative">
+    <div class="flex gap-2 relative items-center">
+        <i data-lucide="search" class="absolute left-5 text-gray-400"></i>
+        <input id="search-bar"
+               type="text"
+               class="w-full z-10 bg-transparent p-4 px-14 border rounded-t-xl "
+               placeholder="Search a study plan..."
+               autocomplete="off"
+        />
+        <button id="clear-search-bar"
+                class="hidden z-20 absolute right-5 bg-white rounded transition-all text-gray-400 hover:text-gray-800"
+        >
+            <i data-lucide="x"/>
+        </button>
+    </div>
+    <div id="search-results-container"
+         class="z-10 absolute bg-white border-b border-x rounded-b-xl w-full p-4">
+        <div id="no-results-message" class="text-center opacity-60 text-sm hidden">No study plans found.</div>
+        <div id="program-categories" class="space-y-6">
+            {programs.map((program: Program) => {
+                return (
+                        <section class="space-y-4">
+
+                            <p class="font-semibold text-center border-b pb-4">B.Sc. {program.name} ({program.code})</p>
+
+                            <ul class="search-results-list flex flex-wrap gap-2">
+                                <li class="p-2 px-3 text-sm rounded-lg border font-semibold hover:bg-blue-100 transition-all size-fit cursor-pointer">
+                                    <a href="/study-plans/1">
+                                        <p>2023 / 2024</p>
+                                        <p class="font-normal opacity-60 text-xs">General Track</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </section>
+                        <section class="space-y-4">
+                            <p class="text-sm font-semibold text-center">B.Sc. Mechanical and Maintenance Engineering</p>
+
+                            <ul class="search-results-list flex flex-wrap gap-2">
+                                <li class="p-2 px-3 text-sm rounded-lg border font-semibold hover:bg-blue-100 transition-all size-fit cursor-pointer">
+                                    <a href="/study-plans/1">
+                                        <p>2023 / 2024</p>
+                                        <p class="font-normal opacity-60 text-xs">E-Mobility and Automotive Track</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </section>
+                );
+            })}
+        </div>
+    </div>
+</div>
+
+<script>
+    import type {Program, StudyPlanOption} from "../types";
+
+    const studyPlanFilter = document.getElementById('study-plan-filter');
+    const searchBar = studyPlanFilter?.querySelector('#search-bar') as HTMLInputElement;
+    const clearButton = studyPlanFilter?.querySelector('#clear-search-bar') as HTMLButtonElement;
+    const searchResultsContainer = studyPlanFilter?.querySelector('#search-results-container') as HTMLElement;
+    const searchResultsList = searchResultsContainer?.querySelector('#search-results-list') as HTMLUListElement;
+
+    const studyPlans = document.querySelectorAll('[data-study-plan]');
+
+    let debounceTimeout: number;
+
+    searchBar.addEventListener("input", () => {
+        clearTimeout(debounceTimeout);
+
+        debounceTimeout = setTimeout(() => {
+            const query = searchBar.value.toUpperCase();
+
+            clearButton.classList.toggle('hidden', !(query.length > 0));
+            searchResultsContainer.classList.toggle('hidden', !(query.length > 0));
+            searchBar.classList.toggle('rounded-b-xl', !(query.length > 0));
+
+            if (!searchResultsList) return;
+            searchResultsList.innerHTML = '';
+
+            studyPlans.forEach(studyPlan => {
+                const studyPlanData: StudyPlanOption = JSON.parse(studyPlan.dataset.studyPlan || '{}');
+                const programData: Program = JSON.parse(studyPlan.closest('program-accordion')?.dataset.program || '{}');
+                const fullName = `${programData.name} ${programData.code} ${studyPlanData.year} ${studyPlanData.track}`.toUpperCase();
+
+                if (!fullName.includes(query)) return;
+
+                const result = document.createElement('a');
+                result.href = `/study-plans/${studyPlanData.id}`;
+                result.classList.add('p-2', 'hover:bg-gray-100', 'transition-all', 'rounded-md', 'w-full');
+                result.textContent = `${programData.name} - ${studyPlanData.year} (${studyPlanData.track})`;
+
+                searchResultsList.appendChild(result);
+            });
+
+            const noResultsMessage = searchResultsContainer.querySelector('#no-results-message');
+            noResultsMessage?.classList.toggle('hidden', searchResultsList.children.length > 0);
+        }, 400);
+    });
+
+    clearButton.addEventListener("click", () => {
+        searchBar.value = "";
+
+        clearButton.classList.add("hidden");
+        searchBar.classList.add("rounded-b-xl");
+        searchResultsContainer.classList.add("hidden");
+
+        if (!searchResultsList) return;
+        searchResultsList.innerHTML = '';
+    });
+
+</script>
