@@ -1,3 +1,4 @@
+
 <dialog id="course-dialog" class="p-6 space-y-4 rounded-xl shadow-lg sm:max-w-[30rem]">
     <div class="course-dialog-header rounded-t space-y-1">
         <h1 class="text-lg font-semibold">Course Details</h1>
@@ -40,33 +41,33 @@
 <script>
     import type { Course } from "../types";
 
-        const dialog = document.getElementById('course-dialog') as HTMLDialogElement;
+    const dialog = document.getElementById('course-dialog') as HTMLDialogElement;
 
-        declare global {
-            interface Window {
-                showCourseDialog: (course: Course) => void;
-                }
-            }
+    declare global {
+        interface Window {
+            showCourseDialog: (course: Course) => void;
+        }
+    }
 
-        function showCourseDialog(course: any) {
-            const content = dialog.querySelector('.course-dialog-content') as HTMLElement;
+    function showCourseDialog(course: any) {
+        const content = dialog.querySelector('.course-dialog-content') as HTMLElement;
 
-            content.querySelector('#course-code')!.textContent = course.code;
-            content.querySelector('#course-name')!.textContent = course.name;
-            content.querySelector('#course-credits')!.textContent = course.creditHours;
-            content.querySelector('#course-ects')!.textContent = course.ects;
-            content.querySelector('#course-type')!.textContent = course.type;
-            content.querySelector('#course-lecture')!.textContent = `${course.lectureHours} Hr.`;
-            content.querySelector('#course-practical')!.textContent = `${course.practicalHours} Hr.`;
-            content.querySelector('#course-total')!.textContent = course.lectureHours + course.practicalHours;
+        content.querySelector('#course-code')!.textContent = course.code;
+        content.querySelector('#course-name')!.textContent = course.name;
+        content.querySelector('#course-credits')!.textContent = course.creditHours;
+        content.querySelector('#course-ects')!.textContent = course.ects;
+        content.querySelector('#course-type')!.textContent = course.type;
+        content.querySelector('#course-lecture')!.textContent = `${course.lectureHours} Hr.`;
+        content.querySelector('#course-practical')!.textContent = `${course.practicalHours} Hr.`;
+        content.querySelector('#course-total')!.textContent = course.lectureHours + course.practicalHours;
 
-            dialog.showModal();
-            }
+        dialog.showModal();
+    }
 
-        window.showCourseDialog = showCourseDialog;
+    window.showCourseDialog = showCourseDialog;
 
-        dialog.querySelector('#course-dialog-close')?.addEventListener('click', () => {
-            dialog.close();
-            });
+    dialog.querySelector('#course-dialog-close')?.addEventListener('click', () => {
+        dialog.close();
+    });
 
 </script>

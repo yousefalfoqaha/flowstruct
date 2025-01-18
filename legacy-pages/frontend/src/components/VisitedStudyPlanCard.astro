@@ -36,7 +36,7 @@
 
         lastVisitedDuration!.textContent = `Last Visited: ${formatTimeAgo(new Date(storedLastVisitedData.timestamp))}`;
         lastVisitedCard!.href = `/study-plans/${studyPlan.id}`;
-        lastVisitedCard!.querySelector('#program-name')!.textContent = "B.Sc " + program.name;
+        lastVisitedCard!.querySelector('#program-name')!.textContent = program.name;
         lastVisitedCard!.querySelector('#year')!.textContent = `Study Plan ${studyPlan.year} / ${studyPlan.year + 1}`;
         lastVisitedCard!.querySelector('#track')!.textContent = studyPlan.track;
 
