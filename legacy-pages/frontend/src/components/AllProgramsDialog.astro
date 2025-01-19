@@ -1,0 +1,52 @@
+---
+import ProgramAccordion from "./ProgramAccordion.astro";
+import type {Program, StudyPlanOption} from "../types";
+
+const {programs} = Astro.props;
+
+const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/study-plans`)
+    .then(res => res.json());
+---
+
+<button id="open-programs-dialog"
+        class="select-none flex items-center gap-3 p-4 w-full justify-center md:w-fit px-6 pr-7 border rounded-xl hover:bg-blue-100 hover:drop-shadow-md transition-all">
+    <i data-lucide="library-big"/>
+    <p class="font-semibold text-nowrap mb-0.5">All Programs</p>
+</button>
+
+<dialog id="programs-dialog" class="p-6 rounded-xl shadow-lg space-y-4">
+    <div class="space-y-4 max-w-screen-sm">
+        <header class="space-y-1 text-left">
+            <h1 class="font-semibold text-lg">All GJU Programs</h1>
+            <h3 class="text-xs opacity-60">Select a program from the list below</h3>
+        </header>
+
+        <div class="flex flex-col divide-y divide-gray-200 overflow-y-auto max-h-96 rounded-xl">
+            {programs.map((program: Program) => (
+                    <ProgramAccordion
+                        {...program}
+                        studyPlans={studyPlans.filter(sp => sp.program === program.id)}
+                    />
+            ))}
+        </div>
+    </div>
+
+    <div id="close-programs-dialog"
+         class="absolute top-0 right-4 p-1.5 hover:bg-gray-100 rounded-full transition-all cursor-pointer">
+        <i data-lucide="x" class="size-5 text-gray-500" />
+    </div>
+</dialog>
+
+<script>
+    const programsDialog = document.getElementById('programs-dialog') as HTMLDialogElement;
+    const openButton = document.getElementById('open-programs-dialog');
+    const closeButton = programsDialog.querySelector('#close-programs-dialog');
+
+    openButton?.addEventListener('click', () => {
+        programsDialog.showModal();
+    });
+
+    closeButton?.addEventListener('click', () => {
+        programsDialog.close();
+    });
+</script>

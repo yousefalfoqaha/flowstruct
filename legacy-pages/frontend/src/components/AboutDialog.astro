@@ -1,0 +1,109 @@
+
+<button id="about-button" class="flex gap-3 items-center group hover:text-gray-500 transition-all">
+    <i data-lucide="circle-help" class="group-hover:scale-110 transition-all size-5"/>
+    About
+</button>
+
+<dialog id="about-dialog" class="p-6 rounded-xl shadow-lg space-y-4 max-w-md">
+    <div class="rounded-t space-y-1 pb-2 text-gray-800">
+        <h1 class="text-lg font-semibold">About GJUPlans</h1>
+        <p class="text-xs text-gray-500">Brief overview on how to use this app</p>
+    </div>
+
+    <div id="close-about-dialog"
+         class="absolute top-0 right-4 p-1.5 hover:bg-gray-100 rounded-full transition-all cursor-pointer">
+        <i data-lucide="x" class="size-5 text-gray-500"/>
+    </div>
+
+    <div class="space-y-8">
+        <section class="space-y-4">
+            <p class="flex gap-4 font-semibold items-center text-lg text-gray-800">
+                <i data-lucide="mouse-pointer-click"/>
+                Click on a course to highlight its...
+            </p>
+
+            <div class="space-y-2">
+                <div class="flex gap-3 items-center hover:bg-yellow-50 p-2 group rounded-lg transition-colors">
+                    <div class="rounded-lg group-hover:shadow-xl transition-all p-1.5 bg-yellow-200 flex w-fit gap-2 items-center">
+                        <i data-lucide="arrow-big-left-dash" class="size-5"/>
+                    </div>
+                    <p class="text-sm text-gray-600">Prerequisite Sequence</p>
+                </div>
+                <div class="flex gap-3 items-center hover:bg-orange-50 p-2 group rounded-lg transition-colors">
+                    <div class="rounded-lg group-hover:shadow-xl transition-all p-1.5 bg-orange-300 flex w-fit gap-2 items-center">
+                        <i data-lucide="arrow-big-left" class="size-5"/>
+                    </div>
+                    <p class="text-sm text-gray-600">Prerequisite</p>
+                </div>
+                <div class="flex gap-3 items-center hover:bg-gray-50 p-2 group rounded-lg transition-colors">
+                    <div class="rounded-lg group-hover:shadow-xl transition-all p-1.5 bg-gray-400 text-white flex w-fit gap-2 items-center">
+                        <i data-lucide="arrow-big-up" class="size-5"/>
+                    </div>
+                    <p class="text-sm text-gray-600">Corequisite</p>
+                </div>
+                <div class="flex gap-3 items-center hover:bg-sky-50 p-2 group rounded-lg transition-colors">
+                    <div class="rounded-lg group-hover:shadow-xl transition-all p-1.5 bg-sky-800 text-white flex w-fit gap-2 items-center">
+                        <i data-lucide="arrow-big-right-dash" class="size-5"/>
+                    </div>
+                    <p class="text-sm text-gray-600">Postrequisite Sequence</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="space-y-4">
+            <p class="flex gap-4 font-semibold items-center text-lg text-gray-800">
+                <i data-lucide="sparkles" class="size-5"/>
+                Extra Features
+            </p>
+            <ul class="list-disc pl-7 space-y-2">
+                <li class="text-sm text-gray-600">Search courses by code or name using the search bar</li>
+                <li class="text-sm text-gray-600">Filter courses by section using the dropdown menu</li>
+                <li class="text-sm text-gray-600">Click the info button on any course for additional details</li>
+            </ul>
+        </section>
+
+        <div class="flex items-center gap-3 bg-blue-50 p-3 rounded-lg text-blue-700">
+            <i data-lucide="lightbulb" class="size-6" />
+            <p class="text-xs opacity-80">Pro tip: The course grid is arranged from foundational (left) to advanced (right) courses!</p>
+        </div>
+    </div>
+</dialog>
+
+<script>
+    import {
+        createIcons,
+        ArrowBigRightDash,
+        ArrowBigLeftDash,
+        ArrowBigLeft,
+        ArrowBigUp,
+        ChevronLeft,
+        MousePointerClick,
+        Sparkles,
+        Lightbulb
+    } from "lucide";
+
+    createIcons({
+        icons: {
+            ArrowBigRightDash,
+            ArrowBigLeftDash,
+            ArrowBigLeft,
+            ArrowBigUp,
+            ChevronLeft,
+            MousePointerClick,
+            Sparkles,
+            Lightbulb
+        }
+    });
+
+    const aboutButton = document.getElementById('about-button') as HTMLButtonElement;
+    const aboutDialog = document.getElementById('about-dialog') as HTMLDialogElement;
+    const closeButton = aboutDialog.querySelector('#close-about-dialog') as HTMLButtonElement;
+
+    aboutButton?.addEventListener('click', () => {
+        aboutDialog.showModal();
+    });
+
+    closeButton?.addEventListener('click', () => {
+        aboutDialog.close();
+    });
+</script>

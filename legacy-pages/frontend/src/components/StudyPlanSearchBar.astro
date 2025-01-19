@@ -24,6 +24,7 @@
 
 <script>
     import type {Program, StudyPlanOption} from "../types";
+    import {ChevronRight, createElement} from "lucide";
 
     const studyPlanFilter = document.getElementById('study-plan-filter');
     const searchBar = studyPlanFilter?.querySelector('#search-bar') as HTMLInputElement;
@@ -59,18 +60,26 @@
 
                 const result = document.createElement('a');
                 result.href = `/study-plans/${studyPlanData.id}`;
-                result.classList.add('p-4', 'select-none', 'hover:bg-gray-100', 'transition-all', 'cursor-pointer', 'space-y-1', 'block');
+                result.classList.add('p-4', 'flex', 'gap-2', 'justify-between', 'items-center', 'select-none', 'hover:bg-gray-100', 'transition-all', 'cursor-pointer');
+
+                const header = document.createElement('div');
+                result.classList.add('space-y-1');
 
                 const title = document.createElement('h1');
                 title.classList.add('font-semibold');
+
+                const chevronRight = createElement(ChevronRight);
                 title.textContent = `${programData.name}`;
 
                 const description = document.createElement('p');
                 description.classList.add('opacity-60', 'text-sm');
                 description.textContent = `Study Plan ${studyPlanData.year} / ${studyPlanData.year + 1} ${studyPlanData.track ? `- ${studyPlanData.track}` : ''}`;
 
-                result.appendChild(title);
-                result.appendChild(description);
+                header.appendChild(title);
+                header.appendChild(description);
+
+                result.appendChild(header);
+                result.appendChild(chevronRight);
 
                 searchResultsList.appendChild(result);
             });
@@ -81,7 +90,7 @@
             if (!resultsCount) return;
 
             resultsCount.classList.toggle('hidden', !(totalQueryMatches > 0));
-            resultsCount.textContent = `${totalQueryMatches} result${!(totalQueryMatches > 0) ? 's' : ''}`;
+            resultsCount.textContent = `${totalQueryMatches} result${totalQueryMatches > 1 ? 's' : ''}`;
 
             const noResultsMessage = searchResultsContainer.querySelector('#no-results-message');
             noResultsMessage?.classList.toggle('hidden', totalQueryMatches > 0);
