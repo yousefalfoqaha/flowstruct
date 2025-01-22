@@ -8,6 +8,8 @@ import AllProgramsDialog from "../components/AllProgramsDialog.astro";
 
 const programs: Program[] = await fetch(`http://localhost:8080/api/v1/programs`)
     .then(res => res.json());
+
+const date = new Date();
 ---
 
 <Layout title="GJUPlans">
@@ -32,7 +34,7 @@ const programs: Program[] = await fetch(`http://localhost:8080/api/v1/programs`)
         </div>
 
         <footer class="w-full text-xs text-center opacity-60 mt-auto">
-            <p>Made by Yousef Mustafa &bull; © 2025</p>
+            <p>Made by Yousef Mustafa &bull; © {date.getFullYear()}</p>
         </footer>
     </div>
 </Layout>

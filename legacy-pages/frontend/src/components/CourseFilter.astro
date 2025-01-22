@@ -14,7 +14,7 @@ const {sections} = Astro.props;
                             {section.name
                                 ? `${section.name}`
                                 : `${section.level} ${section.type}s`
-                            } ({section.requiredCreditHours} Cr. Required)
+                            } ({section.requiredCreditHours} Cr.)
                         </option>
                 ))}
         </select>
@@ -26,7 +26,8 @@ const {sections} = Astro.props;
         <input
                 id="course-search-bar"
                 type="text"
-                class="w-full z-10 bg-transparent p-4 px-14 border rounded-xl"
+                class="w-full z-10 bg-transparent p-4 focus:outline-none focus:ring-2
+                              focus:ring-blue-500/20 focus:border-blue-500/30 px-14 border rounded-xl"
                 placeholder="Search a course..."
                 autocomplete="off"
         />
@@ -56,6 +57,7 @@ const {sections} = Astro.props;
 
         searchBar.value = "";
         clearButton.classList.add('hidden');
+        resultsCount.classList.add('hidden');
 
         if (sectionCourses.size === 0) {
             courseCards.forEach(card => card.classList.remove('opacity-25', 'shadow'));
@@ -97,7 +99,7 @@ const {sections} = Astro.props;
                 if (isMatch) totalQueryMatches++;
             });
 
-            resultsCount.textContent = `${totalQueryMatches} result${totalQueryMatches > 1 ? 's' : ''}`;
+            resultsCount.textContent = `${totalQueryMatches} result${totalQueryMatches !== 1 ? 's' : ''}`;
         }, 250);
     });
 

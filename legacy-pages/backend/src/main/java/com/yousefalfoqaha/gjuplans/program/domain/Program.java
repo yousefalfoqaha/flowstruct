@@ -21,5 +21,5 @@ public class Program {
 
     private String name;
 
-    private Degree degree;
+    private String degree;
 }

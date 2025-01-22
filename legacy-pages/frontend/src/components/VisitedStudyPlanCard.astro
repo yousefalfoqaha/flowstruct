@@ -6,7 +6,8 @@
     </div>
 
     <a id="last-visited-card"
-       class="p-4 px-5 pb-5 flex flex-col justify-between space-y-2 bg-gray-200 w-60 h-40 rounded-xl hover:bg-blue-100 hover:shadow-lg transition-all select-none cursor-pointer"
+       class="hover:bg-blue-50 hover:border-blue-200 hover:drop-shadow-md
+               active:bg-blue-100 duration-200 p-4 px-5 pb-5 flex flex-col justify-between space-y-2 border bg-gray-100 w-60 h-40 rounded-xl transition-all select-none cursor-pointer"
         style="display: none"
     >
         <header class="space-y-1">
@@ -37,7 +38,7 @@
 
         lastVisitedDuration!.textContent = `Last Visited: ${formatTimeAgo(new Date(storedLastVisitedData.timestamp))}`;
         lastVisitedCard!.href = `/study-plans/${studyPlan.id}`;
-        lastVisitedCard!.querySelector('#program-name')!.textContent = program.name;
+        lastVisitedCard!.querySelector('#program-name')!.textContent = `${program.degree} ${program.name}`;
         lastVisitedCard!.querySelector('#year')!.textContent = `Study Plan ${studyPlan.year} / ${studyPlan.year + 1}`;
         lastVisitedCard!.querySelector('#track')!.textContent = studyPlan.track;
 

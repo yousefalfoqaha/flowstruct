@@ -31,7 +31,8 @@ const {
         })}
         class="transition-all duration-300 ease-in-out text-xs lg:text-sm w-[8rem] h-[6.9rem] lg:w-40 lg:h-[8.6rem] rounded-lg lg:rounded-xl"
 >
-    <div class="select-none hover:shadow-lg transition-all cursor-pointer relative size-full bg-gray-200 lg:p-4 lg:py-3 p-3 py-2 group rounded-lg lg:rounded-xl">
+    <div class="select-none hover:shadow-lg transition-all cursor-pointer relative size-full bg-gray-100 border hover:bg-blue-50 hover:border-blue-200 hover:drop-shadow-sm
+               active:bg-blue-100 lg:p-4 lg:py-3 p-3 py-2 group rounded-lg lg:rounded-xl">
         <h3 class="font-semibold mb-0.5 text-sm lg:text-base">{code}</h3>
         <p class="line-clamp-3">{name}</p>
         <p class="absolute lg:bottom-3 lg:left-3 bottom-2 left-2 font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
@@ -40,7 +41,7 @@ const {
         <p class="absolute lg:bottom-3 lg:right-3 bottom-2 right-2 font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
             {type}
         </p>
-        <button class="info-button z-10 group-hover:opacity-100 hover:!opacity-50 opacity-0 absolute lg:top-3 lg:right-3 top-2 right-2 cursor-pointer transition-opacity">
+        <button class="info-button z-10 rounded-full hover:text-black pointer-events-none group-hover:pointer-events-auto p-2 opacity-0 group-hover:opacity-60 hover:!opacity-100 absolute lg:top-1 lg:right-1 top-0 right-0 cursor-pointer duration-200">
             <i data-lucide="info" class="size-4 lg:size-5"/>
         </button>
         <i class="indicator absolute lg:top-2 lg:right-2 top-[0.4rem] right-[0.4rem] group-hover:opacity-0 transition-opacity"/>
@@ -49,7 +50,8 @@ const {
 
 <style>
     .selected {
-        background-color: #bfdbfe;
+        background-color: #dbeafe;
+        border-color: #bfdbfe;
         --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
         --tw-shadow-colored: 0 20px 25px -5px #0000, 0 8px 10px -6px #0000;
         box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
