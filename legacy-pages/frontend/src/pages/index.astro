@@ -1,34 +1,21 @@
 ---
-import type {Program, StudyPlanOption} from "../types";
+import type {Program} from "../types";
 import Layout from "../layouts/Layout.astro";
-import ProgramAccordion from "../components/ProgramAccordion.astro";
 import VisitedStudyPlanCard from "../components/VisitedStudyPlanCard.astro";
-import {Image} from "astro:assets";
-import GJULogo from "../public/GJULogo.png";
+import StudyPlanSearchBar from "../components/StudyPlanSearchBar.astro";
+import AboutDialog from "../components/AboutDialog.astro";
+import AllProgramsDialog from "../components/AllProgramsDialog.astro";
 
 const programs: Program[] = await fetch(`http://localhost:8080/api/v1/programs`)
     .then(res => res.json());
 
-const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/study-plans`)
-    .then(res => res.json());
+const date = new Date();
 ---
 
 <Layout title="GJUPlans">
     <div class="flex flex-col gap-6 p-6 min-h-screen border text-gray-800">
-        <header class="flex  items-center gap-6 pb-6 w-full justify-center relative">
-            <a href="/" class="flex gap-3 items-center group hover:text-gray-500 transition-all">
-                <i data-lucide="home" class="group-hover:scale-110 transition-all size-5"/>
-                Home
-            </a>
-
-            <a href="/about" class="flex gap-3 items-center group hover:text-gray-500 transition-all">
-                <i data-lucide="circle-help" class="group-hover:scale-110 transition-all size-5"/>
-                About
-            </a>
-
-            <button class="border rounded-full p-2 group hover:bg-gray-100 transition-all">
-                <i data-lucide="moon" class="group-hover:scale-110 size-5 transition-all"/>
-            </button>
+        <header class="flex items-center gap-6 pb-6 w-full justify-center relative">
+            <AboutDialog />
         </header>
 
         <div class="flex flex-col gap-6 items-center my-auto">
@@ -37,68 +24,20 @@ const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/
                 <h3>An Interactive Study Plan Visualizer</h3>
             </header>
 
-            <div class="flex flex-col-reverse gap-2 md:flex-row">
-                <div class="flex gap-2 w-full md:w-96 relative items-center">
-                    <i data-lucide="search" class="absolute left-5 text-gray-400"/>
-                    <input
-                            id="course-search-bar"
-                            type="text"
-                            class="w-full z-10 bg-transparent p-4 px-14 border rounded-xl"
-                            placeholder="Search a study plan..."
-                    />
-                </div>
-                <button id="open-programs-dialog"
-                        class="select-none flex items-center gap-3 p-4 w-full justify-center md:w-fit px-6 pr-7 border rounded-xl hover:bg-blue-100 hover:drop-shadow-md transition-all"
-                >
-                    <i data-lucide="library-big"/>
-                    <p class="font-semibold text-nowrap mb-0.5">All Programs</p>
-                </button>
+            <div class="flex flex-col-reverse gap-2  md:flex-row">
+                <StudyPlanSearchBar programs={programs} />
+
+                <AllProgramsDialog programs={programs} />
             </div>
 
-            <VisitedStudyPlanCard programName="Computer Science" {...studyPlans[0]}/>
+            <VisitedStudyPlanCard />
         </div>
 
-        <!-- Footer -->
-        <footer class="w-full text-xs text-center text-gray-500 mt-auto">
-            <p>Made by Yousef Mustafa &bull; © 2025</p>
+        <footer class="w-full text-xs text-center opacity-60 mt-auto">
+            <p>Made by Yousef Mustafa &bull; © {date.getFullYear()}</p>
         </footer>
     </div>
-
-    <dialog id="programs-dialog" class="p-6 rounded-xl shadow-lg space-y-4">
-        <div class="space-y-4 max-w-screen-sm">
-            <header class="space-y-1 text-center sm:text-left">
-                <h1 class="font-semibold text-lg">All GJU Programs</h1>
-                <h3 class="text-xs opacity-60">Select a program from the list below to view its study plans</h3>
-            </header>
-
-            <div class="flex flex-col divide-y divide-gray-200 overflow-y-auto max-h-96 rounded-xl">
-                {programs.map(program => (
-                        <ProgramAccordion
-                            {...program}
-                            studyPlans={studyPlans.filter(sp => sp.program === program.id)}
-                        />
-                ))}
-            </div>
-        </div>
-
-        <div id="close-programs-dialog" class="absolute top-0 right-5 hover:text-gray-500 transition-all hover:scale-110 cursor-pointer">
-            <i data-lucide="X" />
-        </div>
-    </dialog>
-
-
 </Layout>
-
-<style>
-    #previously-visited {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-
-    #previously-visited::-webkit-scrollbar {
-        display: none;
-    }
-</style>
 
 <script>
     import {
@@ -118,18 +57,18 @@ const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/
 
     createIcons({
         icons: {
-            LibraryBig, ChevronDown, ChevronLeft, ArrowRight, ChevronRight, History, Moon, Home, CircleHelp, Search, X
+            LibraryBig,
+            ChevronDown,
+            ChevronLeft,
+            ArrowRight,
+            ChevronRight,
+            History,
+            Moon,
+            Home,
+            CircleHelp,
+            Search,
+            X
         }
-    });
-
-    const programsDialog = document.getElementById('programs-dialog') as HTMLDialogElement;
-
-    document.getElementById('open-programs-dialog')?.addEventListener('click', () => {
-        programsDialog.showModal();
-    });
-
-    programsDialog.querySelector('#close-programs-dialog')?.addEventListener('click', () => {
-        programsDialog.close();
     });
 </script>
 

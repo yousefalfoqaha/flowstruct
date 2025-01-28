@@ -1,0 +1,134 @@
+---
+import ProgramAccordion from "./ProgramAccordion.astro";
+import type {Program, StudyPlanOption} from "../types";
+
+const {programs} = Astro.props;
+
+const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/study-plans`)
+    .then(res => res.json());
+---
+
+<button id="open-programs-dialog"
+        class="select-none flex items-center justify-center gap-3 p-4 w-full md:w-fit px-6 border rounded-xl
+               hover:bg-blue-50 hover:border-blue-200 hover:drop-shadow-md
+               active:bg-blue-100 transition-all duration-200">
+    <i data-lucide="library-big" class="text-blue-600"/>
+    <p class="font-semibold text-nowrap mb-0.5">All Programs</p>
+</button>
+
+<dialog id="programs-dialog"
+        class="w-full max-w-2xl p-0 rounded-2xl shadow-2xl backdrop:bg-gray-950/20
+               opacity-0 scale-95 transition-all duration-200">
+    <div class="relative">
+        <!-- Header -->
+        <header class="sticky top-0 bg-white/80 backdrop-blur-sm  p-6 pb-4 space-y-4 border-b">
+            <div class="flex items-center justify-between">
+                <div class="space-y-1">
+                    <h1 class="font-semibold text-xl">All GJU Programs</h1>
+                    <p class="text-sm text-gray-500">Select a program to view available study plans</p>
+                </div>
+                <button id="close-programs-dialog"
+                        class="p-1.5 hover:bg-gray-100 rounded-full mb-auto transition-all text-gray-500
+                               hover:text-gray-700 active:bg-gray-200">
+                    <i data-lucide="x" class="size-5"/>
+                </button>
+            </div>
+
+            <!-- Search input -->
+            <div class="relative">
+                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400"/>
+                <input type="text"
+                       id="program-search"
+                       placeholder="Search a program..."
+                       autocomplete="off"
+                       class="w-full pl-10 pr-4 py-2 rounded-lg border bg-gray-50 focus:outline-none focus:ring-2
+                              focus:ring-blue-500/20 focus:border-blue-500/30">
+                <button
+                        id="clear-search"
+                        class="hidden z-10 absolute right-2 bg-gray-50 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-200 transition-all text-gray-400 hover:text-gray-800"
+                >
+                    <i data-lucide="x" class="size-4"/>
+                </button>
+            </div>
+        </header>
+
+        <!-- Programs List -->
+        <div class="divide-y divide-gray-200 max-h-[60vh] overflow-y-auto overscroll-contain">
+            {programs.map((program: Program) => (
+                    <div class="program-item">
+                        <ProgramAccordion
+                            {...program}
+                            studyPlans={studyPlans.filter(sp => sp.program === program.id)}
+                        />
+                    </div>
+            ))}
+        </div>
+    </div>
+</dialog>
+
+<style>
+    dialog::backdrop {
+        background: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(4px);
+    }
+</style>
+
+<script>
+    const dialog = document.getElementById('programs-dialog') as HTMLDialogElement;
+    const openButton = document.getElementById('open-programs-dialog');
+    const closeButton = dialog.querySelector('#close-programs-dialog');
+    const searchInput = dialog.querySelector('#program-search') as HTMLInputElement;
+    const clearSearch = dialog.querySelector('#clear-search') as HTMLButtonElement;
+    const programs = dialog.querySelectorAll('.program-item');
+
+    openButton?.addEventListener('click', () => {
+        dialog.showModal();
+
+        requestAnimationFrame(() => {
+            dialog.style.opacity = '1';
+            dialog.style.transform = 'scale(1)';
+        });
+    });
+
+    const closeDialog = () => {
+        dialog.style.opacity = '0';
+        dialog.style.transform = 'scale(95%)';
+        setTimeout(() => dialog.close(), 200);
+    };
+
+    closeButton?.addEventListener('click', closeDialog);
+
+    dialog.addEventListener('click', (e) => {
+        if (e.target === dialog) closeDialog();
+    });
+
+    let debounceTimeout: number;
+
+    searchInput?.addEventListener('input', (e) => {
+        clearTimeout(debounceTimeout);
+
+        debounceTimeout = setTimeout(() => {
+            const query = (e.target as HTMLInputElement).value.toLowerCase();
+            const queryWords = query.split(/\s+/);
+
+            clearSearch.classList.toggle('hidden', !(query.length > 0));
+
+            programs.forEach(program => {
+                const programText = program.textContent?.toLowerCase() || '';
+                const isMatch = queryWords.every(word => programText.includes(word));
+                program.classList.toggle('hidden', !isMatch);
+            });
+        }, 400)
+    });
+
+    clearSearch.addEventListener('click', () => {
+       searchInput.value = '';
+       clearSearch.classList.add('hidden');
+        programs.forEach(program => program.classList.remove('hidden'));
+    });
+
+    dialog.addEventListener('cancel', (e) => {
+        e.preventDefault();
+        closeDialog();
+    });
+</script>

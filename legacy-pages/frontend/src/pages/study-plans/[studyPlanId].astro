@@ -3,6 +3,7 @@ import CourseDialog from "../../components/CourseDialog.astro";
 import StudyPlanGrid from "../../components/StudyPlanGrid.astro";
 import type {StudyPlanOption} from "../../types";
 import Layout from "../../layouts/Layout.astro";
+import AboutDialog from "../../components/AboutDialog.astro";
 
 export async function getStaticPaths() {
     const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/study-plans`)
@@ -27,57 +28,26 @@ const {
 
 <Layout title={`${program.name} ${year}/${year + 1} ${track ? ` - ${track}` : ''} Study Plan`}>
     <div class="space-y-6 p-6 border min-h-screen">
-        <section class="flex flex-col md:flex-row md:justify-between gap-4 md:items-center">
-            <div class="flex gap-6 justify-center">
-                <a href="/" class="flex gap-3 items-center group hover:text-gray-500 transition-all">
-                    <i data-lucide="home" class="group-hover:scale-110 transition-all size-5"/>
-                    Home
-                </a>
-                <button class="border rounded-full p-2 group hover:bg-gray-100 transition-all">
-                    <i data-lucide="moon" class="group-hover:scale-110 size-5 transition-all"/>
-                </button>
-            </div>
+        <section class="flex flex-col-reverse md:flex-row md:justify-between gap-6 md:items-center">
             <header class="space-y-2 text-center md:text-left">
-                <h1 class="text-2xl font-bold">{program.degree}s in {program.name} ({program.code})</h1>
+                <h1 class="text-3xl font-bold">{program.degree} {program.name}</h1>
                 <h2 class="opacity-60">
                     Study Plan {year} / {year + 1}
                     {track ? ` - ${track}` : ''}
                 </h2>
             </header>
 
-            <div class="flex text-sm justify-center md:justify-end gap-6 items-center flex-wrap-reverse select-none">
-                <button id="open-other-study-plans" class="flex gap-3 items-center group hover:text-gray-500 transition-all">
-                    <i data-lucide="list" class="group-hover:scale-110 transition-all size-5"/>
-                    Other Study Plans
-                </button>
+            <header class="flex gap-6 md:p-0 relative justify-center">
+                <a href="/" class="flex gap-3 items-center group text-gray-600 hover:text-blue-600 transition-all">
+                    <i data-lucide="home" class="group-hover:scale-110 transition-all duration-200 size-5"/>
+                    Home
+                </a>
 
-
-            </div>
+                <AboutDialog />
+            </header>
         </section>
 
         <StudyPlanGrid sections={sections} courses={courses} program={program}/>
-
-        <div class="flex flex-col text-center text-sm space-y-2 w-full font-semibold">
-            <h1>Click a course then scroll left/right to highlight its...</h1>
-            <div class="flex gap-2 justify-center flex-wrap">
-                <div class="p-1 px-2 pr-4 lg:p-2 lg:px-3 lg:pr-5 rounded-lg bg-yellow-200 flex justify-between gap-2 items-center">
-                    <i data-lucide="arrow-big-left-dash"/>
-                    <p class="mb-0.5">Prerequisite Sequence</p>
-                </div>
-                <div class="p-1 px-2 pr-4 lg:p-2 lg:px-3 lg:pr-5 rounded-lg bg-orange-300 flex justify-between gap-2 items-center">
-                    <i data-lucide="arrow-big-left"/>
-                    <p class="mb-0.5">Prerequisite</p>
-                </div>
-                <div class="p-1 px-2 pr-4 lg:p-2 lg:px-3 lg:pr-5 rounded-lg bg-gray-400 text-white flex justify-between gap-2 items-center">
-                    <i data-lucide="arrow-big-up"/>
-                    <p class="mb-0.5">Corequisite</p>
-                </div>
-                <div class="p-1 px-2 pr-4 lg:p-2 lg:px-3 lg:pr-5 rounded-lg bg-sky-800 text-white flex justify-between gap-2 items-center">
-                    <i data-lucide="arrow-big-right-dash"/>
-                    <p class="mb-0.5">Postrequisite Sequence</p>
-                </div>
-            </div>
-        </div>
     </div>
 
     <CourseDialog/>
@@ -94,10 +64,6 @@ const {
         ChevronDown,
         Search,
         X,
-        ArrowBigRightDash,
-        ArrowBigLeftDash,
-        ArrowBigLeft,
-        ArrowBigUp,
         ChevronLeft,
         List,
         Home,
@@ -115,23 +81,26 @@ const {
             ChevronDown,
             Search,
             X,
-            ArrowBigRightDash,
-            ArrowBigLeftDash,
-            ArrowBigLeft,
-            ArrowBigUp,
             ChevronLeft,
             List,
             Home,
             CircleHelp,
-            Moon
+            Moon,
         }
     });
 
-    const url = window.location.pathname;
-    const studyPlanId = url.split('/').pop();
+    if (!localStorage.getItem('lastVisited')) {
+        document.getElementById('about-dialog')?.showModal();
+    }
 
-    localStorage.setItem('lastVisited', JSON.stringify({
-        id: studyPlanId,
-        timestamp: new Date().toISOString()
-    }));
+    const url = window.location.pathname;
+    const match = url.match(/study-plans\/(\d+)/);
+    const studyPlanId = match ? match[1] : null;
+
+    if (studyPlanId) {
+        localStorage.setItem('lastVisited', JSON.stringify({
+            id: studyPlanId,
+            timestamp: new Date().toISOString()
+        }));
+    }
 </script>

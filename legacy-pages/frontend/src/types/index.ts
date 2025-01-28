@@ -13,7 +13,7 @@ export type Program = {
     id: number;
     code: string;
     name: string;
-    degree: "Bachelor" | "Master";
+    degree: "B.Sc." | "B.A.";
 }
 
 export type CoursePrerequisite = {
