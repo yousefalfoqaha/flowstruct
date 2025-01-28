@@ -18,7 +18,7 @@ import java.util.Set;
 public class Course {
 
         @Id
-        long id;
+        Long id;
 
         String code;
 
