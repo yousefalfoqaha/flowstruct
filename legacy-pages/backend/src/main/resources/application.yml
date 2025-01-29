@@ -1,8 +1,0 @@
-spring:
-  application:
-    name: gju-plans
-
-  datasource:
-    url: jdbc:postgresql://localhost:5432/gjuplans
-    username: postgres
-    password: admin

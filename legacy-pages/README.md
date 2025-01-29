@@ -1,12 +1,48 @@
-## Plan your courses in a streamlined manner 🔨
-![2024-10-1221-17-09-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/d0f0994f-c57a-4bc2-a33e-2e6ba1b944c3)
+# Astro Starter Kit: Basics
 
-## View entire university programs at a glance 👁️
-![2024-10-1221-24-41-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/d5521cb9-301d-40d7-ae81-b245c09045e7)
+```sh
+npm create astro@latest -- --template basics
+```
 
-## Features ⚙️
-- Visualize course pre-requisites and post-requisites using graph traversal algorithms like depth-first search and topological sort
-- Support for single sign on (SSO) with university SIS to access courses immediately
-- Constraints to add courses in the correct order, deleting a course also deletes courses that rely on it (pre-requisite)
-- Administrators can create general flowsheets for each bachelor program (study guides) that are accessible to anyone with the link to the general flowsheet
-- Administrators can set whitelists to restrict course placement in specific semesters
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
+[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+
+![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+
+## 🚀 Project Structure
+
+Inside of your Astro project, you'll see the following folders and files:
+
+```text
+/
+├── public/
+│   └── favicon.svg
+├── src/
+│   ├── layouts/
+│   │   └── Layout.astro
+│   └── pages/
+│       └── index.astro
+└── package.json
+```
+
+To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+
+## 🧞 Commands
+
+All commands are run from the root of the project, from a terminal:
+
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `npm install`             | Installs dependencies                            |
+| `npm run dev`             | Starts local dev server at `localhost:4321`      |
+| `npm run build`           | Build your production site to `./dist/`          |
+| `npm run preview`         | Preview your build locally, before deploying     |
+| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `npm run astro -- --help` | Get help using the Astro CLI                     |
+
+## 👀 Want to learn more?
+
+Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
