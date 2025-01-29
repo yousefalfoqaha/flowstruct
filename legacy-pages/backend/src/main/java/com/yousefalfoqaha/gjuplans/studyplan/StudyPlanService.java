@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
-import com.yousefalfoqaha.gjuplans.course.CourseService;
+import com.yousefalfoqaha.gjuplans.course.service.CourseService;
 import com.yousefalfoqaha.gjuplans.program.ProgramService;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.SectionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanOptionResponse;
@@ -67,7 +67,7 @@ public class StudyPlanService {
                                         .toList()
                         ))
                         .toList(),
-                courseService.getCoursesById(
+                courseService.getCoursesWithSequences(
                         studyPlan.getSections()
                                 .stream()
                                 .flatMap(sec -> sec.getCourses().stream())

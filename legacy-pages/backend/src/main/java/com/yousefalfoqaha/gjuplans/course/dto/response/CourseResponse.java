@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.course.dto;
+package com.yousefalfoqaha.gjuplans.course.dto.response;
 
 import com.yousefalfoqaha.gjuplans.course.domain.CourseType;
 
@@ -15,7 +15,6 @@ public record CourseResponse(
         CourseType type,
         boolean isRemedial,
         Set<CoursePrerequisiteResponse> prerequisites,
-        Set<Long> corequisites,
-        CourseSequencesResponse sequences
+        Set<Long> corequisites
 ) {
 }

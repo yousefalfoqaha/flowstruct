@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.course.dto;
+package com.yousefalfoqaha.gjuplans.course.dto.response;
 
 import java.util.Set;
 
