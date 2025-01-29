@@ -73,6 +73,10 @@ public class CourseService {
         for (var prerequisite : course.getPrerequisites()) {
             var prerequisiteId = prerequisite.getPrerequisite().getId();
 
+            if (courses.get(prerequisiteId) == null) {
+                continue;
+            }
+
             if (courses.get(prerequisiteId).isRemedial()) {
                 continue;
             }

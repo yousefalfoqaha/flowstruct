@@ -90,7 +90,13 @@ const {
     });
 
     if (!localStorage.getItem('lastVisited')) {
-        document.getElementById('about-dialog')?.showModal();
+        const dialog = document.getElementById('about-dialog') as HTMLDialogElement;
+
+        dialog.showModal();
+        requestAnimationFrame(() => {
+            dialog.style.opacity = '1';
+            dialog.style.transform = 'scale(1)';
+        });
     }
 
     const url = window.location.pathname;
