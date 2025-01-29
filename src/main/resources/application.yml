@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: gjuplans
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/gjuplans
+    username: postgres
+    password: admin
