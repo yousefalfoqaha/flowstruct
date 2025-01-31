@@ -13,7 +13,6 @@ public record StudyPlanResponse(
         ProgramResponse program,
         List<SectionResponse> sections,
         Map<Long, Integer> coursePlacements,
-        Map<Long, CourseWithSequencesResponse> courses,
-        List<StudyPlanOptionResponse> otherStudyPlans
+        Map<Long, CourseWithSequencesResponse> courses
 ) {
 }

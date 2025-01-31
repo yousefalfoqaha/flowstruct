@@ -31,7 +31,7 @@ public class StudyPlanService {
                 .toList();
     }
 
-    public List<StudyPlanOptionResponse> getAllProgramStudyPlans(long programId) {
+    public List<StudyPlanOptionResponse> getProgramStudyPlans(long programId) {
         return studyPlanRepository.findAllProgramStudyPlans(programId)
                 .stream()
                 .map(sp -> new StudyPlanOptionResponse(
@@ -81,8 +81,7 @@ public class StudyPlanService {
                                 .map(c -> c.getCourse().getId())
                                 .distinct()
                                 .toList()
-                ),
-                getAllProgramStudyPlans(studyPlan.getProgram().getId())
+                )
         );
     }
 }

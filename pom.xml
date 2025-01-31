@@ -9,10 +9,10 @@
 		<relativePath/>
 	</parent>
 	<groupId>com.yousefalfoqaha</groupId>
-	<artifactId>flowsheet</artifactId>
+	<artifactId>gjuplans-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>gju-plans</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Backend for GJUPlans</description>
 	<url/>
 	<licenses>
 		<license/>
