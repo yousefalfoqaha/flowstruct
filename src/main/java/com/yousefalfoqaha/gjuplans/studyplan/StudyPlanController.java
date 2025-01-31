@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/study-plans")
-@CrossOrigin("http://localhost:4321/")
 public class StudyPlanController {
     private final StudyPlanService studyPlanService;
 

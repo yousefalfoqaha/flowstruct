@@ -1,7 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
 import com.yousefalfoqaha.gjuplans.course.service.CourseService;
-import com.yousefalfoqaha.gjuplans.program.ProgramService;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.SectionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanOptionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanResponse;
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 public class StudyPlanService {
     private final StudyPlanRepository studyPlanRepository;
     private final CourseService courseService;
-    private final ProgramService programService;
 
     public List<StudyPlanOptionResponse> getAllStudyPlans() {
         return studyPlanRepository.findAllStudyPlans()
@@ -53,7 +51,7 @@ public class StudyPlanService {
                 studyPlan.getId(),
                 studyPlan.getYear(),
                 studyPlan.getTrack(),
-                programService.getProgram(studyPlan.getProgram().getId()),
+                studyPlan.getProgram().getId(),
                 studyPlan.getSections()
                         .stream()
                         .map(sec -> new SectionResponse(
