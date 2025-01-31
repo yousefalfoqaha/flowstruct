@@ -1,14 +1,21 @@
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
-import {QueryClient, QueryClientProvider, useQuery} from "@tanstack/react-query";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {createColumnHelper, flexRender, getCoreRowModel, useReactTable} from "@tanstack/react-table";
-import {ProgramOption} from "@/types";
+import {ProgramOption, StudyPlanOption} from "@/types";
 import {Book, Pencil} from "lucide-react";
 import {Button} from "@/components/ui/button.tsx";
-import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx";
+import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx";
+import {useProgramListState, useStudyPlanListState} from "@/stores";
+import React from "react";
+
+enum ProgramDialog {
+    Edit = 'edit',
+    StudyPlans = 'study-plans'
+}
 
 const queryClient = new QueryClient();
 
-function App() {
+export default function App() {
     return (
         <QueryClientProvider client={queryClient}>
             <div className="space-y-6 p-8">
@@ -19,25 +26,47 @@ function App() {
     );
 }
 
-export default App;
+type StudyPlansDialogProps = {
+    program: ProgramOption | null;
+    closeDialog: () => void;
+}
 
-function studyPlansDialog({programId}: {programId: number}) {
-    const fetchProgramStudyPlans = async () => {
-        const res = await fetch(`http://localhost:8080/api/v1/programs/${programId}/study-plans`);
-        return await res.json();
-    }
-
-    const {isPending, data} = useQuery({queryKey: ['studyPlans', programId], queryFn: fetchProgramStudyPlans});
+function StudyPlansDialog({program, closeDialog}: StudyPlansDialogProps) {
+    const {isPending, data} = useStudyPlanListState(program?.id);
 
     return (
-        <Dialog>
+        <Dialog open onOpenChange={closeDialog}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Are you absolutely sure?</DialogTitle>
-                    <DialogDescription>
-                        This action cannot be undone. This will permanently delete your account
-                        and remove your data from our servers.
-                    </DialogDescription>
+                    <DialogTitle>{program?.name} Study Plans</DialogTitle>
+                    {
+                        isPending
+                            ? <div>Loading...</div>
+                            : <div>
+                                {data.map((studyPlan: StudyPlanOption) => {
+                                    return <div key={studyPlan.id}>{studyPlan.year} {studyPlan.track ?? ''}</div>
+                                })}
+                            </div>
+                    }
+                </DialogHeader>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+type EditProgramDialogProps = {
+    program: ProgramOption | null;
+    closeDialog: () => void;
+}
+
+function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
+
+    return (
+        <Dialog open onOpenChange={closeDialog}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Edit Program</DialogTitle>
+
                 </DialogHeader>
             </DialogContent>
         </Dialog>
@@ -45,12 +74,20 @@ function studyPlansDialog({programId}: {programId: number}) {
 }
 
 function ProgramsTable() {
-    const fetchPrograms = async () => {
-        const res = await fetch('http://localhost:8080/api/v1/programs');
-        return await res.json();
+    const [selectedProgram, setSelectedProgram] = React.useState<ProgramOption | null>(null);
+    const [programDialog, setProgramDialog] = React.useState<ProgramDialog | null>(null);
+
+    const closeDialog = () => {
+        setSelectedProgram(null);
+        setProgramDialog(null);
     }
 
-    const {isPending, data} = useQuery({queryKey: ['programs'], queryFn: fetchPrograms});
+    const openDialog = (program: ProgramOption, dialog: ProgramDialog) => {
+        setSelectedProgram(program);
+        setProgramDialog(dialog);
+    }
+
+    const {isPending, data} = useProgramListState();
 
     const {accessor, display} = createColumnHelper<ProgramOption>();
 
@@ -58,7 +95,7 @@ function ProgramsTable() {
         accessor('code', {
             header: 'Code',
             cell: ({row}) => (
-                <div className="font-bold w-fit  rounded-lg py-1.5 px-3 bg-blue-50 text-blue-700 text-xs">
+                <div className="font-bold w-fit rounded-lg py-1.5 px-3 bg-blue-50 text-blue-700 text-xs">
                     {row.original.code}
                 </div>
             )
@@ -71,14 +108,16 @@ function ProgramsTable() {
         }),
         display({
             id: 'actions',
-            cell: () => (
+            cell: ({row}) => (
                 <div className="flex gap-2 justify-end">
-                    <Button className="rounded-lg flex justify-center gap-3 hover:text-white">
-                        <Book />
+                    <Button onClick={() => openDialog(row.original, ProgramDialog.StudyPlans)}
+                            className="rounded-lg flex justify-center gap-3 hover:text-white">
+                        <Book/>
                         <p>Study Plans</p>
                     </Button>
-                    <Button variant="ghost" className="rounded-full">
-                        <Pencil />
+                    <Button onClick={() => openDialog(row.original, ProgramDialog.Edit)}
+                            variant="ghost" className="rounded-full">
+                        <Pencil/>
                     </Button>
                 </div>
             )
@@ -94,50 +133,58 @@ function ProgramsTable() {
     if (isPending) return <span>Loading...</span>
 
     return (
-        <div className="rounded-lg border">
-            <Table>
-                <TableHeader>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => {
-                                return (
-                                    <TableHead className="p-4" key={header.id}>
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
-                                    </TableHead>
-                                );
-                            })}
-                        </TableRow>
-                    ))}
-                </TableHeader>
-
-                <TableBody>
-                    {table.getRowModel().rows.length ? (
-                        table.getRowModel().rows.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                data-state={row.getIsSelected() && "selected"}
-                            >
-                                {row.getVisibleCells().map((cell) => (
-                                    <TableCell className="p-4" key={cell.id}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </TableCell>
-                                ))}
+        <>
+            {programDialog === ProgramDialog.Edit &&
+              <EditProgramDialog program={selectedProgram} closeDialog={closeDialog}/>
+            }
+            {programDialog === ProgramDialog.StudyPlans &&
+              <StudyPlansDialog program={selectedProgram} closeDialog={closeDialog}/>
+            }
+            <div className="rounded-lg border">
+                <Table>
+                    <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => {
+                                    return (
+                                        <TableHead className="p-4" key={header.id}>
+                                            {header.isPlaceholder
+                                                ? null
+                                                : flexRender(
+                                                    header.column.columnDef.header,
+                                                    header.getContext()
+                                                )}
+                                        </TableHead>
+                                    );
+                                })}
                             </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                            <TableCell colSpan={columns.length} className="h-24 text-center">
-                                No results.
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
-        </div>
+                        ))}
+                    </TableHeader>
+
+                    <TableBody>
+                        {table.getRowModel().rows.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    data-state={row.getIsSelected() && "selected"}
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell className="p-4" key={cell.id}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    No results.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+        </>
     );
 }
