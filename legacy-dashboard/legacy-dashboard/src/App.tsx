@@ -4,9 +4,15 @@ import {createColumnHelper, flexRender, getCoreRowModel, useReactTable} from "@t
 import {ProgramOption, StudyPlanOption} from "@/types";
 import {Book, Pencil} from "lucide-react";
 import {Button} from "@/components/ui/button.tsx";
-import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx";
+import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx";
 import {useProgramListState, useStudyPlanListState} from "@/stores";
 import React from "react";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
+import {z} from 'zod';
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {Input} from "@/components/ui/input.tsx";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 
 enum ProgramDialog {
     Edit = 'edit',
@@ -60,14 +66,95 @@ type EditProgramDialogProps = {
 }
 
 function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
+    const formSchema = z.object({
+        code: z.string().toUpperCase().min(0, {message: 'Code cannot be empty.'}),
+        name: z.string().min(0, {message: 'Name cannot be empty.'}),
+        degree: z.string()
+    });
+
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            code: program?.code,
+            name: program?.name,
+            degree: program?.degree
+        }
+    });
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        await fetch(`http://localhost:8080/programs/${program?.id}`, {
+            method: 'POST',
+            body: JSON.stringify(values)
+        });
+
+        closeDialog();
+    }
 
     return (
         <Dialog open onOpenChange={closeDialog}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Edit Program</DialogTitle>
-
+                    <DialogDescription>
+                        Make changes to the program here. This will affect its study plans.
+                    </DialogDescription>
                 </DialogHeader>
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        <FormField
+                            control={form.control}
+                            name="name"
+                            render={({field}) => (
+                                <FormItem className="w-full">
+                                    <FormLabel>Name</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} autoComplete="off" />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+
+                        <div className="flex gap-3">
+                            <FormField
+                                control={form.control}
+                                name="code"
+                                render={({field}) => (
+                                    <FormItem className="w-full">
+                                        <FormLabel>Code</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} autoComplete="off" />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="degree"
+                                render={({field}) => (
+                                    <FormItem className="w-full">
+                                        <FormLabel>Degree</FormLabel>
+                                        <FormControl>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Theme"/>
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="B.Sc.">B.Sc.</SelectItem>
+                                                    <SelectItem value="B.A.">B.A.</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        <Button type="submit">Save Changes</Button>
+                    </form>
+                </Form>
             </DialogContent>
         </Dialog>
     );
