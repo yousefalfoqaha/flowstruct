@@ -67,6 +67,7 @@ type EditProgramDialogProps = {
 
 function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
     const formSchema = z.object({
+        id: z.number(),
         code: z.string().toUpperCase().min(0, {message: 'Code cannot be empty.'}),
         name: z.string().min(0, {message: 'Name cannot be empty.'}),
         degree: z.string()
@@ -75,6 +76,7 @@ function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            id: program?.id,
             code: program?.code,
             name: program?.name,
             degree: program?.degree
@@ -82,8 +84,9 @@ function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        await fetch(`http://localhost:8080/programs/${program?.id}`, {
-            method: 'POST',
+        await fetch('http://localhost:8080/api/v1/programs', {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(values)
         });
 
@@ -108,7 +111,7 @@ function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
                                 <FormItem className="w-full">
                                     <FormLabel>Name</FormLabel>
                                     <FormControl>
-                                        <Input {...field} autoComplete="off" />
+                                        <Input {...field} autoComplete="off"/>
                                     </FormControl>
                                     <FormMessage/>
                                 </FormItem>
@@ -123,7 +126,7 @@ function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
                                     <FormItem className="w-full">
                                         <FormLabel>Code</FormLabel>
                                         <FormControl>
-                                            <Input {...field} autoComplete="off" />
+                                            <Input {...field} autoComplete="off"/>
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>
@@ -141,8 +144,8 @@ function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
                                                     <SelectValue placeholder="Theme"/>
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="B.Sc.">B.Sc.</SelectItem>
-                                                    <SelectItem value="B.A.">B.A.</SelectItem>
+                                                    <SelectItem value="BSc">B.Sc.</SelectItem>
+                                                    <SelectItem value="BA">B.A.</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </FormControl>
