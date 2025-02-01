@@ -2,9 +2,16 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {createColumnHelper, flexRender, getCoreRowModel, useReactTable} from "@tanstack/react-table";
 import {ProgramOption, StudyPlanOption} from "@/types";
-import {Book, Pencil} from "lucide-react";
+import {Book, Pencil, Plus} from "lucide-react";
 import {Button} from "@/components/ui/button.tsx";
-import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx";
+import {
+    Dialog, DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from "@/components/ui/dialog.tsx";
 import {useProgramListState, useStudyPlanListState} from "@/stores";
 import React from "react";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
@@ -25,7 +32,10 @@ export default function App() {
     return (
         <QueryClientProvider client={queryClient}>
             <div className="space-y-6 p-8">
-                <h1 className="text-4xl font-semibold">All GJU Programs</h1>
+                <div className="flex justify-between items-center gap-4">
+                    <h1 className="text-4xl font-semibold">All GJU Programs</h1>
+                    <CreateProgram />
+                </div>
                 <ProgramsTable/>
             </div>
         </QueryClientProvider>
@@ -57,7 +67,7 @@ function StudyPlansDialog({program, closeDialog}: StudyPlansDialogProps) {
                 </DialogHeader>
             </DialogContent>
         </Dialog>
-    )
+    );
 }
 
 type EditProgramDialogProps = {
@@ -66,10 +76,11 @@ type EditProgramDialogProps = {
 }
 
 function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
+
     const formSchema = z.object({
         id: z.number(),
-        code: z.string().toUpperCase().min(0, {message: 'Code cannot be empty.'}),
-        name: z.string().min(0, {message: 'Name cannot be empty.'}),
+        code: z.string().toUpperCase().min(1, {message: 'Code cannot be empty.'}),
+        name: z.string().min(1, {message: 'Name cannot be empty.'}),
         degree: z.string()
     });
 
@@ -94,7 +105,7 @@ function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
     }
 
     return (
-        <Dialog open onOpenChange={closeDialog}>
+        <Dialog open={!!program} onOpenChange={closeDialog}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Edit Program</DialogTitle>
@@ -163,6 +174,109 @@ function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
     );
 }
 
+function CreateProgram() {
+    const [isOpen, setIsOpen] = React.useState(false);
+
+    const program = z.object({
+        code: z.string().toUpperCase().min(1, {message: 'Code cannot be empty.'}),
+        name: z.string().min(1, {message: 'Name cannot be empty.'}),
+        degree: z.string().min(1, {message: 'Must pick a degree.'})
+    });
+
+    const form = useForm<z.infer<typeof program>>({
+        resolver: zodResolver(program),
+        defaultValues: {
+            code: '',
+            name: '',
+            degree: ''
+        }
+    });
+
+    async function onSubmit(values: z.infer<typeof program>) {
+        await fetch('http://localhost:8080/api/v1/programs', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(values)
+        });
+
+        setIsOpen(false);
+    }
+
+    console.log()
+
+    return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <Button onClick={() => setIsOpen(true)}>
+                <Plus /> Create Program
+            </Button>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Create Program</DialogTitle>
+                    <DialogDescription>
+                        This program will be publicly visible by default.
+                    </DialogDescription>
+                </DialogHeader>
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        <FormField
+                            control={form.control}
+                            name="name"
+                            render={({field}) => (
+                                <FormItem className="w-full">
+                                    <FormLabel>Name</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} autoComplete="off"/>
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+
+                        <div className="flex gap-3">
+                            <FormField
+                                control={form.control}
+                                name="code"
+                                render={({field}) => (
+                                    <FormItem className="w-full">
+                                        <FormLabel>Code</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} autoComplete="off"/>
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="degree"
+                                render={({field}) => (
+                                    <FormItem className="w-full">
+                                        <FormLabel>Degree</FormLabel>
+                                        <FormControl>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Pick a degree"/>
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="BSc">B.Sc.</SelectItem>
+                                                    <SelectItem value="BA">B.A.</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        <Button type="submit">Create Program</Button>
+                    </form>
+                </Form>
+            </DialogContent>
+        </Dialog>
+    );
+}
+
 function ProgramsTable() {
     const [selectedProgram, setSelectedProgram] = React.useState<ProgramOption | null>(null);
     const [programDialog, setProgramDialog] = React.useState<ProgramDialog | null>(null);
@@ -201,7 +315,7 @@ function ProgramsTable() {
             cell: ({row}) => (
                 <div className="flex gap-2 justify-end">
                     <Button onClick={() => openDialog(row.original, ProgramDialog.StudyPlans)}
-                            className="rounded-lg flex justify-center gap-3 hover:text-white">
+                            variant="outline" className="gap-3">
                         <Book/>
                         <p>Study Plans</p>
                     </Button>
