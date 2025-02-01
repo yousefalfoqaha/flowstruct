@@ -12,4 +12,6 @@ public interface ProgramRepository extends ListCrudRepository<Program, Long> {
 
     @Query("SELECT id, code, name, degree FROM program")
     List<Program> findAllProgramOptions();
+
+    boolean existsByCodeIgnoreCase(String code);
 }

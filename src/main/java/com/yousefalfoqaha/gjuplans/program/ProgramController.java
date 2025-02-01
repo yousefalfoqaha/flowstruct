@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.gjuplans.program;
 
+import com.yousefalfoqaha.gjuplans.program.dto.request.CreateProgramRequest;
 import com.yousefalfoqaha.gjuplans.program.dto.request.UpdateProgramRequest;
 import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramOptionResponse;
 import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramResponse;
@@ -30,5 +31,10 @@ public class ProgramController {
     @PutMapping
     public ResponseEntity<ProgramResponse> updateProgram(@RequestBody UpdateProgramRequest request) {
         return new ResponseEntity<>(programService.updateProgram(request), HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<ProgramResponse> createProgram(@RequestBody CreateProgramRequest request) {
+        return new ResponseEntity<>(programService.createProgram(request), HttpStatus.OK);
     }
 }
