@@ -1,16 +1,15 @@
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {QueryClient, QueryClientProvider, useMutation} from "@tanstack/react-query";
 import {createColumnHelper, flexRender, getCoreRowModel, useReactTable} from "@tanstack/react-table";
 import {ProgramOption, StudyPlanOption} from "@/types";
-import {Book, Pencil, Plus} from "lucide-react";
+import {Book, EllipsisVertical, Loader2, Pencil, Plus, Trash} from "lucide-react";
 import {Button} from "@/components/ui/button.tsx";
 import {
-    Dialog, DialogClose,
+    Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
-    DialogTitle,
-    DialogTrigger
+    DialogTitle
 } from "@/components/ui/dialog.tsx";
 import {useProgramListState, useStudyPlanListState} from "@/stores";
 import React from "react";
@@ -20,9 +19,20 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Input} from "@/components/ui/input.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
+import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
+import {createProgramFormSchema, programFormSchema} from "@/form-schemas/programFormSchema.ts";
+import {
+    DropdownMenu,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu.tsx";
 
 enum ProgramDialog {
     Edit = 'edit',
+    Delete = 'delete',
     StudyPlans = 'study-plans'
 }
 
@@ -31,10 +41,11 @@ const queryClient = new QueryClient();
 export default function App() {
     return (
         <QueryClientProvider client={queryClient}>
+            <ReactQueryDevtools initialIsOpen={false}/>
             <div className="space-y-6 p-8">
                 <div className="flex justify-between items-center gap-4">
                     <h1 className="text-4xl font-semibold">All GJU Programs</h1>
-                    <CreateProgram />
+                    <CreateProgram/>
                 </div>
                 <ProgramsTable/>
             </div>
@@ -45,6 +56,15 @@ export default function App() {
 type StudyPlansDialogProps = {
     program: ProgramOption | null;
     closeDialog: () => void;
+}
+
+export function ButtonLoading() {
+    return (
+        <Button disabled className="w-fit">
+            <Loader2 className="animate-spin"/>
+            Please wait
+        </Button>
+    )
 }
 
 function StudyPlansDialog({program, closeDialog}: StudyPlansDialogProps) {
@@ -76,33 +96,28 @@ type EditProgramDialogProps = {
 }
 
 function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
-
-    const formSchema = z.object({
-        id: z.number(),
-        code: z.string().toUpperCase().min(1, {message: 'Code cannot be empty.'}),
-        name: z.string().min(1, {message: 'Name cannot be empty.'}),
-        degree: z.string()
+    const form = useForm<z.infer<typeof programFormSchema>>({
+        resolver: zodResolver(programFormSchema),
+        defaultValues: {...program}
     });
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            id: program?.id,
-            code: program?.code,
-            name: program?.name,
-            degree: program?.degree
+    const mutation = useMutation({
+        mutationFn: async (updatedProgram: z.infer<typeof programFormSchema>) => {
+            return fetch('http://localhost:8080/api/v1/programs', {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(updatedProgram)
+            }).then(res => res.json())
+        },
+        onSuccess: (updatedProgram) => {
+            queryClient.setQueryData(['programs'], (oldPrograms: ProgramOption[] | undefined) => {
+                if (!oldPrograms) return [];
+                return oldPrograms.map(p => (p.id === updatedProgram.id ? updatedProgram : p));
+            });
+
+            closeDialog();
         }
     });
-
-    async function onSubmit(values: z.infer<typeof formSchema>) {
-        await fetch('http://localhost:8080/api/v1/programs', {
-            method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(values)
-        });
-
-        closeDialog();
-    }
 
     return (
         <Dialog open={!!program} onOpenChange={closeDialog}>
@@ -114,7 +129,7 @@ function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <form onSubmit={form.handleSubmit(mutation.mutate)} className="space-y-6">
                         <FormField
                             control={form.control}
                             name="name"
@@ -165,8 +180,7 @@ function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
                                 )}
                             />
                         </div>
-
-                        <Button type="submit">Save Changes</Button>
+                        {mutation.isPending ? <ButtonLoading/> : <Button type="submit">Save Changes</Button>}
                     </form>
                 </Form>
             </DialogContent>
@@ -177,14 +191,8 @@ function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
 function CreateProgram() {
     const [isOpen, setIsOpen] = React.useState(false);
 
-    const program = z.object({
-        code: z.string().toUpperCase().min(1, {message: 'Code cannot be empty.'}),
-        name: z.string().min(1, {message: 'Name cannot be empty.'}),
-        degree: z.string().min(1, {message: 'Must pick a degree.'})
-    });
-
-    const form = useForm<z.infer<typeof program>>({
-        resolver: zodResolver(program),
+    const form = useForm<z.infer<typeof createProgramFormSchema>>({
+        resolver: zodResolver(createProgramFormSchema),
         defaultValues: {
             code: '',
             name: '',
@@ -192,22 +200,28 @@ function CreateProgram() {
         }
     });
 
-    async function onSubmit(values: z.infer<typeof program>) {
-        await fetch('http://localhost:8080/api/v1/programs', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(values)
-        });
+    const mutation = useMutation({
+        mutationFn: async (newProgram: z.infer<typeof createProgramFormSchema>) => {
+            return fetch('http://localhost:8080/api/v1/programs', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(newProgram)
+            }).then(res => res.json())
+        },
+        onSuccess: (newProgram) => {
+            queryClient.setQueryData(['programs'], (programs: ProgramOption[] | undefined) => {
+                if (!programs) return [];
+                return [...programs, newProgram];
+            });
 
-        setIsOpen(false);
-    }
-
-    console.log()
+            setIsOpen(false);
+        }
+    });
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <Button onClick={() => setIsOpen(true)}>
-                <Plus /> Create Program
+                <Plus/> Create Program
             </Button>
             <DialogContent>
                 <DialogHeader>
@@ -217,7 +231,7 @@ function CreateProgram() {
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <form onSubmit={form.handleSubmit(mutation.mutate)} className="space-y-6">
                         <FormField
                             control={form.control}
                             name="name"
@@ -269,12 +283,57 @@ function CreateProgram() {
                             />
                         </div>
 
-                        <Button type="submit">Create Program</Button>
+                        {mutation.isPending ? <ButtonLoading/> : <Button type="submit">Create Program</Button>}
                     </form>
                 </Form>
             </DialogContent>
         </Dialog>
     );
+}
+
+type DeleteProgramConfirmation = {
+    program: ProgramOption;
+    closeDialog: () => void;
+}
+
+function DeleteProgramConfirmation({program, closeDialog}: DeleteProgramConfirmation) {
+    const mutation = useMutation({
+        mutationFn: async (toBeDeletedProgram: ProgramOption) => {
+            return fetch(`http://localhost:8080/api/v1/programs/${toBeDeletedProgram.id}`, {
+                method: 'DELETE'
+            });
+        },
+        onSuccess: (_, toBeDeletedProgram) => {
+            queryClient.setQueryData(['programs'], (programs: ProgramOption[] | undefined) => {
+                if (!programs) return [];
+                return programs.filter(p => p.id !== toBeDeletedProgram.id);
+            });
+
+            closeDialog();
+        }
+    });
+
+
+    return (
+        <Dialog open={!!program} onOpenChange={closeDialog}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Delete {program.name} Program</DialogTitle>
+                    <DialogDescription>
+                        This action cannot be undone. Are you absolutely sure?
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="flex justify-center">
+                    {mutation.isPending
+                        ? <ButtonLoading />
+                        : <Button className="w-fit" variant="destructive" onClick={() => mutation.mutate(program)}>
+                            <Trash /> Delete Program
+                        </Button>
+                    }
+                </div>
+            </DialogContent>
+        </Dialog>
+    )
 }
 
 function ProgramsTable() {
@@ -315,14 +374,29 @@ function ProgramsTable() {
             cell: ({row}) => (
                 <div className="flex gap-2 justify-end">
                     <Button onClick={() => openDialog(row.original, ProgramDialog.StudyPlans)}
-                            variant="outline" className="gap-3">
-                        <Book/>
-                        <p>Study Plans</p>
+                            variant="outline">
+                        <Book/> Study Plans
                     </Button>
-                    <Button onClick={() => openDialog(row.original, ProgramDialog.Edit)}
-                            variant="ghost" className="rounded-full">
-                        <Pencil/>
-                    </Button>
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="rounded-full">
+                                <EllipsisVertical/>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator/>
+                            <DropdownMenuItem onClick={() => openDialog(row.original, ProgramDialog.Edit)}>
+                                Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>Archive</DropdownMenuItem>
+                            <DropdownMenuSeparator/>
+                            <DropdownMenuItem onClick={() => openDialog(row.original, ProgramDialog.Delete)}>
+                                <Trash/> Delete
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             )
         })
@@ -339,10 +413,13 @@ function ProgramsTable() {
     return (
         <>
             {programDialog === ProgramDialog.Edit &&
-              <EditProgramDialog program={selectedProgram} closeDialog={closeDialog}/>
+                <EditProgramDialog program={selectedProgram} closeDialog={closeDialog}/>
             }
             {programDialog === ProgramDialog.StudyPlans &&
-              <StudyPlansDialog program={selectedProgram} closeDialog={closeDialog}/>
+                <StudyPlansDialog program={selectedProgram} closeDialog={closeDialog}/>
+            }
+            {programDialog === ProgramDialog.Delete &&
+                <DeleteProgramConfirmation program={selectedProgram} closeDialog={closeDialog}/>
             }
             <div className="rounded-lg border">
                 <Table>
