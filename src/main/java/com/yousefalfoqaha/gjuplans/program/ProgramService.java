@@ -109,4 +109,9 @@ public class ProgramService {
                 createdProgram.getDegree().name()
         );
     }
+
+    @Transactional
+    public void deleteProgram(long programId) {
+        programRepository.deleteById(programId);
+    }
 }

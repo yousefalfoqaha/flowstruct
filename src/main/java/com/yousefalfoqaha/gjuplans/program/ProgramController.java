@@ -35,6 +35,12 @@ public class ProgramController {
 
     @PostMapping
     public ResponseEntity<ProgramResponse> createProgram(@RequestBody CreateProgramRequest request) {
-        return new ResponseEntity<>(programService.createProgram(request), HttpStatus.OK);
+        return new ResponseEntity<>(programService.createProgram(request), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{programId}")
+    public ResponseEntity<Void> deleteProgram(@PathVariable long programId) {
+        programService.deleteProgram(programId);
+        return ResponseEntity.ok().build();
     }
 }
