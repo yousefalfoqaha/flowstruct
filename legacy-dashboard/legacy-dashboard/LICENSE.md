@@ -1,6 +1,6 @@
 # Proprietary License for Software Usage
 
-**Copyright © Yousef Ahmad Fayiz Mustafa, [Year]**
+**Copyright © Yousef Ahmad Fayiz Mustafa, 2025**
 
 By using this software, you agree to the following terms:
 
