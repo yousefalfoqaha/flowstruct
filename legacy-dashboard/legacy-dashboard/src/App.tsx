@@ -29,6 +29,8 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu.tsx";
+import {useToast} from "@/hooks/use-toast.ts";
+import {ToastAction} from "@/components/ui/toast.tsx";
 
 enum ProgramDialog {
     Edit = 'edit',
@@ -101,13 +103,22 @@ function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
         defaultValues: {...program}
     });
 
+    const {toast} = useToast();
+
     const mutation = useMutation({
         mutationFn: async (updatedProgram: z.infer<typeof programFormSchema>) => {
-            return fetch('http://localhost:8080/api/v1/programs', {
+            const response = await fetch('http://localhost:8080/api/v1/programs', {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(updatedProgram)
-            }).then(res => res.json())
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'An unknown error occurred');
+            }
+
+            return response.json();
         },
         onSuccess: (updatedProgram) => {
             queryClient.setQueryData(['programs'], (oldPrograms: ProgramOption[] | undefined) => {
@@ -116,6 +127,12 @@ function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
             });
 
             closeDialog();
+        },
+        onError: (error) => {
+            toast({
+                description: error.message,
+                variant: 'destructive'
+            });
         }
     });
 
@@ -190,6 +207,7 @@ function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
 
 function CreateProgram() {
     const [isOpen, setIsOpen] = React.useState(false);
+    const {toast} = useToast();
 
     const form = useForm<z.infer<typeof createProgramFormSchema>>({
         resolver: zodResolver(createProgramFormSchema),
@@ -202,11 +220,18 @@ function CreateProgram() {
 
     const mutation = useMutation({
         mutationFn: async (newProgram: z.infer<typeof createProgramFormSchema>) => {
-            return fetch('http://localhost:8080/api/v1/programs', {
+            const response = await fetch('http://localhost:8080/api/v1/programs', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(newProgram)
-            }).then(res => res.json())
+            })
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'An unknown error occurred');
+            }
+
+            return response.json();
         },
         onSuccess: (newProgram) => {
             queryClient.setQueryData(['programs'], (programs: ProgramOption[] | undefined) => {
@@ -215,6 +240,14 @@ function CreateProgram() {
             });
 
             setIsOpen(false);
+
+            toast({description: "Program created successfully."});
+        },
+        onError: (error) => {
+            toast({
+                description: error.message,
+                variant: 'destructive'
+            });
         }
     });
 
@@ -227,7 +260,7 @@ function CreateProgram() {
                 <DialogHeader>
                     <DialogTitle>Create Program</DialogTitle>
                     <DialogDescription>
-                        This program will be publicly visible by default.
+                        This program will be private by default.
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -297,11 +330,20 @@ type DeleteProgramConfirmation = {
 }
 
 function DeleteProgramConfirmation({program, closeDialog}: DeleteProgramConfirmation) {
+    const {toast} = useToast();
+
     const mutation = useMutation({
         mutationFn: async (toBeDeletedProgram: ProgramOption) => {
-            return fetch(`http://localhost:8080/api/v1/programs/${toBeDeletedProgram.id}`, {
+            const response = await fetch(`http://localhost:8080/api/v1/programs/${toBeDeletedProgram.id}`, {
                 method: 'DELETE'
             });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'An unknown error occurred');
+            }
+
+            return response.json();
         },
         onSuccess: (_, toBeDeletedProgram) => {
             queryClient.setQueryData(['programs'], (programs: ProgramOption[] | undefined) => {
@@ -310,6 +352,16 @@ function DeleteProgramConfirmation({program, closeDialog}: DeleteProgramConfirma
             });
 
             closeDialog();
+
+            toast({description: "Program deleted successfully."});
+        },
+        onError: () => {
+            toast({
+                variant: 'destructive',
+                title: 'Something went wrong.',
+                description: 'An error occurred while trying to delete the program.',
+                action: <ToastAction altText="Try again">Try again</ToastAction>
+            });
         }
     });
 
@@ -325,9 +377,9 @@ function DeleteProgramConfirmation({program, closeDialog}: DeleteProgramConfirma
                 </DialogHeader>
                 <div className="flex justify-center">
                     {mutation.isPending
-                        ? <ButtonLoading />
+                        ? <ButtonLoading/>
                         : <Button className="w-fit" variant="destructive" onClick={() => mutation.mutate(program)}>
-                            <Trash /> Delete Program
+                            <Trash/> Delete Program
                         </Button>
                     }
                 </div>
@@ -390,7 +442,7 @@ function ProgramsTable() {
                             <DropdownMenuItem onClick={() => openDialog(row.original, ProgramDialog.Edit)}>
                                 Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem>Archive</DropdownMenuItem>
+                            {/*<DropdownMenuItem>Archive</DropdownMenuItem>*/}
                             <DropdownMenuSeparator/>
                             <DropdownMenuItem onClick={() => openDialog(row.original, ProgramDialog.Delete)}>
                                 <Trash/> Delete
