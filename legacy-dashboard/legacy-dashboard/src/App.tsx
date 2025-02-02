@@ -1,16 +1,16 @@
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
 import {QueryClient, QueryClientProvider, useMutation} from "@tanstack/react-query";
-import {createColumnHelper, flexRender, getCoreRowModel, useReactTable} from "@tanstack/react-table";
+import {
+    createColumnHelper,
+    flexRender,
+    getCoreRowModel,
+    Table as TanStackTable,
+    useReactTable
+} from "@tanstack/react-table";
 import {ProgramOption, StudyPlanOption} from "@/types";
 import {ArrowRightFromLine, Book, EllipsisVertical, Eye, EyeOff, Loader2, Pencil, Plus, Trash} from "lucide-react";
 import {Button} from "@/components/ui/button.tsx";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle
-} from "@/components/ui/dialog.tsx";
+import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx";
 import {useProgramListState, useStudyPlanListState} from "@/stores";
 import React from "react";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
@@ -23,15 +23,14 @@ import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 import {createProgramFormSchema, programFormSchema} from "@/form-schemas/programFormSchema.ts";
 import {
     DropdownMenu,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
     DropdownMenuContent,
+    DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx";
 import {useToast} from "@/hooks/use-toast.ts";
 import {ToastAction} from "@/components/ui/toast.tsx";
-import {Table as TanStackTable} from "@tanstack/react-table";
 import {Badge} from "@/components/ui/badge.tsx";
 
 
@@ -125,13 +124,13 @@ function DataTable<TData>({table}: DataTableProps<TData>) {
 }
 
 function StudyPlansDialog({program, closeDialog}: StudyPlansDialogProps) {
-    const [selectedStudyPlan, setSelectedStudyPlan] = React.useState<StudyPlanOption | null>(null);
-
     const {isPending, data} = useStudyPlanListState(program.id);
 
-    const toggleCommitMutation = useMutation({
-        mutationFn: async (studyPlan: StudyPlanOption) => {
-            const response = await fetch(`http://localhost:8080/api/v1/${studyPlan?.id}/toggle-commit`, {
+    const {toast} = useToast();
+
+    const toggleVisibilityMutation = useMutation({
+        mutationFn: async (updatedStudyPlan: StudyPlanOption) => {
+            const response = await fetch(`http://localhost:8080/api/v1/study-plans/${updatedStudyPlan?.id}/toggle-visibility`, {
                 method: 'PUT'
             });
 
@@ -139,11 +138,23 @@ function StudyPlansDialog({program, closeDialog}: StudyPlansDialogProps) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'An error occurred.');
             }
-        }
-        onSuccess: (_, studyPlan) => {
-            queryClient.setQueryData(['study-plans', program?.id], (studyPlan: StudyPlanOption | undefined) => {
+        },
+        onSuccess: (_, updatedStudyPlan) => {
+            queryClient.setQueryData(['study-plans', program?.id], (oldStudyPlans: StudyPlanOption[] | undefined) => {
+                if (!oldStudyPlans) return [];
 
+                return oldStudyPlans.map(sp => (
+                    sp.id === updatedStudyPlan.id
+                        ? {...sp, isPrivate: !sp.isPrivate}
+                        : sp
+                    )
+                );
             });
+
+            toast({
+                title: updatedStudyPlan.isPrivate ? 'Study plan has been made private.' : 'Study plan has been made public.',
+                description: updatedStudyPlan.isPrivate ? 'Latest changes will be private.' : 'Latest changes will be public.'
+            })
         }
     });
 
@@ -166,12 +177,12 @@ function StudyPlansDialog({program, closeDialog}: StudyPlansDialogProps) {
             header: 'Track',
             cell: ({row}) => row.getValue('track') ?? ''
         }),
-        accessor('isCommitted', {
-            header: 'Commit Status',
+        accessor('isPrivate', {
+            header: 'Visibility',
             cell: ({row}) => {
-                return row.getValue('isCommitted')
-                    ? <Badge className="text-nowrap gap-2"><Eye className="size-4"/> Committed</Badge>
-                    : <Badge variant="outline" className="text-nowrap gap-1"><EyeOff className="size-4"/> Not Committed</Badge>
+                return row.getValue('isPrivate')
+                    ? <Badge className="text-nowrap gap-1"><Eye className="size-4"/> Public</Badge>
+                    : <Badge variant="outline" className="text-nowrap gap-1"><EyeOff className="size-4"/> Private</Badge>
             }
         }),
         display({
@@ -188,9 +199,13 @@ function StudyPlansDialog({program, closeDialog}: StudyPlansDialogProps) {
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator/>
                             <DropdownMenuItem><Pencil/> Edit</DropdownMenuItem>
-                            {row.getValue('isCommitted')
-                                ? <DropdownMenuItem><EyeOff/> Uncommit</DropdownMenuItem>
-                                : <DropdownMenuItem><Eye/> Commit</DropdownMenuItem>
+                            {row.getValue('isPrivate')
+                                ? <DropdownMenuItem onClick={() => toggleVisibilityMutation.mutate(row.original)}>
+                                    <EyeOff/> Hide
+                                </DropdownMenuItem>
+                                : <DropdownMenuItem onClick={() => toggleVisibilityMutation.mutate(row.original)}>
+                                    <Eye/> Publish
+                                </DropdownMenuItem>
                             }
                             <DropdownMenuSeparator/>
                             <DropdownMenuItem onClick={() => openDialog(row.original, ProgramDialog.Delete)}>
@@ -408,7 +423,7 @@ function CreateProgram() {
                             name="name"
                             render={({field}) => (
                                 <FormItem className="w-full">
-                                    <FormLabel>Name</FormLabel>
+                                    <FormLabel>Name*</FormLabel>
                                     <FormControl>
                                         <Input {...field} autoComplete="off"/>
                                     </FormControl>
@@ -423,7 +438,7 @@ function CreateProgram() {
                                 name="code"
                                 render={({field}) => (
                                     <FormItem className="w-full">
-                                        <FormLabel>Code</FormLabel>
+                                        <FormLabel>Code*</FormLabel>
                                         <FormControl>
                                             <Input {...field} autoComplete="off"/>
                                         </FormControl>
@@ -436,7 +451,7 @@ function CreateProgram() {
                                 name="degree"
                                 render={({field}) => (
                                     <FormItem className="w-full">
-                                        <FormLabel>Degree</FormLabel>
+                                        <FormLabel>Degree*</FormLabel>
                                         <FormControl>
                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <SelectTrigger>
@@ -600,13 +615,13 @@ function ProgramsTable() {
     return (
         <>
             {programDialog === ProgramDialog.Edit &&
-                <EditProgramDialog program={selectedProgram} closeDialog={closeDialog}/>
+              <EditProgramDialog program={selectedProgram} closeDialog={closeDialog}/>
             }
             {programDialog === ProgramDialog.StudyPlans &&
-                <StudyPlansDialog program={selectedProgram} closeDialog={closeDialog}/>
+              <StudyPlansDialog program={selectedProgram} closeDialog={closeDialog}/>
             }
             {programDialog === ProgramDialog.Delete &&
-                <DeleteProgramConfirmation program={selectedProgram} closeDialog={closeDialog}/>
+              <DeleteProgramConfirmation program={selectedProgram} closeDialog={closeDialog}/>
             }
             <div className="rounded-lg border">
                 <DataTable table={table}/>

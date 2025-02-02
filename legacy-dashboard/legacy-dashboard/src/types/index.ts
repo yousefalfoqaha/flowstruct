@@ -9,6 +9,6 @@ export type StudyPlanOption = {
     id: number;
     year: number;
     track: string;
-    isCommitted: boolean;
+    isPrivate: boolean;
     program: number;
 }
