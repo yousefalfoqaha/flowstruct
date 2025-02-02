@@ -2,7 +2,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import {QueryClient, QueryClientProvider, useMutation} from "@tanstack/react-query";
 import {createColumnHelper, flexRender, getCoreRowModel, useReactTable} from "@tanstack/react-table";
 import {ProgramOption, StudyPlanOption} from "@/types";
-import {Book, EllipsisVertical, Loader2, Pencil, Plus, Trash} from "lucide-react";
+import {ArrowRightFromLine, Book, EllipsisVertical, Eye, EyeOff, Loader2, Pencil, Plus, Trash} from "lucide-react";
 import {Button} from "@/components/ui/button.tsx";
 import {
     Dialog,
@@ -31,6 +31,9 @@ import {
 } from "@/components/ui/dropdown-menu.tsx";
 import {useToast} from "@/hooks/use-toast.ts";
 import {ToastAction} from "@/components/ui/toast.tsx";
+import {Table as TanStackTable} from "@tanstack/react-table";
+import {Badge} from "@/components/ui/badge.tsx";
+
 
 enum ProgramDialog {
     Edit = 'edit',
@@ -46,7 +49,7 @@ export default function App() {
             <ReactQueryDevtools initialIsOpen={false}/>
             <div className="space-y-6 p-8">
                 <div className="flex justify-between items-center gap-4">
-                    <h1 className="text-4xl font-semibold">All GJU Programs</h1>
+                    <h1 className="text-4xl font-semibold">GJUPlans Dashboard</h1>
                     <CreateProgram/>
                 </div>
                 <ProgramsTable/>
@@ -56,7 +59,7 @@ export default function App() {
 }
 
 type StudyPlansDialogProps = {
-    program: ProgramOption | null;
+    program: ProgramOption;
     closeDialog: () => void;
 }
 
@@ -69,24 +72,157 @@ export function ButtonLoading() {
     )
 }
 
+type DataTableProps<TData> = {
+    table: TanStackTable<TData>;
+}
+
+function DataTable<TData>({table}: DataTableProps<TData>) {
+    return (
+        <Table>
+            <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                        {headerGroup.headers.map((header) => {
+                            return (
+                                <TableHead className="p-4" key={header.id}>
+                                    {header.isPlaceholder
+                                        ? null
+                                        : flexRender(
+                                            header.column.columnDef.header,
+                                            header.getContext()
+                                        )}
+                                </TableHead>
+                            );
+                        })}
+                    </TableRow>
+                ))}
+            </TableHeader>
+
+            <TableBody>
+                {table.getRowModel().rows.length ? (
+                    table.getRowModel().rows.map((row) => (
+                        <TableRow
+                            key={row.id}
+                            data-state={row.getIsSelected() && "selected"}
+                        >
+                            {row.getVisibleCells().map((cell) => (
+                                <TableCell className="p-4" key={cell.id}>
+                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    ))
+                ) : (
+                    <TableRow>
+                        <TableCell colSpan={table.getLeafHeaders().length} className="h-24 text-center">
+                            No results.
+                        </TableCell>
+                    </TableRow>
+                )}
+            </TableBody>
+        </Table>
+    );
+}
+
 function StudyPlansDialog({program, closeDialog}: StudyPlansDialogProps) {
-    const {isPending, data} = useStudyPlanListState(program?.id);
+    const [selectedStudyPlan, setSelectedStudyPlan] = React.useState<StudyPlanOption | null>(null);
+
+    const {isPending, data} = useStudyPlanListState(program.id);
+
+    const toggleCommitMutation = useMutation({
+        mutationFn: async (studyPlan: StudyPlanOption) => {
+            const response = await fetch(`http://localhost:8080/api/v1/${studyPlan?.id}/toggle-commit`, {
+                method: 'PUT'
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'An error occurred.');
+            }
+        }
+        onSuccess: (_, studyPlan) => {
+            queryClient.setQueryData(['study-plans', program?.id], (studyPlan: StudyPlanOption | undefined) => {
+
+            });
+        }
+    });
+
+    const {accessor, display} = createColumnHelper<StudyPlanOption>();
+
+    const columns = [
+        display({
+            id: 'open',
+            cell: ({row}) => (
+                <Button variant="outline">
+                    <ArrowRightFromLine/>
+                </Button>
+            )
+        }),
+        accessor('year', {
+            header: 'Year',
+            cell: ({row}) => <p>{row.original.year}/{row.original.year + 1}</p>
+        }),
+        accessor('track', {
+            header: 'Track',
+            cell: ({row}) => row.getValue('track') ?? ''
+        }),
+        accessor('isCommitted', {
+            header: 'Commit Status',
+            cell: ({row}) => {
+                return row.getValue('isCommitted')
+                    ? <Badge className="text-nowrap gap-2"><Eye className="size-4"/> Committed</Badge>
+                    : <Badge variant="outline" className="text-nowrap gap-1"><EyeOff className="size-4"/> Not Committed</Badge>
+            }
+        }),
+        display({
+            id: 'actions',
+            cell: ({row}) => (
+                <div className="flex gap-2 justify-end">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="rounded-full">
+                                <EllipsisVertical/>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator/>
+                            <DropdownMenuItem><Pencil/> Edit</DropdownMenuItem>
+                            {row.getValue('isCommitted')
+                                ? <DropdownMenuItem><EyeOff/> Uncommit</DropdownMenuItem>
+                                : <DropdownMenuItem><Eye/> Commit</DropdownMenuItem>
+                            }
+                            <DropdownMenuSeparator/>
+                            <DropdownMenuItem onClick={() => openDialog(row.original, ProgramDialog.Delete)}>
+                                <Trash/> Delete
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            )
+        })
+    ];
+
+    const table = useReactTable({
+        columns,
+        data,
+        getCoreRowModel: getCoreRowModel()
+    });
 
     return (
         <Dialog open onOpenChange={closeDialog}>
-            <DialogContent>
+            <DialogContent className="max-w-fit">
                 <DialogHeader>
-                    <DialogTitle>{program?.name} Study Plans</DialogTitle>
-                    {
-                        isPending
-                            ? <div>Loading...</div>
-                            : <div>
-                                {data.map((studyPlan: StudyPlanOption) => {
-                                    return <div key={studyPlan.id}>{studyPlan.year} {studyPlan.track ?? ''}</div>
-                                })}
-                            </div>
-                    }
+                    <DialogTitle>{program.name} Study Plans</DialogTitle>
+                    <DialogDescription>Manage study plans: edit details, delete, or commit to show changes
+                        publicly.</DialogDescription>
                 </DialogHeader>
+                {isPending
+                    ? <div className="p-10"><Loader2 className="animate-spin text-gray-500 mx-auto"/></div>
+                    : <div className="rounded-lg border overflow-auto">
+                        <DataTable table={table}/>
+                    </div>
+                }
             </DialogContent>
         </Dialog>
     );
@@ -127,6 +263,8 @@ function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
             });
 
             closeDialog();
+
+            toast({description: 'Program updated successfully.'});
         },
         onError: (error) => {
             toast({
@@ -333,8 +471,8 @@ function DeleteProgramConfirmation({program, closeDialog}: DeleteProgramConfirma
     const {toast} = useToast();
 
     const mutation = useMutation({
-        mutationFn: async (toBeDeletedProgram: ProgramOption) => {
-            const response = await fetch(`http://localhost:8080/api/v1/programs/${toBeDeletedProgram.id}`, {
+        mutationFn: async (deletedProgram: ProgramOption) => {
+            const response = await fetch(`http://localhost:8080/api/v1/programs/${deletedProgram.id}`, {
                 method: 'DELETE'
             });
 
@@ -342,13 +480,11 @@ function DeleteProgramConfirmation({program, closeDialog}: DeleteProgramConfirma
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'An unknown error occurred');
             }
-
-            return response.json();
         },
-        onSuccess: (_, toBeDeletedProgram) => {
+        onSuccess: (_, deletedProgram) => {
             queryClient.setQueryData(['programs'], (programs: ProgramOption[] | undefined) => {
                 if (!programs) return [];
-                return programs.filter(p => p.id !== toBeDeletedProgram.id);
+                return programs.filter(p => p.id !== deletedProgram.id);
             });
 
             closeDialog();
@@ -364,7 +500,6 @@ function DeleteProgramConfirmation({program, closeDialog}: DeleteProgramConfirma
             });
         }
     });
-
 
     return (
         <Dialog open={!!program} onOpenChange={closeDialog}>
@@ -440,7 +575,7 @@ function ProgramsTable() {
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator/>
                             <DropdownMenuItem onClick={() => openDialog(row.original, ProgramDialog.Edit)}>
-                                Edit
+                                <Pencil/> Edit
                             </DropdownMenuItem>
                             {/*<DropdownMenuItem>Archive</DropdownMenuItem>*/}
                             <DropdownMenuSeparator/>
@@ -460,7 +595,7 @@ function ProgramsTable() {
         getCoreRowModel: getCoreRowModel()
     });
 
-    if (isPending) return <span>Loading...</span>
+    if (isPending) return <div className="p-10"><Loader2 className="animate-spin text-gray-500 mx-auto"/></div>
 
     return (
         <>
@@ -474,49 +609,7 @@ function ProgramsTable() {
                 <DeleteProgramConfirmation program={selectedProgram} closeDialog={closeDialog}/>
             }
             <div className="rounded-lg border">
-                <Table>
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead className="p-4" key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                        </TableHead>
-                                    );
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-
-                    <TableBody>
-                        {table.getRowModel().rows.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell className="p-4" key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                <DataTable table={table}/>
             </div>
         </>
     );
