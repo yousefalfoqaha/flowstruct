@@ -9,7 +9,7 @@ public record StudyPlanResponse(
         long id,
         int year,
         String track,
-        boolean isCommitted,
+        boolean isPrivate,
         long program,
         List<SectionResponse> sections,
         Map<Long, Integer> coursePlacements,

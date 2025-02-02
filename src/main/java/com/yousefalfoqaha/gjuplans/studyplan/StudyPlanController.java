@@ -29,9 +29,9 @@ public class StudyPlanController {
         return new ResponseEntity<>(studyPlanService.getStudyPlan(studyPlanId), HttpStatus.OK);
     }
 
-    @PutMapping("/{studyPlanId}/toggle-commit")
-    public ResponseEntity<Void> toggleCommit(@PathVariable long studyPlanId) {
-        studyPlanService.toggleCommit(studyPlanId);
+    @PutMapping("/{studyPlanId}/toggle-visibility")
+    public ResponseEntity<Void> toggleVisibility(@PathVariable long studyPlanId) {
+        studyPlanService.toggleVisibility(studyPlanId);
         return ResponseEntity.ok().build();
     }
 }

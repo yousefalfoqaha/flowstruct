@@ -4,7 +4,7 @@ public record StudyPlanOptionProjection(
         Long id,
         Integer year,
         String track,
-        boolean isCommitted,
+        boolean isPrivate,
         Long program
 ) {
 }

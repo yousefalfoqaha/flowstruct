@@ -27,7 +27,7 @@ public class StudyPlan {
 
         private String track;
 
-        private boolean isCommitted;
+        private boolean isPrivate;
 
         private AggregateReference<Program, Long> program;
 

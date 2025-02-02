@@ -24,7 +24,7 @@ public class StudyPlanService {
                         o.id(),
                         o.year(),
                         o.track(),
-                        o.isCommitted(),
+                        o.isPrivate(),
                         o.program()
                 ))
                 .toList();
@@ -37,7 +37,7 @@ public class StudyPlanService {
                         sp.id(),
                         sp.year(),
                         sp.track(),
-                        sp.isCommitted(),
+                        sp.isPrivate(),
                         sp.program()
                 ))
                 .toList();
@@ -53,7 +53,7 @@ public class StudyPlanService {
                 studyPlan.getId(),
                 studyPlan.getYear(),
                 studyPlan.getTrack(),
-                studyPlan.isCommitted(),
+                studyPlan.isPrivate(),
                 studyPlan.getProgram().getId(),
                 studyPlan.getSections()
                         .stream()
@@ -86,14 +86,7 @@ public class StudyPlanService {
         );
     }
 
-    public void toggleCommit(long studyPlanId) {
-        var studyPlan = studyPlanRepository.findById(studyPlanId)
-                .orElseThrow(() -> new StudyPlanNotFoundException(
-                        "Study plan was not found."
-                ));
-
-        studyPlan.setCommitted(!studyPlan.isCommitted());
-
-        studyPlanRepository.save(studyPlan);
+    public void toggleVisibility(long studyPlanId) {
+        studyPlanRepository.toggleStudyPlanVisibility(studyPlanId);
     }
 }

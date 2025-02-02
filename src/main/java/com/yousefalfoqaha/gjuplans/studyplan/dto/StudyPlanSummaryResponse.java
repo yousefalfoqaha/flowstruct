@@ -4,7 +4,7 @@ public record StudyPlanSummaryResponse(
         long id,
         int year,
         String track,
-        boolean isCommitted,
+        boolean isPrivate,
         long program
 ) {
 }
