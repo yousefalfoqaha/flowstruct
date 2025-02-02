@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
-import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanOptionResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanSummaryResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,12 +20,18 @@ public class StudyPlanController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StudyPlanOptionResponse>> getAllStudyPlans() {
+    public ResponseEntity<List<StudyPlanSummaryResponse>> getAllStudyPlans() {
         return new ResponseEntity<>(studyPlanService.getAllStudyPlans(), HttpStatus.OK);
     }
 
     @GetMapping("/{studyPlanId}")
     public ResponseEntity<StudyPlanResponse> getStudyPlan(@PathVariable long studyPlanId) {
         return new ResponseEntity<>(studyPlanService.getStudyPlan(studyPlanId), HttpStatus.OK);
+    }
+
+    @PutMapping("/{studyPlanId}/toggle-commit")
+    public ResponseEntity<Void> toggleCommit(@PathVariable long studyPlanId) {
+        studyPlanService.toggleCommit(studyPlanId);
+        return ResponseEntity.ok().build();
     }
 }

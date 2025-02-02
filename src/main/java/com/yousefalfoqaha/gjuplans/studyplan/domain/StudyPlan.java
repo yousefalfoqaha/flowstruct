@@ -27,6 +27,8 @@ public class StudyPlan {
 
         private String track;
 
+        private boolean isCommitted;
+
         private AggregateReference<Program, Long> program;
 
         @MappedCollection(idColumn = "study_plan", keyColumn = "id")

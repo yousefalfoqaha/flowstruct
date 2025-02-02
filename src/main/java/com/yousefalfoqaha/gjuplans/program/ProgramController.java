@@ -4,7 +4,7 @@ import com.yousefalfoqaha.gjuplans.program.dto.request.CreateProgramRequest;
 import com.yousefalfoqaha.gjuplans.program.dto.request.UpdateProgramRequest;
 import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramOptionResponse;
 import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramResponse;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanOptionResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanSummaryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ public class ProgramController {
     }
 
     @GetMapping("/{programId}/study-plans")
-    public ResponseEntity<List<StudyPlanOptionResponse>> getProgramStudyPlans(@PathVariable long programId) {
+    public ResponseEntity<List<StudyPlanSummaryResponse>> getProgramStudyPlans(@PathVariable long programId) {
         return new ResponseEntity<>(programService.getProgramStudyPlans(programId), HttpStatus.OK);
     }
 

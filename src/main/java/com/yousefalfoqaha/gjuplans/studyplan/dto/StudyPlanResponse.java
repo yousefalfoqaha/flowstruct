@@ -9,6 +9,7 @@ public record StudyPlanResponse(
         long id,
         int year,
         String track,
+        boolean isCommitted,
         long program,
         List<SectionResponse> sections,
         Map<Long, Integer> coursePlacements,
