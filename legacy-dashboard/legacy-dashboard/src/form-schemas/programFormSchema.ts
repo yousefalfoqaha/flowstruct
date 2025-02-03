@@ -1,6 +1,6 @@
 import {z} from "zod";
 
-export const programFormSchema = z.object({
+export const editProgramFormSchema = z.object({
     id: z.number(),
     code: z.string().toUpperCase().min(1, {message: 'Code cannot be empty.'}),
     name: z.string().min(1, {message: 'Name cannot be empty.'}),

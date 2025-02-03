@@ -8,7 +8,7 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import {ProgramOption, StudyPlanOption} from "@/types";
-import {ArrowRightFromLine, Book, EllipsisVertical, Eye, EyeOff, Loader2, Pencil, Plus, Trash} from "lucide-react";
+import {ArrowRightFromLine, Book, Eye, EyeOff, Loader2, Pencil, Plus, Trash} from "lucide-react";
 import {Button} from "@/components/ui/button.tsx";
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx";
 import {useProgramListState, useStudyPlanListState} from "@/stores";
@@ -20,18 +20,12 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Input} from "@/components/ui/input.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
-import {createProgramFormSchema, programFormSchema} from "@/form-schemas/programFormSchema.ts";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu.tsx";
+import {createProgramFormSchema, editProgramFormSchema} from "@/form-schemas/programFormSchema.ts";
 import {useToast} from "@/hooks/use-toast.ts";
 import {ToastAction} from "@/components/ui/toast.tsx";
 import {Badge} from "@/components/ui/badge.tsx";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
+import {editStudyPlanFormSchema} from "@/form-schemas/studyPlanFormSchema.ts";
 
 
 enum ProgramDialog {
@@ -123,6 +117,92 @@ function DataTable<TData>({table}: DataTableProps<TData>) {
     );
 }
 
+type EditStudyPlanProps = {
+    studyPlan: StudyPlanOption;
+}
+
+function EditStudyPlan({studyPlan}: EditStudyPlanProps) {
+    const form = useForm<z.infer<typeof editStudyPlanFormSchema>>({
+        resolver: zodResolver(editStudyPlanFormSchema),
+        defaultValues: {...studyPlan}
+    });
+
+    const {toast} = useToast();
+
+    const mutation = useMutation({
+        mutationFn: async (updatedStudyPlan: z.infer<typeof editStudyPlanFormSchema>) => {
+            const response = await fetch(`http://localhost:8080/api/v1/study-plans/${updatedStudyPlan.id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(updatedStudyPlan)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'An error occurred.');
+            }
+        },
+        onSuccess: (_, updatedStudyPlan) => {
+            queryClient.setQueryData(['study-plans', updatedStudyPlan.program], (oldStudyPlans: StudyPlanOption[] | undefined) => {
+                if (!oldStudyPlans) return [];
+
+                return oldStudyPlans.map(sp => (
+                        sp.id === updatedStudyPlan.id
+                            ? updatedStudyPlan
+                            : sp
+                    )
+                );
+            });
+
+            toast({description: 'Study plan updated successfully.'});
+        },
+        onError: (error) => {
+            toast({
+                description: error.message,
+                variant: 'destructive'
+            });
+        }
+    });
+
+    return (
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(mutation.mutate)} className="space-y-6">
+                <div className="flex gap-4">
+                    <FormField
+                        control={form.control}
+                        name="year"
+                        render={({field}) => (
+                            <FormItem className="w-32">
+                                <FormLabel>Year</FormLabel>
+                                <FormControl>
+                                    <Input type="number" {...field} autoComplete="off"/>
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="track"
+                        render={({field}) => (
+                            <FormItem className="w-full">
+                                <FormLabel>Track</FormLabel>
+                                <FormControl>
+                                    <Input{...field} autoComplete="off"/>
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+                </div>
+                <div className="flex justify-center">
+                    {mutation.isPending ? <ButtonLoading/> : <Button type="submit">Save Changes</Button>}
+                </div>
+            </form>
+        </Form>
+    );
+}
+
 function StudyPlansDialog({program, closeDialog}: StudyPlansDialogProps) {
     const {isPending, data} = useStudyPlanListState(program.id);
 
@@ -140,21 +220,23 @@ function StudyPlansDialog({program, closeDialog}: StudyPlansDialogProps) {
             }
         },
         onSuccess: (_, updatedStudyPlan) => {
-            queryClient.setQueryData(['study-plans', program?.id], (oldStudyPlans: StudyPlanOption[] | undefined) => {
-                if (!oldStudyPlans) return [];
+            queryClient.setQueryData(
+                ['study-plans', program?.id],
+                (oldStudyPlans: StudyPlanOption[] | undefined) => {
+                    if (!oldStudyPlans) return [];
 
-                return oldStudyPlans.map(sp => (
-                    sp.id === updatedStudyPlan.id
-                        ? {...sp, isPrivate: !sp.isPrivate}
-                        : sp
-                    )
-                );
-            });
+                    return oldStudyPlans.map(sp => (
+                            sp.id === updatedStudyPlan.id
+                                ? {...sp, isPrivate: !sp.isPrivate}
+                                : sp
+                        )
+                    );
+                });
 
             toast({
                 title: updatedStudyPlan.isPrivate ? 'Study plan has been made private.' : 'Study plan has been made public.',
                 description: updatedStudyPlan.isPrivate ? 'Latest changes will be private.' : 'Latest changes will be public.'
-            })
+            });
         }
     });
 
@@ -182,37 +264,34 @@ function StudyPlansDialog({program, closeDialog}: StudyPlansDialogProps) {
             cell: ({row}) => {
                 return row.getValue('isPrivate')
                     ? <Badge className="text-nowrap gap-1"><Eye className="size-4"/> Public</Badge>
-                    : <Badge variant="outline" className="text-nowrap gap-1"><EyeOff className="size-4"/> Private</Badge>
+                    :
+                    <Badge variant="outline" className="text-nowrap gap-1"><EyeOff className="size-4"/> Private</Badge>
             }
         }),
         display({
             id: 'actions',
+            header: () => <div className="ml-auto w-full">Actions</div>,
             cell: ({row}) => (
-                <div className="flex gap-2 justify-end">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="rounded-full">
-                                <EllipsisVertical/>
+                <div className="flex gap-2 justify-end items-center">
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button variant="ghost">
+                                <Pencil className="size-4"/>
                             </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuSeparator/>
-                            <DropdownMenuItem><Pencil/> Edit</DropdownMenuItem>
-                            {row.getValue('isPrivate')
-                                ? <DropdownMenuItem onClick={() => toggleVisibilityMutation.mutate(row.original)}>
-                                    <EyeOff/> Hide
-                                </DropdownMenuItem>
-                                : <DropdownMenuItem onClick={() => toggleVisibilityMutation.mutate(row.original)}>
-                                    <Eye/> Publish
-                                </DropdownMenuItem>
-                            }
-                            <DropdownMenuSeparator/>
-                            <DropdownMenuItem onClick={() => openDialog(row.original, ProgramDialog.Delete)}>
-                                <Trash/> Delete
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-80">
+                            <EditStudyPlan studyPlan={row.original}/>
+                        </PopoverContent>
+                    </Popover>
+                    <Button variant="ghost" onClick={() => toggleVisibilityMutation.mutate(row.original)}>
+                        {row.getValue('isPrivate')
+                            ? <EyeOff/>
+                            : <Eye/>
+                        }
+                    </Button>
+                    <Button variant="ghost">
+                        <Trash className="size-4"/>
+                    </Button>
                 </div>
             )
         })
@@ -249,15 +328,15 @@ type EditProgramDialogProps = {
 }
 
 function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
-    const form = useForm<z.infer<typeof programFormSchema>>({
-        resolver: zodResolver(programFormSchema),
+    const form = useForm<z.infer<typeof editProgramFormSchema>>({
+        resolver: zodResolver(editProgramFormSchema),
         defaultValues: {...program}
     });
 
     const {toast} = useToast();
 
     const mutation = useMutation({
-        mutationFn: async (updatedProgram: z.infer<typeof programFormSchema>) => {
+        mutationFn: async (updatedProgram: z.infer<typeof editProgramFormSchema>) => {
             const response = await fetch('http://localhost:8080/api/v1/programs', {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
@@ -271,7 +350,7 @@ function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
 
             return response.json();
         },
-        onSuccess: (updatedProgram) => {
+        onSuccess: (_, updatedProgram) => {
             queryClient.setQueryData(['programs'], (oldPrograms: ProgramOption[] | undefined) => {
                 if (!oldPrograms) return [];
                 return oldPrograms.map(p => (p.id === updatedProgram.id ? updatedProgram : p));
@@ -575,30 +654,16 @@ function ProgramsTable() {
             id: 'actions',
             cell: ({row}) => (
                 <div className="flex gap-2 justify-end">
-                    <Button onClick={() => openDialog(row.original, ProgramDialog.StudyPlans)}
+                    <Button className="mr-3" onClick={() => openDialog(row.original, ProgramDialog.StudyPlans)}
                             variant="outline">
                         <Book/> Study Plans
                     </Button>
-
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="rounded-full">
-                                <EllipsisVertical/>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuSeparator/>
-                            <DropdownMenuItem onClick={() => openDialog(row.original, ProgramDialog.Edit)}>
-                                <Pencil/> Edit
-                            </DropdownMenuItem>
-                            {/*<DropdownMenuItem>Archive</DropdownMenuItem>*/}
-                            <DropdownMenuSeparator/>
-                            <DropdownMenuItem onClick={() => openDialog(row.original, ProgramDialog.Delete)}>
-                                <Trash/> Delete
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <Button variant="ghost" onClick={() => openDialog(row.original, ProgramDialog.Edit)}>
+                        <Pencil className="size-4"/>
+                    </Button>
+                    <Button variant="ghost" onClick={() => openDialog(row.original, ProgramDialog.Delete)}>
+                        <Trash className="size-4"/>
+                    </Button>
                 </div>
             )
         })
@@ -615,13 +680,13 @@ function ProgramsTable() {
     return (
         <>
             {programDialog === ProgramDialog.Edit &&
-              <EditProgramDialog program={selectedProgram} closeDialog={closeDialog}/>
+                <EditProgramDialog program={selectedProgram} closeDialog={closeDialog}/>
             }
             {programDialog === ProgramDialog.StudyPlans &&
-              <StudyPlansDialog program={selectedProgram} closeDialog={closeDialog}/>
+                <StudyPlansDialog program={selectedProgram} closeDialog={closeDialog}/>
             }
             {programDialog === ProgramDialog.Delete &&
-              <DeleteProgramConfirmation program={selectedProgram} closeDialog={closeDialog}/>
+                <DeleteProgramConfirmation program={selectedProgram} closeDialog={closeDialog}/>
             }
             <div className="rounded-lg border">
                 <DataTable table={table}/>
