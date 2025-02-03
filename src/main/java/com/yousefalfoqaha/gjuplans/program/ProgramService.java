@@ -9,7 +9,7 @@ import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramResponse;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanService;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanSummaryResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

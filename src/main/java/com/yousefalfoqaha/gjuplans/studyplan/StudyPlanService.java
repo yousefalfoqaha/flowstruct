@@ -1,12 +1,16 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
+import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.course.service.CourseService;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.SectionResponse;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanSummaryResponse;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.request.UpdateStudyPlanRequest;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.SectionResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +20,7 @@ import java.util.stream.Collectors;
 public class StudyPlanService {
     private final StudyPlanRepository studyPlanRepository;
     private final CourseService courseService;
+    private final ObjectValidator<UpdateStudyPlanRequest> updateStudyPlanValidator;
 
     public List<StudyPlanSummaryResponse> getAllStudyPlans() {
         return studyPlanRepository.findAllStudyPlans()
@@ -31,7 +36,7 @@ public class StudyPlanService {
     }
 
     public List<StudyPlanSummaryResponse> getProgramStudyPlans(long programId) {
-        return studyPlanRepository.findAllProgramStudyPlans(programId)
+        return studyPlanRepository.findAllStudyPlansByProgram(programId)
                 .stream()
                 .map(sp -> new StudyPlanSummaryResponse(
                         sp.id(),
@@ -88,5 +93,26 @@ public class StudyPlanService {
 
     public void toggleVisibility(long studyPlanId) {
         studyPlanRepository.toggleStudyPlanVisibility(studyPlanId);
+    }
+
+    @Transactional
+    public StudyPlanSummaryResponse updateStudyPlan(long studyPlanId, UpdateStudyPlanRequest request) {
+        updateStudyPlanValidator.validate(request);
+
+        var studyPlan = studyPlanRepository.findById(studyPlanId)
+                .orElseThrow(() -> new StudyPlanNotFoundException("Study plan was not found."));
+
+        studyPlan.setYear(request.year());
+        studyPlan.setTrack(request.track());
+
+        studyPlanRepository.save(studyPlan);
+
+        return new StudyPlanSummaryResponse(
+                studyPlan.getId(),
+                studyPlan.getYear(),
+                studyPlan.getTrack(),
+                studyPlan.isPrivate(),
+                studyPlan.getProgram().getId()
+        );
     }
 }

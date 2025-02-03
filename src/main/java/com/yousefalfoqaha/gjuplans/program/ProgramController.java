@@ -4,7 +4,7 @@ import com.yousefalfoqaha.gjuplans.program.dto.request.CreateProgramRequest;
 import com.yousefalfoqaha.gjuplans.program.dto.request.UpdateProgramRequest;
 import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramOptionResponse;
 import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramResponse;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanSummaryResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

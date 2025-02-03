@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.studyplan.dto;
+package com.yousefalfoqaha.gjuplans.studyplan.dto.response;
 
 public record StudyPlanSummaryResponse(
         long id,

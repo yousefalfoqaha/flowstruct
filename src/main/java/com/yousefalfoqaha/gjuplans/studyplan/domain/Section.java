@@ -28,6 +28,6 @@ public class Section {
 
     private String name;
 
-    @MappedCollection(idColumn = "section", keyColumn = "course")
+    @MappedCollection(idColumn = "section", keyColumn = "section")
     List<SectionCourse> courses;
 }

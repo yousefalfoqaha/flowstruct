@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.studyplan.dto;
+package com.yousefalfoqaha.gjuplans.studyplan.dto.response;
 
 import com.yousefalfoqaha.gjuplans.course.dto.response.CourseWithSequencesResponse;
 

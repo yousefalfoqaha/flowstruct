@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan.projection;
 
-public record StudyPlanOptionProjection(
+public record StudyPlanSummaryProjection(
         Long id,
         Integer year,
         String track,
