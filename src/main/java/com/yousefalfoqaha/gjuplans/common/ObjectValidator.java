@@ -1,6 +1,5 @@
 package com.yousefalfoqaha.gjuplans.common;
 
-import com.yousefalfoqaha.gjuplans.course.dto.request.CreateCourseRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

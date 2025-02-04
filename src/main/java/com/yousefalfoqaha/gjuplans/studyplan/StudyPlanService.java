@@ -2,11 +2,10 @@ package com.yousefalfoqaha.gjuplans.studyplan;
 
 import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.course.service.CourseService;
-import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.UpdateStudyPlanRequest;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.SectionResponse;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

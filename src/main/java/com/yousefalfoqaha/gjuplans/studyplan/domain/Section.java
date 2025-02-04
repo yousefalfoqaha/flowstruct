@@ -10,6 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.List;
 
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -28,6 +29,6 @@ public class Section {
 
     private String name;
 
-    @MappedCollection(idColumn = "section", keyColumn = "section")
+    @MappedCollection(idColumn = "section", keyColumn = "course")
     List<SectionCourse> courses;
 }
