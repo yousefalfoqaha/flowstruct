@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
+import com.yousefalfoqaha.gjuplans.studyplan.dto.request.CreateStudyPlanRequest;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.UpdateStudyPlanRequest;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
@@ -42,6 +43,11 @@ public class StudyPlanController {
             @RequestBody UpdateStudyPlanRequest request
     ) {
         return new ResponseEntity<>(studyPlanService.updateStudyPlan(studyPlanId, request), HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<StudyPlanSummaryResponse> createStudyPlan(@RequestBody CreateStudyPlanRequest request) {
+        return new ResponseEntity<>(studyPlanService.createStudyPlan(request), HttpStatus.OK);
     }
 
 }

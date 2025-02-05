@@ -2,12 +2,15 @@ package com.yousefalfoqaha.gjuplans.studyplan;
 
 import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.course.service.CourseService;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.request.CreateStudyPlanRequest;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.UpdateStudyPlanRequest;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.SectionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -112,6 +115,26 @@ public class StudyPlanService {
                 studyPlan.getTrack(),
                 studyPlan.isPrivate(),
                 studyPlan.getProgram().getId()
+        );
+    }
+
+    @Transactional
+    public StudyPlanSummaryResponse createStudyPlan(CreateStudyPlanRequest request) {
+        StudyPlan studyPlan = new StudyPlan();
+
+        studyPlan.setYear(request.year());
+        studyPlan.setTrack(request.track());
+        studyPlan.setPrivate(true);
+        studyPlan.setProgram(AggregateReference.to(request.program()));
+
+        var newStudyPlan = studyPlanRepository.save(studyPlan);
+
+        return new StudyPlanSummaryResponse(
+                newStudyPlan.getId(),
+                newStudyPlan.getYear(),
+                newStudyPlan.getTrack(),
+                newStudyPlan.isPrivate(),
+                newStudyPlan.getProgram().getId()
         );
     }
 }
