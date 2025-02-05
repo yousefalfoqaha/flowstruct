@@ -1,7 +1,6 @@
 import {ProgramOption, StudyPlanOption} from "@/types";
-import {useStudyPlanListState} from "@/stores";
 import {useToast} from "@/hooks/use-toast.ts";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useMutation, useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
 import {createColumnHelper, getCoreRowModel, useReactTable} from "@tanstack/react-table";
 import {Button} from "@/components/ui/button.tsx";
 import {ArrowRightFromLine, Eye, EyeOff, Loader2, Pencil, Trash} from "lucide-react";
@@ -9,6 +8,7 @@ import {Badge} from "@/components/ui/badge.tsx";
 import {DataTable} from "@/components/DataTable.tsx";
 import React from "react";
 import {EditStudyPlanDialog} from "@/components/EditStudyPlanDialog.tsx";
+import {getProgramStudyPlans} from "@/queries/getProgramStudyPlans.ts";
 
 type StudyPlansTableProps = {
     program: ProgramOption;
@@ -38,8 +38,6 @@ export function StudyPlansTable({program}: StudyPlansTableProps) {
     const queryClient = useQueryClient();
 
     const {toast} = useToast();
-
-    const {isPending, data} = useStudyPlanListState(program.id);
 
     const toggleVisibilityMutation = useMutation({
         mutationFn: async (updatedStudyPlan: StudyPlanOption) => {
@@ -106,7 +104,7 @@ export function StudyPlansTable({program}: StudyPlansTableProps) {
             header: () => <div className="ml-auto w-full">Actions</div>,
             cell: ({row}) => (
                 <div className="flex gap-2 justify-end items-center">
-                    <Button variant="ghost" className="w-80"
+                    <Button variant="ghost"
                             onClick={() => openDialog(row.original, StudyPlanDialog.Edit)}>
                         <Pencil/>
                     </Button>
@@ -123,6 +121,8 @@ export function StudyPlansTable({program}: StudyPlansTableProps) {
             )
         })
     ];
+
+    const {isPending, data} = useSuspenseQuery(getProgramStudyPlans(program.id));
 
     const table = useReactTable({
         columns,

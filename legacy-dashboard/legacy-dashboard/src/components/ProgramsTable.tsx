@@ -1,12 +1,14 @@
 import React from "react";
 import {ProgramOption} from "@/types";
-import {useProgramListState} from "@/stores";
 import {createColumnHelper, getCoreRowModel, useReactTable} from "@tanstack/react-table";
 import {Button} from "@/components/ui/button.tsx";
 import {Book, Loader2, Pencil, Trash} from "lucide-react";
 import {DataTable} from "@/components/DataTable.tsx";
 import {EditProgramDialog} from "@/components/EditProgramDialog.tsx";
 import {DeleteProgramDialog} from "@/components/DeleteProgramDialog.tsx";
+import {Link} from "@tanstack/react-router";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {getPrograms} from "@/queries/getPrograms.ts";
 
 enum ProgramDialog {
     Edit = 'edit',
@@ -26,8 +28,6 @@ export function ProgramsTable() {
         setSelectedProgram(program);
         setProgramDialog(dialog);
     }
-
-    const {isPending, data} = useProgramListState();
 
     const {accessor, display} = createColumnHelper<ProgramOption>();
 
@@ -50,9 +50,11 @@ export function ProgramsTable() {
             id: 'actions',
             cell: ({row}) => (
                 <div className="flex gap-2 justify-end">
-                    <Button className="mr-3" variant="outline">
-                        <Book/> Study Plans
-                    </Button>
+                    <Link to="/programs/$programId" params={{programId: String(row.original.id)}}>
+                        <Button className="mr-3" variant="outline">
+                            <Book/> Study Plans
+                        </Button>
+                    </Link>
                     <Button variant="ghost" onClick={() => openDialog(row.original, ProgramDialog.Edit)}>
                         <Pencil className="size-4"/>
                     </Button>
@@ -63,6 +65,8 @@ export function ProgramsTable() {
             )
         })
     ];
+
+    const {isPending, data} = useSuspenseQuery(getPrograms());
 
     const table = useReactTable({
         columns,
@@ -75,10 +79,10 @@ export function ProgramsTable() {
     return (
         <>
             {programDialog === ProgramDialog.Edit &&
-                <EditProgramDialog program={selectedProgram} closeDialog={closeDialog}/>
+              <EditProgramDialog program={selectedProgram} closeDialog={closeDialog}/>
             }
             {programDialog === ProgramDialog.Delete &&
-                <DeleteProgramDialog program={selectedProgram} closeDialog={closeDialog}/>
+              <DeleteProgramDialog program={selectedProgram} closeDialog={closeDialog}/>
             }
             <div className="rounded-lg border">
                 <DataTable table={table}/>
