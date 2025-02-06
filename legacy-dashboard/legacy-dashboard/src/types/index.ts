@@ -8,6 +8,7 @@ export type ProgramOption = {
 export type StudyPlanOption = {
     id: number;
     year: number;
+    duration: number;
     track: string;
     isPrivate: boolean;
     program: number;

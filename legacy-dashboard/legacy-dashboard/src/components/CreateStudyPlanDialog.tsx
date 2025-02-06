@@ -25,7 +25,8 @@ export function CreateStudyPlanDialog({program}: CreateStudyPlanDialogProps) {
         resolver: zodResolver(createStudyPlanFormSchema),
         defaultValues: {
             year: undefined,
-            track: '',
+            duration: undefined,
+            track: undefined,
             isPrivate: true,
             program: program.id
         }
@@ -48,7 +49,7 @@ export function CreateStudyPlanDialog({program}: CreateStudyPlanDialogProps) {
 
             return response.json();
         },
-        onSuccess: (_, newStudyPlan) => {
+        onSuccess: (newStudyPlan: StudyPlanOption) => {
             queryClient.setQueryData(['study-plans', program.id], (studyPlans: StudyPlanOption[] | undefined) => {
                 if (!studyPlans) return [];
                 return [...studyPlans, newStudyPlan];
@@ -87,10 +88,10 @@ export function CreateStudyPlanDialog({program}: CreateStudyPlanDialogProps) {
                                 control={form.control}
                                 name="year"
                                 render={({field}) => (
-                                    <FormItem className="w-32">
+                                    <FormItem className="w-full">
                                         <FormLabel>Year*</FormLabel>
                                         <FormControl>
-                                            <Input {...field} type="number" autoComplete="off"/>
+                                            <Input {...field} type="number" placeholder={new Date().getFullYear().toString()} autoComplete="off"/>
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>
@@ -99,18 +100,32 @@ export function CreateStudyPlanDialog({program}: CreateStudyPlanDialogProps) {
 
                             <FormField
                                 control={form.control}
-                                name="track"
+                                name="duration"
                                 render={({field}) => (
                                     <FormItem className="w-full">
-                                        <FormLabel>Track</FormLabel>
+                                        <FormLabel className="text-nowrap">Duration* (in years)</FormLabel>
                                         <FormControl>
-                                            <Input {...field} value={field.value ?? ''} autoComplete="off"/>
+                                            <Input {...field} type="number" value={field.value ?? undefined} autoComplete="off"/>
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>
                                 )}
                             />
                         </div>
+
+                        <FormField
+                            control={form.control}
+                            name="track"
+                            render={({field}) => (
+                                <FormItem className="w-full">
+                                    <FormLabel>Track</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} value={field.value ?? undefined} placeholder='Eg:. "General Track"' autoComplete="off"/>
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
 
                         {mutation.isPending ? <ButtonLoading/> : <Button type="submit">Create Study Plan</Button>}
                     </form>

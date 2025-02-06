@@ -29,9 +29,9 @@ export function DeleteStudyPlanDialog({studyPlan, closeDialog}:DeleteStudyPlanDi
             }
         },
         onSuccess: (_, deletedStudyPlan) => {
-            queryClient.setQueryData(['programs', studyPlan?.program], (studyPlans: StudyPlanOption[] | undefined) => {
-                if (!studyPlans) return [];
-                return studyPlans.filter(p => p.id !== deletedStudyPlan?.id);
+            queryClient.setQueryData(['study-plans', studyPlan?.program], (studyPlans: StudyPlanOption[] | undefined) => {
+                if (!studyPlans) return;
+                return studyPlans.filter(sp => sp.id !== deletedStudyPlan?.id);
             });
 
             closeDialog();
@@ -54,7 +54,7 @@ export function DeleteStudyPlanDialog({studyPlan, closeDialog}:DeleteStudyPlanDi
         <Dialog open={!!studyPlan} onOpenChange={closeDialog}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Delete {studyPlan.year}/{studyPlan.year + 1} {studyPlan.track ?? ''}</DialogTitle>
+                    <DialogTitle>Delete {studyPlan.year}/{studyPlan.year + 1} {studyPlan.track ?? ''} Study Plan</DialogTitle>
                     <DialogDescription>
                         This action cannot be undone. Are you absolutely sure?
                     </DialogDescription>

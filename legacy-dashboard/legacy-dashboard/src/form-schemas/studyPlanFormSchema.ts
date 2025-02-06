@@ -6,7 +6,12 @@ export const editStudyPlanFormSchema = z.object({
         .union([z.string(), z.number()])
         .transform((val) => Number(val))
         .refine((val) => Number.isInteger(val), {message: "Year must be an integer"}),
-    track: z.string().nullable(),
+    duration: z
+        .union([z.string(), z.number()])
+        .transform((val) => Number(val))
+        .refine((val) => Number.isInteger(val), {message: "Year must be an integer"})
+        .refine((val) => val >= 1, {message: "Study plan must be at least 1 year"}),
+    track: z.string().nullable().optional(),
     isPrivate: z.boolean(),
     program: z.number()
 });
@@ -16,7 +21,12 @@ export const createStudyPlanFormSchema = z.object({
         .union([z.string(), z.number()])
         .transform((val) => Number(val))
         .refine((val) => Number.isInteger(val), {message: "Year must be an integer"}),
-    track: z.string().nullable(),
+    duration: z
+        .union([z.string(), z.number()])
+        .transform((val) => Number(val))
+        .refine((val) => Number.isInteger(val), {message: "Year must be an integer"})
+        .refine((val) => val >= 1, {message: "Duration must be at least 1 year"}),
+    track: z.string().nullable().optional(),
     isPrivate: z.boolean(),
     program: z.number()
 });

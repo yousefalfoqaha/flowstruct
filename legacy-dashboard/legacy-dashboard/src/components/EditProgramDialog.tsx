@@ -42,7 +42,7 @@ export function EditProgramDialog({program, closeDialog}: EditProgramDialogProps
 
             return response.json();
         },
-        onSuccess: (_, updatedProgram) => {
+        onSuccess: (updatedProgram: ProgramOption) => {
             queryClient.setQueryData(['programs'], (oldPrograms: ProgramOption[] | undefined) => {
                 if (!oldPrograms) return [];
                 return oldPrograms.map(p => (p.id === updatedProgram.id ? updatedProgram : p));
@@ -78,7 +78,7 @@ export function EditProgramDialog({program, closeDialog}: EditProgramDialogProps
                             name="name"
                             render={({field}) => (
                                 <FormItem className="w-full">
-                                    <FormLabel>Name</FormLabel>
+                                    <FormLabel>Name*</FormLabel>
                                     <FormControl>
                                         <Input {...field} autoComplete="off"/>
                                     </FormControl>
@@ -93,9 +93,9 @@ export function EditProgramDialog({program, closeDialog}: EditProgramDialogProps
                                 name="code"
                                 render={({field}) => (
                                     <FormItem className="w-full">
-                                        <FormLabel>Code</FormLabel>
+                                        <FormLabel>Code*</FormLabel>
                                         <FormControl>
-                                            <Input {...field} autoComplete="off"/>
+                                            <Input {...field} placeholder='Eg. "MECH, CS, MGT..."' autoComplete="off"/>
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>
@@ -106,7 +106,7 @@ export function EditProgramDialog({program, closeDialog}: EditProgramDialogProps
                                 name="degree"
                                 render={({field}) => (
                                     <FormItem className="w-full">
-                                        <FormLabel>Degree</FormLabel>
+                                        <FormLabel>Degree*</FormLabel>
                                         <FormControl>
                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <SelectTrigger>

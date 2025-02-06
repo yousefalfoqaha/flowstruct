@@ -66,8 +66,8 @@ export function StudyPlansTable({program}: StudyPlansTableProps) {
                 });
 
             toast({
-                title: updatedStudyPlan.isPrivate ? 'Study plan has been made private.' : 'Study plan has been made public.',
-                description: updatedStudyPlan.isPrivate ? 'Latest changes will be private.' : 'Latest changes will be public.'
+                title: updatedStudyPlan.isPrivate ? 'Study plan has been made public.' : 'Study plan has been made private.',
+                description: updatedStudyPlan.isPrivate ? 'Latest changes will be public.' : 'Latest changes will be private.'
             });
         }
     });
@@ -95,14 +95,17 @@ export function StudyPlansTable({program}: StudyPlansTableProps) {
             header: 'Visibility',
             cell: ({row}) => {
                 return row.getValue('isPrivate')
-                    ? <Badge className="text-nowrap gap-1"><Eye className="size-4"/> Public</Badge>
-                    :
-                    <Badge variant="outline" className="text-nowrap gap-1"><EyeOff className="size-4"/> Private</Badge>
+                    ? <Badge variant="outline" className="text-nowrap gap-1"><EyeOff className="size-4"/> Private</Badge>
+                    : <Badge className="text-nowrap gap-1"><Eye className="size-4"/> Public</Badge>
             }
+        }),
+        accessor('duration', {
+            header: () => <p className="text-nowrap">Duration (Years)</p>,
+            cell: ({row}) => <p>{row.original.duration ?? 0} Yrs</p>
         }),
         display({
             id: 'actions',
-            header: () => <div className="ml-auto w-full">Actions</div>,
+            header: () => <div className="flex justify-end pr-14">Actions</div>,
             cell: ({row}) => (
                 <div className="flex gap-2 justify-end items-center">
                     <Button variant="ghost"
@@ -111,8 +114,8 @@ export function StudyPlansTable({program}: StudyPlansTableProps) {
                     </Button>
                     <Button variant="ghost" onClick={() => toggleVisibilityMutation.mutate(row.original)}>
                         {row.getValue('isPrivate')
-                            ? <EyeOff/>
-                            : <Eye/>
+                            ? <Eye/>
+                            : <EyeOff/>
                         }
                     </Button>
                     <Button variant="ghost" onClick={() => openDialog(row.original, StudyPlanDialog.Delete)}>
@@ -137,7 +140,7 @@ export function StudyPlansTable({program}: StudyPlansTableProps) {
                 <EditStudyPlanDialog studyPlan={selectedStudyPlan} closeDialog={closeDialog}/>
             }
             {studyPlanDialog === StudyPlanDialog.Delete &&
-                <DeleteStudyPlanDialog studyPlan={selectedStudyPlan} closeDialog={closeDialog} />
+                <DeleteStudyPlanDialog studyPlan={selectedStudyPlan} closeDialog={closeDialog}/>
             }
             {isPending
                 ? <div className="p-10"><Loader2 className="animate-spin text-gray-500 mx-auto"/></div>

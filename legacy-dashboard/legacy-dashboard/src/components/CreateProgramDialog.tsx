@@ -44,7 +44,7 @@ export function CreateProgramDialog() {
 
             return response.json();
         },
-        onSuccess: (_, newProgram) => {
+        onSuccess: (newProgram: ProgramOption) => {
             queryClient.setQueryData(['programs'], (programs: ProgramOption[] | undefined) => {
                 if (!programs) return [];
                 return [...programs, newProgram];
@@ -100,7 +100,7 @@ export function CreateProgramDialog() {
                                     <FormItem className="w-full">
                                         <FormLabel>Code*</FormLabel>
                                         <FormControl>
-                                            <Input {...field} autoComplete="off"/>
+                                            <Input {...field} placeholder='Eg. "MECH, CS, MGT..."' autoComplete="off"/>
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>

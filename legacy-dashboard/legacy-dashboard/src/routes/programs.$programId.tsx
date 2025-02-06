@@ -8,8 +8,8 @@ import {CreateStudyPlanDialog} from "@/components/CreateStudyPlanDialog.tsx";
 export const Route = createFileRoute('/programs/$programId')({
     component: RouteComponent,
     loader: async ({context: {queryClient}, params}) => {
-        await queryClient.ensureQueryData(getProgramStudyPlans(parseInt(params.programId)));
         await queryClient.ensureQueryData(getPrograms());
+        await queryClient.ensureQueryData(getProgramStudyPlans(parseInt(params.programId)));
     },
 });
 

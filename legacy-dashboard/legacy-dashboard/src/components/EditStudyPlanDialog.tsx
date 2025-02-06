@@ -38,10 +38,12 @@ export function EditStudyPlanDialog({studyPlan, closeDialog}: EditStudyPlanProps
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'An error occurred.');
             }
+
+            return response.json();
         },
-        onSuccess: (_, updatedStudyPlan) => {
+        onSuccess: (updatedStudyPlan: StudyPlanOption) => {
             queryClient.setQueryData(['study-plans', updatedStudyPlan.program], (oldStudyPlans: StudyPlanOption[] | undefined) => {
-                if (!oldStudyPlans) return [];
+                if (!oldStudyPlans) return;
 
                 return oldStudyPlans.map(sp => (
                         sp.id === updatedStudyPlan.id
@@ -67,46 +69,60 @@ export function EditStudyPlanDialog({studyPlan, closeDialog}: EditStudyPlanProps
         <Dialog open={!!studyPlan} onOpenChange={closeDialog}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Edit Program</DialogTitle>
+                    <DialogTitle>Edit Study Plan</DialogTitle>
                     <DialogDescription>
-                        Make changes to the program here. This will affect its study plans.
+                        Make changes to the study plan overview.
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit((formData) =>
                         mutation.mutate(formData)
                     )} className="space-y-6">
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                             <FormField
                                 control={form.control}
                                 name="year"
                                 render={({field}) => (
-                                    <FormItem className="w-32">
-                                        <FormLabel>Year</FormLabel>
+                                    <FormItem className="w-full">
+                                        <FormLabel>Year*</FormLabel>
                                         <FormControl>
-                                            <Input type="number" {...field} autoComplete="off"/>
+                                            <Input {...field} type="number" placeholder={new Date().getFullYear().toString()} autoComplete="off"/>
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>
                                 )}
                             />
+
                             <FormField
                                 control={form.control}
-                                name="track"
+                                name="duration"
                                 render={({field}) => (
                                     <FormItem className="w-full">
-                                        <FormLabel>Track</FormLabel>
+                                        <FormLabel className="text-nowrap">Duration* (in years)</FormLabel>
                                         <FormControl>
-                                            <Input{...field} autoComplete="off"/>
+                                            <Input {...field} type="number" value={field.value ?? undefined} autoComplete="off"/>
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>
                                 )}
                             />
                         </div>
-                        <div className="flex justify-center">
-                            {mutation.isPending ? <ButtonLoading/> : <Button type="submit">Save Changes</Button>}
-                        </div>
+
+                        <FormField
+                            control={form.control}
+                            name="track"
+                            render={({field}) => (
+                                <FormItem className="w-full">
+                                    <FormLabel>Track</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} value={field.value ?? undefined} placeholder='Eg:. "General Track"' autoComplete="off"/>
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                        />
+
+                        {mutation.isPending ? <ButtonLoading/> : <Button type="submit">Save Changes</Button>}
                     </form>
                 </Form>
             </DialogContent>
