@@ -25,6 +25,8 @@ public class StudyPlan {
 
         private int year;
 
+        private int duration;
+
         private String track;
 
         private boolean isPrivate;

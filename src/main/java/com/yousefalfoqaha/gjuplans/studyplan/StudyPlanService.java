@@ -27,12 +27,13 @@ public class StudyPlanService {
     public List<StudyPlanSummaryResponse> getAllStudyPlans() {
         return studyPlanRepository.findAllStudyPlans()
                 .stream()
-                .map(o -> new StudyPlanSummaryResponse(
-                        o.id(),
-                        o.year(),
-                        o.track(),
-                        o.isPrivate(),
-                        o.program()
+                .map(sp -> new StudyPlanSummaryResponse(
+                        sp.id(),
+                        sp.year(),
+                        sp.duration(),
+                        sp.track(),
+                        sp.isPrivate(),
+                        sp.program()
                 ))
                 .toList();
     }
@@ -43,6 +44,7 @@ public class StudyPlanService {
                 .map(sp -> new StudyPlanSummaryResponse(
                         sp.id(),
                         sp.year(),
+                        sp.duration(),
                         sp.track(),
                         sp.isPrivate(),
                         sp.program()
@@ -105,6 +107,7 @@ public class StudyPlanService {
                 .orElseThrow(() -> new StudyPlanNotFoundException("Study plan was not found."));
 
         studyPlan.setYear(request.year());
+        studyPlan.setDuration(request.duration());
         studyPlan.setTrack(request.track());
 
         studyPlanRepository.save(studyPlan);
@@ -112,6 +115,7 @@ public class StudyPlanService {
         return new StudyPlanSummaryResponse(
                 studyPlan.getId(),
                 studyPlan.getYear(),
+                studyPlan.getDuration(),
                 studyPlan.getTrack(),
                 studyPlan.isPrivate(),
                 studyPlan.getProgram().getId()
@@ -123,6 +127,7 @@ public class StudyPlanService {
         StudyPlan studyPlan = new StudyPlan();
 
         studyPlan.setYear(request.year());
+        studyPlan.setDuration(request.duration());
         studyPlan.setTrack(request.track());
         studyPlan.setPrivate(true);
         studyPlan.setProgram(AggregateReference.to(request.program()));
@@ -132,9 +137,15 @@ public class StudyPlanService {
         return new StudyPlanSummaryResponse(
                 newStudyPlan.getId(),
                 newStudyPlan.getYear(),
+                newStudyPlan.getDuration(),
                 newStudyPlan.getTrack(),
                 newStudyPlan.isPrivate(),
                 newStudyPlan.getProgram().getId()
         );
+    }
+
+    @Transactional
+    public void deleteStudyPlan(long studyPlanId) {
+        studyPlanRepository.deleteById(studyPlanId);
     }
 }

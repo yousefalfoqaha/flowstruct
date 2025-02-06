@@ -50,4 +50,9 @@ public class StudyPlanController {
         return new ResponseEntity<>(studyPlanService.createStudyPlan(request), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{studyPlanId}")
+    public ResponseEntity<Void> deleteStudyPlan(@PathVariable long studyPlanId) {
+        studyPlanService.deleteStudyPlan(studyPlanId);
+        return ResponseEntity.ok().build();
+    }
 }
