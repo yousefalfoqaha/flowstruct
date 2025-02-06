@@ -11,7 +11,12 @@ export const editStudyPlanFormSchema = z.object({
         .transform((val) => Number(val))
         .refine((val) => Number.isInteger(val), {message: "Year must be an integer"})
         .refine((val) => val >= 1, {message: "Study plan must be at least 1 year"}),
-    track: z.string().nullable().optional(),
+    track: z
+        .string()
+        .trim()
+        .transform((val) => (val === "" ? null : val))
+        .nullable()
+        .optional(),
     isPrivate: z.boolean(),
     program: z.number()
 });
@@ -26,7 +31,12 @@ export const createStudyPlanFormSchema = z.object({
         .transform((val) => Number(val))
         .refine((val) => Number.isInteger(val), {message: "Year must be an integer"})
         .refine((val) => val >= 1, {message: "Duration must be at least 1 year"}),
-    track: z.string().nullable().optional(),
+    track: z
+        .string()
+        .trim()
+        .transform((val) => (val === "" ? null : val))
+        .nullable()
+        .optional(),
     isPrivate: z.boolean(),
     program: z.number()
 });

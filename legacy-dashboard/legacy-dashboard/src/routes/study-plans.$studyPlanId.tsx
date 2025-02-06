@@ -1,4 +1,4 @@
-import {createFileRoute, useParams} from '@tanstack/react-router'
+import {createFileRoute} from '@tanstack/react-router'
 import {getPrograms} from "@/queries/getPrograms.ts";
 import {getStudyPlan} from "@/queries/getStudyPlan.ts";
 
