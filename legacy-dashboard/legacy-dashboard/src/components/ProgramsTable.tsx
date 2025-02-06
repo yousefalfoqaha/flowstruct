@@ -48,6 +48,7 @@ export function ProgramsTable() {
         }),
         display({
             id: 'actions',
+            header: () => <div className="flex justify-end pr-24">Actions</div>,
             cell: ({row}) => (
                 <div className="flex gap-2 justify-end">
                     <Link to="/programs/$programId" params={{programId: String(row.original.id)}}>

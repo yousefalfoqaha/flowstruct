@@ -10,6 +10,7 @@ import React from "react";
 import {EditStudyPlanDialog} from "@/components/EditStudyPlanDialog.tsx";
 import {getProgramStudyPlans} from "@/queries/getProgramStudyPlans.ts";
 import {DeleteStudyPlanDialog} from "@/components/DeleteStudyPlanDialog.tsx";
+import {Link} from "@tanstack/react-router";
 
 type StudyPlansTableProps = {
     program: ProgramOption;
@@ -77,10 +78,12 @@ export function StudyPlansTable({program}: StudyPlansTableProps) {
     const columns = [
         display({
             id: 'open',
-            cell: () => (
-                <Button variant="outline">
-                    <ArrowRightFromLine/>
-                </Button>
+            cell: ({row}) => (
+                <Link to="/study-plans/$studyPlanId" params={{studyPlanId: String(row.original.id)}}>
+                    <Button variant="outline">
+                        View <ArrowRightFromLine/>
+                    </Button>
+                </Link>
             )
         }),
         accessor('year', {
@@ -89,7 +92,7 @@ export function StudyPlansTable({program}: StudyPlansTableProps) {
         }),
         accessor('track', {
             header: 'Track',
-            cell: ({row}) => row.getValue('track') ?? ''
+            cell: ({row}) => row.getValue('track') ?? '---'
         }),
         accessor('isPrivate', {
             header: 'Visibility',
