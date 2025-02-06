@@ -1,25 +1,25 @@
-import {ProgramOption} from "@/types";
-import {useToast} from "@/hooks/use-toast.ts";
+import {StudyPlanOption} from "@/types";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useToast} from "@/hooks/use-toast.ts";
 import {ToastAction} from "@/components/ui/toast.tsx";
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx";
+import {ButtonLoading} from "@/components/ButtonLoading.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Trash} from "lucide-react";
-import {ButtonLoading} from "@/components/ButtonLoading.tsx";
 
-type DeleteProgramDialogProps = {
-    program: ProgramOption | null;
+type DeleteStudyPlanDialogProps = {
+    studyPlan: StudyPlanOption | null;
     closeDialog: () => void;
 }
 
-export function DeleteProgramDialog({program, closeDialog}: DeleteProgramDialogProps) {
+export function DeleteStudyPlanDialog({studyPlan, closeDialog}:DeleteStudyPlanDialogProps) {
     const queryClient = useQueryClient();
 
     const {toast} = useToast();
 
-    const mutation = useMutation({
-        mutationFn: async (deletedProgram: ProgramOption | null) => {
-            const response = await fetch(`http://localhost:8080/api/v1/programs/${deletedProgram?.id}`, {
+    const deleteStudyPlanMutation = useMutation({
+        mutationFn: async (deletedStudyPlan: StudyPlanOption | null) => {
+            const response = await fetch(`http://localhost:8080/api/v1/study-plans/${deletedStudyPlan?.id}`, {
                 method: 'DELETE'
             });
 
@@ -28,40 +28,42 @@ export function DeleteProgramDialog({program, closeDialog}: DeleteProgramDialogP
                 throw new Error(errorData.message || 'An unknown error occurred');
             }
         },
-        onSuccess: (_, deletedProgram) => {
-            queryClient.setQueryData(['programs'], (programs: ProgramOption[] | undefined) => {
-                if (!programs) return [];
-                return programs.filter(p => p.id !== deletedProgram?.id);
+        onSuccess: (_, deletedStudyPlan) => {
+            queryClient.setQueryData(['programs', studyPlan?.program], (studyPlans: StudyPlanOption[] | undefined) => {
+                if (!studyPlans) return [];
+                return studyPlans.filter(p => p.id !== deletedStudyPlan?.id);
             });
 
             closeDialog();
 
-            toast({description: "Program deleted successfully."});
+            toast({description: "Study plan deleted successfully."});
         },
         onError: () => {
             toast({
                 variant: 'destructive',
                 title: 'Something went wrong.',
-                description: 'An error occurred while trying to delete the program.',
+                description: 'An error occurred while trying to delete the study plan.',
                 action: <ToastAction altText="Try again">Try again</ToastAction>
             });
         }
     });
 
+    if (!studyPlan) return;
+
     return (
-        <Dialog open={!!program} onOpenChange={closeDialog}>
+        <Dialog open={!!studyPlan} onOpenChange={closeDialog}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Delete {program?.name} Program</DialogTitle>
+                    <DialogTitle>Delete {studyPlan.year}/{studyPlan.year + 1} {studyPlan.track ?? ''}</DialogTitle>
                     <DialogDescription>
                         This action cannot be undone. Are you absolutely sure?
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex justify-center">
-                    {mutation.isPending
+                    {deleteStudyPlanMutation.isPending
                         ? <ButtonLoading/>
-                        : <Button className="w-fit" variant="destructive" onClick={() => mutation.mutate(program)}>
-                            <Trash/> Delete Program
+                        : <Button className="w-fit" variant="destructive" onClick={() => deleteStudyPlanMutation.mutate(studyPlan)}>
+                            <Trash/> Delete Study Plan
                         </Button>
                     }
                 </div>

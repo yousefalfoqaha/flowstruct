@@ -9,6 +9,7 @@ import {DataTable} from "@/components/DataTable.tsx";
 import React from "react";
 import {EditStudyPlanDialog} from "@/components/EditStudyPlanDialog.tsx";
 import {getProgramStudyPlans} from "@/queries/getProgramStudyPlans.ts";
+import {DeleteStudyPlanDialog} from "@/components/DeleteStudyPlanDialog.tsx";
 
 type StudyPlansTableProps = {
     program: ProgramOption;
@@ -114,7 +115,7 @@ export function StudyPlansTable({program}: StudyPlansTableProps) {
                             : <Eye/>
                         }
                     </Button>
-                    <Button variant="ghost">
+                    <Button variant="ghost" onClick={() => openDialog(row.original, StudyPlanDialog.Delete)}>
                         <Trash className="size-4"/>
                     </Button>
                 </div>
@@ -134,6 +135,9 @@ export function StudyPlansTable({program}: StudyPlansTableProps) {
         <>
             {studyPlanDialog === StudyPlanDialog.Edit &&
                 <EditStudyPlanDialog studyPlan={selectedStudyPlan} closeDialog={closeDialog}/>
+            }
+            {studyPlanDialog === StudyPlanDialog.Delete &&
+                <DeleteStudyPlanDialog studyPlan={selectedStudyPlan} closeDialog={closeDialog} />
             }
             {isPending
                 ? <div className="p-10"><Loader2 className="animate-spin text-gray-500 mx-auto"/></div>
