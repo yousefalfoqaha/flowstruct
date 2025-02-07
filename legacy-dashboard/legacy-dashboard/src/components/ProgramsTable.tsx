@@ -32,6 +32,16 @@ export function ProgramsTable() {
     const {accessor, display} = createColumnHelper<ProgramOption>();
 
     const columns = [
+        display({
+            id: 'study-plans',
+            cell: ({row}) => (
+                <Link to="/programs/$programId" params={{programId: String(row.original.id)}}>
+                    <Button className="mr-3" variant="outline">
+                        <Book/> Study Plans
+                    </Button>
+                </Link>
+            )
+        }),
         accessor('code', {
             header: 'Code',
             cell: ({row}) => (
@@ -48,14 +58,9 @@ export function ProgramsTable() {
         }),
         display({
             id: 'actions',
-            header: () => <div className="flex justify-end pr-24">Actions</div>,
+            header: () => <div className="flex justify-end pr-7">Actions</div>,
             cell: ({row}) => (
                 <div className="flex gap-2 justify-end">
-                    <Link to="/programs/$programId" params={{programId: String(row.original.id)}}>
-                        <Button className="mr-3" variant="outline">
-                            <Book/> Study Plans
-                        </Button>
-                    </Link>
                     <Button variant="ghost" onClick={() => openDialog(row.original, ProgramDialog.Edit)}>
                         <Pencil className="size-4"/>
                     </Button>
@@ -80,10 +85,10 @@ export function ProgramsTable() {
     return (
         <>
             {programDialog === ProgramDialog.Edit &&
-              <EditProgramDialog program={selectedProgram} closeDialog={closeDialog}/>
+                <EditProgramDialog program={selectedProgram} closeDialog={closeDialog}/>
             }
             {programDialog === ProgramDialog.Delete &&
-              <DeleteProgramDialog program={selectedProgram} closeDialog={closeDialog}/>
+                <DeleteProgramDialog program={selectedProgram} closeDialog={closeDialog}/>
             }
             <div className="rounded-lg border">
                 <DataTable table={table}/>

@@ -58,5 +58,6 @@ export type StudyPlan = {
     isPrivate: boolean;
     program: number;
     sections: Section[];
+    coursePlacements: Map<number, number>;
     courses: Record<number, Course>;
 }
