@@ -20,12 +20,6 @@ export type CoursePrerequisite = {
     isRemedial: boolean;
 }
 
-export type CourseSequences = {
-    prerequisiteSequence: number[];
-    postrequisiteSequence: number[];
-    level: number;
-}
-
 export type Course = {
     id: number;
     code: string;
@@ -38,7 +32,6 @@ export type Course = {
     isRemedial: boolean;
     prerequisites: CoursePrerequisite[];
     corequisites: number[];
-    sequences: CourseSequences;
 }
 
 export type Section = {
@@ -58,6 +51,6 @@ export type StudyPlan = {
     isPrivate: boolean;
     program: number;
     sections: Section[];
-    coursePlacements: Map<number, number>;
+    coursePlacements: Record<number, number>;
     courses: Record<number, Course>;
 }
