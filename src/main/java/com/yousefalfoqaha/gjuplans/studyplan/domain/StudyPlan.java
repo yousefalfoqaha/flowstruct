@@ -10,8 +10,8 @@ import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,8 +33,8 @@ public class StudyPlan {
 
         private AggregateReference<Program, Long> program;
 
-        @MappedCollection(idColumn = "study_plan", keyColumn = "id")
-        private List<Section> sections;
+        @MappedCollection(idColumn = "study_plan")
+        private Set<Section> sections;
 
         @MappedCollection(idColumn = "study_plan", keyColumn = "course")
         private Map<Long, CoursePlacement> coursePlacements;

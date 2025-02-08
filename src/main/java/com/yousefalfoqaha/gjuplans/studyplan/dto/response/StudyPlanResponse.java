@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan.dto.response;
 
-import com.yousefalfoqaha.gjuplans.course.dto.response.CourseWithSequencesResponse;
+import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -8,11 +8,12 @@ import java.util.Map;
 public record StudyPlanResponse(
         long id,
         int year,
+        int duration,
         String track,
         boolean isPrivate,
         long program,
         List<SectionResponse> sections,
         Map<Long, Integer> coursePlacements,
-        Map<Long, CourseWithSequencesResponse> courses
+        Map<Long, CourseResponse> courses
 ) {
 }

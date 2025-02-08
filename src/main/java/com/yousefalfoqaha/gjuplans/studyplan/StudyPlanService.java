@@ -61,6 +61,7 @@ public class StudyPlanService {
         return new StudyPlanResponse(
                 studyPlan.getId(),
                 studyPlan.getYear(),
+                studyPlan.getDuration(),
                 studyPlan.getTrack(),
                 studyPlan.isPrivate(),
                 studyPlan.getProgram().getId(),
@@ -84,7 +85,7 @@ public class StudyPlanService {
                                 entry -> entry.getKey(),
                                 entry -> entry.getValue().getSemester()
                         )),
-                courseService.getCoursesWithSequences(
+                courseService.getCourses(
                         studyPlan.getSections()
                                 .stream()
                                 .flatMap(sec -> sec.getCourses().stream())

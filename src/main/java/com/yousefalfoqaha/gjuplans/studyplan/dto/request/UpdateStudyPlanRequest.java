@@ -15,7 +15,6 @@ public record UpdateStudyPlanRequest(
         @Min(value = 1, message = "Duration must be at least 1 year.")
         int duration,
 
-
         String track
 ) {
 }

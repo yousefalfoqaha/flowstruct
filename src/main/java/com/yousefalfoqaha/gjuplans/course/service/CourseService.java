@@ -22,7 +22,7 @@ public class CourseService {
     private final ObjectValidator<CreateCourseRequest> createCourseValidator;
 
     public CourseResponse getCourse(long courseId) {
-        var course =  courseRepository.findById(courseId)
+        var course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException(
                         "Course with id " + courseId + " was not found."
                 ));
@@ -109,6 +109,33 @@ public class CourseService {
                                 )
                         )
                 ));
+    }
+
+    public Map<Long, CourseResponse> getCourses(List<Long> courseIds) {
+        return courseRepository.findAllById(courseIds)
+                .stream()
+                .collect(Collectors.toMap(Course::getId, course -> new CourseResponse(
+                        course.getId(),
+                        course.getCode(),
+                        course.getName(),
+                        course.getCreditHours(),
+                        course.getEcts(),
+                        course.getLectureHours(),
+                        course.getPracticalHours(),
+                        course.getType(),
+                        course.isRemedial(),
+                        course.getPrerequisites()
+                                .stream()
+                                .map(prerequisite -> new CoursePrerequisiteResponse(
+                                        prerequisite.getPrerequisite().getId(),
+                                        prerequisite.getRelation()
+                                ))
+                                .collect(Collectors.toSet()),
+                        course.getCorequisites()
+                                .stream()
+                                .map(corequisite -> corequisite.getCorequisite().getId())
+                                .collect(Collectors.toSet())
+                )));
     }
 
     public CreateCourseResponse createCourse(CreateCourseRequest request) {

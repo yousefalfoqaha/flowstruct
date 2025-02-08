@@ -5,10 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.List;
+import java.util.Set;
 
 
 @AllArgsConstructor
@@ -29,6 +30,6 @@ public class Section {
 
     private String name;
 
-    @MappedCollection(idColumn = "section", keyColumn = "course")
-    List<SectionCourse> courses;
+    @MappedCollection(idColumn = "section")
+    Set<SectionCourse> courses;
 }
