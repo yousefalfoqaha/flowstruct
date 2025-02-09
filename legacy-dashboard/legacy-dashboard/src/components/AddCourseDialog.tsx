@@ -1,6 +1,6 @@
 import {Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription} from "@/components/ui/dialog.tsx";
-import {Input} from "@/components/ui/input.tsx";
 import React from "react";
+import {InfiniteScrollCourses} from "@/components/InfiniteScrollCourses.tsx";
 
 type AddCourseDialogProps = {
     semester: number | null;
@@ -20,7 +20,7 @@ export function AddCourseDialog({semester, closeDialog}: AddCourseDialogProps) {
                     </DialogDescription>
                 </DialogHeader>
                 <div>
-                    <Input placeholder="Search a course..." />
+                    <InfiniteScrollCourses />
                 </div>
             </DialogContent>
         </Dialog>

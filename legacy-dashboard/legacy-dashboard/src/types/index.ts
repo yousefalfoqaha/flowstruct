@@ -54,3 +54,12 @@ export type StudyPlan = {
     coursePlacements: Record<number, number>;
     courses: Record<number, Course>;
 }
+
+export type CoursesPage = {
+    content: Course[];
+    page: number;
+    size: number;
+    totalCourses: number;
+    totalPages: number;
+    isLastPage: boolean;
+}
