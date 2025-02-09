@@ -1,8 +1,8 @@
 package com.yousefalfoqaha.gjuplans.course;
 
+import com.yousefalfoqaha.gjuplans.course.domain.Course;
 import com.yousefalfoqaha.gjuplans.course.dto.request.CreateCourseRequest;
 import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
-import com.yousefalfoqaha.gjuplans.course.dto.response.CourseSummaryResponse;
 import com.yousefalfoqaha.gjuplans.course.dto.response.CreateCourseResponse;
 import com.yousefalfoqaha.gjuplans.course.service.CourseService;
 import jakarta.validation.Valid;
@@ -20,8 +20,13 @@ public class CourseController {
     private final CourseService courseService;
 
     @GetMapping
-    public ResponseEntity<List<CourseSummaryResponse>> getAllCourses() {
-        return new ResponseEntity<>(courseService.getAllCourses(), HttpStatus.OK);
+    public ResponseEntity<List<Course>> getAllCourses(
+            @RequestParam(value = "code", defaultValue = "", required = false) String code,
+            @RequestParam(value = "name", defaultValue = "", required = false) String name,
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int size
+    ) {
+        return new ResponseEntity<>(courseService.getCourses(code, name, page, size), HttpStatus.OK);
     }
 
     @GetMapping("/{courseId}")
