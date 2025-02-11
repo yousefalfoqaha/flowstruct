@@ -25,7 +25,7 @@ export function CourseSearch() {
             setShowTable(false);
         });
         return () => subscription.unsubscribe();
-    }, [form]);
+    }, [form, showTable]);
 
     const isEmpty = JSON.stringify(form.getValues()) === JSON.stringify(form.formState.defaultValues);
 
@@ -34,7 +34,7 @@ export function CourseSearch() {
     };
 
     return (
-        <div>
+        <div className="space-y-3">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)}>
                     <div className="flex gap-2">
@@ -71,11 +71,12 @@ export function CourseSearch() {
                         </Button>
                     </div>
 
-                    <CourseSearchResults showTable={showTable}
-                                         hideTable={() => setShowTable(false)}
-                                         courseSearchForm={form}/>
                 </form>
             </Form>
+
+            <CourseSearchResults showTable={showTable}
+                                 hideTable={() => setShowTable(false)}
+                                 courseSearchForm={form}/>
         </div>
     );
 }

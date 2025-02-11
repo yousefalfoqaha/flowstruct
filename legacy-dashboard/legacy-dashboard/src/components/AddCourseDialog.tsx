@@ -16,9 +16,8 @@ export function AddCourseDialog({semester, closeDialog}: AddCourseDialogProps) {
                         Search courses to assign them sections, then click add.
                     </DialogDescription>
                 </DialogHeader>
-                <div>
-                    <CourseSearch />
-                </div>
+
+                <CourseSearch/>
             </DialogContent>
         </Dialog>
     );

@@ -49,7 +49,7 @@ export function CoursesGrid({studyPlan}: CoursesGridProps) {
                                                 if (!course) return null;
 
                                                 return (
-                                                    <CourseCard course={course}/>
+                                                    <CourseCard key={courseId} course={course}/>
                                                 );
                                             })}
                                             <Button variant="outline"
