@@ -1,13 +1,21 @@
-import {infiniteQueryOptions} from "@tanstack/react-query";
+import {keepPreviousData, queryOptions} from "@tanstack/react-query";
 import {CoursesPage} from "@/types";
+import {PaginationState} from "@tanstack/react-table";
+import {FieldValues} from "react-hook-form";
 
-export const getPaginatedCourses = (isEnabled: boolean, code: string, name: string) => infiniteQueryOptions({
-    queryKey: ['courses', {code, name}],
-    queryFn: async ({pageParam}) => {
-        const res = await fetch(`http://localhost:8080/api/v1/courses?code=${code}&name=${name}&page=${pageParam}&size=5`);
-        return await res.json() as CoursesPage;
-    },
-    initialPageParam: 0,
-    getNextPageParam: (lastPage) => lastPage.page + 1,
-    enabled: isEnabled
-});
+export const getPaginatedCourses = (
+    shouldSearch: boolean,
+    searchQuery: FieldValues,
+    pagination: PaginationState
+) =>
+    queryOptions({
+        queryKey: ["courses", searchQuery, pagination],
+        queryFn: async () => {
+            const res = await fetch(
+                `http://localhost:8080/api/v1/courses?code=${searchQuery.code}&name=${searchQuery.name}&page=${pagination.pageIndex}&size=${pagination.pageSize}`
+            );
+            return (await res.json()) as CoursesPage;
+        },
+        enabled: shouldSearch,
+        placeholderData: keepPreviousData
+    });

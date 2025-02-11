@@ -1,6 +1,5 @@
 import {Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription} from "@/components/ui/dialog.tsx";
-import React from "react";
-import {InfiniteScrollCourses} from "@/components/InfiniteScrollCourses.tsx";
+import {CourseSearch} from "@/components/CourseSearch.tsx";
 
 type AddCourseDialogProps = {
     semester: number | null;
@@ -8,8 +7,6 @@ type AddCourseDialogProps = {
 }
 
 export function AddCourseDialog({semester, closeDialog}: AddCourseDialogProps) {
-    const [selectedCourses, setSelectedCourses] = React.useState<number[]>([]);
-
     return (
         <Dialog open={!!semester} onOpenChange={closeDialog}>
             <DialogContent>
@@ -20,7 +17,7 @@ export function AddCourseDialog({semester, closeDialog}: AddCourseDialogProps) {
                     </DialogDescription>
                 </DialogHeader>
                 <div>
-                    <InfiniteScrollCourses />
+                    <CourseSearch />
                 </div>
             </DialogContent>
         </Dialog>

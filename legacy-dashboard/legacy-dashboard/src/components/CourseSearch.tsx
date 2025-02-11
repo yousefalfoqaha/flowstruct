@@ -6,13 +6,10 @@ import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {searchCourseFormSchema} from "@/form-schemas/courseFormSchema.ts";
 import {Search} from "lucide-react";
-import {useInfiniteQuery} from "@tanstack/react-query";
-import {getPaginatedCourses} from "@/queries/getPaginatedCourses.ts";
+import {CourseSearchResults} from "@/components/CourseSearchResults.tsx";
 import React from "react";
 
-export function InfiniteScrollCourses() {
-
-
+export function CourseSearch() {
     const form = useForm<z.infer<typeof searchCourseFormSchema>>({
         resolver: zodResolver(searchCourseFormSchema),
         defaultValues: {
@@ -21,23 +18,25 @@ export function InfiniteScrollCourses() {
         }
     });
 
-    const {data, isPending} = useInfiniteQuery(
-        getPaginatedCourses(
-            form.formState.isSubmitted && !form.formState.isDirty,
-            form.getValues().code,
-            form.getValues().name
-        )
-    );
+    const [showTable, setShowTable] = React.useState(false);
 
-    data?.pages.map(page => {
-        page.content.map(course => console.log(course.name))
-    });
+    React.useEffect(() => {
+        const subscription = form.watch(() => {
+            setShowTable(false);
+        });
+        return () => subscription.unsubscribe();
+    }, [form]);
+
+    const isEmpty = JSON.stringify(form.getValues()) === JSON.stringify(form.formState.defaultValues);
+
+    const handleSubmit = () => {
+        if (!isEmpty) setShowTable(true);
+    };
 
     return (
         <div>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(() => {
-                })}>
+                <form onSubmit={form.handleSubmit(handleSubmit)}>
                     <div className="flex gap-2">
                         <FormField
                             control={form.control}
@@ -52,6 +51,7 @@ export function InfiniteScrollCourses() {
                                 </FormItem>
                             )}
                         />
+
                         <FormField
                             control={form.control}
                             name="name"
@@ -65,27 +65,15 @@ export function InfiniteScrollCourses() {
                                 </FormItem>
                             )}
                         />
-                        <Button className="mt-auto" variant="outline" type="submit"><Search/> Search</Button>
+
+                        <Button className="mt-auto" variant="outline" type="submit">
+                            <Search/> Search
+                        </Button>
                     </div>
-                    {/* Results Section */}
-                    {
-                        isPending
-                            ? <div>Loading...</div>
-                            : (
-                                <div className="divide-y">
-                                    {data?.pages.map((page, pageIndex) => (
-                                        <React.Fragment key={pageIndex}>
-                                            {page.content.map((course) => (
-                                                <div key={course.code} className="py-3">
-                                                    <div className="font-medium">{course.code}</div>
-                                                    <div className="text-sm text-gray-600">{course.name}</div>
-                                                </div>
-                                            ))}
-                                        </React.Fragment>
-                                    ))}
-                                </div>
-                            )
-                    }
+
+                    <CourseSearchResults showTable={showTable}
+                                         hideTable={() => setShowTable(false)}
+                                         courseSearchForm={form}/>
                 </form>
             </Form>
         </div>
