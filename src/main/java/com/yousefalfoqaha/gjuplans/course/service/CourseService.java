@@ -11,7 +11,6 @@ import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,14 +25,75 @@ public class CourseService {
     private final CourseGraphService courseGraphService;
     private final ObjectValidator<CreateCourseRequest> createCourseValidator;
 
-    public List<Course> getCourses(String code, String name, int page, int size) {
-        Page<Course> courses = coursePagingRepository.findByCodeContainingIgnoreCaseAndNameContainingIgnoreCase(
+    public PaginatedCoursesResponse getCourses(String code, String name, int page, int size) {
+        Page<Course> coursesPage = coursePagingRepository.findByCodeContainingIgnoreCaseAndNameContainingIgnoreCase(
                 code,
                 name,
                 PageRequest.of(page, size)
         );
 
-        return courses.getContent();
+        return new PaginatedCoursesResponse(
+                coursesPage.getContent()
+                        .stream()
+                        .map(c -> new CourseResponse(
+                                c.getId(),
+                                c.getCode(),
+                                c.getName(),
+                                c.getCreditHours(),
+                                c.getEcts(),
+                                c.getLectureHours(),
+                                c.getPracticalHours(),
+                                c.getType(),
+                                c.isRemedial(),
+                                c.getPrerequisites()
+                                        .stream()
+                                        .map(prerequisite -> new CoursePrerequisiteResponse(
+                                                prerequisite.getPrerequisite().getId(),
+                                                prerequisite.getRelation()
+                                        ))
+                                        .collect(Collectors.toSet()),
+                                c.getCorequisites()
+                                        .stream()
+                                        .map(corequisite -> corequisite.getCorequisite().getId())
+                                        .collect(Collectors.toSet())
+                        ))
+                        .toList(),
+                coursesPage.getNumber(),
+                coursesPage.getSize(),
+                coursesPage.getTotalElements(),
+                coursesPage.getTotalPages(),
+                coursesPage.isLast()
+        );
+    }
+
+    public List<CourseResponse> getCoursesById(List<Long> courseIds) {
+        var courses = courseRepository.findAllById(courseIds);
+
+        return courses
+                .stream()
+                .map(c -> new CourseResponse(
+                        c.getId(),
+                        c.getCode(),
+                        c.getName(),
+                        c.getCreditHours(),
+                        c.getEcts(),
+                        c.getLectureHours(),
+                        c.getPracticalHours(),
+                        c.getType(),
+                        c.isRemedial(),
+                        c.getPrerequisites()
+                                .stream()
+                                .map(prerequisite -> new CoursePrerequisiteResponse(
+                                        prerequisite.getPrerequisite().getId(),
+                                        prerequisite.getRelation()
+                                ))
+                                .collect(Collectors.toSet()),
+                        c.getCorequisites()
+                                .stream()
+                                .map(corequisite -> corequisite.getCorequisite().getId())
+                                .collect(Collectors.toSet())
+                ))
+                .toList();
     }
 
     public CourseResponse getCourse(long courseId) {

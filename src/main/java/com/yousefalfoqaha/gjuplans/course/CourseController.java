@@ -1,9 +1,9 @@
 package com.yousefalfoqaha.gjuplans.course;
 
-import com.yousefalfoqaha.gjuplans.course.domain.Course;
 import com.yousefalfoqaha.gjuplans.course.dto.request.CreateCourseRequest;
 import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
 import com.yousefalfoqaha.gjuplans.course.dto.response.CreateCourseResponse;
+import com.yousefalfoqaha.gjuplans.course.dto.response.PaginatedCoursesResponse;
 import com.yousefalfoqaha.gjuplans.course.service.CourseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class CourseController {
     private final CourseService courseService;
 
     @GetMapping
-    public ResponseEntity<List<Course>> getAllCourses(
+    public ResponseEntity<PaginatedCoursesResponse> getAllCourses(
             @RequestParam(value = "code", defaultValue = "", required = false) String code,
             @RequestParam(value = "name", defaultValue = "", required = false) String name,
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
@@ -32,6 +32,13 @@ public class CourseController {
     @GetMapping("/{courseId}")
     public ResponseEntity<CourseResponse> getCourse(@PathVariable long courseId) {
         return new ResponseEntity<>(courseService.getCourse(courseId), HttpStatus.OK);
+    }
+
+    @GetMapping("/by-ids")
+    public ResponseEntity<List<CourseResponse>> getCoursesById(
+            @RequestParam(value = "courseIds", defaultValue = "", required = false) List<Long> courseIds
+    ) {
+        return new ResponseEntity<>(courseService.getCoursesById(courseIds), HttpStatus.OK);
     }
 
     @PostMapping
