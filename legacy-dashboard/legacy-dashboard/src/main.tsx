@@ -28,7 +28,7 @@ createRoot(document.getElementById('root')!).render(
         <div className="text-gray-800 max-w-screen-2xl mx-auto border-x h-screen">
             <QueryClientProvider client={queryClient}>
                 <RouterProvider router={router}/>
-                <ReactQueryDevtools initialIsOpen={false}/>
+                {/*<ReactQueryDevtools initialIsOpen={false}/>*/}
             </QueryClientProvider>
         </div>
         <Toaster/>

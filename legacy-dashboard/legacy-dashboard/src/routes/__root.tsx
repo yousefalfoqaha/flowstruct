@@ -12,7 +12,7 @@ export const Route = createRootRouteWithContext<{queryClient: QueryClient}>()({
             </div>
             <hr/>
             <Outlet/>
-            <TanStackRouterDevtools/>
+            {/*<TanStackRouterDevtools/>*/}
         </>
     ),
 });

@@ -1,5 +1,6 @@
-import {Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription} from "@/components/ui/dialog.tsx";
 import {CourseSearch} from "@/components/CourseSearch.tsx";
+import {Sheet, SheetContent, SheetDescription, SheetTitle, SheetHeader, SheetFooter} from "@/components/ui/sheet.tsx";
+import {Button} from "@/components/ui/button.tsx";
 
 type AddCourseDialogProps = {
     semester: number | null;
@@ -8,17 +9,26 @@ type AddCourseDialogProps = {
 
 export function AddCourseDialog({semester, closeDialog}: AddCourseDialogProps) {
     return (
-        <Dialog open={!!semester} onOpenChange={closeDialog}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Add Courses to Semester {semester}</DialogTitle>
-                    <DialogDescription>
-                        Search courses to assign them sections, then click add.
-                    </DialogDescription>
-                </DialogHeader>
+        <Sheet open={!!semester} onOpenChange={closeDialog}>
+            <SheetContent
+                side="left"
+                className="max-h-screen h-full overflow-y-auto flex flex-col"
+                style={{ width: "550px", maxWidth: "550px" }}
+            >
+                <SheetHeader className="mb-3">
+                    <SheetTitle>Add Courses to Semester {semester}</SheetTitle>
+                    <SheetDescription>
+                        Search courses, select them, then click add.
+                    </SheetDescription>
+                </SheetHeader>
 
-                <CourseSearch/>
-            </DialogContent>
-        </Dialog>
+                    <CourseSearch />
+
+                <SheetFooter className="mt-auto py-3">
+                    <Button>Add Courses</Button>
+                </SheetFooter>
+            </SheetContent>
+
+        </Sheet>
     );
 }

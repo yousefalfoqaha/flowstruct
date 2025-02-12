@@ -1,85 +1,105 @@
-import {DataTable} from "@/components/DataTable.tsx";
-import {Course} from "@/types";
+import React from "react";
+import { DataTable } from "@/components/DataTable.tsx";
+import { Course } from "@/types";
 import {
     createColumnHelper,
     getCoreRowModel,
-    PaginationState, RowSelectionState,
-    useReactTable
+    PaginationState,
+    RowSelectionState,
+    useReactTable,
 } from "@tanstack/react-table";
-import {Button} from "@/components/ui/button.tsx";
-import React from "react";
-import {useQuery} from "@tanstack/react-query";
-import {getPaginatedCourses} from "@/queries/getPaginatedCourses.ts";
-import {UseFormReturn} from "react-hook-form";
-import {Checkbox} from "@/components/ui/checkbox.tsx";
+import { Button } from "@/components/ui/button.tsx";
+import { Checkbox } from "@/components/ui/checkbox.tsx";
+import { SelectedCoursesTray } from "@/components/SelectedCoursesTray.tsx";
+import { UseFormReturn } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
+import { getPaginatedCourses } from "@/queries/getPaginatedCourses.ts";
+import {ChevronLeft, ChevronRight} from "lucide-react";
 
 type CourseSearchTableProps = {
-    courseSearchForm: UseFormReturn<{ code: string, name: string }>;
+    courseSearchForm: UseFormReturn<{ code: string; name: string }>;
     showTable: boolean;
     hideTable: () => void;
-}
+};
 
-export function CourseSearchResults({courseSearchForm, showTable, hideTable}: CourseSearchTableProps) {
-    const [pagination, setPagination] = React.useState<PaginationState>({pageIndex: 0, pageSize: 4});
+export function CourseSearchResults({ courseSearchForm, showTable }: CourseSearchTableProps) {
+    const [pagination, setPagination] = React.useState<PaginationState>({ pageIndex: 0, pageSize: 4 });
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
-    const [selectedCourses, setSelectedCourses] = React.useState<Course[]>([]);
+    const [selectedCoursesMap, setSelectedCoursesMap] = React.useState<Map<string, Course>>(new Map());
 
-    const {data: coursesPage} = useQuery(
+    const { data: coursesPage } = useQuery(
         getPaginatedCourses(showTable, courseSearchForm.watch(), pagination)
     );
 
-    const {accessor, display} = createColumnHelper<Course>();
+    const { accessor, display } = createColumnHelper<Course>();
 
-    // fetch course with useQuery once selected
+    const updateExternalSelection = (course: Course, isSelected: boolean) => {
+        setSelectedCoursesMap((prev) => {
+            const newMap = new Map(prev);
+
+            if (isSelected) {
+                newMap.set(String(course.id), course);
+            } else {
+                newMap.delete(String(course.id));
+            }
+
+            return newMap;
+        });
+    };
 
     const columns = [
         display({
             id: "select",
-            cell: ({row}) => {
-                const isSelected = selectedCourses.includes(row.original);
-                if (isSelected) {
-                    row.toggleSelected(!!isSelected);
-                }
-
-                return <Checkbox
-                    checked={row.getIsSelected() || isSelected}
+            header: ({ table }) => (
+                <Checkbox
+                    checked={
+                        table.getIsAllPageRowsSelected() ||
+                        (table.getIsSomePageRowsSelected() && "indeterminate")
+                    }
                     onCheckedChange={(value) => {
-                        row.toggleSelected(!!value);
+                        const isSelected = !!value;
+                        table.toggleAllPageRowsSelected(isSelected);
 
-                        if (row.getIsSelected()) {
-                            setSelectedCourses(selectedCourses.filter(c => c.id !== row.original.id));
-                            return;
-                        }
-
-                        setSelectedCourses([...selectedCourses, row.original]);
+                        table.getRowModel().rows.forEach((row) => {
+                            updateExternalSelection(row.original, isSelected);
+                        });
+                    }}
+                    aria-label="Select all"
+                />
+            ),
+            cell: ({ row }) => (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => {
+                        const isSelected = !!value;
+                        row.toggleSelected(isSelected);
+                        updateExternalSelection(row.original, isSelected);
                     }}
                     aria-label="Select"
                 />
-            },
+            ),
             enableSorting: false,
             enableHiding: false,
         }),
         accessor("code", {
-            header: "Code"
+            header: "Code",
         }),
         accessor("name", {
-            header: "Name"
+            header: "Name",
         }),
         accessor("creditHours", {
-            header: () => <h1 className="text-nowrap">Credit Hours</h1>
+            header: () => <h1 className="text-nowrap">Credit Hours</h1>,
         }),
         accessor("type", {
-            header: "Type"
+            header: "Type",
         }),
     ];
 
     React.useEffect(() => {
         if (showTable) {
-            setPagination({pageIndex: 0, pageSize: 5});
-            setRowSelection({});
+            setPagination({ pageIndex: 0, pageSize: 5 });
         }
     }, [showTable]);
-
 
     const table = useReactTable({
         columns,
@@ -89,65 +109,55 @@ export function CourseSearchResults({courseSearchForm, showTable, hideTable}: Co
         manualPagination: true,
         state: {
             pagination,
-            rowSelection
+            rowSelection,
         },
+        getRowId: (row) => String(row.id),
         pageCount: coursesPage?.totalPages ?? 0,
         onPaginationChange: setPagination,
-        onRowSelectionChange: setRowSelection
+        onRowSelectionChange: setRowSelection,
     });
-
-    // if (isPending) return <div className="flex justify-center p-16"><Loader2 className="animate-spin"/></div>;
 
     return (
         <>
             {showTable && (
-                <>
-                    <DataTable table={table}/>
+                <div>
+                    <DataTable table={table} />
 
-                    <div className="flex items-center justify-between space-x-2 py-4">
-                        <Button
-                            onClick={() => {
-                                courseSearchForm.reset();
-                                hideTable();
-                            }}
-                        >
-                            Clear
-                        </Button>
-
-                        <div className="flex gap-2">
+                    <div className="flex space-x-2 pt-4">
+                        <div className="flex gap-2 items-center mx-auto">
                             <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => {
                                     table.previousPage();
-                                    setRowSelection({});
                                 }}
                                 disabled={coursesPage?.page === 0}
                             >
-                                Previous
+                                <ChevronLeft />
                             </Button>
-
+                            <p>{(coursesPage?.page ?? 0) + 1} of {coursesPage?.totalPages}</p>
                             <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => {
                                     table.nextPage();
-                                    setRowSelection({});
                                 }}
                                 disabled={coursesPage?.isLastPage}
                             >
-                                Next
+                                <ChevronRight />
                             </Button>
                         </div>
                     </div>
-                </>
+                </div>
             )}
-            <div>
-                <h1>Selected courses:</h1>
-                {selectedCourses.map(course => {
-                    return <div key={course.id}>{course.name}</div>
-                })}
-            </div>
+
+            <SelectedCoursesTray
+                clearSelection={() => {
+                    setRowSelection({});
+                    setSelectedCoursesMap(new Map());
+                }}
+                selectedCourses={[...selectedCoursesMap.values()]}
+            />
         </>
     );
 }

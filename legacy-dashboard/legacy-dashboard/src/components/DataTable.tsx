@@ -28,7 +28,7 @@ export function DataTable<TData>({table}: DataTableProps<TData>) {
                 ))}
             </TableHeader>
 
-            <TableBody>
+            <TableBody className="overflow-y-auto">
                 {table.getRowModel().rows.length ? (
                     table.getRowModel().rows.map((row) => (
                         <TableRow
