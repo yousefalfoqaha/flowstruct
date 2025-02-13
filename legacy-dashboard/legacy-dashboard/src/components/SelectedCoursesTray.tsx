@@ -1,14 +1,15 @@
-import {Course} from "@/types";
 import {Button} from "@/components/ui/button.tsx";
 import {Badge} from "@/components/ui/badge.tsx";
 import {X} from "lucide-react";
+import {useSelectedCourses} from "@/hooks/useSelectedCourses.ts";
 
 type SelectedCoursesTrayProps = {
-    selectedCourses: Course[];
     clearSelection: () => void;
 };
 
-export function SelectedCoursesTray({selectedCourses, clearSelection}: SelectedCoursesTrayProps) {
+export function SelectedCoursesTray({clearSelection}: SelectedCoursesTrayProps) {
+    const {selectedCourses} = useSelectedCourses();
+
     const totalCredits = selectedCourses.reduce((sum, course) => sum + (course.creditHours || 0), 0) || 0;
 
     return (

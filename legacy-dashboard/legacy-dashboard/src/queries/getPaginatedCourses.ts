@@ -1,11 +1,10 @@
 import {keepPreviousData, queryOptions} from "@tanstack/react-query";
 import {CoursesPage} from "@/types";
 import {PaginationState} from "@tanstack/react-table";
-import {FieldValues} from "react-hook-form";
 
 export const getPaginatedCourses = (
     shouldSearch: boolean,
-    searchQuery: FieldValues,
+    searchQuery: {code: string, name: string},
     pagination: PaginationState
 ) =>
     queryOptions({
@@ -17,5 +16,5 @@ export const getPaginatedCourses = (
             return (await res.json()) as CoursesPage;
         },
         enabled: shouldSearch,
-        placeholderData: keepPreviousData
+        placeholderData: keepPreviousData,
     });

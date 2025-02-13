@@ -9,34 +9,31 @@ import {Search} from "lucide-react";
 import {CourseSearchResults} from "@/components/CourseSearchResults.tsx";
 import React from "react";
 
-export function CourseSearch() {
+export function CourseSearch({semester}: {semester: number}) {
     const form = useForm<z.infer<typeof searchCourseFormSchema>>({
         resolver: zodResolver(searchCourseFormSchema),
         defaultValues: {
             code: '',
             name: ''
-        }
+        } as z.infer<typeof searchCourseFormSchema>
+    });
+
+    const [searchQuery, setSearchQuery] = React.useState<{ code: string; name: string }>({
+        code: '',
+        name: ''
     });
 
     const [showTable, setShowTable] = React.useState(false);
 
-    React.useEffect(() => {
-        const subscription = form.watch(() => {
-            setShowTable(false);
-        });
-        return () => subscription.unsubscribe();
-    }, [form, showTable]);
-
-    const isEmpty = JSON.stringify(form.getValues()) === JSON.stringify(form.formState.defaultValues);
-
-    const handleSubmit = () => {
-        if (!isEmpty) setShowTable(true);
+    const handleSubmit = (formData) => {
+        setSearchQuery(formData);
+        setShowTable(true);
     };
 
     return (
         <div className="space-y-3">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(handleSubmit)}>
+                <form onSubmit={form.handleSubmit(handleSubmit, () => setShowTable(false))}>
                     <div className="flex gap-2">
                         <FormField
                             control={form.control}
@@ -74,9 +71,7 @@ export function CourseSearch() {
                 </form>
             </Form>
 
-            <CourseSearchResults showTable={showTable}
-                                 hideTable={() => setShowTable(false)}
-                                 courseSearchForm={form}/>
+            <CourseSearchResults semester={semester} showTable={showTable} searchQuery={searchQuery}/>
         </div>
     );
 }

@@ -1,6 +1,8 @@
 import {z} from "zod";
 
 export const searchCourseFormSchema = z.object({
-    code: z.string().transform((val) => (val ?? '')),
-    name: z.string().transform((val) => (val ?? ''))
+    code: z.string().optional(),
+    name: z.string().optional(),
+}).refine(data => data.code || data.name, {
+    message: "At least one field must be filled"
 });

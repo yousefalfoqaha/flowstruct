@@ -1,80 +1,53 @@
 import React from "react";
-import { DataTable } from "@/components/DataTable.tsx";
-import { Course } from "@/types";
-import {
-    createColumnHelper,
-    getCoreRowModel,
-    PaginationState,
-    RowSelectionState,
-    useReactTable,
-} from "@tanstack/react-table";
-import { Button } from "@/components/ui/button.tsx";
-import { Checkbox } from "@/components/ui/checkbox.tsx";
-import { SelectedCoursesTray } from "@/components/SelectedCoursesTray.tsx";
-import { UseFormReturn } from "react-hook-form";
-import { useQuery } from "@tanstack/react-query";
-import { getPaginatedCourses } from "@/queries/getPaginatedCourses.ts";
-import {ChevronLeft, ChevronRight} from "lucide-react";
+import {DataTable} from "@/components/DataTable.tsx";
+import {Course} from "@/types";
+import {createColumnHelper, getCoreRowModel, PaginationState, useReactTable,} from "@tanstack/react-table";
+import {Button} from "@/components/ui/button.tsx";
+import {Checkbox} from "@/components/ui/checkbox.tsx";
+import {SelectedCoursesTray} from "@/components/SelectedCoursesTray.tsx";
+import {useQuery} from "@tanstack/react-query";
+import {getPaginatedCourses} from "@/queries/getPaginatedCourses.ts";
+import {ChevronLeft, ChevronRight, Loader2} from "lucide-react";
+import {useSelectedCourses} from "@/hooks/useSelectedCourses.ts";
+import {useStudyPlan} from "@/hooks/useStudyPlan.ts";
+import {useParams} from "@tanstack/react-router";
 
 type CourseSearchTableProps = {
-    courseSearchForm: UseFormReturn<{ code: string; name: string }>;
+    searchQuery: { code: string; name: string };
     showTable: boolean;
-    hideTable: () => void;
+    semester: number;
 };
 
-export function CourseSearchResults({ courseSearchForm, showTable }: CourseSearchTableProps) {
-    const [pagination, setPagination] = React.useState<PaginationState>({ pageIndex: 0, pageSize: 4 });
-    const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
-    const [selectedCoursesMap, setSelectedCoursesMap] = React.useState<Map<string, Course>>(new Map());
+export function CourseSearchResults({searchQuery, showTable, semester}: CourseSearchTableProps) {
+    const [pagination, setPagination] = React.useState<PaginationState>({pageIndex: 0, pageSize: 4});
+    const {rowSelection, setRowSelection} = useSelectedCourses();
+    const {studyPlanId} = useParams({strict: false});
+    const {data: studyPlan} = useStudyPlan(parseInt(studyPlanId ?? ''));
 
-    const { data: coursesPage } = useQuery(
-        getPaginatedCourses(showTable, courseSearchForm.watch(), pagination)
+    const {data: coursesPage, isFetching, isSuccess} = useQuery(
+        getPaginatedCourses(showTable, searchQuery, pagination)
     );
 
-    const { accessor, display } = createColumnHelper<Course>();
-
-    const updateExternalSelection = (course: Course, isSelected: boolean) => {
-        setSelectedCoursesMap((prev) => {
-            const newMap = new Map(prev);
-
-            if (isSelected) {
-                newMap.set(String(course.id), course);
-            } else {
-                newMap.delete(String(course.id));
-            }
-
-            return newMap;
-        });
-    };
+    const {accessor, display} = createColumnHelper<Course>();
 
     const columns = [
         display({
             id: "select",
-            header: ({ table }) => (
+            header: ({table}) => (
                 <Checkbox
                     checked={
                         table.getIsAllPageRowsSelected() ||
                         (table.getIsSomePageRowsSelected() && "indeterminate")
                     }
-                    onCheckedChange={(value) => {
-                        const isSelected = !!value;
-                        table.toggleAllPageRowsSelected(isSelected);
-
-                        table.getRowModel().rows.forEach((row) => {
-                            updateExternalSelection(row.original, isSelected);
-                        });
-                    }}
+                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
                     aria-label="Select all"
                 />
             ),
-            cell: ({ row }) => (
+            cell: ({row}) => (
                 <Checkbox
                     checked={row.getIsSelected()}
-                    onCheckedChange={(value) => {
-                        const isSelected = !!value;
-                        row.toggleSelected(isSelected);
-                        updateExternalSelection(row.original, isSelected);
-                    }}
+                    onCheckedChange={(value) => row.toggleSelected(!!value)}
+                    disabled={!row.getCanSelect()}
                     aria-label="Select"
                 />
             ),
@@ -96,10 +69,10 @@ export function CourseSearchResults({ courseSearchForm, showTable }: CourseSearc
     ];
 
     React.useEffect(() => {
-        if (showTable) {
-            setPagination({ pageIndex: 0, pageSize: 5 });
+        if (searchQuery) {
+            setPagination({pageIndex: 0, pageSize: 4});
         }
-    }, [showTable]);
+    }, [searchQuery]);
 
     const table = useReactTable({
         columns,
@@ -111,53 +84,56 @@ export function CourseSearchResults({ courseSearchForm, showTable }: CourseSearc
             pagination,
             rowSelection,
         },
-        getRowId: (row) => String(row.id),
+        getRowId: (row) => JSON.stringify(row),
         pageCount: coursesPage?.totalPages ?? 0,
         onPaginationChange: setPagination,
+        enableRowSelection: row => {
+            const course = row.original;
+
+            if (studyPlan.coursePlacements[course.id]) return false;
+
+            return course.prerequisites.every(prerequisite => {
+                const prerequisitePlacement = studyPlan.coursePlacements[prerequisite.prerequisite];
+                return prerequisitePlacement && prerequisitePlacement < semester; // Only select if prerequisites are taken before the current semester
+            });
+        },
         onRowSelectionChange: setRowSelection,
     });
 
     return (
         <>
-            {showTable && (
+            {(showTable && isSuccess) && (
                 <div>
-                    <DataTable table={table} />
+                    <DataTable table={table}/>
 
                     <div className="flex space-x-2 pt-4">
                         <div className="flex gap-2 items-center mx-auto">
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => {
-                                    table.previousPage();
-                                }}
-                                disabled={coursesPage?.page === 0}
+                                onClick={() => table.previousPage()}
+                                disabled={coursesPage?.page === 0 || isFetching}
                             >
-                                <ChevronLeft />
+                                <ChevronLeft/>
                             </Button>
                             <p>{(coursesPage?.page ?? 0) + 1} of {coursesPage?.totalPages}</p>
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => {
-                                    table.nextPage();
-                                }}
-                                disabled={coursesPage?.isLastPage}
+                                onClick={() => table.nextPage()}
+                                disabled={coursesPage?.isLastPage || isFetching}
                             >
-                                <ChevronRight />
+                                <ChevronRight/>
                             </Button>
                         </div>
                     </div>
                 </div>
             )}
 
-            <SelectedCoursesTray
-                clearSelection={() => {
-                    setRowSelection({});
-                    setSelectedCoursesMap(new Map());
-                }}
-                selectedCourses={[...selectedCoursesMap.values()]}
-            />
+            {isFetching && <Loader2 className="animate-spin mx-auto mt-4"/>}
+
+            <SelectedCoursesTray clearSelection={() => setRowSelection({})} />
         </>
     );
+
 }

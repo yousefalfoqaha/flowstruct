@@ -1,15 +1,15 @@
-import {StudyPlan} from "@/types";
 import {CourseCard} from "@/components/CourseCard.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Plus} from "lucide-react";
 import React from "react";
 import {AddCourseDialog} from "@/components/AddCourseDialog.tsx";
+import {SelectedCoursesProvider} from "@/providers/SelectedCoursesProvider.tsx";
+import {useStudyPlan} from "@/hooks/useStudyPlan.ts";
+import {useParams} from "@tanstack/react-router";
 
-type CoursesGridProps = {
-    studyPlan: StudyPlan;
-}
-
-export function CoursesGrid({studyPlan}: CoursesGridProps) {
+export function CoursesGrid() {
+    const {studyPlanId} = useParams({strict: false});
+    const {data: studyPlan} = useStudyPlan(parseInt(studyPlanId ?? ''));
     const [selectedSemester, setSelectedSemester] = React.useState<number | null>(null);
 
     const academicYears = Array.from({length: studyPlan.duration}, (_, i) => i + 1);
@@ -26,7 +26,10 @@ export function CoursesGrid({studyPlan}: CoursesGridProps) {
 
     return (
         <>
-            {selectedSemester && <AddCourseDialog semester={selectedSemester} closeDialog={() => setSelectedSemester(null)} />
+            {selectedSemester &&
+                <SelectedCoursesProvider>
+                    <AddCourseDialog semester={selectedSemester} closeDialog={() => setSelectedSemester(null)}/>
+                </SelectedCoursesProvider>
             }
             <div className="overflow-auto flex gap-1">
                 {academicYears.map((year) => {
@@ -43,7 +46,10 @@ export function CoursesGrid({studyPlan}: CoursesGridProps) {
 
                                     return (
                                         <div key={semesterNumber} className="space-y-1 w-28">
-                                            <h3 className="bg-gray-500 text-white text-center">{semesterTypes[index]}</h3>
+                                            <h3 className="bg-gray-500 text-white text-center">
+                                                <p>{semesterTypes[index]}</p>
+                                                <p>{semesterCourses?.reduce((sum, courseId) => sum + (studyPlan.courses[courseId]?.creditHours || 0), 0)} hrs</p>
+                                            </h3>
                                             {semesterCourses?.map((courseId) => {
                                                 const course = studyPlan.courses[courseId];
                                                 if (!course) return null;
