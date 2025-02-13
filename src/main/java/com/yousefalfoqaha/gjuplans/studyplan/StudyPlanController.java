@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
+import com.yousefalfoqaha.gjuplans.studyplan.dto.request.AddCoursesToSemesterRequest;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.CreateStudyPlanRequest;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.UpdateStudyPlanRequest;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
@@ -54,5 +55,13 @@ public class StudyPlanController {
     public ResponseEntity<Void> deleteStudyPlan(@PathVariable long studyPlanId) {
         studyPlanService.deleteStudyPlan(studyPlanId);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{studyPlanId}/add-courses")
+    public ResponseEntity<StudyPlanResponse> addCoursesToSemester(
+            @PathVariable long studyPlanId,
+            @RequestBody AddCoursesToSemesterRequest request
+            ) {
+        return new ResponseEntity<>(studyPlanService.addCoursesToSemester(studyPlanId, request), HttpStatus.OK);
     }
 }

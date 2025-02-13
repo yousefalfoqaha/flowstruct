@@ -3,6 +3,7 @@ package com.yousefalfoqaha.gjuplans.common;
 import com.yousefalfoqaha.gjuplans.program.exception.InvalidDegreeException;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
+import com.yousefalfoqaha.gjuplans.studyplan.exception.InvalidCoursePlacement;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,6 +74,20 @@ public class GlobalExceptionHandler {
                         new Date()
                 ),
                 HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(InvalidCoursePlacement.class)
+    public ResponseEntity<ErrorObject> handleInvalidCoursePlacementException(
+            InvalidCoursePlacement exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.CONFLICT.value(),
+                        exception.getMessage(),
+                        new Date()
+                ),
+                HttpStatus.CONFLICT
         );
     }
 }
