@@ -19,10 +19,6 @@ export function AddCourseDialog({semester, closeDialog}: AddCourseDialogProps) {
     const {studyPlanId} = useParams({strict: false});
     const {data: studyPlan} = useStudyPlan(parseInt(studyPlanId ?? ''));
 
-
-
-    console.log(studyPlanId);
-
     const addCoursesToSemesterMutation = useMutation({
         mutationFn: async (courses: number[]) => {
             const response = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlan.id}/add-courses`, {

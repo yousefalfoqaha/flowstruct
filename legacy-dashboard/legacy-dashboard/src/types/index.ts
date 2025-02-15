@@ -14,10 +14,21 @@ export type StudyPlanOption = {
     program: number;
 }
 
+export enum CourseRelation {
+    AND = "AND",
+    OR = "OR"
+}
+
 export type CoursePrerequisite = {
     prerequisite: number;
-    relation: "AND" | "OR";
+    relation: CourseRelation;
     isRemedial: boolean;
+}
+
+export enum CourseType {
+    F2F = "F2F",
+    BLD = "BLD",
+    OL = "OL"
 }
 
 export type Course = {
@@ -28,16 +39,28 @@ export type Course = {
     ects: number;
     lectureHours: number;
     practicalHours: number;
-    type: "F2F" | "BLD" | "OL";
+    type: CourseType;
     isRemedial: boolean;
     prerequisites: CoursePrerequisite[];
     corequisites: number[];
 }
 
+export enum SectionLevel {
+    University = "University",
+    School = "School",
+    Program = "Program"
+}
+
+export enum SectionType {
+    Requirement = "Requirement",
+    Elective = "Elective",
+    Remedial = "Remedial"
+}
+
 export type Section = {
     id: number;
-    level: "Program" | "School" | "University";
-    type: "Requirement" | "Elective" | "Remedial";
+    level: SectionLevel;
+    type: SectionType;
     requiredCreditHours: number;
     name: string | null;
     courses: number[];
@@ -52,7 +75,6 @@ export type StudyPlan = {
     program: number;
     sections: Section[];
     coursePlacements: Record<number, number>;
-    courses: Record<number, Course>;
 }
 
 export type CoursesPage = {

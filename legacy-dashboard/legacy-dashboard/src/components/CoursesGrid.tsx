@@ -6,10 +6,14 @@ import {AddCourseDialog} from "@/components/AddCourseDialog.tsx";
 import {SelectedCoursesProvider} from "@/providers/SelectedCoursesProvider.tsx";
 import {useStudyPlan} from "@/hooks/useStudyPlan.ts";
 import {useParams} from "@tanstack/react-router";
+import {useStudyPlanCourses} from "@/hooks/useStudyPlanCourses.ts";
 
 export function CoursesGrid() {
-    const {studyPlanId} = useParams({strict: false});
-    const {data: studyPlan} = useStudyPlan(parseInt(studyPlanId ?? ''));
+    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? '');
+
+    const {data: studyPlan} = useStudyPlan(studyPlanId);
+    const {data: courses} = useStudyPlanCourses(studyPlanId);
+
     const [selectedSemester, setSelectedSemester] = React.useState<number | null>(null);
 
     const academicYears = Array.from({length: studyPlan.duration}, (_, i) => i + 1);
@@ -39,19 +43,19 @@ export function CoursesGrid() {
 
                     return (
                         <div key={year} className="space-y-1">
-                            <h1 className="text-center bg-gray-500 text-white">Year {year}</h1>
+                            <h1 className="text-center bg-gray-500 p-1 text-white">Year {year}</h1>
                             <div className="flex gap-1">
                                 {yearSemesters.map((semesterNumber, index) => {
                                     const semesterCourses = coursesBySemester.get(semesterNumber);
 
                                     return (
                                         <div key={semesterNumber} className="space-y-1 w-28">
-                                            <h3 className="bg-gray-500 text-white text-center">
+                                            <h3 className="bg-gray-500 p-1 text-white text-center">
                                                 <p>{semesterTypes[index]}</p>
-                                                <p>{semesterCourses?.reduce((sum, courseId) => sum + (studyPlan.courses[courseId]?.creditHours || 0), 0)} hrs</p>
+                                                <p>{semesterCourses?.reduce((sum, courseId) => sum + (courses[courseId]?.creditHours || 0), 0)} Cr. Hrs</p>
                                             </h3>
                                             {semesterCourses?.map((courseId) => {
-                                                const course = studyPlan.courses[courseId];
+                                                const course = courses[courseId];
                                                 if (!course) return null;
 
                                                 return (

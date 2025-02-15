@@ -94,7 +94,7 @@ export function CourseSearchResults({searchQuery, showTable, semester}: CourseSe
 
             return course.prerequisites.every(prerequisite => {
                 const prerequisitePlacement = studyPlan.coursePlacements[prerequisite.prerequisite];
-                return prerequisitePlacement && prerequisitePlacement < semester; // Only select if prerequisites are taken before the current semester
+                return prerequisitePlacement && prerequisitePlacement < semester;
             });
         },
         onRowSelectionChange: setRowSelection,
