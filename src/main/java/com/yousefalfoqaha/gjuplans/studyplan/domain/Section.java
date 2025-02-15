@@ -5,10 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -20,7 +20,7 @@ import java.util.Set;
 public class Section {
 
     @Id
-    private long id;
+    private Long id;
 
     private SectionLevel level;
 
@@ -31,5 +31,5 @@ public class Section {
     private String name;
 
     @MappedCollection(idColumn = "section")
-    Set<SectionCourse> courses;
+    Set<SectionCourse> courses = new HashSet<>();
 }

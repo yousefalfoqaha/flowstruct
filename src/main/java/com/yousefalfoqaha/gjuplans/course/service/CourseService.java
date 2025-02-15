@@ -8,6 +8,8 @@ import com.yousefalfoqaha.gjuplans.course.domain.CourseSequences;
 import com.yousefalfoqaha.gjuplans.course.dto.request.CreateCourseRequest;
 import com.yousefalfoqaha.gjuplans.course.dto.response.*;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
+import com.yousefalfoqaha.gjuplans.course.mapper.CourseResponseMapper;
+import com.yousefalfoqaha.gjuplans.course.mapper.CoursesPageResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,76 +26,24 @@ public class CourseService {
     private final CoursePagingRepository coursePagingRepository;
     private final CourseGraphService courseGraphService;
     private final ObjectValidator<CreateCourseRequest> createCourseValidator;
+    private final CourseResponseMapper courseResponseMapper;
+    private final CoursesPageResponseMapper coursesPageResponseMapper;
 
-    public PaginatedCoursesResponse getCourses(String code, String name, int page, int size) {
+    public CoursesPageResponse getPaginatedCourses(String code, String name, int page, int size) {
         Page<Course> coursesPage = coursePagingRepository.findByCodeContainingIgnoreCaseAndNameContainingIgnoreCase(
                 code,
                 name,
                 PageRequest.of(page, size)
         );
 
-        return new PaginatedCoursesResponse(
-                coursesPage.getContent()
-                        .stream()
-                        .map(c -> new CourseResponse(
-                                c.getId(),
-                                c.getCode(),
-                                c.getName(),
-                                c.getCreditHours(),
-                                c.getEcts(),
-                                c.getLectureHours(),
-                                c.getPracticalHours(),
-                                c.getType(),
-                                c.isRemedial(),
-                                c.getPrerequisites()
-                                        .stream()
-                                        .map(prerequisite -> new CoursePrerequisiteResponse(
-                                                prerequisite.getPrerequisite().getId(),
-                                                prerequisite.getRelation()
-                                        ))
-                                        .collect(Collectors.toSet()),
-                                c.getCorequisites()
-                                        .stream()
-                                        .map(corequisite -> corequisite.getCorequisite().getId())
-                                        .collect(Collectors.toSet())
-                        ))
-                        .toList(),
-                coursesPage.getNumber(),
-                coursesPage.getSize(),
-                coursesPage.getTotalElements(),
-                coursesPage.getTotalPages(),
-                coursesPage.isLast()
-        );
+        return coursesPageResponseMapper.apply(coursesPage);
     }
 
-    public List<CourseResponse> getCoursesById(List<Long> courseIds) {
+    public Map<Long, CourseResponse> getCoursesById(List<Long> courseIds) {
         var courses = courseRepository.findAllById(courseIds);
 
-        return courses
-                .stream()
-                .map(c -> new CourseResponse(
-                        c.getId(),
-                        c.getCode(),
-                        c.getName(),
-                        c.getCreditHours(),
-                        c.getEcts(),
-                        c.getLectureHours(),
-                        c.getPracticalHours(),
-                        c.getType(),
-                        c.isRemedial(),
-                        c.getPrerequisites()
-                                .stream()
-                                .map(prerequisite -> new CoursePrerequisiteResponse(
-                                        prerequisite.getPrerequisite().getId(),
-                                        prerequisite.getRelation()
-                                ))
-                                .collect(Collectors.toSet()),
-                        c.getCorequisites()
-                                .stream()
-                                .map(corequisite -> corequisite.getCorequisite().getId())
-                                .collect(Collectors.toSet())
-                ))
-                .toList();
+        return courses.stream()
+                .collect(Collectors.toMap(Course::getId, courseResponseMapper));
     }
 
     public CourseResponse getCourse(long courseId) {
@@ -102,28 +52,7 @@ public class CourseService {
                         "Course with id " + courseId + " was not found."
                 ));
 
-        return new CourseResponse(
-                course.getId(),
-                course.getCode(),
-                course.getName(),
-                course.getCreditHours(),
-                course.getEcts(),
-                course.getLectureHours(),
-                course.getPracticalHours(),
-                course.getType(),
-                course.isRemedial(),
-                course.getPrerequisites()
-                        .stream()
-                        .map(prerequisite -> new CoursePrerequisiteResponse(
-                                prerequisite.getPrerequisite().getId(),
-                                prerequisite.getRelation()
-                        ))
-                        .collect(Collectors.toSet()),
-                course.getCorequisites()
-                        .stream()
-                        .map(corequisite -> corequisite.getCorequisite().getId())
-                        .collect(Collectors.toSet())
-        );
+        return courseResponseMapper.apply(course);
     }
 
     public Map<Long, CourseWithSequencesResponse> getCoursesWithSequences(List<Long> courseIds) {
@@ -138,28 +67,7 @@ public class CourseService {
                 .collect(Collectors.toMap(
                         Course::getId,
                         course -> new CourseWithSequencesResponse(
-                                new CourseResponse(
-                                        course.getId(),
-                                        course.getCode(),
-                                        course.getName(),
-                                        course.getCreditHours(),
-                                        course.getEcts(),
-                                        course.getLectureHours(),
-                                        course.getPracticalHours(),
-                                        course.getType(),
-                                        course.isRemedial(),
-                                        course.getPrerequisites()
-                                                .stream()
-                                                .map(prerequisite -> new CoursePrerequisiteResponse(
-                                                        prerequisite.getPrerequisite().getId(),
-                                                        prerequisite.getRelation()
-                                                ))
-                                                .collect(Collectors.toSet()),
-                                        course.getCorequisites()
-                                                .stream()
-                                                .map(corequisite -> corequisite.getCorequisite().getId())
-                                                .collect(Collectors.toSet())
-                                ),
+                                courseResponseMapper.apply(course),
                                 new CourseSequencesResponse(
                                         courseSequencesMap.get(course.getId()).getPrerequisiteSequence()
                                                 .stream()
@@ -177,31 +85,10 @@ public class CourseService {
     public Map<Long, CourseResponse> getCourses(List<Long> courseIds) {
         return courseRepository.findAllById(courseIds)
                 .stream()
-                .collect(Collectors.toMap(Course::getId, course -> new CourseResponse(
-                        course.getId(),
-                        course.getCode(),
-                        course.getName(),
-                        course.getCreditHours(),
-                        course.getEcts(),
-                        course.getLectureHours(),
-                        course.getPracticalHours(),
-                        course.getType(),
-                        course.isRemedial(),
-                        course.getPrerequisites()
-                                .stream()
-                                .map(prerequisite -> new CoursePrerequisiteResponse(
-                                        prerequisite.getPrerequisite().getId(),
-                                        prerequisite.getRelation()
-                                ))
-                                .collect(Collectors.toSet()),
-                        course.getCorequisites()
-                                .stream()
-                                .map(corequisite -> corequisite.getCorequisite().getId())
-                                .collect(Collectors.toSet())
-                )));
+                .collect(Collectors.toMap(Course::getId, courseResponseMapper));
     }
 
-    public CreateCourseResponse createCourse(CreateCourseRequest request) {
+    public CourseResponse createCourse(CreateCourseRequest request) {
         createCourseValidator.validate(request);
 
         var savedCourse = courseRepository.save(
@@ -220,6 +107,6 @@ public class CourseService {
                 )
         );
 
-        return new CreateCourseResponse(savedCourse.getId());
+        return courseResponseMapper.apply(savedCourse);
     }
 }

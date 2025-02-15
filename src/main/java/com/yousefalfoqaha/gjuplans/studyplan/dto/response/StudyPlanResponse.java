@@ -1,7 +1,5 @@
 package com.yousefalfoqaha.gjuplans.studyplan.dto.response;
 
-import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
-
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +11,6 @@ public record StudyPlanResponse(
         boolean isPrivate,
         long program,
         List<SectionResponse> sections,
-        Map<Long, Integer> coursePlacements,
-        Map<Long, CourseResponse> courses
+        Map<Long, Integer> coursePlacements
 ) {
 }

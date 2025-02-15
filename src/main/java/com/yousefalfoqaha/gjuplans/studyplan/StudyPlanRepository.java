@@ -17,20 +17,21 @@ public interface StudyPlanRepository extends CrudRepository<StudyPlan, Long> {
             "SELECT id, year, duration, track, is_private, program " +
             "FROM study_plan"
     )
-    List<StudyPlanSummaryProjection> findAllStudyPlans();
+    List<StudyPlanSummaryProjection> findAllStudyPlanSummaries();
+
+    @Query(
+            "SELECT id, year, duration, track, is_private, program " +
+            "FROM study_plan " +
+            "WHERE id = :studyPlanId"
+    )
+    Optional<StudyPlanSummaryProjection> findStudyPlanSummary(long studyPlanId);
 
     @Query(
             "SELECT id, year, duration, track, is_private, program " +
             "FROM study_plan " +
             "WHERE program = :programId"
     )
-    List<StudyPlanSummaryProjection> findAllStudyPlansByProgram(long programId);
-
-    @Query(
-            "SELECT id, year, duration, track, is_private, program " +
-            "WHERE id = :studyPlanId"
-    )
-    Optional<StudyPlanSummaryProjection> findStudyPlanSummary(long studyPlanId);
+    List<StudyPlanSummaryProjection> findAllStudyPlanSummariesByProgram(long programId);
 
     @Modifying
     @Query(

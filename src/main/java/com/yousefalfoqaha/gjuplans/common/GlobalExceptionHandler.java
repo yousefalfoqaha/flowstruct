@@ -4,6 +4,7 @@ import com.yousefalfoqaha.gjuplans.program.exception.InvalidDegreeException;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.InvalidCoursePlacement;
+import com.yousefalfoqaha.gjuplans.studyplan.exception.SectionNotFoundException;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -88,6 +89,20 @@ public class GlobalExceptionHandler {
                         new Date()
                 ),
                 HttpStatus.CONFLICT
+        );
+    }
+
+    @ExceptionHandler(SectionNotFoundException.class)
+    public ResponseEntity<ErrorObject> handleSectionNotFoundException(
+            SectionNotFoundException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.BAD_REQUEST.value(),
+                        exception.getMessage(),
+                        new Date()
+                ),
+                HttpStatus.BAD_REQUEST
         );
     }
 }

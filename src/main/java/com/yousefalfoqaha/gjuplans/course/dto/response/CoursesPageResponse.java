@@ -2,7 +2,7 @@ package com.yousefalfoqaha.gjuplans.course.dto.response;
 
 import java.util.List;
 
-public record PaginatedCoursesResponse(
+public record CoursesPageResponse(
         List<CourseResponse> content,
         int page,
         int size,

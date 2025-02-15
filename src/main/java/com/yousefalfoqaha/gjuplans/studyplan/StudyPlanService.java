@@ -4,15 +4,17 @@ import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
 import com.yousefalfoqaha.gjuplans.course.service.CourseService;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.CoursePlacement;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.Section;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.request.AddCoursesToSemesterRequest;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.request.CreateStudyPlanRequest;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.request.UpdateStudyPlanRequest;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.response.SectionResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.request.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.InvalidCoursePlacement;
+import com.yousefalfoqaha.gjuplans.studyplan.exception.SectionNotFoundException;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
+import com.yousefalfoqaha.gjuplans.studyplan.mapper.StudyPlanResponseMapper;
+import com.yousefalfoqaha.gjuplans.studyplan.mapper.StudyPlanSummaryResponseMapper;
+import com.yousefalfoqaha.gjuplans.studyplan.projection.StudyPlanSummaryProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -29,32 +30,21 @@ public class StudyPlanService {
     private final CourseService courseService;
     private final ObjectValidator<UpdateStudyPlanRequest> updateStudyPlanValidator;
     private final ObjectValidator<AddCoursesToSemesterRequest> addCoursesToSemesterValidator;
+    private final ObjectValidator<EditSectionRequest> editSectionRequestValidator;
+    private final StudyPlanResponseMapper studyPlanResponseMapper;
+    private final StudyPlanSummaryResponseMapper studyPlanSummaryResponseMapper;
 
     public List<StudyPlanSummaryResponse> getAllStudyPlans() {
-        return studyPlanRepository.findAllStudyPlans()
+        return studyPlanRepository.findAllStudyPlanSummaries()
                 .stream()
-                .map(sp -> new StudyPlanSummaryResponse(
-                        sp.id(),
-                        sp.year(),
-                        sp.duration(),
-                        sp.track(),
-                        sp.isPrivate(),
-                        sp.program()
-                ))
+                .map(studyPlanSummaryResponseMapper)
                 .toList();
     }
 
     public List<StudyPlanSummaryResponse> getProgramStudyPlans(long programId) {
-        return studyPlanRepository.findAllStudyPlansByProgram(programId)
+        return studyPlanRepository.findAllStudyPlanSummariesByProgram(programId)
                 .stream()
-                .map(sp -> new StudyPlanSummaryResponse(
-                        sp.id(),
-                        sp.year(),
-                        sp.duration(),
-                        sp.track(),
-                        sp.isPrivate(),
-                        sp.program()
-                ))
+                .map(studyPlanSummaryResponseMapper)
                 .toList();
     }
 
@@ -64,42 +54,7 @@ public class StudyPlanService {
                         "Study plan with id " + studyPlanId + " was not found."
                 ));
 
-        return new StudyPlanResponse(
-                studyPlan.getId(),
-                studyPlan.getYear(),
-                studyPlan.getDuration(),
-                studyPlan.getTrack(),
-                studyPlan.isPrivate(),
-                studyPlan.getProgram().getId(),
-                studyPlan.getSections()
-                        .stream()
-                        .map(sec -> new SectionResponse(
-                                sec.getId(),
-                                sec.getLevel(),
-                                sec.getType(),
-                                sec.getRequiredCreditHours(),
-                                sec.getName(),
-                                sec.getCourses()
-                                        .stream()
-                                        .map(c -> c.getCourse().getId())
-                                        .toList()
-                        ))
-                        .toList(),
-                studyPlan.getCoursePlacements().entrySet()
-                        .stream()
-                        .collect(Collectors.toMap(
-                                entry -> entry.getKey(),
-                                entry -> entry.getValue().getSemester()
-                        )),
-                courseService.getCourses(
-                        studyPlan.getSections()
-                                .stream()
-                                .flatMap(sec -> sec.getCourses().stream())
-                                .map(c -> c.getCourse().getId())
-                                .distinct()
-                                .toList()
-                )
-        );
+        return studyPlanResponseMapper.apply(studyPlan);
     }
 
     public void toggleVisibility(long studyPlanId) {
@@ -110,11 +65,7 @@ public class StudyPlanService {
     public StudyPlanResponse addCoursesToSemester(long studyPlanId, AddCoursesToSemesterRequest request) {
         addCoursesToSemesterValidator.validate(request);
 
-        var studyPlan = studyPlanRepository.findById(studyPlanId)
-                .orElseThrow(() -> new StudyPlanNotFoundException(
-                        "Study plan with id " + studyPlanId + " was not found."
-                ));
-
+        var studyPlan = findStudyPlanOrThrow(studyPlanId);
         var courses = courseService.getCourses(request.courseIds());
 
         for (Map.Entry<Long, CourseResponse> entry : courses.entrySet()) {
@@ -139,51 +90,14 @@ public class StudyPlanService {
 
         var updatedStudyPlan = studyPlanRepository.save(studyPlan);
 
-        return new StudyPlanResponse(
-                updatedStudyPlan.getId(),
-                updatedStudyPlan.getYear(),
-                updatedStudyPlan.getDuration(),
-                updatedStudyPlan.getTrack(),
-                updatedStudyPlan.isPrivate(),
-                updatedStudyPlan.getProgram().getId(),
-                updatedStudyPlan.getSections()
-                        .stream()
-                        .map(sec -> new SectionResponse(
-                                sec.getId(),
-                                sec.getLevel(),
-                                sec.getType(),
-                                sec.getRequiredCreditHours(),
-                                sec.getName(),
-                                sec.getCourses()
-                                        .stream()
-                                        .map(c -> c.getCourse().getId())
-                                        .toList()
-                        ))
-                        .toList(),
-                updatedStudyPlan.getCoursePlacements().entrySet()
-                        .stream()
-                        .collect(Collectors.toMap(
-                                entry -> entry.getKey(),
-                                entry -> entry.getValue().getSemester()
-                        )),
-                courseService.getCourses(
-                        updatedStudyPlan.getSections()
-                                .stream()
-                                .flatMap(sec -> sec.getCourses().stream())
-                                .map(c -> c.getCourse().getId())
-                                .distinct()
-                                .toList()
-                )
-        );
+        return studyPlanResponseMapper.apply(updatedStudyPlan);
     }
-
 
     @Transactional
     public StudyPlanSummaryResponse updateStudyPlan(long studyPlanId, UpdateStudyPlanRequest request) {
         updateStudyPlanValidator.validate(request);
 
-        var studyPlan = studyPlanRepository.findById(studyPlanId)
-                .orElseThrow(() -> new StudyPlanNotFoundException("Study plan was not found."));
+        var studyPlan = findStudyPlanOrThrow(studyPlanId);
 
         studyPlan.setYear(request.year());
         studyPlan.setDuration(request.duration());
@@ -191,14 +105,9 @@ public class StudyPlanService {
 
         studyPlanRepository.save(studyPlan);
 
-        return new StudyPlanSummaryResponse(
-                studyPlan.getId(),
-                studyPlan.getYear(),
-                studyPlan.getDuration(),
-                studyPlan.getTrack(),
-                studyPlan.isPrivate(),
-                studyPlan.getProgram().getId()
-        );
+        var studyPlanSummary = findStudyPlanSummaryOrThrow(studyPlanId);
+
+        return studyPlanSummaryResponseMapper.apply(studyPlanSummary);
     }
 
     @Transactional
@@ -213,19 +122,75 @@ public class StudyPlanService {
 
         var newStudyPlan = studyPlanRepository.save(studyPlan);
 
-        return new StudyPlanSummaryResponse(
-                newStudyPlan.getId(),
-                newStudyPlan.getYear(),
-                newStudyPlan.getDuration(),
-                newStudyPlan.getTrack(),
-                newStudyPlan.isPrivate(),
-                newStudyPlan.getProgram().getId()
-        );
+        var studyPlanSummary = findStudyPlanSummaryOrThrow(newStudyPlan.getId());
+
+        return studyPlanSummaryResponseMapper.apply(studyPlanSummary);
     }
 
     @Transactional
     public void deleteStudyPlan(long studyPlanId) {
         studyPlanRepository.deleteById(studyPlanId);
+    }
+
+    @Transactional
+    public StudyPlanResponse createSection(long studyPlanId, CreateSectionRequest request) {
+        var studyPlan = findStudyPlanOrThrow(studyPlanId);
+
+        Section newSection = new Section();
+        newSection.setLevel(request.level());
+        newSection.setType(request.type());
+        newSection.setRequiredCreditHours(request.requiredCreditHours());
+        newSection.setName(request.name());
+
+        studyPlan.getSections().add(newSection);
+
+        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
+
+        return studyPlanResponseMapper.apply(updatedStudyPlan);
+    }
+
+    @Transactional
+    public StudyPlanResponse editSection(long studyPlanId, long sectionId, EditSectionRequest request) {
+        editSectionRequestValidator.validate(request);
+
+        var studyPlan = findStudyPlanOrThrow(studyPlanId);
+
+        studyPlan.getSections().stream()
+                .filter(s -> s.getId() == sectionId)
+                .findFirst()
+                .ifPresentOrElse(section -> {
+                            section.setLevel(request.level());
+                            section.setType(request.type());
+                            section.setRequiredCreditHours(request.requiredCreditHours());
+                            section.setName(request.name());
+                        }, () -> {
+                            throw new RuntimeException("Section was not found");
+                        }
+                );
+
+        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
+
+        return studyPlanResponseMapper.apply(updatedStudyPlan);
+    }
+
+    @Transactional
+    public StudyPlanResponse deleteSection(long studyPlanId, long sectionId) {
+        var studyPlan = findStudyPlanOrThrow(studyPlanId);
+        studyPlan.getSections().removeIf(s -> s.getId() == sectionId);
+
+        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
+
+        return studyPlanResponseMapper.apply(updatedStudyPlan);
+    }
+
+    private StudyPlan findStudyPlanOrThrow(long studyPlanId) {
+        return studyPlanRepository.findById(studyPlanId)
+                .orElseThrow(() -> new StudyPlanNotFoundException("Study plan with id " + studyPlanId + " was not found."));
+    }
+
+    private StudyPlanSummaryProjection findStudyPlanSummaryOrThrow(long studyPlanId) {
+        return studyPlanRepository.findStudyPlanSummary(studyPlanId)
+                .orElseThrow(() -> new StudyPlanNotFoundException("Study plan was not found."));
     }
 }
 
