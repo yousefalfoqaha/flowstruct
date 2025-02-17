@@ -1,32 +1,30 @@
-import {Input} from "@/components/ui/input.tsx";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
-import {Button} from "@/components/ui/button.tsx";
+import {Input} from "@/components/ui/input";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import {Button} from "@/components/ui/button";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {searchCourseFormSchema} from "@/form-schemas/courseFormSchema.ts";
+import {searchCourseFormSchema} from "@/form-schemas/courseFormSchema";
 import {Search} from "lucide-react";
-import {CourseSearchResults} from "@/components/CourseSearchResults.tsx";
 import React from "react";
+import {CourseSearchTable} from "@/components/CourseSearchTable";
+import {Course} from "@/types";
 
-export function CourseSearch({semester}: {semester: number}) {
+type CourseSearchProps = {
+    onAddCourses: (addedCourses: Record<number, Course>) => void;
+};
+
+export function CourseSearch({onAddCourses}: CourseSearchProps) {
     const form = useForm<z.infer<typeof searchCourseFormSchema>>({
         resolver: zodResolver(searchCourseFormSchema),
-        defaultValues: {
-            code: '',
-            name: ''
-        } as z.infer<typeof searchCourseFormSchema>
+        defaultValues: {code: "", name: ""},
     });
 
-    const [searchQuery, setSearchQuery] = React.useState<{ code: string; name: string }>({
-        code: '',
-        name: ''
-    });
-
+    const [searchQuery, setSearchQuery] = React.useState({code: "", name: ""});
     const [showTable, setShowTable] = React.useState(false);
 
-    const handleSubmit = (formData) => {
-        setSearchQuery(formData);
+    const handleSubmit = (data: { code: string; name: string }) => {
+        setSearchQuery(data);
         setShowTable(true);
     };
 
@@ -48,7 +46,6 @@ export function CourseSearch({semester}: {semester: number}) {
                                 </FormItem>
                             )}
                         />
-
                         <FormField
                             control={form.control}
                             name="name"
@@ -62,16 +59,17 @@ export function CourseSearch({semester}: {semester: number}) {
                                 </FormItem>
                             )}
                         />
-
                         <Button className="mt-auto" variant="outline" type="submit">
                             <Search/> Search
                         </Button>
                     </div>
-
                 </form>
             </Form>
-
-            <CourseSearchResults semester={semester} showTable={showTable} searchQuery={searchQuery}/>
+            <CourseSearchTable
+                searchQuery={searchQuery}
+                onAddCourses={onAddCourses}
+                showTable={showTable}
+            />
         </div>
     );
 }

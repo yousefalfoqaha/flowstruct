@@ -20,11 +20,11 @@ function RouteComponent() {
     const program = programs.find(p => p.id === programId);
     if (!program) return;
 
+
     return (
         <div className="space-y-6 p-8">
             <div className="flex justify-between items-center gap-4">
                 <h1 className="text-4xl font-semibold">{program.degree} {program.name} Study Plans</h1>
-
                 <CreateStudyPlanDialog program={program}/>
             </div>
 

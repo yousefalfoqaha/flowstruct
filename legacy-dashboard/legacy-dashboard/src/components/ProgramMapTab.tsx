@@ -1,40 +1,25 @@
 import {CourseCard} from "@/components/CourseCard.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Plus} from "lucide-react";
-import React from "react";
-import {AddCourseDialog} from "@/components/AddCourseDialog.tsx";
-import {SelectedCoursesProvider} from "@/providers/SelectedCoursesProvider.tsx";
 import {useStudyPlan} from "@/hooks/useStudyPlan.ts";
-import {useParams} from "@tanstack/react-router";
-import {useStudyPlanCourses} from "@/hooks/useStudyPlanCourses.ts";
 
-export function CoursesGrid() {
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? '');
+export function ProgramMapTab() {
+    const {studyPlan, courses} = useStudyPlan();
 
-    const {data: studyPlan} = useStudyPlan(studyPlanId);
-    const {data: courses} = useStudyPlanCourses(studyPlanId);
-
-    const [selectedSemester, setSelectedSemester] = React.useState<number | null>(null);
-
-    const academicYears = Array.from({length: studyPlan.duration}, (_, i) => i + 1);
+    const academicYears = Array.from({length: studyPlan.data.duration}, (_, i) => i + 1);
     const SEMESTERS_PER_YEAR = 3;
     const semesterTypes = ["First", "Second", "Summer"] as const;
 
     const coursesBySemester = new Map<number, number[]>(
-        Array.from({length: studyPlan.duration * SEMESTERS_PER_YEAR}, (_, i) => [i + 1, []])
+        Array.from({length: studyPlan.data.duration * SEMESTERS_PER_YEAR}, (_, i) => [i + 1, []])
     );
 
-    Object.entries(studyPlan.coursePlacements ?? {}).forEach(([courseId, semesterNum]) => {
+    Object.entries(studyPlan.data.coursePlacements ?? {}).forEach(([courseId, semesterNum]) => {
         coursesBySemester.get(Number(semesterNum))?.push(Number(courseId));
     });
 
     return (
         <>
-            {selectedSemester &&
-                <SelectedCoursesProvider>
-                    <AddCourseDialog semester={selectedSemester} closeDialog={() => setSelectedSemester(null)}/>
-                </SelectedCoursesProvider>
-            }
             <div className="overflow-auto flex gap-1">
                 {academicYears.map((year) => {
                     const yearSemesters = semesterTypes.map((_, i) =>
@@ -52,10 +37,11 @@ export function CoursesGrid() {
                                         <div key={semesterNumber} className="space-y-1 w-28">
                                             <h3 className="bg-gray-500 p-1 text-white text-center">
                                                 <p>{semesterTypes[index]}</p>
-                                                <p>{semesterCourses?.reduce((sum, courseId) => sum + (courses[courseId]?.creditHours || 0), 0)} Cr. Hrs</p>
+                                                <p>{semesterCourses?.reduce((sum, courseId) => sum + (courses.data[courseId]?.creditHours || 0), 0)} Cr.
+                                                    Hrs</p>
                                             </h3>
                                             {semesterCourses?.map((courseId) => {
-                                                const course = courses[courseId];
+                                                const course = courses.data[courseId];
                                                 if (!course) return null;
 
                                                 return (
@@ -63,9 +49,7 @@ export function CoursesGrid() {
                                                 );
                                             })}
                                             <Button variant="outline"
-                                                    className="rounded-none h-7 shadow-none w-full"
-                                                    onClick={() => setSelectedSemester(semesterNumber)}
-                                            >
+                                                    className="rounded-none h-7 shadow-none w-full">
                                                 <Plus/>
                                             </Button>
                                         </div>

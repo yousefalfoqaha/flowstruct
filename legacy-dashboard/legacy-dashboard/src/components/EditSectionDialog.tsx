@@ -19,7 +19,7 @@ type EditSectionDialogProps = {
 }
 
 export function EditSectionDialog({section, closeDialog}: EditSectionDialogProps) {
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? '');
+    const {studyPlanId} = useParams({strict: false});
 
     const queryClient = useQueryClient();
     const {toast} = useToast();
@@ -138,8 +138,7 @@ export function EditSectionDialog({section, closeDialog}: EditSectionDialogProps
                                             <Input {...field}
                                                    placeholder='Eg. "General Track Special Courses"'
                                                    autoComplete="off"
-                                                   value={field.value ?? ''}
-                                            />
+                                                   value={field.value ?? ''}/>
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>

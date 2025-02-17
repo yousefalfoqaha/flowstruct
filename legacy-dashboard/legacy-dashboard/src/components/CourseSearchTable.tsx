@@ -1,28 +1,35 @@
 import React from "react";
-import {DataTable} from "@/components/DataTable.tsx";
+import {DataTable} from "@/components/DataTable";
 import {Course} from "@/types";
-import {createColumnHelper, getCoreRowModel, PaginationState, useReactTable,} from "@tanstack/react-table";
-import {Button} from "@/components/ui/button.tsx";
-import {Checkbox} from "@/components/ui/checkbox.tsx";
-import {SelectedCoursesTray} from "@/components/SelectedCoursesTray.tsx";
-import {useQuery} from "@tanstack/react-query";
-import {getPaginatedCourses} from "@/queries/getPaginatedCourses.ts";
+import {
+    createColumnHelper,
+    getCoreRowModel,
+    PaginationState,
+    useReactTable,
+} from "@tanstack/react-table";
+import {Button} from "@/components/ui/button";
+import {Checkbox} from "@/components/ui/checkbox";
 import {ChevronLeft, ChevronRight, Loader2} from "lucide-react";
-import {useSelectedCourses} from "@/hooks/useSelectedCourses.ts";
-import {useStudyPlan} from "@/hooks/useStudyPlan.ts";
-import {useParams} from "@tanstack/react-router";
+import {useQuery} from "@tanstack/react-query";
+import {getPaginatedCourses} from "@/queries/getPaginatedCourses";
+import {SelectedCoursesTray} from "@/components/SelectedCoursesTray";
 
 type CourseSearchTableProps = {
     searchQuery: { code: string; name: string };
+    onAddCourses: (addedCourses: Record<number, Course>) => void;
     showTable: boolean;
-    semester: number;
 };
 
-export function CourseSearchResults({searchQuery, showTable, semester}: CourseSearchTableProps) {
-    const [pagination, setPagination] = React.useState<PaginationState>({pageIndex: 0, pageSize: 4});
-    const {rowSelection, setRowSelection} = useSelectedCourses();
-    const {studyPlanId} = useParams({strict: false});
-    const {data: studyPlan} = useStudyPlan(parseInt(studyPlanId ?? ''));
+export function CourseSearchTable({
+                                      searchQuery,
+                                      onAddCourses,
+                                      showTable
+                                  }: CourseSearchTableProps) {
+    const [pagination, setPagination] = React.useState<PaginationState>({
+        pageIndex: 0,
+        pageSize: 4,
+    });
+    const [rowSelection, setRowSelection] = React.useState<Record<string, boolean>>({});
 
     const {data: coursesPage, isFetching, isSuccess} = useQuery(
         getPaginatedCourses(showTable, searchQuery, pagination)
@@ -32,14 +39,16 @@ export function CourseSearchResults({searchQuery, showTable, semester}: CourseSe
 
     const columns = [
         display({
-            id: "select",
+            id: 'select',
             header: ({table}) => (
                 <Checkbox
                     checked={
                         table.getIsAllPageRowsSelected() ||
                         (table.getIsSomePageRowsSelected() && "indeterminate")
                     }
-                    onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                    onCheckedChange={(value) =>
+                        table.toggleAllPageRowsSelected(!!value)
+                    }
                     aria-label="Select all"
                 />
             ),
@@ -61,7 +70,7 @@ export function CourseSearchResults({searchQuery, showTable, semester}: CourseSe
             header: "Name",
         }),
         accessor("creditHours", {
-            header: () => <h1 className="text-nowrap">Credit Hours</h1>,
+            header: () => <span>Credit Hours</span>,
         }),
         accessor("type", {
             header: "Type",
@@ -69,10 +78,15 @@ export function CourseSearchResults({searchQuery, showTable, semester}: CourseSe
     ];
 
     React.useEffect(() => {
-        if (searchQuery) {
-            setPagination({pageIndex: 0, pageSize: 4});
-        }
+        setPagination({pageIndex: 0, pageSize: 4});
     }, [searchQuery]);
+
+    const selectedCourses: Record<number, Course> = Object.fromEntries(
+        Object.keys(rowSelection).map(courseStr => {
+            const course: Course = JSON.parse(courseStr);
+            return [course.id, course];
+        })
+    );
 
     const table = useReactTable({
         columns,
@@ -80,32 +94,18 @@ export function CourseSearchResults({searchQuery, showTable, semester}: CourseSe
         rowCount: coursesPage?.totalCourses,
         getCoreRowModel: getCoreRowModel(),
         manualPagination: true,
-        state: {
-            pagination,
-            rowSelection,
-        },
+        state: {pagination, rowSelection},
         getRowId: (row) => JSON.stringify(row),
         pageCount: coursesPage?.totalPages ?? 0,
         onPaginationChange: setPagination,
-        enableRowSelection: row => {
-            const course = row.original;
-
-            if (studyPlan.coursePlacements[course.id]) return false;
-
-            return course.prerequisites.every(prerequisite => {
-                const prerequisitePlacement = studyPlan.coursePlacements[prerequisite.prerequisite];
-                return prerequisitePlacement && prerequisitePlacement < semester;
-            });
-        },
         onRowSelectionChange: setRowSelection,
     });
 
     return (
-        <>
-            {(showTable && isSuccess) && (
-                <div>
+        <div>
+            {(isSuccess && showTable) && (
+                <>
                     <DataTable table={table}/>
-
                     <div className="flex space-x-2 pt-4">
                         <div className="flex gap-2 items-center mx-auto">
                             <Button
@@ -116,7 +116,9 @@ export function CourseSearchResults({searchQuery, showTable, semester}: CourseSe
                             >
                                 <ChevronLeft/>
                             </Button>
-                            <p>{(coursesPage?.page ?? 0) + 1} of {coursesPage?.totalPages}</p>
+                            <p>
+                                {(coursesPage?.page ?? 0) + 1} of {coursesPage?.totalPages}
+                            </p>
                             <Button
                                 variant="outline"
                                 size="sm"
@@ -127,13 +129,19 @@ export function CourseSearchResults({searchQuery, showTable, semester}: CourseSe
                             </Button>
                         </div>
                     </div>
-                </div>
+                </>
             )}
 
             {isFetching && <Loader2 className="animate-spin mx-auto mt-4"/>}
 
-            <SelectedCoursesTray clearSelection={() => setRowSelection({})} />
-        </>
-    );
+            <SelectedCoursesTray selectedCourses={Object.values(selectedCourses)} clearSelection={() => setRowSelection({})}/>
 
+            <div className="mt-4 flex justify-end">
+                {<Button onClick={() => onAddCourses(selectedCourses)}
+                        disabled={Object.keys(selectedCourses).length === 0}>
+                    Add Courses
+                </Button>}
+            </div>
+        </div>
+    );
 }

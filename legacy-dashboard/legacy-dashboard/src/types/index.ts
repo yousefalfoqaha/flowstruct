@@ -63,7 +63,7 @@ export type Section = {
     type: SectionType;
     requiredCreditHours: number;
     name: string | null;
-    courses: number[];
+    courses: Set<number>;
 }
 
 export type StudyPlan = {

@@ -21,8 +21,6 @@ enum StudyPlanDialog {
     Delete = 'delete'
 }
 
-// implement global delete dialog
-
 export function StudyPlansTable({program}: StudyPlansTableProps) {
     const [selectedStudyPlan, setSelectedStudyPlan] = React.useState<StudyPlanOption | null>(null);
     const [studyPlanDialog, setStudyPlanDialog] = React.useState<StudyPlanDialog | null>(null);

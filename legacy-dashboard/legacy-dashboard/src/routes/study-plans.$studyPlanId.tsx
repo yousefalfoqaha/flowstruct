@@ -2,11 +2,11 @@ import {createFileRoute} from "@tanstack/react-router";
 import {getPrograms} from "@/queries/getPrograms.ts";
 import {getStudyPlan} from "@/queries/getStudyPlan.ts";
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {CoursesGrid} from "@/components/CoursesGrid.tsx";
+import {ProgramMapTab} from "@/components/ProgramMapTab.tsx";
 import {useStudyPlan} from "@/hooks/useStudyPlan.ts";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs.tsx";
 import {getStudyPlanCourses} from "@/queries/getStudyPlanCourses.ts";
-import {SectionsAccordion} from "@/components/SectionsAccordion.tsx";
+import {SectionsTab} from "@/components/SectionsTab.tsx";
 
 export const Route = createFileRoute("/study-plans/$studyPlanId")({
     component: RouteComponent,
@@ -15,17 +15,20 @@ export const Route = createFileRoute("/study-plans/$studyPlanId")({
 
         const studyPlan = await queryClient.ensureQueryData(getStudyPlan(parseInt(params.studyPlanId)));
 
-        const courseIds = studyPlan.sections.flatMap(section => section.courses);
-        await queryClient.ensureQueryData(getStudyPlanCourses(Number(params.studyPlanId), courseIds));
+        await queryClient.ensureQueryData(
+            getStudyPlanCourses(
+                Number(params.studyPlanId),
+                studyPlan.sections.flatMap(section => Array.from(section.courses))
+            )
+        );
     },
 });
 
 function RouteComponent() {
-    const studyPlanId = parseInt(Route.useParams().studyPlanId);
-    const {data: studyPlan} = useStudyPlan(studyPlanId);
+    const {studyPlan} = useStudyPlan();
     const {data: programs} = useSuspenseQuery(getPrograms());
 
-    const program = programs.find((p) => p.id === studyPlan.program);
+    const program = programs.find((p) => p.id === studyPlan.data.program);
     if (!program) return;
 
     return (
@@ -33,7 +36,8 @@ function RouteComponent() {
             <header className="space-y-1">
                 <h1 className="text-3xl font-bold">{program.degree} {program.name}</h1>
                 <h3 className="opacity-60">
-                    Study Plan {studyPlan.year}/{studyPlan.year + 1} {studyPlan.track ? "- " + studyPlan.track : ""}
+                    Study
+                    Plan {studyPlan.data.year}/{studyPlan.data.year + 1} {studyPlan.data.track ? "- " + studyPlan.data.track : ""}
                 </h3>
             </header>
 
@@ -46,10 +50,10 @@ function RouteComponent() {
                     </TabsList>
                     <div className="place-self-start w-full">
                         <TabsContent value="program-map">
-                            <CoursesGrid/>
+                            <ProgramMapTab/>
                         </TabsContent>
                         <TabsContent value="password">
-                            <SectionsAccordion/>
+                            <SectionsTab/>
                         </TabsContent>
                     </div>
                 </Tabs>

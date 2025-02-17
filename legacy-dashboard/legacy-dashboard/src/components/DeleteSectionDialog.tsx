@@ -17,7 +17,7 @@ export function DeleteSectionDialog({section, closeDialog}: DeleteProgramDialogP
     const queryClient = useQueryClient();
     const {toast} = useToast();
 
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? '');
+    const {studyPlanId} = useParams({strict: false});
 
     const mutation = useMutation({
         mutationFn: async (deletedSection: Section | null) => {

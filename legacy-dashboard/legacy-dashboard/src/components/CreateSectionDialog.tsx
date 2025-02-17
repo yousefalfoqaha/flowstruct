@@ -14,13 +14,11 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import {ButtonLoading} from "@/components/ButtonLoading.tsx";
 import {createSectionFormSchema} from "@/form-schemas/sectionFormSchema.ts";
 import {useParams} from "@tanstack/react-router";
-import {useStudyPlan} from "@/hooks/useStudyPlan.ts";
 
 export function CreateSectionDialog() {
     const [isOpen, setIsOpen] = React.useState(false);
     const {toast} = useToast();
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? '');
-    const {data: studyPlan} = useStudyPlan(studyPlanId);
+    const {studyPlanId} = useParams({strict: false});
 
     const form = useForm<z.infer<typeof createSectionFormSchema>>({
         resolver: zodResolver(createSectionFormSchema),
@@ -36,7 +34,7 @@ export function CreateSectionDialog() {
 
     const mutation = useMutation({
         mutationFn: async (newSection: z.infer<typeof createSectionFormSchema>) => {
-            const response = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlan.id}/create-section`, {
+            const response = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/create-section`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(newSection)
@@ -88,7 +86,7 @@ export function CreateSectionDialog() {
                                         <FormControl>
                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <SelectTrigger>
-                                                    <SelectValue />
+                                                    <SelectValue/>
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="University">University</SelectItem>
@@ -110,7 +108,7 @@ export function CreateSectionDialog() {
                                         <FormControl>
                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <SelectTrigger>
-                                                    <SelectValue />
+                                                    <SelectValue/>
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="Requirement">Requirement</SelectItem>
@@ -133,7 +131,8 @@ export function CreateSectionDialog() {
                                     <FormItem className="w-fit">
                                         <FormLabel className="text-nowrap">Required Cr. Hrs*</FormLabel>
                                         <FormControl>
-                                            <Input {...field} type="number" value={field.value ?? undefined} autoComplete="off"/>
+                                            <Input {...field} type="number" value={field.value ?? undefined}
+                                                   autoComplete="off"/>
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>
@@ -147,7 +146,10 @@ export function CreateSectionDialog() {
                                     <FormItem className="w-full">
                                         <FormLabel>Name</FormLabel>
                                         <FormControl>
-                                            <Input {...field} placeholder='Eg. "General Track Special Courses"' autoComplete="off"/>
+                                            <Input {...field}
+                                                   placeholder='Eg. "General Track Special Courses"'
+                                                   value={field.value ?? ''}
+                                                   autoComplete="off"/>
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>
