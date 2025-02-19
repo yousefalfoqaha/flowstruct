@@ -7,15 +7,12 @@ import {Button} from "@/components/ui/button.tsx";
 import {Trash} from "lucide-react";
 import {ButtonLoading} from "@/components/ButtonLoading.tsx";
 import {useParams} from "@tanstack/react-router";
+import {useDialog} from "@/hooks/useDialog.ts";
 
-type DeleteProgramDialogProps = {
-    section: Section | null;
-    closeDialog: () => void;
-}
-
-export function DeleteSectionDialog({section, closeDialog}: DeleteProgramDialogProps) {
+export function DeleteSectionDialog() {
     const queryClient = useQueryClient();
     const {toast} = useToast();
+    const {dialogIsOpen, closeDialog, item: section} = useDialog<Section>();
 
     const {studyPlanId} = useParams({strict: false});
 
@@ -48,7 +45,7 @@ export function DeleteSectionDialog({section, closeDialog}: DeleteProgramDialogP
     });
 
     return (
-        <Dialog open={!!section} onOpenChange={closeDialog}>
+        <Dialog open={dialogIsOpen('DELETE')} onOpenChange={closeDialog}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Delete {section?.level} {section?.type} {section?.name ? `- ${section?.name}` : ""}</DialogTitle>

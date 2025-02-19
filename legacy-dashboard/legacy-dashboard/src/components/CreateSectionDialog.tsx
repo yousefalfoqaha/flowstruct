@@ -3,8 +3,6 @@ import {useToast} from "@/hooks/use-toast.ts";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {StudyPlan} from "@/types";
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Plus} from "lucide-react";
@@ -13,12 +11,12 @@ import {Input} from "@/components/ui/input.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {ButtonLoading} from "@/components/ButtonLoading.tsx";
 import {createSectionFormSchema} from "@/form-schemas/sectionFormSchema.ts";
-import {useParams} from "@tanstack/react-router";
+import {useStudyPlan} from "@/hooks/useStudyPlan.ts";
 
 export function CreateSectionDialog() {
     const [isOpen, setIsOpen] = React.useState(false);
+    const {createSection} = useStudyPlan();
     const {toast} = useToast();
-    const {studyPlanId} = useParams({strict: false});
 
     const form = useForm<z.infer<typeof createSectionFormSchema>>({
         resolver: zodResolver(createSectionFormSchema),
@@ -27,36 +25,6 @@ export function CreateSectionDialog() {
             type: undefined,
             requiredCreditHours: 0,
             name: ''
-        }
-    });
-
-    const queryClient = useQueryClient();
-
-    const mutation = useMutation({
-        mutationFn: async (newSection: z.infer<typeof createSectionFormSchema>) => {
-            const response = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/create-section`, {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(newSection)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'An unknown error occurred');
-            }
-
-            return response.json();
-        },
-        onSuccess: ((updatedStudyPlan: StudyPlan) => {
-            queryClient.setQueryData(["study-plan", updatedStudyPlan.id], updatedStudyPlan);
-            setIsOpen(false);
-            toast({description: 'Successfully created section.'});
-        }),
-        onError: (error) => {
-            toast({
-                description: error.message,
-                variant: 'destructive'
-            });
         }
     });
 
@@ -74,7 +42,12 @@ export function CreateSectionDialog() {
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit((formData) =>
-                        mutation.mutate(formData)
+                        createSection.mutate(formData, {
+                            onSuccess: () => {
+                                setIsOpen(false);
+                                toast({description: 'Successfully created section.'});
+                            }
+                        })
                     )} className="space-y-6">
                         <div className="flex gap-3">
                             <FormField
@@ -157,7 +130,7 @@ export function CreateSectionDialog() {
                             />
                         </div>
 
-                        {mutation.isPending ? <ButtonLoading/> : <Button type="submit">Create Program</Button>}
+                        {createSection.isPending ? <ButtonLoading/> : <Button type="submit">Create Section</Button>}
                     </form>
                 </Form>
             </DialogContent>

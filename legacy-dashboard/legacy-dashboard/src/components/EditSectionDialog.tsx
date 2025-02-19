@@ -12,14 +12,11 @@ import {ButtonLoading} from "@/components/ButtonLoading.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {editSectionFormSchema} from "@/form-schemas/sectionFormSchema.ts";
 import {useParams} from "@tanstack/react-router";
+import {useDialog} from "@/hooks/useDialog.ts";
 
-type EditSectionDialogProps = {
-    section: Section | null;
-    closeDialog: () => void;
-}
-
-export function EditSectionDialog({section, closeDialog}: EditSectionDialogProps) {
+export function EditSectionDialog() {
     const {studyPlanId} = useParams({strict: false});
+    const {dialogIsOpen, closeDialog, item: section} = useDialog<Section>();
 
     const queryClient = useQueryClient();
     const {toast} = useToast();
@@ -53,7 +50,7 @@ export function EditSectionDialog({section, closeDialog}: EditSectionDialogProps
     });
 
     return (
-        <Dialog open={!!section} onOpenChange={closeDialog}>
+        <Dialog open={dialogIsOpen('EDIT')} onOpenChange={closeDialog}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Edit Section</DialogTitle>

@@ -11,13 +11,11 @@ import {Input} from "@/components/ui/input.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {ButtonLoading} from "@/components/ButtonLoading.tsx";
+import {useDialog} from "@/hooks/useDialog.ts";
 
-type EditProgramDialogProps = {
-    program: ProgramOption | null;
-    closeDialog: () => void;
-}
+export function EditProgramDialog() {
+    const {dialogIsOpen, item: program, closeDialog} = useDialog<ProgramOption>();
 
-export function EditProgramDialog({program, closeDialog}: EditProgramDialogProps) {
     const form = useForm<z.infer<typeof editProgramFormSchema>>({
         resolver: zodResolver(editProgramFormSchema),
         defaultValues: {...program}
@@ -61,7 +59,7 @@ export function EditProgramDialog({program, closeDialog}: EditProgramDialogProps
     });
 
     return (
-        <Dialog open={!!program} onOpenChange={closeDialog}>
+        <Dialog open={dialogIsOpen('EDIT')} onOpenChange={closeDialog}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Edit Program</DialogTitle>

@@ -1,7 +1,6 @@
 import {z} from "zod";
 
 export const editStudyPlanFormSchema = z.object({
-    id: z.number(),
     year: z
         .union([z.string(), z.number()])
         .transform((val) => Number(val))
@@ -16,9 +15,7 @@ export const editStudyPlanFormSchema = z.object({
         .trim()
         .transform((val) => (val === "" ? null : val))
         .nullable()
-        .optional(),
-    isPrivate: z.boolean(),
-    program: z.number()
+        .optional()
 });
 
 export const createStudyPlanFormSchema = z.object({
@@ -36,7 +33,5 @@ export const createStudyPlanFormSchema = z.object({
         .trim()
         .transform((val) => (val === "" ? null : val))
         .nullable()
-        .optional(),
-    isPrivate: z.boolean(),
-    program: z.number()
+        .optional()
 });

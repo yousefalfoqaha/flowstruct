@@ -8,20 +8,15 @@ import {searchCourseFormSchema} from "@/form-schemas/courseFormSchema";
 import {Search} from "lucide-react";
 import React from "react";
 import {CourseSearchTable} from "@/components/CourseSearchTable";
-import {Course} from "@/types";
 
-type CourseSearchProps = {
-    onAddCourses: (addedCourses: Record<number, Course>) => void;
-};
+export function CourseSearch() {
+    const [searchQuery, setSearchQuery] = React.useState({code: "", name: ""});
+    const [showTable, setShowTable] = React.useState(false);
 
-export function CourseSearch({onAddCourses}: CourseSearchProps) {
     const form = useForm<z.infer<typeof searchCourseFormSchema>>({
         resolver: zodResolver(searchCourseFormSchema),
         defaultValues: {code: "", name: ""},
     });
-
-    const [searchQuery, setSearchQuery] = React.useState({code: "", name: ""});
-    const [showTable, setShowTable] = React.useState(false);
 
     const handleSubmit = (data: { code: string; name: string }) => {
         setSearchQuery(data);
@@ -67,9 +62,9 @@ export function CourseSearch({onAddCourses}: CourseSearchProps) {
             </Form>
             <CourseSearchTable
                 searchQuery={searchQuery}
-                onAddCourses={onAddCourses}
                 showTable={showTable}
             />
+
         </div>
     );
 }

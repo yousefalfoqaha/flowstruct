@@ -2,9 +2,11 @@ import {CourseCard} from "@/components/CourseCard.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Plus} from "lucide-react";
 import {useStudyPlan} from "@/hooks/useStudyPlan.ts";
+import {useCourses} from "@/hooks/useCourses.ts";
 
 export function ProgramMapTab() {
-    const {studyPlan, courses} = useStudyPlan();
+    const {studyPlan} = useStudyPlan();
+    const {getCourse} = useCourses();
 
     const academicYears = Array.from({length: studyPlan.data.duration}, (_, i) => i + 1);
     const SEMESTERS_PER_YEAR = 3;
@@ -37,12 +39,12 @@ export function ProgramMapTab() {
                                         <div key={semesterNumber} className="space-y-1 w-28">
                                             <h3 className="bg-gray-500 p-1 text-white text-center">
                                                 <p>{semesterTypes[index]}</p>
-                                                <p>{semesterCourses?.reduce((sum, courseId) => sum + (courses.data[courseId]?.creditHours || 0), 0)} Cr.
+                                                <p>{semesterCourses?.reduce((sum, courseId) => sum + (getCourse(courseId)?.creditHours || 0), 0)} Cr.
                                                     Hrs</p>
                                             </h3>
                                             {semesterCourses?.map((courseId) => {
-                                                const course = courses.data[courseId];
-                                                if (!course) return null;
+                                                const course = getCourse(courseId);
+                                                if (!course) return;
 
                                                 return (
                                                     <CourseCard key={courseId} course={course}/>

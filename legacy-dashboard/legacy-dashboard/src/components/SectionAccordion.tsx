@@ -3,21 +3,22 @@ import {Course, Section} from "@/types";
 import {DataTable} from "@/components/DataTable.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {ChevronDown, CircleMinus, Pencil, Plus, Trash} from "lucide-react";
-import {SectionDialog} from "@/components/SectionsTab.tsx";
 import {useMemo} from "react";
 import {AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion.tsx";
-import {useStudyPlan} from "@/hooks/useStudyPlan.ts";
+import {useCourses} from "@/hooks/useCourses.ts";
+import {useDialog} from "@/hooks/useDialog.ts";
+import {DialogType} from "@/contexts/DialogContext.tsx";
 
 type SectionTableProps = {
     section: Section;
     index: number;
-    openDialog: ({type, section}: SectionDialog) => void;
 };
 
-export function SectionAccordion({section, index, openDialog}: SectionTableProps) {
-    const {courses} = useStudyPlan();
+export function SectionAccordion({section, index}: SectionTableProps) {
+    const {getCourses} = useCourses();
+    const {openDialog} = useDialog<Section>();
 
-    const {accessor, display} = createColumnHelper<Course>()
+    const {accessor, display} = createColumnHelper<Course>();
 
     const columns = useMemo(() => {
         return [
@@ -47,13 +48,11 @@ export function SectionAccordion({section, index, openDialog}: SectionTableProps
         ];
     }, [accessor, display]);
 
-    const rowData = useMemo(() => {
-        return [...section.courses].map(course => courses.data[course]);
-    }, [section.courses, courses]);
+    const courses = useMemo(() => getCourses([...section.courses]), [section.courses]);
 
     const table = useReactTable({
         columns,
-        data: rowData,
+        data: courses,
         getCoreRowModel: getCoreRowModel(),
     });
 
@@ -73,15 +72,16 @@ export function SectionAccordion({section, index, openDialog}: SectionTableProps
                     </header>
                 </div>
                 <div className="flex gap-2 justify-end">
-                    <Button variant="outline" className="mr-2 rounded-full w-[2.3rem]" onClick={() => openDialog({type: 'ADD_COURSES', section: section})}>
+                    <Button variant="outline" className="mr-2 rounded-full w-[2.3rem]"
+                            onClick={() => openDialog(section, DialogType.ADD_COURSES)}>
                         <Plus/>
                     </Button>
 
-                    <Button variant="ghost" onClick={() => openDialog({type: 'EDIT', section: section})}>
+                    <Button variant="ghost" onClick={() => openDialog(section, DialogType.EDIT)}>
                         <Pencil className="size-4"/>
                     </Button>
 
-                    <Button variant="ghost" onClick={() => openDialog({type: 'DELETE', section: section})}>
+                    <Button variant="ghost" onClick={() => openDialog(section, DialogType.DELETE)}>
                         <Trash className="size-4"/>
                     </Button>
                 </div>

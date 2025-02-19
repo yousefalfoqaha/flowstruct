@@ -5,8 +5,8 @@ import {useSuspenseQuery} from "@tanstack/react-query";
 import {ProgramMapTab} from "@/components/ProgramMapTab.tsx";
 import {useStudyPlan} from "@/hooks/useStudyPlan.ts";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs.tsx";
-import {getStudyPlanCourses} from "@/queries/getStudyPlanCourses.ts";
 import {SectionsTab} from "@/components/SectionsTab.tsx";
+import {Course} from "@/types";
 
 export const Route = createFileRoute("/study-plans/$studyPlanId")({
     component: RouteComponent,
@@ -15,13 +15,16 @@ export const Route = createFileRoute("/study-plans/$studyPlanId")({
 
         const studyPlan = await queryClient.ensureQueryData(getStudyPlan(parseInt(params.studyPlanId)));
 
-        await queryClient.ensureQueryData(
-            getStudyPlanCourses(
-                Number(params.studyPlanId),
-                studyPlan.sections.flatMap(section => Array.from(section.courses))
-            )
-        );
+        const courseIds = studyPlan.sections.flatMap(section => Array.from(section.courses));
+        const response = await fetch(`http://localhost:8080/api/v1/courses/by-ids?courseIds=${courseIds}`);
+
+        const courses: Record<number, Course> = await response.json();
+
+        Object.entries(courses).forEach(([id, course]) => {
+            queryClient.setQueryData(['courses', parseInt(id)], course);
+        });
     },
+
 });
 
 function RouteComponent() {

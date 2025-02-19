@@ -6,36 +6,17 @@ import {Button} from "@/components/ui/button.tsx";
 import {ArrowRightFromLine, Eye, EyeOff, Loader2, Pencil, Trash} from "lucide-react";
 import {Badge} from "@/components/ui/badge.tsx";
 import {DataTable} from "@/components/DataTable.tsx";
-import React from "react";
-import {EditStudyPlanDialog} from "@/components/EditStudyPlanDialog.tsx";
 import {getProgramStudyPlans} from "@/queries/getProgramStudyPlans.ts";
-import {DeleteStudyPlanDialog} from "@/components/DeleteStudyPlanDialog.tsx";
 import {Link} from "@tanstack/react-router";
+import {useDialog} from "@/hooks/useDialog.ts";
 
 type StudyPlansTableProps = {
     program: ProgramOption;
 }
 
-enum StudyPlanDialog {
-    Edit = 'edit',
-    Delete = 'delete'
-}
-
 export function StudyPlansTable({program}: StudyPlansTableProps) {
-    const [selectedStudyPlan, setSelectedStudyPlan] = React.useState<StudyPlanOption | null>(null);
-    const [studyPlanDialog, setStudyPlanDialog] = React.useState<StudyPlanDialog | null>(null);
-
-    const closeDialog = () => {
-        setSelectedStudyPlan(null);
-        setStudyPlanDialog(null);
-    }
-
-    const openDialog = (studyPlan: StudyPlanOption, dialog: StudyPlanDialog) => {
-        setSelectedStudyPlan(studyPlan);
-        setStudyPlanDialog(dialog);
-    }
-
     const queryClient = useQueryClient();
+    const {openDialog} = useDialog<StudyPlanOption>();
 
     const {toast} = useToast();
 
@@ -96,7 +77,8 @@ export function StudyPlansTable({program}: StudyPlansTableProps) {
             header: 'Visibility',
             cell: ({row}) => {
                 return row.getValue('isPrivate')
-                    ? <Badge variant="outline" className="text-nowrap gap-1"><EyeOff className="size-4"/> Private</Badge>
+                    ?
+                    <Badge variant="outline" className="text-nowrap gap-1"><EyeOff className="size-4"/> Private</Badge>
                     : <Badge className="text-nowrap gap-1"><Eye className="size-4"/> Public</Badge>
             }
         }),
@@ -110,7 +92,7 @@ export function StudyPlansTable({program}: StudyPlansTableProps) {
             cell: ({row}) => (
                 <div className="flex gap-2 justify-end items-center">
                     <Button variant="ghost"
-                            onClick={() => openDialog(row.original, StudyPlanDialog.Edit)}>
+                            onClick={() => openDialog(row.original, 'EDIT')}>
                         <Pencil/>
                     </Button>
                     <Button variant="ghost" onClick={() => toggleVisibilityMutation.mutate(row.original)}>
@@ -119,7 +101,7 @@ export function StudyPlansTable({program}: StudyPlansTableProps) {
                             : <EyeOff/>
                         }
                     </Button>
-                    <Button variant="ghost" onClick={() => openDialog(row.original, StudyPlanDialog.Delete)}>
+                    <Button variant="ghost" onClick={() => openDialog(row.original, 'DELETE')}>
                         <Trash className="size-4"/>
                     </Button>
                 </div>
@@ -136,19 +118,10 @@ export function StudyPlansTable({program}: StudyPlansTableProps) {
     });
 
     return (
-        <>
-            {studyPlanDialog === StudyPlanDialog.Edit &&
-                <EditStudyPlanDialog studyPlan={selectedStudyPlan} closeDialog={closeDialog}/>
-            }
-            {studyPlanDialog === StudyPlanDialog.Delete &&
-                <DeleteStudyPlanDialog studyPlan={selectedStudyPlan} closeDialog={closeDialog}/>
-            }
-            {isPending
-                ? <div className="p-10"><Loader2 className="animate-spin text-gray-500 mx-auto"/></div>
-                : <div className="rounded-lg border overflow-auto">
-                    <DataTable table={table}/>
-                </div>
-            }
-        </>
+        isPending
+            ? <div className="p-10"><Loader2 className="animate-spin text-gray-500 mx-auto"/></div>
+            : <div className="rounded-lg border overflow-auto">
+                <DataTable table={table}/>
+            </div>
     );
 }

@@ -6,15 +6,12 @@ import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} fro
 import {ButtonLoading} from "@/components/ButtonLoading.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Trash} from "lucide-react";
+import {useDialog} from "@/hooks/useDialog.ts";
 
-type DeleteStudyPlanDialogProps = {
-    studyPlan: StudyPlanOption | null;
-    closeDialog: () => void;
-}
 
-export function DeleteStudyPlanDialog({studyPlan, closeDialog}:DeleteStudyPlanDialogProps) {
+export function DeleteStudyPlanDialog() {
     const queryClient = useQueryClient();
-
+    const {item: studyPlan, dialogIsOpen, closeDialog} = useDialog<StudyPlanOption>();
     const {toast} = useToast();
 
     const deleteStudyPlanMutation = useMutation({
@@ -51,7 +48,7 @@ export function DeleteStudyPlanDialog({studyPlan, closeDialog}:DeleteStudyPlanDi
     if (!studyPlan) return;
 
     return (
-        <Dialog open={!!studyPlan} onOpenChange={closeDialog}>
+        <Dialog open={dialogIsOpen('DELETE')} onOpenChange={closeDialog}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Delete {studyPlan.year}/{studyPlan.year + 1} {studyPlan.track ?? ''} Study Plan</DialogTitle>

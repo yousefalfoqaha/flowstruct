@@ -4,6 +4,9 @@ import {StudyPlansTable} from "@/components/StudyPlansTable.tsx";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getPrograms} from "@/queries/getPrograms.ts";
 import {CreateStudyPlanDialog} from "@/components/CreateStudyPlanDialog.tsx";
+import {DialogProvider} from "@/contexts/DialogContext.tsx";
+import {EditStudyPlanDialog} from "@/components/EditStudyPlanDialog.tsx";
+import {DeleteStudyPlanDialog} from "@/components/DeleteStudyPlanDialog.tsx";
 
 export const Route = createFileRoute('/programs/$programId')({
     component: RouteComponent,
@@ -20,7 +23,6 @@ function RouteComponent() {
     const program = programs.find(p => p.id === programId);
     if (!program) return;
 
-
     return (
         <div className="space-y-6 p-8">
             <div className="flex justify-between items-center gap-4">
@@ -28,8 +30,12 @@ function RouteComponent() {
                 <CreateStudyPlanDialog program={program}/>
             </div>
 
-            <StudyPlansTable program={program}/>
+            <DialogProvider>
+                <EditStudyPlanDialog/>
+                <DeleteStudyPlanDialog/>
+                <StudyPlansTable program={program}/>
+            </DialogProvider>
         </div>
-)
-    ;
+    )
+        ;
 }

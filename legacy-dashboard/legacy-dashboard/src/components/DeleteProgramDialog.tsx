@@ -6,14 +6,11 @@ import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} fro
 import {Button} from "@/components/ui/button.tsx";
 import {Trash} from "lucide-react";
 import {ButtonLoading} from "@/components/ButtonLoading.tsx";
+import {useDialog} from "@/hooks/useDialog.ts";
 
-type DeleteProgramDialogProps = {
-    program: ProgramOption | null;
-    closeDialog: () => void;
-}
-
-export function DeleteProgramDialog({program, closeDialog}: DeleteProgramDialogProps) {
+export function DeleteProgramDialog() {
     const queryClient = useQueryClient();
+    const {dialogIsOpen, item: program, closeDialog} = useDialog<ProgramOption>();
 
     const {toast} = useToast();
 
@@ -49,7 +46,7 @@ export function DeleteProgramDialog({program, closeDialog}: DeleteProgramDialogP
     });
 
     return (
-        <Dialog open={!!program} onOpenChange={closeDialog}>
+        <Dialog open={dialogIsOpen('DELETE')} onOpenChange={closeDialog}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Delete {program?.name} Program</DialogTitle>

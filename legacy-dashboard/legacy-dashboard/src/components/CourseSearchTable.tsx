@@ -4,7 +4,7 @@ import {Course} from "@/types";
 import {
     createColumnHelper,
     getCoreRowModel,
-    PaginationState,
+    PaginationState, RowSelectionState,
     useReactTable,
 } from "@tanstack/react-table";
 import {Button} from "@/components/ui/button";
@@ -16,20 +16,15 @@ import {SelectedCoursesTray} from "@/components/SelectedCoursesTray";
 
 type CourseSearchTableProps = {
     searchQuery: { code: string; name: string };
-    onAddCourses: (addedCourses: Record<number, Course>) => void;
     showTable: boolean;
 };
 
-export function CourseSearchTable({
-                                      searchQuery,
-                                      onAddCourses,
-                                      showTable
-                                  }: CourseSearchTableProps) {
+export function CourseSearchTable({searchQuery, showTable}: CourseSearchTableProps) {
     const [pagination, setPagination] = React.useState<PaginationState>({
         pageIndex: 0,
         pageSize: 4,
     });
-    const [rowSelection, setRowSelection] = React.useState<Record<string, boolean>>({});
+    const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
 
     const {data: coursesPage, isFetching, isSuccess} = useQuery(
         getPaginatedCourses(showTable, searchQuery, pagination)
@@ -81,13 +76,6 @@ export function CourseSearchTable({
         setPagination({pageIndex: 0, pageSize: 4});
     }, [searchQuery]);
 
-    const selectedCourses: Record<number, Course> = Object.fromEntries(
-        Object.keys(rowSelection).map(courseStr => {
-            const course: Course = JSON.parse(courseStr);
-            return [course.id, course];
-        })
-    );
-
     const table = useReactTable({
         columns,
         data: coursesPage?.content ?? [],
@@ -95,10 +83,10 @@ export function CourseSearchTable({
         getCoreRowModel: getCoreRowModel(),
         manualPagination: true,
         state: {pagination, rowSelection},
-        getRowId: (row) => JSON.stringify(row),
+        getRowId: row => JSON.stringify(row),
         pageCount: coursesPage?.totalPages ?? 0,
         onPaginationChange: setPagination,
-        onRowSelectionChange: setRowSelection,
+        onRowSelectionChange: setRowSelection
     });
 
     return (
@@ -134,14 +122,8 @@ export function CourseSearchTable({
 
             {isFetching && <Loader2 className="animate-spin mx-auto mt-4"/>}
 
-            <SelectedCoursesTray selectedCourses={Object.values(selectedCourses)} clearSelection={() => setRowSelection({})}/>
-
-            <div className="mt-4 flex justify-end">
-                {<Button onClick={() => onAddCourses(selectedCourses)}
-                        disabled={Object.keys(selectedCourses).length === 0}>
-                    Add Courses
-                </Button>}
-            </div>
+            <SelectedCoursesTray courses={Object.keys(rowSelection).map(course => JSON.parse(course))}
+                                 clearSelection={() => setRowSelection({})}/>
         </div>
     );
 }
