@@ -3,6 +3,7 @@ package com.yousefalfoqaha.gjuplans.studyplan;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,15 +11,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/study-plans")
 public class StudyPlanController {
     private final StudyPlanService studyPlanService;
-
-    @Autowired
-    public StudyPlanController(StudyPlanService studyPlanService) {
-        this.studyPlanService = studyPlanService;
-    }
 
     @GetMapping
     public ResponseEntity<List<StudyPlanSummaryResponse>> getAllStudyPlans() {
@@ -72,7 +69,7 @@ public class StudyPlanController {
     }
 
     @PutMapping("/{studyPlanId}/sections/{sectionId}")
-    public ResponseEntity<StudyPlanResponse> createSection(
+    public ResponseEntity<StudyPlanResponse> editSection(
             @PathVariable long studyPlanId,
             @PathVariable long sectionId,
             @RequestBody EditSectionRequest request
@@ -86,5 +83,17 @@ public class StudyPlanController {
             @PathVariable long sectionId
     ) {
         return new ResponseEntity<>(studyPlanService.deleteSection(studyPlanId, sectionId), HttpStatus.OK);
+    }
+
+    @PostMapping("/{studyPlanId}/sections/{sectionId}/courses")
+    public ResponseEntity<StudyPlanResponse> addCoursesToSection(
+            @PathVariable long studyPlanId,
+            @PathVariable long sectionId,
+            @RequestBody AddCoursesToSectionRequest request
+    ) {
+        return new ResponseEntity<>(
+                studyPlanService.addCoursesToSection(studyPlanId, sectionId, request),
+                HttpStatus.OK
+        );
     }
 }

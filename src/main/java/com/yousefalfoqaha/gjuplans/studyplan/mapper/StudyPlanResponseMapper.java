@@ -31,7 +31,7 @@ public class StudyPlanResponseMapper implements Function<StudyPlan, StudyPlanRes
                                 sec.getCourses()
                                         .stream()
                                         .map(c -> c.getCourse().getId())
-                                        .toList()
+                                        .collect(Collectors.toSet())
                         ))
                         .toList(),
                 studyPlan.getCoursePlacements().entrySet()

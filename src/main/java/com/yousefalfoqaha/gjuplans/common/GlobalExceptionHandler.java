@@ -3,6 +3,7 @@ package com.yousefalfoqaha.gjuplans.common;
 import com.yousefalfoqaha.gjuplans.program.exception.InvalidDegreeException;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
+import com.yousefalfoqaha.gjuplans.studyplan.exception.CourseExistsException;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.InvalidCoursePlacement;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.SectionNotFoundException;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
@@ -17,7 +18,7 @@ import java.util.Date;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProgramNotFoundException.class)
-    public ResponseEntity<ErrorObject> handleProgramNotFoundException(
+    public ResponseEntity<ErrorObject> handleException(
             ProgramNotFoundException exception
     ) {
         return new ResponseEntity<>(
@@ -27,7 +28,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(StudyPlanNotFoundException.class)
-    public ResponseEntity<ErrorObject> handleStudyPlanNotFoundException(
+    public ResponseEntity<ErrorObject> handleException(
             StudyPlanNotFoundException exception
     ) {
         return new ResponseEntity<>(
@@ -37,7 +38,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidDegreeException.class)
-    public ResponseEntity<ErrorObject> handleInvalidDegreeException(
+    public ResponseEntity<ErrorObject> handleException(
             InvalidDegreeException exception
     ) {
         return new ResponseEntity<>(
@@ -51,7 +52,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UniqueProgramException.class)
-    public ResponseEntity<ErrorObject> handleUniqueProgramException(
+    public ResponseEntity<ErrorObject> handleException(
             UniqueProgramException exception
     ) {
         return new ResponseEntity<>(
@@ -65,7 +66,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ObjectNotValidException.class)
-    public ResponseEntity<ValidationErrorObject> handleObjectNotValidException(
+    public ResponseEntity<ValidationErrorObject> handleException(
             ObjectNotValidException exception
     ) {
         return new ResponseEntity<>(
@@ -79,7 +80,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InvalidCoursePlacement.class)
-    public ResponseEntity<ErrorObject> handleInvalidCoursePlacementException(
+    public ResponseEntity<ErrorObject> handleException(
             InvalidCoursePlacement exception
     ) {
         return new ResponseEntity<>(
@@ -93,7 +94,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(SectionNotFoundException.class)
-    public ResponseEntity<ErrorObject> handleSectionNotFoundException(
+    public ResponseEntity<ErrorObject> handleException(
             SectionNotFoundException exception
     ) {
         return new ResponseEntity<>(
@@ -103,6 +104,20 @@ public class GlobalExceptionHandler {
                         new Date()
                 ),
                 HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(CourseExistsException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            CourseExistsException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.CONFLICT.value(),
+                        exception.getMessage(),
+                        new Date()
+                ),
+                HttpStatus.CONFLICT
         );
     }
 }
