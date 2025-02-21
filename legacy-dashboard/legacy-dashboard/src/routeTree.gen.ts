@@ -13,7 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as StudyPlansStudyPlanIdImport } from './routes/study-plans.$studyPlanId'
-import { Route as ProgramsProgramIdImport } from './routes/programs.$programId'
+import { Route as ProgramsProgramIdStudyPlansImport } from './routes/programs.$programId.study-plans'
 
 // Create/Update Routes
 
@@ -29,11 +29,12 @@ const StudyPlansStudyPlanIdRoute = StudyPlansStudyPlanIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const ProgramsProgramIdRoute = ProgramsProgramIdImport.update({
-  id: '/programs/$programId',
-  path: '/programs/$programId',
-  getParentRoute: () => rootRoute,
-} as any)
+const ProgramsProgramIdStudyPlansRoute =
+  ProgramsProgramIdStudyPlansImport.update({
+    id: '/programs/$programId/study-plans',
+    path: '/programs/$programId/study-plans',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -46,18 +47,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/programs/$programId': {
-      id: '/programs/$programId'
-      path: '/programs/$programId'
-      fullPath: '/programs/$programId'
-      preLoaderRoute: typeof ProgramsProgramIdImport
-      parentRoute: typeof rootRoute
-    }
     '/study-plans/$studyPlanId': {
       id: '/study-plans/$studyPlanId'
       path: '/study-plans/$studyPlanId'
       fullPath: '/study-plans/$studyPlanId'
       preLoaderRoute: typeof StudyPlansStudyPlanIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/programs/$programId/study-plans': {
+      id: '/programs/$programId/study-plans'
+      path: '/programs/$programId/study-plans'
+      fullPath: '/programs/$programId/study-plans'
+      preLoaderRoute: typeof ProgramsProgramIdStudyPlansImport
       parentRoute: typeof rootRoute
     }
   }
@@ -67,42 +68,49 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/programs/$programId': typeof ProgramsProgramIdRoute
   '/study-plans/$studyPlanId': typeof StudyPlansStudyPlanIdRoute
+  '/programs/$programId/study-plans': typeof ProgramsProgramIdStudyPlansRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/programs/$programId': typeof ProgramsProgramIdRoute
   '/study-plans/$studyPlanId': typeof StudyPlansStudyPlanIdRoute
+  '/programs/$programId/study-plans': typeof ProgramsProgramIdStudyPlansRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/programs/$programId': typeof ProgramsProgramIdRoute
   '/study-plans/$studyPlanId': typeof StudyPlansStudyPlanIdRoute
+  '/programs/$programId/study-plans': typeof ProgramsProgramIdStudyPlansRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/programs/$programId' | '/study-plans/$studyPlanId'
+  fullPaths:
+    | '/'
+    | '/study-plans/$studyPlanId'
+    | '/programs/$programId/study-plans'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/programs/$programId' | '/study-plans/$studyPlanId'
-  id: '__root__' | '/' | '/programs/$programId' | '/study-plans/$studyPlanId'
+  to: '/' | '/study-plans/$studyPlanId' | '/programs/$programId/study-plans'
+  id:
+    | '__root__'
+    | '/'
+    | '/study-plans/$studyPlanId'
+    | '/programs/$programId/study-plans'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ProgramsProgramIdRoute: typeof ProgramsProgramIdRoute
   StudyPlansStudyPlanIdRoute: typeof StudyPlansStudyPlanIdRoute
+  ProgramsProgramIdStudyPlansRoute: typeof ProgramsProgramIdStudyPlansRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ProgramsProgramIdRoute: ProgramsProgramIdRoute,
   StudyPlansStudyPlanIdRoute: StudyPlansStudyPlanIdRoute,
+  ProgramsProgramIdStudyPlansRoute: ProgramsProgramIdStudyPlansRoute,
 }
 
 export const routeTree = rootRoute
@@ -116,18 +124,18 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/programs/$programId",
-        "/study-plans/$studyPlanId"
+        "/study-plans/$studyPlanId",
+        "/programs/$programId/study-plans"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/programs/$programId": {
-      "filePath": "programs.$programId.tsx"
-    },
     "/study-plans/$studyPlanId": {
       "filePath": "study-plans.$studyPlanId.tsx"
+    },
+    "/programs/$programId/study-plans": {
+      "filePath": "programs.$programId.study-plans.tsx"
     }
   }
 }

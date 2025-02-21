@@ -1,38 +1,39 @@
 import {createFileRoute} from "@tanstack/react-router";
-import {getPrograms} from "@/queries/getPrograms.ts";
-import {getStudyPlan} from "@/queries/getStudyPlan.ts";
-import {useSuspenseQuery} from "@tanstack/react-query";
-import {ProgramMapTab} from "@/components/ProgramMapTab.tsx";
-import {useStudyPlan} from "@/hooks/useStudyPlan.ts";
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs.tsx";
-import {SectionsTab} from "@/components/SectionsTab.tsx";
-import {Course} from "@/types";
+import {ProgramMapTab} from "@/features/study-plan/components/ProgramMapTab.tsx";
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shared/components/ui/tabs.tsx";
+import {SectionsTab} from "@/features/study-plan/components/SectionsTab.tsx";
+import {getProgramQuery} from "@/features/program/queries.ts";
+import {getStudyPlanQuery} from "@/features/study-plan/queries.ts";
+import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
+import {useProgram} from "@/features/program/hooks/useProgram.ts";
+import {getCourseListQuery} from "@/features/course/queries.ts";
 
 export const Route = createFileRoute("/study-plans/$studyPlanId")({
     component: RouteComponent,
     loader: async ({context: {queryClient}, params}) => {
-        await queryClient.ensureQueryData(getPrograms());
+        const studyPlanId = parseInt(params.studyPlanId);
 
-        const studyPlan = await queryClient.ensureQueryData(getStudyPlan(parseInt(params.studyPlanId)));
+        const studyPlan = await queryClient.ensureQueryData(getStudyPlanQuery(studyPlanId));
+        await queryClient.ensureQueryData(getProgramQuery(studyPlan.program));
 
-        const courseIds = studyPlan.sections.flatMap(section => Array.from(section.courses));
-        const response = await fetch(`http://localhost:8080/api/v1/courses/by-ids?courseIds=${courseIds}`);
+        const studyPlanCourseIds = studyPlan.sections.flatMap(section => Array.from(section.courses));
+        const cachedCourses = queryClient.getQueryData(["courses"]);
 
-        const courses: Record<number, Course> = await response.json();
+        const missingCourseIds = studyPlanCourseIds.reduce<number[]>((acc, courseId) => {
+            if (!cachedCourses || !cachedCourses[courseId]) {
+                acc.push(courseId);
+            }
+            return acc;
+        }, []);
 
-        Object.entries(courses).forEach(([id, course]) => {
-            queryClient.setQueryData(['courses', parseInt(id)], course);
-        });
+        await queryClient.ensureQueryData(getCourseListQuery(missingCourseIds));
     },
-
 });
 
 function RouteComponent() {
-    const {studyPlan} = useStudyPlan();
-    const {data: programs} = useSuspenseQuery(getPrograms());
-
-    const program = programs.find((p) => p.id === studyPlan.data.program);
-    if (!program) return;
+    const studyPlanId = parseInt(Route.useParams().studyPlanId);
+    const {data: studyPlan} = useStudyPlan(studyPlanId);
+    const {data: program} = useProgram(studyPlan.program);
 
     return (
         <div className="space-y-2 p-8">
@@ -40,7 +41,7 @@ function RouteComponent() {
                 <h1 className="text-3xl font-bold">{program.degree} {program.name}</h1>
                 <h3 className="opacity-60">
                     Study
-                    Plan {studyPlan.data.year}/{studyPlan.data.year + 1} {studyPlan.data.track ? "- " + studyPlan.data.track : ""}
+                    Plan {studyPlan.year}/{studyPlan.year + 1} {studyPlan.track ? "- " + studyPlan.track : ""}
                 </h3>
             </header>
 
@@ -53,10 +54,10 @@ function RouteComponent() {
                     </TabsList>
                     <div className="place-self-start w-full">
                         <TabsContent value="program-map">
-                            <ProgramMapTab/>
+                            <ProgramMapTab duration={studyPlan.duration} coursePlacements={studyPlan.coursePlacements}/>
                         </TabsContent>
                         <TabsContent value="password">
-                            <SectionsTab/>
+                            <SectionsTab sections={studyPlan.sections}/>
                         </TabsContent>
                     </div>
                 </Tabs>

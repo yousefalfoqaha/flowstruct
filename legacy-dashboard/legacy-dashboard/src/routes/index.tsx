@@ -1,15 +1,15 @@
 import {createFileRoute} from '@tanstack/react-router'
-import {CreateProgramDialog} from "@/components/CreateProgramDialog.tsx";
-import {ProgramsTable} from "@/components/ProgramsTable.tsx";
-import {getPrograms} from "@/queries/getPrograms.ts";
-import { DialogProvider } from '@/contexts/DialogContext';
-import {EditProgramDialog} from "@/components/EditProgramDialog.tsx";
-import {DeleteProgramDialog} from "@/components/DeleteProgramDialog.tsx";
+import {CreateProgramDialog} from "@/features/program/components/CreateProgramDialog.tsx";
+import {ProgramsTable} from "@/features/program/components/ProgramsTable.tsx";
+import {DialogProvider} from '@/contexts/DialogContext';
+import {EditProgramDetailsDialog} from "@/features/program/components/EditProgramDetailsDialog.tsx";
+import {DeleteProgramDialog} from "@/features/program/components/DeleteProgramDialog.tsx";
+import {getProgramListQuery} from "@/features/program/queries.ts";
 
 export const Route = createFileRoute('/')({
     component: Index,
     loader: async ({context: {queryClient}}) => {
-        return queryClient.ensureQueryData(getPrograms());
+        await queryClient.ensureQueryData(getProgramListQuery);
     }
 });
 
@@ -23,7 +23,7 @@ function Index() {
             </div>
 
             <DialogProvider>
-                <EditProgramDialog/>
+                <EditProgramDetailsDialog/>
                 <DeleteProgramDialog/>
                 <ProgramsTable/>
             </DialogProvider>

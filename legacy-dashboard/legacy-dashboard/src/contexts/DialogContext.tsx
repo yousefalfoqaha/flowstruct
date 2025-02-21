@@ -1,4 +1,5 @@
 import React, {createContext, ReactNode} from "react";
+import {toast} from "@/shared/hooks/useToast.ts";
 
 type Dialog = 'EDIT' | 'ADD_COURSES' | 'DELETE';
 
@@ -9,13 +10,23 @@ export type DialogContextType<T> = {
     item: T | null;
 };
 
-const DialogContext = createContext<DialogContextType<never> | undefined>(undefined);
+const DialogContext = createContext<DialogContextType<never> | undefined>(
+    undefined
+);
 
 function DialogProvider<T extends null>({children}: { children: ReactNode }) {
     const [item, setItem] = React.useState<T | null>(null);
     const [activeDialog, setActiveDialog] = React.useState<Dialog | null>(null);
 
     const openDialog = (item: T, dialog: Dialog) => {
+        if (!item) {
+            toast({
+                variant: "destructive",
+                description: "Cannot open dialog without a valid study plan"
+            });
+            return;
+        }
+
         setItem(item);
         setActiveDialog(dialog);
     };
