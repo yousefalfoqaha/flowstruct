@@ -9,7 +9,7 @@ type ProgramMapTabProps = {
 }
 
 export function ProgramMapTab({duration, coursePlacements}: ProgramMapTabProps) {
-    const {data: courses} = useCourseList(Object.keys(coursePlacements).map(id => parseInt(id)));
+    const courses = useCourseList();
 
     const academicYears = Array.from({length: duration}, (_, i) => i + 1);
     const SEMESTERS_PER_YEAR = 3;
@@ -44,11 +44,11 @@ export function ProgramMapTab({duration, coursePlacements}: ProgramMapTabProps) 
                                         <div key={semesterNumber} className="space-y-1 w-28">
                                             <h3 className="bg-gray-500 p-1 text-white text-center">
                                                 <p>{semesterTypes[index]}</p>
-                                                <p>{semesterCourses?.reduce((sum, courseId) => sum + (getCourse(courseId)?.creditHours || 0), 0)} Cr.
+                                                <p>{semesterCourses?.reduce((sum, courseId) => sum + (courses[courseId]?.creditHours || 0), 0)} Cr.
                                                     Hrs</p>
                                             </h3>
                                             {semesterCourses?.map((courseId) => {
-                                                const course = courses?[courseId];
+                                                const course = courses[courseId];
                                                 if (!course) return;
 
                                                 return (

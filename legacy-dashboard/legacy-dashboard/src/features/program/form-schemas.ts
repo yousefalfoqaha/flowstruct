@@ -1,14 +1,13 @@
 import {z} from "zod";
+import {Degree} from "@/features/program/types.ts";
 
-export const editProgramFormSchema = z.object({
-    id: z.number(),
-    code: z.string().toUpperCase().min(1, {message: 'Code cannot be empty.'}),
-    name: z.string().min(1, {message: 'Name cannot be empty.'}),
-    degree: z.string()
+export const programDetailsSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    code: z.string().min(1, "Code is required"),
+    degree: z.enum(
+        Object.keys(Degree) as [string, ...string[]],
+        {errorMap: () => ({message: "Degree is required"})}
+    ),
 });
 
-export const createProgramFormSchema = z.object({
-    code: z.string().toUpperCase().min(1, {message: 'Code cannot be empty.'}),
-    name: z.string().min(1, {message: 'Name cannot be empty.'}),
-    degree: z.string().min(1, {message: 'Must pick a degree.'})
-});
+export type ProgramDetailsFormValues = z.infer<typeof programDetailsSchema>;

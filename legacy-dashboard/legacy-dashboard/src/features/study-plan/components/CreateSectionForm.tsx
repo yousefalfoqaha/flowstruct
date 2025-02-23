@@ -1,5 +1,4 @@
 import React from "react";
-import {useToast} from "@/shared/hooks/useToast.ts";
 import {Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/shared/components/ui/dialog.tsx";
 import {Button} from "@/shared/components/ui/button.tsx";
 import {Plus} from "lucide-react";
@@ -14,7 +13,6 @@ import {useParams} from "@tanstack/react-router";
 export function CreateSectionForm() {
     const [isOpen, setIsOpen] = React.useState(false);
     const createSection = useCreateSection();
-    const {toast} = useToast();
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? '');
 
     const form = useCreateSectionForm();
@@ -34,10 +32,7 @@ export function CreateSectionForm() {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit((formData) =>
                         createSection.mutate({newSectionDetails: formData, studyPlanId: studyPlanId}, {
-                            onSuccess: () => {
-                                setIsOpen(false);
-                                toast({description: 'Successfully created section.'});
-                            }
+                            onSuccess: () => setIsOpen(false)
                         })
                     )} className="space-y-6">
                         <div className="flex gap-3">

@@ -1,11 +1,12 @@
 import {Button} from "@/shared/components/ui/button.tsx";
 import {Badge} from "@/shared/components/ui/badge.tsx";
 import {X} from "lucide-react";
-import {useStudyPlan} from "@/hooks/useStudyPlan.ts";
 import {useDialog} from "@/shared/hooks/useDialog.ts";
-import {useToast} from "@/shared/hooks/useToast.ts";
-import {Course} from "@/types";
 import {ButtonLoading} from "@/shared/components/ButtonLoading.tsx";
+import {Section} from "@/features/study-plan/types.ts";
+import {useAddCoursesToSection} from "@/features/study-plan/hooks/useAddCoursesToSection.ts";
+import {Course} from "@/features/course/types.ts";
+import {useParams} from "@tanstack/react-router";
 
 type SelectedCoursesTrayProps = {
     courses: Course[];
@@ -13,11 +14,13 @@ type SelectedCoursesTrayProps = {
 };
 
 export function SelectedCoursesTray({courses, clearSelection}: SelectedCoursesTrayProps) {
-    const {addCoursesToSection} = useStudyPlan();
-    const {section, closeDialog} = useDialog();
-    const {toast} = useToast();
+    const addCoursesToSection = useAddCoursesToSection();
+    const {item: section, closeDialog} = useDialog<Section>();
+    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? '');
 
     const totalCredits = courses.reduce((sum, course) => sum + (course.creditHours || 0), 0);
+
+    if (!section) return;
 
     return (
         <div className="space-y-2 pt-4">
@@ -47,11 +50,12 @@ export function SelectedCoursesTray({courses, clearSelection}: SelectedCoursesTr
                 ? <ButtonLoading/>
                 : <Button disabled={courses.length === 0 || addCoursesToSection.isPending}
                           onClick={() => {
-                              addCoursesToSection.mutate({addedCourses: courses, section: section}, {
-                                  onSuccess: () => {
-                                      closeDialog();
-                                      toast({description: "Successfully added courses to section."});
-                                  },
+                              addCoursesToSection.mutate({
+                                  addedCourses: courses,
+                                  sectionId: section.id,
+                                  studyPlanId: studyPlanId
+                              }, {
+                                  onSuccess: () => closeDialog,
                                   onError: () => closeDialog()
                               });
                           }}>

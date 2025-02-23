@@ -63,7 +63,7 @@ export const updateStudyPlanDetailsRequest = async (
     const response = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}`, {
         method: "PUT",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({id: studyPlanId, ...updatedStudyPlanDetails}),
+        body: JSON.stringify({updatedStudyPlanDetails}),
     });
 
     if (!response.ok) {
@@ -101,16 +101,32 @@ export const addCoursesToSectionRequest = async ({addedCourses, sectionId, study
         {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                courseIds: addedCourses.map(c => c.id),
-                sectionId: sectionId,
-            }),
+            body: JSON.stringify({courseIds: addedCourses.map(c => c.id)}),
         }
     );
 
     if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "An error occurred.");
+    }
+
+    return await response.json() as StudyPlan;
+};
+
+export const editSectionDetailsRequest = async ({updatedSectionDetails, sectionId, studyPlanId}: {
+    updatedSectionDetails: Partial<Section>,
+    sectionId: number,
+    studyPlanId: number
+}) => {
+    const response = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/sections/${sectionId}`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(updatedSectionDetails)
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'An unknown error occurred');
     }
 
     return await response.json() as StudyPlan;

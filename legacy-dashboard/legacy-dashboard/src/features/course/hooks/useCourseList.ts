@@ -1,18 +1,7 @@
-import {useQuery, useQueryClient} from "@tanstack/react-query";
-import {getCourseListQuery} from "@/features/course/queries.ts";
+import {useQueryClient} from "@tanstack/react-query";
 import {Course} from "@/features/course/types.ts";
 
-export const useCourseList = (courseIds: number[]) => {
+export const useCourseList = () => {
     const queryClient = useQueryClient();
-
-    const coursesCache = queryClient.getQueryData<Record<number, Course>>(["courses"]);
-
-    const missingCourseIds = courseIds.reduce<number[]>((acc, courseId) => {
-        if (!coursesCache || !coursesCache[courseId]) {
-            acc.push(courseId);
-        }
-        return acc;
-    }, []);
-
-    return useQuery(getCourseListQuery(missingCourseIds));
+    return queryClient.getQueryData<Record<number, Course>>(["courses"]);
 }

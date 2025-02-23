@@ -4,7 +4,10 @@ import './index.css'
 import {Toaster} from "@/shared/components/ui/toaster.tsx";
 import {createRouter, RouterProvider} from '@tanstack/react-router';
 import {routeTree} from './routeTree.gen';
+import '@mantine/core/styles.css';
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {MantineProvider} from "@mantine/core";
+import {ModalsProvider} from "@mantine/modals";
 
 const queryClient = new QueryClient();
 
@@ -26,8 +29,11 @@ createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <div className="text-gray-800 max-w-screen-2xl mx-auto border-x h-screen">
             <QueryClientProvider client={queryClient}>
-                <RouterProvider router={router}/>
-                {/*<ReactQueryDevtools initialIsOpen={false}/>*/}
+                <MantineProvider>
+                    <ModalsProvider>
+                        <RouterProvider router={router}/>
+                    </ModalsProvider>
+                </MantineProvider>
             </QueryClientProvider>
         </div>
         <Toaster/>

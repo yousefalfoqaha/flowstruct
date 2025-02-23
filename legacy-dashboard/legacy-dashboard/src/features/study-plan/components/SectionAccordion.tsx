@@ -15,7 +15,7 @@ type SectionTableProps = {
 };
 
 export function SectionAccordion({section, index}: SectionTableProps) {
-    const {data: courses} = useCourseList([...section.courses]);
+    const courses = useCourseList();
     const {openDialog} = useDialog<Section>();
 
     const {accessor, display} = createColumnHelper<Course>();
@@ -48,9 +48,14 @@ export function SectionAccordion({section, index}: SectionTableProps) {
         ];
     }, [accessor, display]);
 
+    const rowData = useMemo(() => {
+        if (!courses) return;
+        return [...section.courses].map(courseId => courses[courseId])
+    }, [courses, section.courses]);
+
     const table = useReactTable({
         columns,
-        data: courses ?? [],
+        data: rowData ?? [],
         getCoreRowModel: getCoreRowModel(),
     });
 
@@ -61,6 +66,7 @@ export function SectionAccordion({section, index}: SectionTableProps) {
                     <AccordionTrigger asChild>
                         <Button variant="ghost"><ChevronDown/></Button>
                     </AccordionTrigger>
+
                     <header className="space-y-1">
                         <h1 className="text-lg">
                             Section {index} - {section.level} {section.type} {section.name ? `- ${section.name}` : ""}
@@ -69,6 +75,7 @@ export function SectionAccordion({section, index}: SectionTableProps) {
                             Required</p>
                     </header>
                 </div>
+
                 <div className="flex gap-2 justify-end">
                     <Button variant="outline" className="mr-2 rounded-full w-[2.3rem]"
                             onClick={() => openDialog(section, 'ADD_COURSES')}>
@@ -79,11 +86,12 @@ export function SectionAccordion({section, index}: SectionTableProps) {
                         <Pencil className="size-4"/>
                     </Button>
 
-                    <Button variant="ghost" onClick={() => openDialog(section, 'DE')}>
+                    <Button variant="ghost" onClick={() => openDialog(section, 'DELETE')}>
                         <Trash className="size-4"/>
                     </Button>
                 </div>
             </div>
+
             <AccordionContent className="p-4">
                 <DataTable table={table}/>
             </AccordionContent>

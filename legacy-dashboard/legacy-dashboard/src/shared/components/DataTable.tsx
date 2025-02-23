@@ -1,6 +1,6 @@
 import {Table as TanStackTable} from "@tanstack/table-core";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/shared/components/ui/table.tsx";
 import {flexRender} from "@tanstack/react-table";
+import {Table} from "@mantine/core";
 
 type DataTableProps<TData> = {
     table: TanStackTable<TData>;
@@ -8,48 +8,48 @@ type DataTableProps<TData> = {
 
 export function DataTable<TData>({table}: DataTableProps<TData>) {
     return (
-        <Table>
-            <TableHeader>
+        <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} layout="fixed">
+            <Table.Thead>
                 {table.getHeaderGroups().map((headerGroup) => (
-                    <TableRow key={headerGroup.id}>
+                    <Table.Tr key={headerGroup.id}>
                         {headerGroup.headers.map((header) => {
                             return (
-                                <TableHead className="p-4" key={header.id}>
+                                <Table.Th className="p-4" key={header.id}>
                                     {header.isPlaceholder
                                         ? null
                                         : flexRender(
                                             header.column.columnDef.header,
                                             header.getContext()
                                         )}
-                                </TableHead>
+                                </Table.Th>
                             );
                         })}
-                    </TableRow>
+                    </Table.Tr>
                 ))}
-            </TableHeader>
-
-            <TableBody className="overflow-y-auto">
+            </Table.Thead>
+            <Table.Tbody>
                 {table.getRowModel().rows.length ? (
                     table.getRowModel().rows.map((row) => (
-                        <TableRow
+                        <Table.Tr
                             key={row.id}
                             data-state={row.getIsSelected() && "selected"}
                         >
                             {row.getVisibleCells().map((cell) => (
-                                <TableCell className="p-4" key={cell.id}>
+                                <Table.Td className="p-4" key={cell.id}>
                                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                </TableCell>
+                                </Table.Td>
                             ))}
-                        </TableRow>
+                        </Table.Tr>
+
                     ))
                 ) : (
-                    <TableRow>
-                        <TableCell colSpan={table.getLeafHeaders().length} className="h-24 text-center">
+                    <Table.Tr>
+                        <Table.Td colSpan={table.getLeafHeaders().length} className="h-24 text-center">
                             No results.
-                        </TableCell>
-                    </TableRow>
+                        </Table.Td>
+                    </Table.Tr>
                 )}
-            </TableBody>
+            </Table.Tbody>
         </Table>
     );
 }

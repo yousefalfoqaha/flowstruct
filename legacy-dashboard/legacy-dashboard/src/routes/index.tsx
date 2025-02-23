@@ -1,8 +1,8 @@
 import {createFileRoute} from '@tanstack/react-router'
-import {CreateProgramDialog} from "@/features/program/components/CreateProgramDialog.tsx";
+import {CreateProgramModal} from "@/features/program/components/CreateProgramModal.tsx";
 import {ProgramsTable} from "@/features/program/components/ProgramsTable.tsx";
 import {DialogProvider} from '@/contexts/DialogContext';
-import {EditProgramDetailsDialog} from "@/features/program/components/EditProgramDetailsDialog.tsx";
+import {EditProgramDetailsModal} from "@/features/program/components/EditProgramDetailsModal.tsx";
 import {DeleteProgramDialog} from "@/features/program/components/DeleteProgramDialog.tsx";
 import {getProgramListQuery} from "@/features/program/queries.ts";
 
@@ -19,11 +19,11 @@ function Index() {
             <div className="flex justify-between items-center gap-4">
                 <h1 className="text-4xl font-semibold">GJUPlans Dashboard</h1>
 
-                <CreateProgramDialog/>
+                <CreateProgramModal/>
             </div>
 
             <DialogProvider>
-                <EditProgramDetailsDialog/>
+                {/*<EditProgramDetailsModal/>*/}
                 <DeleteProgramDialog/>
                 <ProgramsTable/>
             </DialogProvider>

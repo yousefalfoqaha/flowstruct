@@ -12,11 +12,11 @@ export const useDeleteProgram = () => {
             queryClient.setQueryData(
                 ["programs"],
                 (previous: ProgramListItem[]) => {
-                    previous.filter((program) => program.id !== deletedProgramId);
+                    return previous.filter((program) => program.id !== deletedProgramId);
                 }
             );
 
-            queryClient.removeQueries({queryKey: ["study-plans", deletedProgramId]});
+            queryClient.removeQueries({queryKey: ["study-plans", "list", deletedProgramId]});
 
             toast({
                 description: "Program deleted successfully",

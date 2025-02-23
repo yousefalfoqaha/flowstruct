@@ -31,14 +31,14 @@ export const createProgramRequest = async (newProgram: Partial<Program>) => {
     return res.json();
 };
 
-export const editProgramDetailsRequest = async ({programId, editedProgram}: {
+export const editProgramDetailsRequest = async ({programId, editedProgramDetails}: {
     programId: number;
-    editedProgram: Partial<Program>
+    editedProgramDetails: Partial<Program>
 }) => {
     const response = await fetch(`http://localhost:8080/api/v1/programs/${programId}`, {
         method: "PUT",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(editedProgram),
+        body: JSON.stringify(editedProgramDetails),
     });
 
     if (!response.ok) {

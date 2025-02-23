@@ -1,19 +1,19 @@
 import {createColumnHelper, getCoreRowModel, useReactTable} from "@tanstack/react-table";
-import {Button} from "@/shared/components/ui/button.tsx";
 import {ArrowRightFromLine, Eye, EyeOff, Pencil, Trash} from "lucide-react";
-import {Badge} from "@/shared/components/ui/badge.tsx";
+import {ActionIcon, Badge} from "@mantine/core";
 import {DataTable} from "@/shared/components/DataTable.tsx";
 import {Link} from "@tanstack/react-router";
-import {useDialog} from "@/shared/hooks/useDialog.ts";
 import {StudyPlanListItem} from "@/features/study-plan/types.ts";
 import {useToggleStudyPlanVisibility} from "@/features/study-plan/hooks/useToggleStudyPlanVisibility.ts";
+import {openModal} from "@mantine/modals";
+import {EditStudyPlanDetailsModal} from "@/features/study-plan/components/EditStudyPlanDetailsModal.tsx";
+import {Button} from "@mantine/core";
 
 type StudyPlansTableProps = {
     studyPlanList: StudyPlanListItem[];
 }
 
 export function StudyPlansTable({studyPlanList}: StudyPlansTableProps) {
-    const {openDialog} = useDialog<StudyPlanListItem>();
     const toggleVisibility = useToggleStudyPlanVisibility();
 
     const {accessor, display} = createColumnHelper<StudyPlanListItem>();
@@ -22,9 +22,9 @@ export function StudyPlansTable({studyPlanList}: StudyPlansTableProps) {
             id: 'open',
             cell: ({row}) => (
                 <Link to="/study-plans/$studyPlanId"
-                      params={{studyPlanId: String(row.original.id)}} search={{}}>
-                    <Button variant="outline">
-                        View <ArrowRightFromLine/>
+                      params={{studyPlanId: String(row.original.id)}}>
+                    <Button variant="outline" rightSection={<ArrowRightFromLine size={14}/>}>
+                        View
                     </Button>
                 </Link>
             )
@@ -42,8 +42,8 @@ export function StudyPlansTable({studyPlanList}: StudyPlansTableProps) {
             cell: ({row}) => {
                 return row.getValue('isPrivate')
                     ?
-                    <Badge variant="outline" className="text-nowrap gap-1"><EyeOff className="size-4"/> Private</Badge>
-                    : <Badge className="text-nowrap gap-1"><Eye className="size-4"/> Public</Badge>
+                    <Badge variant="outline" leftSection={<EyeOff size={12}/>}>Private</Badge>
+                    : <Badge leftSection={<Eye size={12}/>}> Public</Badge>
             }
         }),
         accessor('duration', {
@@ -55,19 +55,36 @@ export function StudyPlansTable({studyPlanList}: StudyPlansTableProps) {
             header: () => <div className="flex justify-end pr-14">Actions</div>,
             cell: ({row}) => (
                 <div className="flex gap-2 justify-end items-center">
-                    <Button variant="ghost"
-                            onClick={() => openDialog(row.original, 'EDIT')}>
-                        <Pencil/>
-                    </Button>
-                    <Button variant="ghost" onClick={() => toggleVisibility.mutate(row.original)}>
-                        {row.getValue('isPrivate')
-                            ? <Eye/>
-                            : <EyeOff/>
+                    <ActionIcon
+                        variant="light"
+                        size="md"
+                        onClick={() =>
+                            openModal({
+                                title: `Edit ${row.original.year}/${row.original.year + 1} ${row.original.track ?? ''} Details`,
+                                centered: true,
+                                children: <EditStudyPlanDetailsModal studyPlan={row.original}/>
+                            })
                         }
-                    </Button>
-                    <Button variant="ghost" onClick={() => openDialog(row.original, 'DELETE')}>
-                        <Trash className="size-4"/>
-                    </Button>
+                    >
+                        <Pencil size={18}/>
+                    </ActionIcon>
+
+                    <ActionIcon
+                        variant="light"
+                        size="md"
+                        onClick={() => toggleVisibility.mutate(row.original)}
+                    >
+                        {row.getValue('isPrivate')
+                            ? <Eye size={18}/>
+                            : <EyeOff size={18}/>
+                        }
+                    </ActionIcon>
+                    <ActionIcon
+                        variant="light"
+                        size="md"
+                    >
+                        <Trash size={18}/>
+                    </ActionIcon>
                 </div>
             )
         })
@@ -79,9 +96,5 @@ export function StudyPlansTable({studyPlanList}: StudyPlansTableProps) {
         getCoreRowModel: getCoreRowModel()
     });
 
-    return (
-        <div className="rounded-lg border overflow-auto">
-            <DataTable table={table}/>
-        </div>
-    );
+    return <DataTable table={table}/>;
 }

@@ -1,5 +1,5 @@
-import React, {createContext, ReactNode} from "react";
-import {toast} from "@/shared/hooks/useToast.ts";
+import React, { createContext, ReactNode } from "react";
+import { toast } from "@/shared/hooks/useToast.ts";
 
 type Dialog = 'EDIT' | 'ADD_COURSES' | 'DELETE';
 
@@ -10,11 +10,9 @@ export type DialogContextType<T> = {
     item: T | null;
 };
 
-const DialogContext = createContext<DialogContextType<never> | undefined>(
-    undefined
-);
+const DialogContext = createContext<DialogContextType<any> | undefined>(undefined);
 
-function DialogProvider<T extends null>({children}: { children: ReactNode }) {
+function DialogProvider<T>({ children }: { children: ReactNode }) {
     const [item, setItem] = React.useState<T | null>(null);
     const [activeDialog, setActiveDialog] = React.useState<Dialog | null>(null);
 
@@ -39,15 +37,10 @@ function DialogProvider<T extends null>({children}: { children: ReactNode }) {
     const dialogIsOpen = (dialog: Dialog) => dialog === activeDialog;
 
     return (
-        <DialogContext.Provider value={{
-            dialogIsOpen,
-            openDialog,
-            closeDialog,
-            item
-        }}>
+        <DialogContext.Provider value={{ dialogIsOpen, openDialog, closeDialog, item }}>
             {children}
         </DialogContext.Provider>
     );
 }
 
-export {DialogContext, DialogProvider};
+export { DialogContext, DialogProvider };
