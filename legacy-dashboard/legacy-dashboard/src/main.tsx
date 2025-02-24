@@ -1,6 +1,7 @@
 import {StrictMode} from 'react'
 import {createRoot} from 'react-dom/client'
 import './index.css'
+import '@mantine/dates/styles.css';
 import {Toaster} from "@/shared/components/ui/toaster.tsx";
 import {createRouter, RouterProvider} from '@tanstack/react-router';
 import {routeTree} from './routeTree.gen';

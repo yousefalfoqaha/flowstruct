@@ -2,7 +2,7 @@ import {z} from "zod";
 import {SectionLevel, SectionType} from "@/features/study-plan/types.ts";
 
 export const studyPlanDetailsSchema = z.object({
-    year: z.number(),
+    year: z.date(),
     duration: z.number().min(1, {message: "Must be at least 1 year"}),
     track: z
         .string()

@@ -49,7 +49,7 @@ export function ProgramsTable() {
                             modals.open({
                                 title: `Edit ${row.original.degree} ${row.original.name} Details`,
                                 centered: true,
-                                children: <EditProgramDetailsModal program={row.original}/>
+                                children: <EditProgramDetailsModal program={row.original}/>,
                             })
                         }>
                         <Pencil size={18}/>

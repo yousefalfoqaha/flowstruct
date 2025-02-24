@@ -1,13 +1,14 @@
 import {createColumnHelper, getCoreRowModel, useReactTable} from "@tanstack/react-table";
 import {ArrowRightFromLine, Eye, EyeOff, Pencil, Trash} from "lucide-react";
-import {ActionIcon, Badge} from "@mantine/core";
+import {ActionIcon, Badge, Text} from "@mantine/core";
 import {DataTable} from "@/shared/components/DataTable.tsx";
 import {Link} from "@tanstack/react-router";
 import {StudyPlanListItem} from "@/features/study-plan/types.ts";
 import {useToggleStudyPlanVisibility} from "@/features/study-plan/hooks/useToggleStudyPlanVisibility.ts";
-import {openModal} from "@mantine/modals";
+import {modals, openModal} from "@mantine/modals";
 import {EditStudyPlanDetailsModal} from "@/features/study-plan/components/EditStudyPlanDetailsModal.tsx";
 import {Button} from "@mantine/core";
+import {useDeleteStudyPlan} from "@/features/study-plan/hooks/useDeleteStudyPlan.ts";
 
 type StudyPlansTableProps = {
     studyPlanList: StudyPlanListItem[];
@@ -15,6 +16,7 @@ type StudyPlansTableProps = {
 
 export function StudyPlansTable({studyPlanList}: StudyPlansTableProps) {
     const toggleVisibility = useToggleStudyPlanVisibility();
+    const deleteStudyPlan = useDeleteStudyPlan();
 
     const {accessor, display} = createColumnHelper<StudyPlanListItem>();
     const columns = [
@@ -82,6 +84,19 @@ export function StudyPlansTable({studyPlanList}: StudyPlansTableProps) {
                     <ActionIcon
                         variant="light"
                         size="md"
+                        onClick={() =>
+                            modals.openConfirmModal({
+                                title: 'Please confirm your action',
+                                children: (
+                                    <Text size="sm">
+                                        Deleting this study plan will delete all of its sections, program map, and overview, are you absolutely
+                                        sure?
+                                    </Text>
+                                ),
+                                labels: {confirm: 'Confirm', cancel: 'Cancel'},
+                                onConfirm: () => deleteStudyPlan.mutate(row.original)
+                            })
+                        }
                     >
                         <Trash size={18}/>
                     </ActionIcon>

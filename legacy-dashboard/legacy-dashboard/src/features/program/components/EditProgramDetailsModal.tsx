@@ -1,4 +1,4 @@
-import {Button, Flex} from "@mantine/core";
+import {Button, Flex, LoadingOverlay} from "@mantine/core";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {ProgramDetailsFormValues, programDetailsSchema} from "@/features/program/form-schemas.ts";
@@ -29,8 +29,9 @@ export function EditProgramDetailsModal({program}: { program: ProgramListItem })
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Flex direction="column" gap="md">
+                <LoadingOverlay visible={editProgramDetails.isPending} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
                 <ProgramDetailsFormFields control={control} errors={errors}/>
-                <Button type="submit" fullWidth mt="md">
+                <Button disabled={editProgramDetails.isPending} type="submit" fullWidth mt="md">
                     Save Changes
                 </Button>
             </Flex>

@@ -1,7 +1,7 @@
 import {Controller} from "react-hook-form";
 import {Select, Stack, TextInput} from "@mantine/core";
 import {Degree} from "@/features/program/types.ts";
-import {GraduationCap} from "lucide-react";
+import {GraduationCap, Hash} from "lucide-react";
 
 export function ProgramDetailsFormFields({control, errors}: { control: any, errors: any }) {
     return (
@@ -28,6 +28,7 @@ export function ProgramDetailsFormFields({control, errors}: { control: any, erro
                         label="Code"
                         description='A unique identifier (MECH, CS, MGT, etc.)'
                         {...field}
+                        leftSection={<Hash size={18} />}
                         error={errors.code?.message}
                         autoComplete="off"
                         withAsterisk

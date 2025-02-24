@@ -1,6 +1,6 @@
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Button, Modal, Flex} from "@mantine/core";
+import {Button, Modal, Flex, LoadingOverlay} from "@mantine/core";
 import {Plus} from "lucide-react";
 import {useDisclosure} from "@mantine/hooks";
 import {ProgramDetailsFormValues, programDetailsSchema} from "@/features/program/form-schemas.ts";
@@ -28,9 +28,12 @@ export function CreateProgramModal() {
 
     return (
         <>
-            <Modal opened={opened} onClose={close} title="Create New Program" centered>
+            <Modal opened={opened} onClose={() => {close(); reset()}} title="Create New Program" centered>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Flex gap="md" direction="column">
+
+                        <LoadingOverlay visible={createProgram.isPending} zIndex={1000}
+                                        overlayProps={{radius: "sm", blur: 2}}/>
                         <ProgramDetailsFormFields control={control} errors={errors}/>
                         <Button type="submit" fullWidth mt="md">Create Program</Button>
                     </Flex>

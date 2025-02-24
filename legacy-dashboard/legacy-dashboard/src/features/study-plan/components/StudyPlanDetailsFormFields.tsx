@@ -1,7 +1,9 @@
 import {Controller} from "react-hook-form";
-import {Button, NumberInput, Stack, TextInput} from "@mantine/core";
+import {NumberInput, Stack, TextInput} from "@mantine/core";
+import {Calendar, Timer} from "lucide-react";
+import {YearPickerInput} from "@mantine/dates";
 
-export function StudyPlanDetailsFormFields({control, errors}: {control: any, errors: any}) {
+export function StudyPlanDetailsFormFields({control, errors}: { control: any, errors: any }) {
 
     return (
         <Stack gap="md">
@@ -9,13 +11,12 @@ export function StudyPlanDetailsFormFields({control, errors}: {control: any, err
                 name="year"
                 control={control}
                 render={({field}) => (
-                    <NumberInput
+                    <YearPickerInput
                         label="Year"
                         placeholder={new Date().getFullYear().toString()}
-                        allowNegative={false}
-                        autoComplete="off"
                         {...field}
                         error={errors.year?.message}
+                        leftSection={<Calendar size={18}/>}
                         withAsterisk
                     />
                 )}
@@ -32,6 +33,7 @@ export function StudyPlanDetailsFormFields({control, errors}: {control: any, err
                         allowNegative={false}
                         {...field}
                         error={errors.duration?.message}
+                        leftSection={<Timer size={18}/>}
                         withAsterisk
                     />
                 )}
@@ -42,7 +44,7 @@ export function StudyPlanDetailsFormFields({control, errors}: {control: any, err
                 control={control}
                 render={({field}) => (
                     <TextInput
-                        label="Track"
+                        label="Track Name"
                         placeholder='Eg. "General Track"'
                         autoComplete="off"
                         {...field}

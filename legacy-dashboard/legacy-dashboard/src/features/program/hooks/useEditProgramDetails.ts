@@ -12,7 +12,7 @@ export const useEditProgramDetails = () => {
             queryClient.setQueryData(
                 ["programs"],
                 (previous: ProgramListItem[]) => {
-                    previous.map((program) =>
+                    return previous.map((program) =>
                         program.id === editedProgram.id ? editedProgram : program
                     );
                 }
