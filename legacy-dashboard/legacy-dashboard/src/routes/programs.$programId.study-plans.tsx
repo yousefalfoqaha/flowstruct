@@ -24,18 +24,13 @@ function RouteComponent() {
     const studyPlanList = useStudyPlanList(programId);
 
     return (
-        <div className="space-y-6 p-8">
-            <div className="flex justify-between items-center gap-4">
-                <h1 className="text-4xl font-semibold">
-                    {program.data.degree} {program.data.name} Study Plans
-                </h1>
-                <CreateStudyPlanModal programId={programId}/>
-            </div>
+        <>
+            <CreateStudyPlanModal programId={programId}/>
 
-                {studyPlanList.isPending
-                    ? <div className="p-10"><Loader2 className="animate-spin text-gray-500 mx-auto"/></div>
-                    : <StudyPlansTable studyPlanList={studyPlanList.data}/>
-                }
-        </div>
+            {studyPlanList.isPending
+                ? <div className="p-10"><Loader2 className="animate-spin text-gray-500 mx-auto"/></div>
+                : <StudyPlansTable studyPlanList={studyPlanList.data}/>
+            }
+        </>
     );
 }

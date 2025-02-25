@@ -36,32 +36,22 @@ function RouteComponent() {
     const {data: program} = useProgram(studyPlan.program);
 
     return (
-        <div className="space-y-2 p-8">
-            <header className="space-y-1">
-                <h1 className="text-3xl font-bold">{program.degree} {program.name}</h1>
-                <h3 className="opacity-60">
-                    Study
-                    Plan {studyPlan.year}/{studyPlan.year + 1} {studyPlan.track ? "- " + studyPlan.track : ""}
-                </h3>
-            </header>
-
-            <div>
-                <Tabs defaultValue="program-map" className="flex flex-col gap-1 items-center">
-                    <TabsList>
-                        <TabsTrigger value="overview">Overview</TabsTrigger>
-                        <TabsTrigger value="password">Framework</TabsTrigger>
-                        <TabsTrigger value="program-map">Program Map</TabsTrigger>
-                    </TabsList>
-                    <div className="place-self-start w-full">
-                        <TabsContent value="program-map">
-                            <ProgramMapTab duration={studyPlan.duration} coursePlacements={studyPlan.coursePlacements}/>
-                        </TabsContent>
-                        <TabsContent value="password">
-                            <SectionsTab sections={studyPlan.sections}/>
-                        </TabsContent>
-                    </div>
-                </Tabs>
-            </div>
-        </div>
+        <>
+            <Tabs defaultValue="program-map" className="flex flex-col gap-1 items-center">
+                <TabsList>
+                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                    <TabsTrigger value="password">Framework</TabsTrigger>
+                    <TabsTrigger value="program-map">Program Map</TabsTrigger>
+                </TabsList>
+                <div className="place-self-start w-full">
+                    <TabsContent value="program-map">
+                        <ProgramMapTab duration={studyPlan.duration} coursePlacements={studyPlan.coursePlacements}/>
+                    </TabsContent>
+                    <TabsContent value="password">
+                        <SectionsTab sections={studyPlan.sections}/>
+                    </TabsContent>
+                </div>
+            </Tabs>
+        </>
     );
 }

@@ -33,7 +33,7 @@ export function StudyPlansTable({studyPlanList}: StudyPlansTableProps) {
         }),
         accessor('year', {
             header: 'Year',
-            cell: ({row}) => <p>{row.original.year}/{row.original.year + 1}</p>
+            cell: ({row}) => <p>{row.original.year} - {row.original.year + 1}</p>
         }),
         accessor('track', {
             header: 'Track',
@@ -62,7 +62,7 @@ export function StudyPlansTable({studyPlanList}: StudyPlansTableProps) {
                         size="md"
                         onClick={() =>
                             openModal({
-                                title: `Edit ${row.original.year}/${row.original.year + 1} ${row.original.track ?? ''} Details`,
+                                title: `Edit ${row.original.year}-${row.original.year + 1} ${row.original.track ?? ''} Details`,
                                 centered: true,
                                 children: <EditStudyPlanDetailsModal studyPlan={row.original}/>
                             })

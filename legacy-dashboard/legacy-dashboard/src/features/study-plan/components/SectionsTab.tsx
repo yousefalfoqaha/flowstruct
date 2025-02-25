@@ -1,29 +1,23 @@
-import {EditSectionDetailsDialog} from "@/features/study-plan/components/EditSectionDetailsDialog.tsx";
-import {CreateSectionForm} from "@/features/study-plan/components/CreateSectionForm.tsx";
-import {Accordion} from "@/shared/components/ui/accordion.tsx";
-import {DeleteSectionDialog} from "@/features/study-plan/components/DeleteSectionDialog.tsx";
-import {AddCourseDialog} from "@/features/course/components/AddCourseDialog.tsx";
+import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
 import {SectionAccordion} from "@/features/study-plan/components/SectionAccordion.tsx";
-import {DialogProvider} from "@/contexts/DialogContext.tsx";
 import {Section} from "@/features/study-plan/types.ts";
+import {Accordion, Flex, Group, Title} from "@mantine/core";
 
-export function SectionsTab({sections}: {sections: Section[]}) {
+export function SectionsTab({sections}: { sections: Section[] }) {
     return (
-        <DialogProvider>
-            <AddCourseDialog/>
-            <EditSectionDetailsDialog/>
-            <DeleteSectionDialog/>
+        <>
+            <Flex direction="column" gap="md">
+                <Group justify="space-between">
+                    <Title>All Section</Title>
+                    <CreateSectionModal/>
+                </Group>
 
-            <header className="flex justify-between items-center">
-                <h1 className="text-2xl">All Sections</h1>
-                <CreateSectionForm />
-            </header>
-
-            <Accordion type="single">
-                {sections.map((section, index) => (
-                    <SectionAccordion key={section.id} section={section} index={index + 1}/>
-                ))}
-            </Accordion>
-        </DialogProvider>
+                <Accordion chevronPosition="left">
+                    {sections.map((section, index) => (
+                        <SectionAccordion key={section.id} section={section} index={index + 1}/>
+                    ))}
+                </Accordion>
+            </Flex>
+        </>
     );
 }

@@ -1,7 +1,7 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {toast} from "@/shared/hooks/useToast.ts";
 import {ProgramListItem} from "@/features/program/types.ts";
 import {createProgramRequest} from "@/features/program/api.ts";
+import {notifications} from "@mantine/notifications";
 
 export const useCreateProgram = () => {
     const queryClient = useQueryClient();
@@ -15,15 +15,17 @@ export const useCreateProgram = () => {
                 }
             );
 
-            toast({
-                description: "Program created successfully",
-                variant: "default",
+            notifications.show({
+                title: "Success!",
+                message: "Program created successfully",
+                color: "green"
             });
         },
         onError: (error) => {
-            toast({
-                description: error.message,
-                variant: "destructive",
+            notifications.show({
+                title: "An error occurred.",
+                message: error.message,
+                color: "red",
             });
         },
     });

@@ -12,31 +12,34 @@ export function CreateStudyPlanModal({programId}: { programId: number }) {
     const [opened, {open, close}] = useDisclosure(false);
 
     const {control, handleSubmit, reset, formState: {errors}} = useForm<StudyPlanDetailsFormValues>({
-        resolver: zodResolver(studyPlanDetailsSchema),
-        defaultValues: {
-            year: undefined,
-            duration: undefined,
-            track: null
-        }
+        resolver: zodResolver(studyPlanDetailsSchema)
     });
 
     const createStudyPlan = useCreateStudyPlan();
 
     const onSubmit = (data: StudyPlanDetailsFormValues) => {
-        console.log(data);
         createStudyPlan.mutate({
-            createdStudyPlanDetails: data,
+            createdStudyPlanDetails: {...data, year: data.year.getFullYear()},
             programId: programId
-        }, {onSuccess: () => modals.closeAll()});
+        }, {
+            onSuccess: () => {
+                modals.closeAll();
+                reset();
+            }
+        });
         close();
     };
 
     return (
         <>
-            <Modal opened={opened} onClose={() => {close(); reset()}} title="Create New Study Plan" centered>
+            <Modal opened={opened} onClose={() => {
+                close();
+                reset();
+            }} title="Create Study Plan" centered>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Flex direction="column" gap="md">
-                        <LoadingOverlay visible={createStudyPlan.isPending} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }} />
+                        <LoadingOverlay visible={createStudyPlan.isPending} zIndex={1000}
+                                        overlayProps={{radius: "sm", blur: 2}}/>
                         <StudyPlanDetailsFormFields control={control} errors={errors}/>
                         <Button type="submit">Create Study Plan</Button>
                     </Flex>

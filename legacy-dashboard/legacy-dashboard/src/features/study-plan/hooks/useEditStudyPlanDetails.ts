@@ -1,7 +1,7 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {toast} from "@/shared/hooks/useToast.ts";
 import {StudyPlan, StudyPlanListItem} from "@/features/study-plan/types.ts";
 import {updateStudyPlanDetailsRequest} from "@/features/study-plan/api.ts";
+import {notifications} from "@mantine/notifications";
 
 export const useEditStudyPlanDetails = () => {
     const queryClient = useQueryClient();
@@ -19,20 +19,26 @@ export const useEditStudyPlanDetails = () => {
             );
 
             const detailedStudyPlan = queryClient.getQueryData(["study-plan", "detail", updatedStudyPlan.id]);
-            if (!detailedStudyPlan) return;
 
-            queryClient.setQueryData(["study-plan", "detail", updatedStudyPlan.id], {
-                ...detailedStudyPlan,
-                duration: updatedStudyPlan.duration,
-                track: updatedStudyPlan.track,
-                year: updatedStudyPlan.year,
+            if (detailedStudyPlan) {
+                queryClient.setQueryData(["study-plan", "detail", updatedStudyPlan.id], {
+                    ...detailedStudyPlan,
+                    duration: updatedStudyPlan.duration,
+                    track: updatedStudyPlan.track,
+                    year: updatedStudyPlan.year,
+                });
+            }
+
+            notifications.show({
+                title: "Success!",
+                message: "Study plan details updated successfully",
+                color: "green"
             });
-
-            toast({description: 'Study plan updated successfully'});
         },
         onError: (error) => {
-            toast({
-                description: error.message,
+            notifications.show({
+                title: "An error occurred.",
+                message: error.message,
                 variant: "destructive",
             });
         },

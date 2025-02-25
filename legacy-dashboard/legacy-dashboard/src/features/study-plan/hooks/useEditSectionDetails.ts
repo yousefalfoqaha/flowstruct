@@ -1,7 +1,7 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {StudyPlan} from "@/features/study-plan/types.ts";
-import {toast} from "@/shared/hooks/useToast.ts";
 import {editSectionDetailsRequest} from "@/features/study-plan/api.ts";
+import {notifications} from "@mantine/notifications";
 
 export const useEditSectionDetails = () => {
     const queryClient = useQueryClient();
@@ -10,8 +10,16 @@ export const useEditSectionDetails = () => {
         mutationFn: editSectionDetailsRequest,
         onSuccess: ((updatedStudyPlan: StudyPlan) => {
             queryClient.setQueryData(["study-plan", "detail", updatedStudyPlan.id], updatedStudyPlan);
-            toast({description: "Successfully edited section details."});
+            notifications.show({
+                title: "Success!",
+                message: "Section details updated successfully",
+                color: "green"
+            });
         }),
-        onError: (error) => toast({description: error.message, variant: 'destructive'})
+        onError: (error) => notifications.show({
+            title: "An error occurred.",
+            message: error.message,
+            variant: "destructive",
+        })
     });
 }

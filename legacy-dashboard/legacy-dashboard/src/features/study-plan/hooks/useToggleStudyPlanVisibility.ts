@@ -1,7 +1,9 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {toast} from "@/shared/hooks/useToast.ts";
 import {StudyPlanListItem} from "@/features/study-plan/types.ts";
 import {toggleStudyPlanVisibilityRequest} from "@/features/study-plan/api.ts";
+import {notifications} from "@mantine/notifications";
+import {Eye, EyeOff} from "lucide-react";
+import React from "react";
 
 export const useToggleStudyPlanVisibility = () => {
     const queryClient = useQueryClient();
@@ -17,9 +19,10 @@ export const useToggleStudyPlanVisibility = () => {
                     ));
                 });
 
-            toast({
+            notifications.show({
                 title: updatedStudyPlan.isPrivate ? 'Study plan has been made public.' : 'Study plan has been made private.',
-                description: updatedStudyPlan.isPrivate ? 'Latest changes will be public.' : 'Latest changes will be private.'
+                message: updatedStudyPlan.isPrivate ? 'Latest changes will be public.' : 'Latest changes will be private.',
+                icon: React.createElement(updatedStudyPlan.isPrivate ? Eye : EyeOff, {size: 18})
             });
         }
     });

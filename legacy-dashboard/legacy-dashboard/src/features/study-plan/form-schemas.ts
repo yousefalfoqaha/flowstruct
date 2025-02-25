@@ -14,20 +14,16 @@ export const studyPlanDetailsSchema = z.object({
 
 export type StudyPlanDetailsFormValues = z.infer<typeof studyPlanDetailsSchema>;
 
-export const editSectionFormSchema = z.object({
+export const sectionDetailsSchema = z.object({
     level: z.nativeEnum(SectionLevel),
     type: z.nativeEnum(SectionType),
-    requiredCreditHours: z
-        .union([z.string(), z.number()])
-        .transform((val) => Number(val)),
-    name: z.string().nullable()
+    requiredCreditHours: z.number().nonnegative({message: "Must be positive"}),
+    name: z
+        .string()
+        .trim()
+        .transform((val) => (val === "" ? null : val))
+        .nullable()
+        .optional()
 });
 
-export const createSectionFormSchema = z.object({
-    level: z.nativeEnum(SectionLevel),
-    type: z.nativeEnum(SectionType),
-    requiredCreditHours: z
-        .union([z.string(), z.number()])
-        .transform((val) => Number(val)),
-    name: z.string().nullable()
-});
+export type SectionDetailsFormValues = z.infer<typeof sectionDetailsSchema>;

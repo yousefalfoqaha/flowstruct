@@ -1,7 +1,7 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {toast} from "@/shared/hooks/useToast.ts";
 import {StudyPlanListItem} from "@/features/study-plan/types.ts";
 import {createStudyPlanRequest} from "@/features/study-plan/api.ts";
+import {notifications} from "@mantine/notifications";
 
 export const useCreateStudyPlan = () => {
     const queryClient = useQueryClient();
@@ -15,12 +15,17 @@ export const useCreateStudyPlan = () => {
                     return [...studyPlans, newStudyPlan];
                 });
 
-            toast({description: "Study plan created successfully."});
+            notifications.show({
+                title: "Success!",
+                message: "Study plan created successfully",
+                color: "green"
+            });
         },
         onError: (error) => {
-            toast({
-                description: error.message,
-                variant: 'destructive'
+            notifications.show({
+                title: "An error occurred.",
+                message: error.message,
+                variant: "destructive",
             });
         }
     });

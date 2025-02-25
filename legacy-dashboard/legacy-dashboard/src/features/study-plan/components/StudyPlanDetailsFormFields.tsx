@@ -28,11 +28,12 @@ export function StudyPlanDetailsFormFields({control, errors}: { control: any, er
                 render={({field}) => (
                     <NumberInput
                         label="Duration"
-                        description="Study plan duration in years"
                         autoComplete="off"
+                        placeholder="In years"
                         allowNegative={false}
                         {...field}
                         error={errors.duration?.message}
+                        suffix={` ${field.value === 1 ? 'Year' :'Years'}`}
                         leftSection={<Timer size={18}/>}
                         withAsterisk
                     />

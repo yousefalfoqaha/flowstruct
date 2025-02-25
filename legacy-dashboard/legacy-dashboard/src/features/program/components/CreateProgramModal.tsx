@@ -22,19 +22,27 @@ export function CreateProgramModal() {
     const createProgram = useCreateProgram();
 
     const onSubmit = (data: ProgramDetailsFormValues) => {
-        createProgram.mutate(data, {onSuccess: () => close()});
-        reset();
+        createProgram.mutate(data, {
+            onSuccess: () => {
+                close();
+                reset();
+            }
+        });
     };
 
     return (
         <>
-            <Modal opened={opened} onClose={() => {close(); reset()}} title="Create New Program" centered>
+            <Modal opened={opened} onClose={() => {
+                close();
+                reset();
+            }} title="Create Program" centered>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Flex gap="md" direction="column">
-
                         <LoadingOverlay visible={createProgram.isPending} zIndex={1000}
                                         overlayProps={{radius: "sm", blur: 2}}/>
+
                         <ProgramDetailsFormFields control={control} errors={errors}/>
+
                         <Button type="submit" fullWidth mt="md">Create Program</Button>
                     </Flex>
                 </form>

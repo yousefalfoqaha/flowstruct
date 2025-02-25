@@ -1,4 +1,4 @@
-import {CourseSearch} from "@/features/course/components/CourseSearch.tsx";
+import {OldCourseSearch} from "@/features/course/components/OldCourseSearch.tsx";
 import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle} from "@/shared/components/ui/sheet.tsx"
 import {useDialog} from "@/shared/hooks/useDialog.ts";
 import {Section} from "@/features/study-plan/types.ts";
@@ -22,7 +22,7 @@ export function AddCourseDialog() {
                     </SheetDescription>
                 </SheetHeader>
 
-                <CourseSearch/>
+                <OldCourseSearch/>
             </SheetContent>
         </Sheet>
     );

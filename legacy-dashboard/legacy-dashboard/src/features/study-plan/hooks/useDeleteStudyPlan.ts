@@ -1,7 +1,7 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {StudyPlanListItem} from "@/features/study-plan/types.ts";
 import {deleteStudyPlanRequest} from "@/features/study-plan/api.ts";
-import {toast} from "@/shared/hooks/useToast.ts";
+import {notifications} from "@mantine/notifications";
 
 export const useDeleteStudyPlan = () => {
     const queryClient = useQueryClient();
@@ -18,14 +18,16 @@ export const useDeleteStudyPlan = () => {
 
             queryClient.removeQueries({queryKey: ["study-plan", deletedStudyPlan.id]});
 
-            toast({
-                description: "Study plan deleted successfully",
-                variant: "default",
+            notifications.show({
+                title: "Success!",
+                message: "Study plan deleted successfully",
+                color: "green"
             });
         },
         onError: (error) => {
-            toast({
-                description: error.message,
+            notifications.show({
+                title: "An error occurred.",
+                message: error.message,
                 variant: "destructive",
             });
         },
