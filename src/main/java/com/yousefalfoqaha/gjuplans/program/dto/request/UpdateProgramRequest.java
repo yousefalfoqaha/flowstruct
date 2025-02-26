@@ -6,9 +6,6 @@ import jakarta.validation.constraints.NotNull;
 
 public record UpdateProgramRequest(
 
-        @NotNull(message = "Undefined program ID.")
-        long id,
-
         @NotEmpty(message = "Code cannot be empty.")
         String code,
 

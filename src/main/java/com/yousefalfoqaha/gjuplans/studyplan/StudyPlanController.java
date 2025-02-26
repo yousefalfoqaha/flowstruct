@@ -4,7 +4,6 @@ import com.yousefalfoqaha.gjuplans.studyplan.dto.request.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +17,10 @@ public class StudyPlanController {
     private final StudyPlanService studyPlanService;
 
     @GetMapping
-    public ResponseEntity<List<StudyPlanSummaryResponse>> getAllStudyPlans() {
-        return new ResponseEntity<>(studyPlanService.getAllStudyPlans(), HttpStatus.OK);
+    public ResponseEntity<List<StudyPlanSummaryResponse>> getProgramStudyPlans(
+            @RequestParam(value = "program", defaultValue = "") long programId
+    ) {
+        return new ResponseEntity<>(studyPlanService.getProgramStudyPlans(programId), HttpStatus.OK);
     }
 
     @GetMapping("/{studyPlanId}")
@@ -34,11 +35,11 @@ public class StudyPlanController {
     }
 
     @PutMapping("/{studyPlanId}")
-    public ResponseEntity<StudyPlanSummaryResponse> updateStudyPlan(
+    public ResponseEntity<StudyPlanSummaryResponse> editStudyPlanDetails(
             @PathVariable long studyPlanId,
-            @RequestBody UpdateStudyPlanRequest request
+            @RequestBody EditStudyPlanDetailsRequest request
     ) {
-        return new ResponseEntity<>(studyPlanService.updateStudyPlan(studyPlanId, request), HttpStatus.OK);
+        return new ResponseEntity<>(studyPlanService.editStudyPlanDetails(studyPlanId, request), HttpStatus.OK);
     }
 
     @PostMapping

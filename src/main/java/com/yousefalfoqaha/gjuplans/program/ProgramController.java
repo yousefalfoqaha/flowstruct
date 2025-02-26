@@ -2,9 +2,8 @@ package com.yousefalfoqaha.gjuplans.program;
 
 import com.yousefalfoqaha.gjuplans.program.dto.request.CreateProgramRequest;
 import com.yousefalfoqaha.gjuplans.program.dto.request.UpdateProgramRequest;
-import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramOptionResponse;
+import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramSummaryResponse;
 import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramResponse;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,18 +18,21 @@ public class ProgramController {
     private final ProgramService programService;
 
     @GetMapping
-    public ResponseEntity<List<ProgramOptionResponse>> getAllPrograms() {
+    public ResponseEntity<List<ProgramSummaryResponse>> getAllPrograms() {
         return new ResponseEntity<>(programService.getAllProgramOptions(), HttpStatus.OK);
     }
 
-    @GetMapping("/{programId}/study-plans")
-    public ResponseEntity<List<StudyPlanSummaryResponse>> getProgramStudyPlans(@PathVariable long programId) {
-        return new ResponseEntity<>(programService.getProgramStudyPlans(programId), HttpStatus.OK);
+    @GetMapping("/{programId}")
+    public ResponseEntity<ProgramResponse> getProgram(@PathVariable long programId) {
+        return new ResponseEntity<>(programService.getProgram(programId), HttpStatus.OK);
     }
 
-    @PutMapping
-    public ResponseEntity<ProgramResponse> updateProgram(@RequestBody UpdateProgramRequest request) {
-        return new ResponseEntity<>(programService.updateProgram(request), HttpStatus.OK);
+    @PutMapping("/{programId}")
+    public ResponseEntity<ProgramResponse> updateProgram(
+            @PathVariable long programId,
+            @RequestBody UpdateProgramRequest request
+    ) {
+        return new ResponseEntity<>(programService.editProgramDetails(programId, request), HttpStatus.OK);
     }
 
     @PostMapping

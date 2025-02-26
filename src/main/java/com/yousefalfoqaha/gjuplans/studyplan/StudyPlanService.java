@@ -31,19 +31,12 @@ import java.util.stream.Collectors;
 public class StudyPlanService {
     private final StudyPlanRepository studyPlanRepository;
     private final CourseService courseService;
-    private final ObjectValidator<UpdateStudyPlanRequest> updateStudyPlanValidator;
+    private final ObjectValidator<EditStudyPlanDetailsRequest> editStudyPlanDetailsValidator;
     private final ObjectValidator<AddCoursesToSemesterRequest> addCoursesToSemesterValidator;
     private final ObjectValidator<EditSectionRequest> editSectionRequestValidator;
     private final StudyPlanResponseMapper studyPlanResponseMapper;
     private final StudyPlanSummaryResponseMapper studyPlanSummaryResponseMapper;
     private final ObjectValidator<AddCoursesToSectionRequest> addCoursesToSectionValidator;
-
-    public List<StudyPlanSummaryResponse> getAllStudyPlans() {
-        return studyPlanRepository.findAllStudyPlanSummaries()
-                .stream()
-                .map(studyPlanSummaryResponseMapper)
-                .toList();
-    }
 
     public List<StudyPlanSummaryResponse> getProgramStudyPlans(long programId) {
         return studyPlanRepository.findAllStudyPlanSummariesByProgram(programId)
@@ -98,8 +91,8 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanSummaryResponse updateStudyPlan(long studyPlanId, UpdateStudyPlanRequest request) {
-        updateStudyPlanValidator.validate(request);
+    public StudyPlanSummaryResponse editStudyPlanDetails(long studyPlanId, EditStudyPlanDetailsRequest request) {
+        editStudyPlanDetailsValidator.validate(request);
 
         var studyPlan = findStudyPlan(studyPlanId);
 
@@ -168,7 +161,7 @@ public class StudyPlanService {
                             section.setRequiredCreditHours(request.requiredCreditHours());
                             section.setName(request.name());
                         }, () -> {
-                            throw new RuntimeException("Section was not found");
+                            throw new SectionNotFoundException("Section was not found");
                         }
                 );
 
@@ -222,7 +215,6 @@ public class StudyPlanService {
         var updatedStudyPlan = studyPlanRepository.save(studyPlan);
         return studyPlanResponseMapper.apply(updatedStudyPlan);
     }
-
 
     private StudyPlan findStudyPlan(long studyPlanId) {
         return studyPlanRepository.findById(studyPlanId)

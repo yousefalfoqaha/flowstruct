@@ -1,7 +1,6 @@
 package com.yousefalfoqaha.gjuplans.course.service;
 
 import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
-import com.yousefalfoqaha.gjuplans.course.CoursePagingRepository;
 import com.yousefalfoqaha.gjuplans.course.CourseRepository;
 import com.yousefalfoqaha.gjuplans.course.domain.Course;
 import com.yousefalfoqaha.gjuplans.course.domain.CourseSequences;
@@ -12,7 +11,9 @@ import com.yousefalfoqaha.gjuplans.course.mapper.CourseResponseMapper;
 import com.yousefalfoqaha.gjuplans.course.mapper.CoursesPageResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,18 +24,25 @@ import java.util.stream.Collectors;
 @Service
 public class CourseService {
     private final CourseRepository courseRepository;
-    private final CoursePagingRepository coursePagingRepository;
     private final CourseGraphService courseGraphService;
     private final ObjectValidator<CreateCourseRequest> createCourseValidator;
     private final CourseResponseMapper courseResponseMapper;
     private final CoursesPageResponseMapper coursesPageResponseMapper;
 
-    public CoursesPageResponse getPaginatedCourses(String code, String name, int page, int size) {
-        Page<Course> coursesPage = coursePagingRepository.findByCodeContainingIgnoreCaseAndNameContainingIgnoreCase(
-                code,
-                name,
-                PageRequest.of(page, size)
+    public CoursesPageResponse getPaginatedCourses(String search, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        var searchParam = '%' + search + '%';
+
+        var courseIds = courseRepository.findAllBySearchQuery(
+                searchParam,
+                pageable.getPageSize(),
+                pageable.getOffset()
         );
+
+        var courses = courseRepository.findAllById(courseIds);
+        var total = courseRepository.countAllBySearchQuery(searchParam);
+
+        Page<Course> coursesPage = new PageImpl<>(courses, pageable, total);
 
         return coursesPageResponseMapper.apply(coursesPage);
     }

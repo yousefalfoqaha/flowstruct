@@ -4,12 +4,10 @@ import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.program.domain.Program;
 import com.yousefalfoqaha.gjuplans.program.dto.request.CreateProgramRequest;
 import com.yousefalfoqaha.gjuplans.program.dto.request.UpdateProgramRequest;
-import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramOptionResponse;
+import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramSummaryResponse;
 import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramResponse;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
-import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanService;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,26 +18,19 @@ import java.util.List;
 @Service
 public class ProgramService {
     private final ProgramRepository programRepository;
-    private final StudyPlanService studyPlanService;
     private final ObjectValidator<UpdateProgramRequest> updateProgramValidator;
     private final ObjectValidator<CreateProgramRequest> createProgramValidator;
 
-
-    public List<ProgramOptionResponse> getAllProgramOptions() {
-
+    public List<ProgramSummaryResponse> getAllProgramOptions() {
         return programRepository.findAllProgramOptions()
                 .stream()
-                .map(o -> new ProgramOptionResponse(
+                .map(o -> new ProgramSummaryResponse(
                         o.getId(),
                         o.getCode(),
                         o.getName(),
                         o.getDegree().name()
                 ))
                 .toList();
-    }
-
-    public List<StudyPlanSummaryResponse> getProgramStudyPlans(long programId) {
-        return studyPlanService.getProgramStudyPlans(programId);
     }
 
     public ProgramResponse getProgram(long programId) {
@@ -57,10 +48,10 @@ public class ProgramService {
     }
 
     @Transactional
-    public ProgramResponse updateProgram(UpdateProgramRequest request) {
+    public ProgramResponse editProgramDetails(long programId, UpdateProgramRequest request) {
         updateProgramValidator.validate(request);
 
-        Program program = programRepository.findById(request.id())
+        Program program = programRepository.findById(programId)
                 .orElseThrow(() -> new ProgramNotFoundException("Program does not exist."));
 
 
@@ -68,14 +59,11 @@ public class ProgramService {
             throw new UniqueProgramException("Program with code " + request.code() + " already exists.");
         }
 
-        Program updatedProgram = programRepository.save(
-                new Program(
-                        request.id(),
-                        request.code(),
-                        request.name(),
-                        request.degree()
-                )
-        );
+        program.setCode(request.code());
+        program.setName(request.name());
+        program.setDegree(request.degree());
+
+        Program updatedProgram = programRepository.save(program);
 
         return new ProgramResponse(
                 updatedProgram.getId(),
