@@ -37,3 +37,5 @@ export type CoursesPage = {
     totalPages: number;
     isLastPage: boolean;
 }
+
+export type CourseSummary = Pick<Course, "id" | "code" | "name" | "creditHours">;

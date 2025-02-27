@@ -1,5 +1,4 @@
 import {Course, CoursesPage} from "@/features/course/types.ts";
-import {PaginationState} from "@tanstack/react-table";
 
 export const getCoursesRequest = async (courseIds: number[]) => {
     const res = await fetch(`http://localhost:8080/api/v1/courses/by-ids?courses=${courseIds}`);
@@ -7,12 +6,9 @@ export const getCoursesRequest = async (courseIds: number[]) => {
     return await res.json() as Course;
 };
 
-export const fetchPaginatedCourses = async (
-    searchQuery: Partial<Course>,
-    pagination: PaginationState
-) => {
+export const fetchPaginatedCoursesBySearch = async (search: string, pageParam: number) => {
     const res = await fetch(
-        `http://localhost:8080/api/v1/courses?code=${searchQuery.code}&name=${searchQuery.name}&page=${pagination.pageIndex}&size=${pagination.pageSize}`
+        `http://localhost:8080/api/v1/courses?search=${search}&page=${pageParam}&size=5`
     );
     if (!res.ok) throw new Error("Failed to fetch courses page");
     return (await res.json()) as CoursesPage;
