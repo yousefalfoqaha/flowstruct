@@ -216,6 +216,26 @@ public class StudyPlanService {
         return studyPlanResponseMapper.apply(updatedStudyPlan);
     }
 
+    public StudyPlanResponse removeCourseFromSection(
+            long studyPlanId,
+            long sectionId,
+            long courseId
+    ) {
+        var studyPlan = findStudyPlan(studyPlanId);
+
+        var section = studyPlan.getSections().stream()
+                .filter(s -> s.getId() == sectionId)
+                .findFirst()
+                .orElseThrow(() -> new SectionNotFoundException("Section was not found"));
+
+        section.getCourses().removeIf(sectionCourse ->
+                sectionCourse.getCourse().getId() == courseId
+        );
+
+        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
+        return studyPlanResponseMapper.apply(updatedStudyPlan);
+    }
+
     private StudyPlan findStudyPlan(long studyPlanId) {
         return studyPlanRepository.findById(studyPlanId)
                 .orElseThrow(() -> new StudyPlanNotFoundException("Study plan with id " + studyPlanId + " was not found."));

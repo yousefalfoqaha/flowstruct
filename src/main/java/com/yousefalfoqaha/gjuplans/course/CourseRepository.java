@@ -14,9 +14,9 @@ public interface CourseRepository extends ListCrudRepository<Course, Long> {
             "SELECT id " +
             "FROM course " +
             "WHERE name " +
-            "LIKE :search " +
+            "ILIKE :search " +
             "OR code " +
-            "LIKE :search " +
+            "ILIKE :search " +
             "LIMIT :limit " +
             "OFFSET :offset"
     )
@@ -26,9 +26,9 @@ public interface CourseRepository extends ListCrudRepository<Course, Long> {
             "SELECT COUNT(*) " +
             "FROM Course " +
             "WHERE name " +
-            "LIKE :search " +
+            "ILIKE :search " +
             "OR code " +
-            "LIKE :search"
+            "ILIKE :search"
     )
     long countAllBySearchQuery(String search);
 }
