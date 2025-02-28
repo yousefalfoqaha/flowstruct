@@ -12,7 +12,7 @@ export function SectionsTab({sections}: { sections: Section[] }) {
                     <CreateSectionModal/>
                 </Group>
 
-                <Accordion chevronPosition="left">
+                <Accordion onChange={() => {}} chevronPosition="left">
                     {sections.map((section, index) => (
                         <SectionAccordion key={section.id} section={section} index={index + 1}/>
                     ))}

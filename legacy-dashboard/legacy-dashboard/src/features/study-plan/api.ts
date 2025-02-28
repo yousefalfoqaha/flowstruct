@@ -131,3 +131,36 @@ export const editSectionDetailsRequest = async ({updatedSectionDetails, sectionI
 
     return await response.json() as StudyPlan;
 };
+
+export const removeCourseFromSectionRequest = async ({courseId, sectionId, studyPlanId}: {
+    courseId: number,
+    sectionId: number,
+    studyPlanId: number
+}) => {
+    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/sections/${sectionId}/courses/${courseId}`, {
+        method: 'DELETE'
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'An unknown error occurred');
+    }
+
+    return await res.json() as StudyPlan;
+};
+
+export const deleteSectionRequest = async ({studyPlanId, sectionId}: {
+    studyPlanId: number,
+    sectionId: number
+}) => {
+    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/sections/${sectionId}`, {
+        method: 'DELETE'
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'An unknown error occurred');
+    }
+
+    return await res.json() as StudyPlan;
+}

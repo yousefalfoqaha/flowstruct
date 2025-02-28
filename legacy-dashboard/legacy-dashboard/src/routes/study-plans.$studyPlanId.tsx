@@ -7,6 +7,7 @@ import {getStudyPlanQuery} from "@/features/study-plan/queries.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useProgram} from "@/features/program/hooks/useProgram.ts";
 import {getCourseListQuery} from "@/features/course/queries.ts";
+import {Course} from "@/features/course/types.ts";
 
 export const Route = createFileRoute("/study-plans/$studyPlanId")({
     component: RouteComponent,
@@ -17,7 +18,7 @@ export const Route = createFileRoute("/study-plans/$studyPlanId")({
         await queryClient.ensureQueryData(getProgramQuery(studyPlan.program));
 
         const studyPlanCourseIds = studyPlan.sections.flatMap(section => Array.from(section.courses));
-        const cachedCourses = queryClient.getQueryData(["courses"]);
+        const cachedCourses = queryClient.getQueryData<Record<number, Course>>(["courses"]);
 
         const missingCourseIds = studyPlanCourseIds.reduce<number[]>((acc, courseId) => {
             if (!cachedCourses || !cachedCourses[courseId]) {

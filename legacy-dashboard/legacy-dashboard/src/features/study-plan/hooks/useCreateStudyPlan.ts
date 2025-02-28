@@ -25,7 +25,7 @@ export const useCreateStudyPlan = () => {
             notifications.show({
                 title: "An error occurred.",
                 message: error.message,
-                variant: "destructive",
+                color: "red",
             });
         }
     });

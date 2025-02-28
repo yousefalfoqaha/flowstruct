@@ -24,6 +24,13 @@ export const useToggleStudyPlanVisibility = () => {
                 message: updatedStudyPlan.isPrivate ? 'Latest changes will be public.' : 'Latest changes will be private.',
                 icon: React.createElement(updatedStudyPlan.isPrivate ? Eye : EyeOff, {size: 18})
             });
-        }
+        },
+        onError: (error) => {
+            notifications.show({
+                title: "An error occurred.",
+                message: error.message,
+                color: "red",
+            });
+        },
     });
 }
