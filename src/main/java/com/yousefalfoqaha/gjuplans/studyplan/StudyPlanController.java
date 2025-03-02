@@ -98,14 +98,13 @@ public class StudyPlanController {
         );
     }
 
-    @DeleteMapping("/{studyPlanId}/sections/{sectionId}/courses/{courseId}")
-    public ResponseEntity<StudyPlanResponse> removeCourseFromSection(
+    @DeleteMapping("/{studyPlanId}/courses/{courseId}")
+    public ResponseEntity<StudyPlanResponse> removeCourseFromStudyPlan(
             @PathVariable long studyPlanId,
-            @PathVariable long sectionId,
             @PathVariable long courseId
     ) {
         return new ResponseEntity<>(
-                studyPlanService.removeCourseFromSection(studyPlanId, sectionId, courseId),
+                studyPlanService.removeCourseFromSection(studyPlanId, courseId),
                 HttpStatus.OK
         );
     }

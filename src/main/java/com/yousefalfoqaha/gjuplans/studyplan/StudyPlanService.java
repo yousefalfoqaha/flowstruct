@@ -173,7 +173,17 @@ public class StudyPlanService {
     @Transactional
     public StudyPlanResponse deleteSection(long studyPlanId, long sectionId) {
         var studyPlan = findStudyPlan(studyPlanId);
-        studyPlan.getSections().removeIf(s -> s.getId() == sectionId);
+
+        var section = studyPlan.getSections().stream()
+                .filter(s -> s.getId() == sectionId)
+                .findFirst()
+                .orElseThrow(() -> new SectionNotFoundException("Section not found"));
+
+        section.getCourses().forEach(sectionCourse ->
+                studyPlan.getCoursePlacements().remove(sectionCourse.getCourse().getId())
+        );
+
+        studyPlan.getSections().remove(section);
 
         var updatedStudyPlan = studyPlanRepository.save(studyPlan);
 
@@ -218,19 +228,18 @@ public class StudyPlanService {
 
     public StudyPlanResponse removeCourseFromSection(
             long studyPlanId,
-            long sectionId,
             long courseId
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
 
-        var section = studyPlan.getSections().stream()
-                .filter(s -> s.getId() == sectionId)
-                .findFirst()
-                .orElseThrow(() -> new SectionNotFoundException("Section was not found"));
+        studyPlan.getSections()
+                .forEach(section -> section
+                        .getCourses()
+                        .removeIf(sectionCourse ->
+                                sectionCourse.getCourse().getId() == courseId
+                        ));
 
-        section.getCourses().removeIf(sectionCourse ->
-                sectionCourse.getCourse().getId() == courseId
-        );
+        studyPlan.getCoursePlacements().remove(courseId);
 
         var updatedStudyPlan = studyPlanRepository.save(studyPlan);
         return studyPlanResponseMapper.apply(updatedStudyPlan);
