@@ -14,13 +14,12 @@ import {
 import {Section} from "@/features/study-plan/types.ts";
 import React from "react";
 import {Plus} from "lucide-react";
-import {useInfiniteQuery} from "@tanstack/react-query";
-import {fetchPaginatedCoursesBySearch} from "@/features/course/api.ts";
 import {useDebouncedValue} from "@mantine/hooks";
 import {Course} from "@/features/course/types.ts";
 import {useAddCoursesToSection} from "@/features/study-plan/hooks/useAddCoursesToSection.ts";
 import {useParams} from "@tanstack/react-router";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
+import {usePaginatedCourses} from "@/features/course/hooks/usePaginatedCourses.ts";
 
 export function CourseSearch({section}: { section: Section }) {
     const [search, setSearch] = React.useState<string>('');
@@ -37,13 +36,7 @@ export function CourseSearch({section}: { section: Section }) {
         onDropdownOpen: () => combobox.focusSearchInput()
     });
 
-    const {data, isFetching, isFetched, fetchNextPage, hasNextPage} = useInfiniteQuery({
-        queryKey: ["course", "page", debouncedSearch],
-        queryFn: ({pageParam = 0}) => fetchPaginatedCoursesBySearch(debouncedSearch, pageParam),
-        initialPageParam: 0,
-        getNextPageParam: (lastPage) => lastPage.isLastPage ? undefined : lastPage.page + 1,
-        enabled: debouncedSearch !== ''
-    });
+    const {data, isFetching, isFetched, fetchNextPage, hasNextPage} = usePaginatedCourses(debouncedSearch);
 
     const handleCourseSelect = (courseString: string) => {
         const course: Course = JSON.parse(courseString);

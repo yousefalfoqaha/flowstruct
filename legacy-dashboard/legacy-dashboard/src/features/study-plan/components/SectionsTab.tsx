@@ -8,7 +8,7 @@ export function SectionsTab({sections}: { sections: Section[] }) {
         <>
             <Flex direction="column" gap="md">
                 <Group justify="space-between">
-                    <Title>All Section</Title>
+                    <Title>All Sections</Title>
                     <CreateSectionModal/>
                 </Group>
 

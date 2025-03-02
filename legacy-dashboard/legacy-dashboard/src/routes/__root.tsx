@@ -1,4 +1,4 @@
-import {createRootRouteWithContext, Link, Outlet} from '@tanstack/react-router'
+import {createRootRouteWithContext, Outlet} from '@tanstack/react-router'
 import {QueryClient} from "@tanstack/react-query";
 import {AppShell, Burger} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";

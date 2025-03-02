@@ -1,7 +1,5 @@
-import {keepPreviousData, queryOptions} from "@tanstack/react-query";
-import {getCoursesRequest} from "@/features/course/api.ts";
-import {PaginationState} from "@tanstack/react-table";
-import {Course} from "@/features/course/types.ts";
+import {infiniteQueryOptions, queryOptions} from "@tanstack/react-query";
+import {fetchPaginatedCoursesBySearch, getCoursesRequest} from "@/features/course/api.ts";
 
 export const getCourseListQuery = (courseIds: number[]) => queryOptions({
     queryKey: ["courses"],
@@ -9,14 +7,10 @@ export const getCourseListQuery = (courseIds: number[]) => queryOptions({
     enabled: courseIds.length > 0
 });
 
-// export const getPaginatedCoursesQuery = (
-//     shouldSearch: boolean,
-//     searchQuery: Partial<Course>,
-//     pagination: PaginationState
-// ) =>
-//     queryOptions({
-//         queryKey: ["courses", "page", searchQuery, pagination],
-//         queryFn: () => fetchPaginatedCourses(searchQuery, pagination),
-//         enabled: shouldSearch,
-//         placeholderData: keepPreviousData,
-//     });
+export const getPaginatedCoursesQuery = (search: string) => infiniteQueryOptions({
+    queryKey: ["course", "page", search],
+    queryFn: ({pageParam = 0}) => fetchPaginatedCoursesBySearch(search, pageParam),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.isLastPage ? undefined : lastPage.page + 1,
+    enabled: search !== ''
+});

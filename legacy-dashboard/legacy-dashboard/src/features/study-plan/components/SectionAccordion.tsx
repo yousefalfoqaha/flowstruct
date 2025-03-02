@@ -1,11 +1,27 @@
-import {createColumnHelper, getCoreRowModel, useReactTable} from "@tanstack/react-table";
+import {
+    createColumnHelper,
+    ExpandedState,
+    getCoreRowModel,
+    getExpandedRowModel,
+    useReactTable
+} from "@tanstack/react-table";
 import {DataTable} from "@/shared/components/DataTable.tsx";
 
-import {CircleMinus, EllipsisVertical, Pencil, Trash} from "lucide-react";
+import {ChevronDown, ChevronUp, CircleMinus, CornerDownRight, Pencil, Trash} from "lucide-react";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {Section} from "@/features/study-plan/types.ts";
 import {Course} from "@/features/course/types.ts";
-import {Accordion, AccordionControlProps, ActionIcon, Center, Text, Flex, Loader, Group, Badge} from "@mantine/core";
+import {
+    Accordion,
+    AccordionControlProps,
+    ActionIcon,
+    Center,
+    Text,
+    Flex,
+    Loader,
+    Group,
+    Badge, Button
+} from "@mantine/core";
 import {CourseSearch} from "@/features/course/components/CourseSearch.tsx";
 import {useRemoveCourseFromSection} from "@/features/study-plan/hooks/useRemoveCourseFromSection.ts";
 import {useParams} from "@tanstack/react-router";
@@ -22,6 +38,8 @@ type SectionTableProps = {
 function AccordionControl({section, ...props}: AccordionControlProps & { section: Section }) {
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? '');
     const deleteSection = useDeleteSection();
+
+    const isDeleting = deleteSection.isPending && deleteSection.variables.sectionId === section.id;
 
     return (
         <Center>
@@ -46,6 +64,8 @@ function AccordionControl({section, ...props}: AccordionControlProps & { section
                 <ActionIcon
                     variant="light"
                     size="md"
+                    disabled={isDeleting}
+                    children={isDeleting ? <Loader size={18}/> : <Trash size={18}/>}
                     onClick={() =>
                         modals.openConfirmModal({
                             title: 'Please confirm your action',
@@ -64,7 +84,6 @@ function AccordionControl({section, ...props}: AccordionControlProps & { section
                         })
                     }
                 >
-                    <Trash size={18}/>
                 </ActionIcon>
             </Flex>
         </Center>
@@ -77,48 +96,77 @@ export function SectionAccordion({section, index}: SectionTableProps) {
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? '');
 
     const {accessor, display} = createColumnHelper<Course>();
+    const [expanded, setExpanded] = React.useState<ExpandedState>({});
+
+    const toggleRowExpansion = (courseId: string) => {
+        setExpanded((prev) => ({
+            ...prev,
+            [courseId]: !prev[courseId],
+        }));
+    };
 
     const columns = [
         accessor("code", {
             header: "Code",
-            cell: ({row}) => <Badge variant="light">{row.original.code}</Badge>
+            cell: ({row}) => (
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        paddingLeft: `${row.depth * 2 - 1}rem`,
+                    }}
+                >
+                    {row.depth > 0 ?
+                        <CornerDownRight style={{color: "gray", marginBottom: "0.1rem"}} size={16}/> : null}
+                    <Badge variant="light">{row.original.code}</Badge>
+                </div>
+            )
         }),
         accessor("name", {
             header: "Name"
         }),
         accessor("creditHours", {
-            header: "Credits"
-        }),
-        accessor("ects", {
-            header: "ECTS"
-        }),
-        accessor("lectureHours", {
-            header: "Lecture Hrs"
-        }),
-        accessor("practicalHours", {
-            header: "Practical Hrs"
+            header: "Credits",
+            size: 50,     // Reduced width value
+            minSize: 50,  // Optional: prevents shrinking below 50px
+            maxSize: 70,  // Optional: prevents growing too wide
         }),
         accessor("type", {
-            header: "Type"
+            header: "Type",
+            size: 50,     // Reduced width value
+            minSize: 50,
+            maxSize: 70,
         }),
+
         display({
             id: 'actions',
+            header: () => <Text fw="bold" size="sm" ta="center">Actions</Text>,
             cell: ({row}) => {
-                const showLoader = removeCourseFromSection.isPending &&
+                const isRemovingCourse = removeCourseFromSection.isPending &&
                     removeCourseFromSection.variables.courseId === row.original.id;
 
                 return (
                     <Group justify="flex-end">
+                        {row.original.prerequisites.length > 0 && (
+                            <Button
+                                variant="subtle"
+                                leftSection={row.getIsExpanded() ? <ChevronUp size={14}/> : <ChevronDown size={14}/>}
+                                onClick={() => toggleRowExpansion(row.id)}
+                            >
+                                Prerequisites
+                            </Button>
+                        )}
+
                         <ActionIcon
                             size="lg"
                             variant="subtle"
                             onClick={() => removeCourseFromSection.mutate({
                                 studyPlanId: studyPlanId,
-                                sectionId: section.id,
                                 courseId: row.original.id
                             })}
-                            disabled={showLoader}
-                            children={showLoader ? <Loader size={16}/> : <CircleMinus size={16}/>}
+                            disabled={isRemovingCourse}
+                            children={isRemovingCourse ? <Loader size={16}/> : <CircleMinus size={16}/>}
                         />
                     </Group>
                 );
@@ -135,6 +183,16 @@ export function SectionAccordion({section, index}: SectionTableProps) {
         columns,
         data: rowData ?? [],
         getCoreRowModel: getCoreRowModel(),
+        getExpandedRowModel: getExpandedRowModel(),
+        getSubRows: (course) => {
+            if (!courses || !course.prerequisites) return [];
+            return course.prerequisites.map(prerequisite => courses[prerequisite.prerequisite]).filter(Boolean);
+        },
+        state: {
+            expanded: expanded,
+        },
+        onExpandedChange: setExpanded,
+        getRowCanExpand: (row) => row.original.prerequisites.length > 0
     });
 
     return (
@@ -148,7 +206,15 @@ export function SectionAccordion({section, index}: SectionTableProps) {
                 </Text>
             </AccordionControl>
             <Accordion.Panel>
-                <DataTable table={table}/>
+                <DataTable
+                    table={table}
+                    rowProps={(row) => ({
+                        style: {
+                            backgroundColor: row.getIsExpanded() ? "#f8f9fa" : "transparent",
+                            transition: "background-color 0.2s ease",
+                        },
+                    })}
+                />
             </Accordion.Panel>
         </Accordion.Item>
     );

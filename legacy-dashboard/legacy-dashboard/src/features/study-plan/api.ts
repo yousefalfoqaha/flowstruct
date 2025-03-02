@@ -132,12 +132,11 @@ export const editSectionDetailsRequest = async ({updatedSectionDetails, sectionI
     return await response.json() as StudyPlan;
 };
 
-export const removeCourseFromSectionRequest = async ({courseId, sectionId, studyPlanId}: {
+export const removeCourseFromSectionRequest = async ({courseId, studyPlanId}: {
     courseId: number,
-    sectionId: number,
     studyPlanId: number
 }) => {
-    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/sections/${sectionId}/courses/${courseId}`, {
+    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/courses/${courseId}`, {
         method: 'DELETE'
     });
 

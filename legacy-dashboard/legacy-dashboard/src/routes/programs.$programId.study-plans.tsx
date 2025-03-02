@@ -1,7 +1,6 @@
 import {createFileRoute} from '@tanstack/react-router'
 import {StudyPlansTable} from '@/features/study-plan/components/StudyPlansTable.tsx'
-import {CreateStudyPlanModal} from '@/features/study-plan/components/CreateStudyPlanModal.tsx'
-import {DeleteStudyPlanDialog} from '@/features/study-plan/components/DeleteStudyPlanDialog.tsx'
+import {CreateStudyPlanModal} from '@/features/study-plan/components/CreateStudyPlanModal.tsx';
 import {getProgramQuery} from "@/features/program/queries.ts";
 import {getStudyPlanListQuery} from "@/features/study-plan/queries.ts";
 import {useProgram} from "@/features/program/hooks/useProgram.ts";
@@ -22,6 +21,8 @@ function RouteComponent() {
     const programId = parseInt(Route.useParams().programId);
     const program = useProgram(programId);
     const studyPlanList = useStudyPlanList(programId);
+
+    if (!studyPlanList.data) return;
 
     return (
         <>
