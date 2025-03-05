@@ -18,12 +18,6 @@ export const useRemoveCourseFromSection = () => {
                 notifications.show({message: "Course was not found."});
             }
 
-            queryClient.setQueryData(["courses"], (previous: Record<number, Course> = {}) => {
-                const updatedCourses = {...previous};
-                delete updatedCourses[courseId];
-                return updatedCourses;
-            });
-
             queryClient.setQueryData(["study-plan", "detail", updatedStudyPlan.id], updatedStudyPlan);
 
             notifications.show({

@@ -20,7 +20,7 @@ import {
     Flex,
     Loader,
     Group,
-    Badge, Button
+    Badge, Button, Indicator
 } from "@mantine/core";
 import {CourseSearch} from "@/features/course/components/CourseSearch.tsx";
 import {useRemoveCourseFromSection} from "@/features/study-plan/hooks/useRemoveCourseFromSection.ts";
@@ -29,6 +29,7 @@ import React from "react";
 import {modals} from "@mantine/modals";
 import {EditSectionDetailsModal} from "@/features/study-plan/components/EditSectionDetailsModal.tsx";
 import {useDeleteSection} from "@/features/study-plan/hooks/useDeleteSection.ts";
+import {useFlaggedCourses} from "@/contexts/FlaggedCoursesContext.tsx";
 
 type SectionTableProps = {
     section: Section;
@@ -91,9 +92,9 @@ function AccordionControl({section, ...props}: AccordionControlProps & { section
 }
 
 export function SectionAccordion({section, index}: SectionTableProps) {
-    const courses = useCourseList();
     const removeCourseFromSection = useRemoveCourseFromSection();
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? '');
+    const {data: courses} = useCourseList(studyPlanId);
 
     const {accessor, display} = createColumnHelper<Course>();
     const [expanded, setExpanded] = React.useState<ExpandedState>({});
@@ -104,6 +105,8 @@ export function SectionAccordion({section, index}: SectionTableProps) {
             [courseId]: !prev[courseId],
         }));
     };
+
+    const {flaggedCourses} = useFlaggedCourses();
 
     const columns = [
         accessor("code", {
@@ -128,13 +131,13 @@ export function SectionAccordion({section, index}: SectionTableProps) {
         }),
         accessor("creditHours", {
             header: "Credits",
-            size: 50,     // Reduced width value
-            minSize: 50,  // Optional: prevents shrinking below 50px
-            maxSize: 70,  // Optional: prevents growing too wide
+            size: 50,
+            minSize: 50,
+            maxSize: 70,
         }),
         accessor("type", {
             header: "Type",
-            size: 50,     // Reduced width value
+            size: 50,
             minSize: 50,
             maxSize: 70,
         }),
@@ -149,13 +152,22 @@ export function SectionAccordion({section, index}: SectionTableProps) {
                 return (
                     <Group justify="flex-end">
                         {row.original.prerequisites.length > 0 && (
-                            <Button
-                                variant="subtle"
-                                leftSection={row.getIsExpanded() ? <ChevronUp size={14}/> : <ChevronDown size={14}/>}
-                                onClick={() => toggleRowExpansion(row.id)}
+                            <Indicator
+                                disabled={!flaggedCourses.has(row.original.id)}
+                                inline
+                                label="Missing"
+                                color="red"
+                                size={16}
                             >
-                                Prerequisites
-                            </Button>
+                                <Button
+                                    variant="subtle"
+                                    leftSection={row.getIsExpanded() ? <ChevronUp size={14}/> :
+                                        <ChevronDown size={14}/>}
+                                    onClick={() => toggleRowExpansion(row.id)}
+                                >
+                                    Prerequisites
+                                </Button>
+                            </Indicator>
                         )}
 
                         <ActionIcon

@@ -2,6 +2,7 @@ import {CourseCard} from "@/features/course/components/CourseCard.tsx";
 import {Button} from "@/shared/components/ui/button.tsx";
 import {Plus} from "lucide-react";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
+import {useParams} from "@tanstack/react-router";
 
 type ProgramMapTabProps = {
     duration: number;
@@ -9,7 +10,9 @@ type ProgramMapTabProps = {
 }
 
 export function ProgramMapTab({duration, coursePlacements}: ProgramMapTabProps) {
-    const courses = useCourseList();
+    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
+
+    const {data: courses} = useCourseList(studyPlanId);
 
     const academicYears = Array.from({length: duration}, (_, i) => i + 1);
     const SEMESTERS_PER_YEAR = 3;

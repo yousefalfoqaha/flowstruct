@@ -7,7 +7,7 @@ import {getStudyPlanQuery} from "@/features/study-plan/queries.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useProgram} from "@/features/program/hooks/useProgram.ts";
 import {getCourseListQuery} from "@/features/course/queries.ts";
-import {Course} from "@/features/course/types.ts";
+import {FlaggedCoursesProvider} from "@/contexts/FlaggedCoursesContext.tsx";
 
 export const Route = createFileRoute("/study-plans/$studyPlanId")({
     component: RouteComponent,
@@ -17,17 +17,8 @@ export const Route = createFileRoute("/study-plans/$studyPlanId")({
         const studyPlan = await queryClient.ensureQueryData(getStudyPlanQuery(studyPlanId));
         await queryClient.ensureQueryData(getProgramQuery(studyPlan.program));
 
-        const studyPlanCourseIds = studyPlan.sections.flatMap(section => Array.from(section.courses));
-        const cachedCourses = queryClient.getQueryData<Record<number, Course>>(["courses"]);
-
-        const missingCourseIds = studyPlanCourseIds.reduce<number[]>((acc, courseId) => {
-            if (!cachedCourses || !cachedCourses[courseId]) {
-                acc.push(courseId);
-            }
-            return acc;
-        }, []);
-
-        await queryClient.ensureQueryData(getCourseListQuery(missingCourseIds));
+        const coursesIds = studyPlan.sections.flatMap(section => Array.from(section.courses));
+        await queryClient.ensureQueryData(getCourseListQuery(coursesIds));
     },
 });
 
@@ -37,7 +28,7 @@ function RouteComponent() {
     const {data: program} = useProgram(studyPlan.program);
 
     return (
-        <>
+        <FlaggedCoursesProvider>
             <Tabs defaultValue="program-map" className="flex flex-col gap-1 items-center">
                 <TabsList>
                     <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -53,6 +44,6 @@ function RouteComponent() {
                     </TabsContent>
                 </div>
             </Tabs>
-        </>
+        </FlaggedCoursesProvider>
     );
 }
