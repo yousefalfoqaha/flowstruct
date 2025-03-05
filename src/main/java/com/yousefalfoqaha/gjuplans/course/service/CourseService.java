@@ -16,8 +16,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -47,11 +49,30 @@ public class CourseService {
         return coursesPageResponseMapper.apply(coursesPage);
     }
 
-    public Map<Long, CourseResponse> getCoursesById(List<Long> courseIds) {
-        var courses = courseRepository.findAllById(courseIds);
-
-        return courses.stream()
+    public Map<Long, CourseResponse> getCoursesByIds(List<Long> courseIds, boolean withPrerequisites) {
+        var courses = courseRepository.findAllById(courseIds)
+                .stream()
                 .collect(Collectors.toMap(Course::getId, courseResponseMapper));
+
+        if (!withPrerequisites) return courses;
+
+        Set<Long> missingCourseIds = new HashSet<>();
+
+        courses.forEach((_, course) -> {
+            course.prerequisites().forEach(prerequisite -> {
+                if (courses.get(prerequisite.prerequisite()) == null) {
+                    missingCourseIds.add(prerequisite.prerequisite());
+                }
+            });
+        });
+
+        var missingCourses = courseRepository.findAllById(missingCourseIds)
+                .stream()
+                .collect(Collectors.toMap(Course::getId, courseResponseMapper));
+
+        courses.putAll(missingCourses);
+
+        return courses;
     }
 
     public CourseResponse getCourse(long courseId) {
