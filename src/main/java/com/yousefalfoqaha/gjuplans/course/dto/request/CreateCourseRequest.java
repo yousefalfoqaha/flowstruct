@@ -1,7 +1,7 @@
 package com.yousefalfoqaha.gjuplans.course.dto.request;
 
-import com.yousefalfoqaha.gjuplans.course.domain.CourseCorequisite;
-import com.yousefalfoqaha.gjuplans.course.domain.CoursePrerequisite;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.CourseCorequisite;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.CoursePrerequisite;
 import com.yousefalfoqaha.gjuplans.course.domain.CourseType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -35,10 +35,6 @@ public record CreateCourseRequest(
         @NotNull(message="Please choose a valid course type")
         CourseType type,
 
-        boolean isRemedial,
-
-        Set<CoursePrerequisite> prerequisites,
-
-        Set<CourseCorequisite> corequisites
+        boolean isRemedial
 ) {
 }

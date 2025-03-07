@@ -1,5 +1,6 @@
-package com.yousefalfoqaha.gjuplans.course.domain;
+package com.yousefalfoqaha.gjuplans.studyplan.domain;
 
+import com.yousefalfoqaha.gjuplans.course.domain.Course;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,10 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table("course_corequisite")
-public class CourseCorequisite {
-    private AggregateReference<Course, Long> corequisite;
+@Table("course_prerequisite")
+public class CoursePrerequisite {
+
+        private AggregateReference<Course, Long> prerequisite;
+
+        private Relation relation;
 }

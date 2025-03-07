@@ -35,10 +35,4 @@ public class Course {
         CourseType type;
 
         boolean isRemedial;
-
-        @MappedCollection(idColumn = "course")
-        Set<CoursePrerequisite> prerequisites;
-
-        @MappedCollection(idColumn = "course")
-        Set<CourseCorequisite> corequisites;
 }

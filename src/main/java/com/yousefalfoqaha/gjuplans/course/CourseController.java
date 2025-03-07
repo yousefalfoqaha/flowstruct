@@ -35,10 +35,9 @@ public class CourseController {
 
     @GetMapping("/by-ids")
     public ResponseEntity<Map<Long, CourseResponse>> getCoursesById(
-            @RequestParam(value = "courses", defaultValue = "") List<Long> courseIds,
-            @RequestParam(value = "withPrerequisites", defaultValue = "false", required = false) boolean withPrerequisites
+            @RequestParam(value = "courses", defaultValue = "") List<Long> courseIds
     ) {
-        return new ResponseEntity<>(courseService.getCoursesByIds(courseIds, withPrerequisites), HttpStatus.OK);
+        return new ResponseEntity<>(courseService.getCoursesById(courseIds), HttpStatus.OK);
     }
 
     @PostMapping

@@ -22,6 +22,7 @@ import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -65,9 +66,20 @@ public class StudyPlanService {
         var studyPlan = findStudyPlan(studyPlanId);
         var courses = courseService.getCourses(request.courseIds());
 
+        Map<Long, SectionCourse> courseRequisitesMap = studyPlan.getSections()
+                .stream()
+                .flatMap(section -> section.getCourses().entrySet().stream())
+                .filter(entry -> courses.containsKey(entry.getKey()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                ));
+
         for (Map.Entry<Long, CourseResponse> entry : courses.entrySet()) {
-            entry.getValue().prerequisites().forEach(prerequisite -> {
-                var prerequisitePlacement = studyPlan.getCoursePlacements().get(prerequisite.prerequisite());
+            var prerequisites = courseRequisitesMap.get(entry.getKey()).getPrerequisites();
+
+            prerequisites.forEach(prerequisite -> {
+                var prerequisitePlacement = studyPlan.getCoursePlacements().get(prerequisite.getPrerequisite().getId());
 
                 if (prerequisitePlacement == null || prerequisitePlacement.getSemester() >= request.semester()) {
                     throw new InvalidCoursePlacement(
@@ -179,9 +191,9 @@ public class StudyPlanService {
                 .findFirst()
                 .orElseThrow(() -> new SectionNotFoundException("Section not found"));
 
-        section.getCourses().forEach(sectionCourse ->
-                studyPlan.getCoursePlacements().remove(sectionCourse.getCourse().getId())
-        );
+        section.getCourses()
+                .keySet()
+                .forEach(course -> studyPlan.getCoursePlacements().remove(course));
 
         studyPlan.getSections().remove(section);
 
@@ -205,22 +217,29 @@ public class StudyPlanService {
                 .findFirst()
                 .orElseThrow(() -> new SectionNotFoundException("Section was not found"));
 
-        var existingCourses = studyPlan.getSections()
+        var studyPlanCourses = studyPlan.getSections()
                 .stream()
-                .flatMap(s -> s.getCourses().stream().map(sc -> sc.getCourse().getId()))
+                .flatMap(s -> s.getCourses().keySet().stream())
                 .collect(Collectors.toSet());
 
-        List<SectionCourse> toBeAddedCourses = request.courseIds()
+        Map<Long, SectionCourse> toBeAddedCourses = request.courseIds()
                 .stream()
-                .map(courseId -> {
-                    if (existingCourses.contains(courseId)) {
+                .filter(courseId -> {
+                    if (studyPlanCourses.contains(courseId)) {
                         throw new CourseExistsException("Course was already added in another section");
                     }
-                    return new SectionCourse(AggregateReference.to(courseId));
+                    return true;
                 })
-                .toList();
+                .collect(Collectors.toMap(
+                        courseId -> courseId,
+                        courseId -> {
+                            var addedCourse = new SectionCourse();
+                            addedCourse.setCourse(AggregateReference.to(courseId));
+                            return addedCourse;
+                        }
+                ));
 
-        section.getCourses().addAll(toBeAddedCourses);
+        section.getCourses().putAll(toBeAddedCourses);
 
         var updatedStudyPlan = studyPlanRepository.save(studyPlan);
         return studyPlanResponseMapper.apply(updatedStudyPlan);
@@ -232,12 +251,7 @@ public class StudyPlanService {
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
 
-        studyPlan.getSections()
-                .forEach(section -> section
-                        .getCourses()
-                        .removeIf(sectionCourse ->
-                                sectionCourse.getCourse().getId() == courseId
-                        ));
+        studyPlan.getSections().forEach(section -> section.getCourses().remove(courseId));
 
         studyPlan.getCoursePlacements().remove(courseId);
 

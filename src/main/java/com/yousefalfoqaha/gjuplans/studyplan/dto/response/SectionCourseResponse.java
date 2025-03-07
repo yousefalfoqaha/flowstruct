@@ -1,9 +1,9 @@
 package com.yousefalfoqaha.gjuplans.studyplan.dto.response;
 
-import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionType;
+import java.util.List;
 
 public record SectionCourseResponse(
-    Long course,
-    SectionType sectionType
+        List<CoursePrerequisiteResponse> prerequisites,
+        List<Long> corequisites
 ) {
 }

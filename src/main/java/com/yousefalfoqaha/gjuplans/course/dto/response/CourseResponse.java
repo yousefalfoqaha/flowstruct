@@ -1,6 +1,7 @@
 package com.yousefalfoqaha.gjuplans.course.dto.response;
 
 import com.yousefalfoqaha.gjuplans.course.domain.CourseType;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.CoursePrerequisiteResponse;
 
 import java.util.Set;
 
@@ -13,8 +14,6 @@ public record CourseResponse(
         int lectureHours,
         int practicalHours,
         CourseType type,
-        boolean isRemedial,
-        Set<CoursePrerequisiteResponse> prerequisites,
-        Set<Long> corequisites
+        boolean isRemedial
 ) {
 }

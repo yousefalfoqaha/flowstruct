@@ -3,7 +3,7 @@ package com.yousefalfoqaha.gjuplans.studyplan.dto.response;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionLevel;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionType;
 
-import java.util.Set;
+import java.util.Map;
 
 public record SectionResponse(
     long id,
@@ -11,6 +11,6 @@ public record SectionResponse(
     SectionType type,
     int requiredCreditHours,
     String name,
-    Set<Long> courses
+    Map<Long, SectionCourseResponse> courses
 ) {
 }

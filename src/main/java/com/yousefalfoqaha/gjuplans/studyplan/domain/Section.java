@@ -8,8 +8,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @AllArgsConstructor
@@ -30,6 +30,6 @@ public class Section {
 
     private String name;
 
-    @MappedCollection(idColumn = "section")
-    Set<SectionCourse> courses = new HashSet<>();
+    @MappedCollection(idColumn = "section", keyColumn = "course")
+    Map<Long, SectionCourse> courses = new HashMap<>();
 }
