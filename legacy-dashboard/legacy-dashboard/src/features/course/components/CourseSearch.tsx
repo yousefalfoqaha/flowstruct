@@ -62,7 +62,7 @@ export function CourseSearch({section}: { section: Section }) {
                 setSearch('');
             }
         });
-    }
+    };
 
     const selectedOptions = selectedCourses.map((course) => (
         <Pill key={course.id} withRemoveButton onRemove={() => handleCourseRemove(course.id)}>

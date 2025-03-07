@@ -7,7 +7,6 @@ import {getStudyPlanQuery} from "@/features/study-plan/queries.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useProgram} from "@/features/program/hooks/useProgram.ts";
 import {getCourseListQuery} from "@/features/course/queries.ts";
-import {FlaggedCoursesProvider} from "@/contexts/FlaggedCoursesContext.tsx";
 
 export const Route = createFileRoute("/study-plans/$studyPlanId")({
     component: RouteComponent,
@@ -17,7 +16,7 @@ export const Route = createFileRoute("/study-plans/$studyPlanId")({
         const studyPlan = await queryClient.ensureQueryData(getStudyPlanQuery(studyPlanId));
         await queryClient.ensureQueryData(getProgramQuery(studyPlan.program));
 
-        const coursesIds = studyPlan.sections.flatMap(section => Array.from(section.courses));
+        const coursesIds = studyPlan.sections.flatMap(s => Object.keys(s.courses).map(Number));
         await queryClient.ensureQueryData(getCourseListQuery(coursesIds));
     },
 });
@@ -28,22 +27,20 @@ function RouteComponent() {
     const {data: program} = useProgram(studyPlan.program);
 
     return (
-        <FlaggedCoursesProvider>
-            <Tabs defaultValue="program-map" className="flex flex-col gap-1 items-center">
-                <TabsList>
-                    <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="password">Framework</TabsTrigger>
-                    <TabsTrigger value="program-map">Program Map</TabsTrigger>
-                </TabsList>
-                <div className="place-self-start w-full">
-                    <TabsContent value="program-map">
-                        <ProgramMapTab duration={studyPlan.duration} coursePlacements={studyPlan.coursePlacements}/>
-                    </TabsContent>
-                    <TabsContent value="password">
-                        <SectionsTab sections={studyPlan.sections}/>
-                    </TabsContent>
-                </div>
-            </Tabs>
-        </FlaggedCoursesProvider>
+        <Tabs defaultValue="program-map" className="flex flex-col gap-1 items-center">
+            <TabsList>
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="password">Framework</TabsTrigger>
+                <TabsTrigger value="program-map">Program Map</TabsTrigger>
+            </TabsList>
+            <div className="place-self-start w-full">
+                <TabsContent value="program-map">
+                    <ProgramMapTab duration={studyPlan.duration} coursePlacements={studyPlan.coursePlacements}/>
+                </TabsContent>
+                <TabsContent value="password">
+                    <SectionsTab sections={studyPlan.sections}/>
+                </TabsContent>
+            </div>
+        </Tabs>
     );
 }

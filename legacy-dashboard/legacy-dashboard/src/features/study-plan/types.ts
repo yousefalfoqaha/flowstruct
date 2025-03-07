@@ -10,13 +10,28 @@ export enum SectionType {
     Remedial = "Remedial"
 }
 
+export enum CourseRelation {
+    AND = "AND",
+    OR = "OR"
+}
+
+export type CoursePrerequisite = {
+    prerequisite: number;
+    relation: CourseRelation;
+}
+
+export type SectionCourse = {
+    prerequisites: CoursePrerequisite[];
+    corequisites: number[];
+}
+
 export type Section = {
     id: number;
     level: SectionLevel;
     type: SectionType;
     requiredCreditHours: number;
     name: string | null;
-    courses: number[];
+    courses: Record<number, SectionCourse>;
 }
 
 export type StudyPlan = {

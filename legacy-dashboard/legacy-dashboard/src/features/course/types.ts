@@ -1,14 +1,3 @@
-export enum CourseRelation {
-    AND = "AND",
-    OR = "OR"
-}
-
-export type CoursePrerequisite = {
-    prerequisite: number;
-    relation: CourseRelation;
-    isRemedial: boolean;
-}
-
 export enum CourseType {
     F2F = "F2F",
     BLD = "BLD",
@@ -25,8 +14,6 @@ export type Course = {
     practicalHours: number;
     type: CourseType;
     isRemedial: boolean;
-    prerequisites: CoursePrerequisite[];
-    corequisites: number[];
 }
 
 export type CoursesPage = {

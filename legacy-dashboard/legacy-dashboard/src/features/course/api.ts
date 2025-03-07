@@ -1,7 +1,7 @@
 import {Course, CoursesPage} from "@/features/course/types.ts";
 
 export const getCoursesRequest = async (courseIds: number[]) => {
-    const res = await fetch(`http://localhost:8080/api/v1/courses/by-ids?courses=${courseIds}&withPrerequisites=${true}`);
+    const res = await fetch(`http://localhost:8080/api/v1/courses/by-ids?courses=${courseIds}`);
     if (!res.ok) throw new Error("Failed to fetch course");
     return await res.json() as Record<number, Course>;
 };

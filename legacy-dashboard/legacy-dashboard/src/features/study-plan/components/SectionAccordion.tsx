@@ -1,27 +1,10 @@
-import {
-    createColumnHelper,
-    ExpandedState,
-    getCoreRowModel,
-    getExpandedRowModel,
-    useReactTable
-} from "@tanstack/react-table";
+import {createColumnHelper, getCoreRowModel, useReactTable} from "@tanstack/react-table";
 import {DataTable} from "@/shared/components/DataTable.tsx";
-
-import {ChevronDown, ChevronUp, CircleMinus, CornerDownRight, Pencil, Trash} from "lucide-react";
+import {CircleMinus, CornerDownRight, Pencil, Trash} from "lucide-react";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {Section} from "@/features/study-plan/types.ts";
 import {Course} from "@/features/course/types.ts";
-import {
-    Accordion,
-    AccordionControlProps,
-    ActionIcon,
-    Center,
-    Text,
-    Flex,
-    Loader,
-    Group,
-    Badge, Button, Indicator
-} from "@mantine/core";
+import {Accordion, AccordionControlProps, ActionIcon, Center, Text, Flex, Loader, Group, Badge} from "@mantine/core";
 import {CourseSearch} from "@/features/course/components/CourseSearch.tsx";
 import {useRemoveCourseFromSection} from "@/features/study-plan/hooks/useRemoveCourseFromSection.ts";
 import {useParams} from "@tanstack/react-router";
@@ -29,7 +12,6 @@ import React from "react";
 import {modals} from "@mantine/modals";
 import {EditSectionDetailsModal} from "@/features/study-plan/components/EditSectionDetailsModal.tsx";
 import {useDeleteSection} from "@/features/study-plan/hooks/useDeleteSection.ts";
-import {useFlaggedCourses} from "@/contexts/FlaggedCoursesContext.tsx";
 
 type SectionTableProps = {
     section: Section;
@@ -97,16 +79,6 @@ export function SectionAccordion({section, index}: SectionTableProps) {
     const {data: courses} = useCourseList(studyPlanId);
 
     const {accessor, display} = createColumnHelper<Course>();
-    const [expanded, setExpanded] = React.useState<ExpandedState>({});
-
-    const toggleRowExpansion = (courseId: string) => {
-        setExpanded((prev) => ({
-            ...prev,
-            [courseId]: !prev[courseId],
-        }));
-    };
-
-    const {flaggedCourses} = useFlaggedCourses();
 
     const columns = [
         accessor("code", {
@@ -141,7 +113,6 @@ export function SectionAccordion({section, index}: SectionTableProps) {
             minSize: 50,
             maxSize: 70,
         }),
-
         display({
             id: 'actions',
             header: () => <Text fw="bold" size="sm" ta="center">Actions</Text>,
@@ -151,25 +122,6 @@ export function SectionAccordion({section, index}: SectionTableProps) {
 
                 return (
                     <Group justify="flex-end">
-                        {row.original.prerequisites.length > 0 && (
-                            <Indicator
-                                disabled={!flaggedCourses.has(row.original.id)}
-                                inline
-                                label="Missing"
-                                color="red"
-                                size={16}
-                            >
-                                <Button
-                                    variant="subtle"
-                                    leftSection={row.getIsExpanded() ? <ChevronUp size={14}/> :
-                                        <ChevronDown size={14}/>}
-                                    onClick={() => toggleRowExpansion(row.id)}
-                                >
-                                    Prerequisites
-                                </Button>
-                            </Indicator>
-                        )}
-
                         <ActionIcon
                             size="lg"
                             variant="subtle"
@@ -188,23 +140,13 @@ export function SectionAccordion({section, index}: SectionTableProps) {
 
     const rowData = React.useMemo(() => {
         if (!courses) return [];
-        return [...section.courses].map(courseId => courses[courseId]).filter(Boolean);
+        return Object.keys(section.courses).map(courseId => courses[Number(courseId)]).filter(Boolean);
     }, [courses, section.courses]);
 
     const table = useReactTable({
         columns,
         data: rowData ?? [],
-        getCoreRowModel: getCoreRowModel(),
-        getExpandedRowModel: getExpandedRowModel(),
-        getSubRows: (course) => {
-            if (!courses || !course.prerequisites) return [];
-            return course.prerequisites.map(prerequisite => courses[prerequisite.prerequisite]).filter(Boolean);
-        },
-        state: {
-            expanded: expanded,
-        },
-        onExpandedChange: setExpanded,
-        getRowCanExpand: (row) => row.original.prerequisites.length > 0
+        getCoreRowModel: getCoreRowModel()
     });
 
     return (
