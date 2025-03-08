@@ -12,7 +12,13 @@ import {ModalsProvider} from "@mantine/modals";
 import {Notifications} from "@mantine/notifications";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 300000
+        }
+    }
+});
 
 const router = createRouter({
     routeTree,

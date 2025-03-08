@@ -1,17 +1,20 @@
-import {createColumnHelper, getCoreRowModel, useReactTable} from "@tanstack/react-table";
-import {DataTable} from "@/shared/components/DataTable.tsx";
-import {CircleMinus, CornerDownRight, Pencil, Trash} from "lucide-react";
-import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
+import {Pencil, Trash} from "lucide-react";
 import {Section} from "@/features/study-plan/types.ts";
-import {Course} from "@/features/course/types.ts";
-import {Accordion, AccordionControlProps, ActionIcon, Center, Text, Flex, Loader, Group, Badge} from "@mantine/core";
+import {
+    Accordion,
+    AccordionControlProps,
+    ActionIcon,
+    Center,
+    Text,
+    Flex,
+    Loader
+} from "@mantine/core";
 import {CourseSearch} from "@/features/course/components/CourseSearch.tsx";
-import {useRemoveCourseFromSection} from "@/features/study-plan/hooks/useRemoveCourseFromSection.ts";
 import {useParams} from "@tanstack/react-router";
-import React from "react";
 import {modals} from "@mantine/modals";
 import {EditSectionDetailsModal} from "@/features/study-plan/components/EditSectionDetailsModal.tsx";
 import {useDeleteSection} from "@/features/study-plan/hooks/useDeleteSection.ts";
+import {SectionCoursesTable} from "@/features/study-plan/components/SectionCoursesTable.tsx";
 
 type SectionTableProps = {
     section: Section;
@@ -74,101 +77,20 @@ function AccordionControl({section, ...props}: AccordionControlProps & { section
 }
 
 export function SectionAccordion({section, index}: SectionTableProps) {
-    const removeCourseFromSection = useRemoveCourseFromSection();
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? '');
-    const {data: courses} = useCourseList(studyPlanId);
-
-    const {accessor, display} = createColumnHelper<Course>();
-
-    const columns = [
-        accessor("code", {
-            header: "Code",
-            cell: ({row}) => (
-                <div
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.5rem",
-                        paddingLeft: `${row.depth * 2 - 1}rem`,
-                    }}
-                >
-                    {row.depth > 0 ?
-                        <CornerDownRight style={{color: "gray", marginBottom: "0.1rem"}} size={16}/> : null}
-                    <Badge variant="light">{row.original.code}</Badge>
-                </div>
-            )
-        }),
-        accessor("name", {
-            header: "Name"
-        }),
-        accessor("creditHours", {
-            header: "Credits",
-            size: 50,
-            minSize: 50,
-            maxSize: 70,
-        }),
-        accessor("type", {
-            header: "Type",
-            size: 50,
-            minSize: 50,
-            maxSize: 70,
-        }),
-        display({
-            id: 'actions',
-            header: () => <Text fw="bold" size="sm" ta="center">Actions</Text>,
-            cell: ({row}) => {
-                const isRemovingCourse = removeCourseFromSection.isPending &&
-                    removeCourseFromSection.variables.courseId === row.original.id;
-
-                return (
-                    <Group justify="flex-end">
-                        <ActionIcon
-                            size="lg"
-                            variant="subtle"
-                            onClick={() => removeCourseFromSection.mutate({
-                                studyPlanId: studyPlanId,
-                                courseId: row.original.id
-                            })}
-                            disabled={isRemovingCourse}
-                            children={isRemovingCourse ? <Loader size={16}/> : <CircleMinus size={16}/>}
-                        />
-                    </Group>
-                );
-            }
-        })
-    ];
-
-    const rowData = React.useMemo(() => {
-        if (!courses) return [];
-        return Object.keys(section.courses).map(courseId => courses[Number(courseId)]).filter(Boolean);
-    }, [courses, section.courses]);
-
-    const table = useReactTable({
-        columns,
-        data: rowData ?? [],
-        getCoreRowModel: getCoreRowModel()
-    });
-
     return (
         <Accordion.Item value={`section-${section.id}`}>
             <AccordionControl section={section} mr="sm">
                 <Text size="lg">
                     Section {index} - {section.level} {section.type} {section.name ? `- ${section.name}` : ""}
                 </Text>
+
                 <Text c="dimmed">
                     {section.requiredCreditHours} Cr. Hrs Required
                 </Text>
             </AccordionControl>
+
             <Accordion.Panel>
-                <DataTable
-                    table={table}
-                    rowProps={(row) => ({
-                        style: {
-                            backgroundColor: row.getIsExpanded() ? "#f8f9fa" : "transparent",
-                            transition: "background-color 0.2s ease",
-                        },
-                    })}
-                />
+                <SectionCoursesTable section={section}/>
             </Accordion.Panel>
         </Accordion.Item>
     );

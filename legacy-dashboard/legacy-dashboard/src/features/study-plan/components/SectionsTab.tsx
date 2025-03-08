@@ -1,23 +1,18 @@
-import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
-import {SectionAccordion} from "@/features/study-plan/components/SectionAccordion.tsx";
 import {Section} from "@/features/study-plan/types.ts";
-import {Accordion, Flex, Group, Title} from "@mantine/core";
+import {Flex, Group} from "@mantine/core";
+import React from "react";
+import {SectionsList} from "@/features/study-plan/components/SectionsList.tsx";
+import {FrameworkCoursesTable} from "@/features/study-plan/components/FrameworkCoursesTable.tsx";
+import {CourseSearch} from "@/features/course/components/CourseSearch.tsx";
 
-export function SectionsTab({sections}: { sections: Section[] }) {
+export const SectionsTab = React.memo(({sections}: { sections: Section[] }) => {
     return (
-        <>
-            <Flex direction="column" gap="md">
-                <Group justify="space-between">
-                    <Title>All Sections</Title>
-                    <CreateSectionModal/>
-                </Group>
-
-                <Accordion onChange={() => {}} chevronPosition="left">
-                    {sections.map((section, index) => (
-                        <SectionAccordion key={section.id} section={section} index={index + 1}/>
-                    ))}
-                </Accordion>
-            </Flex>
-        </>
+        <Flex direction="column" gap="md">
+            <Group justify="space-between" align="center">
+                <SectionsList sections={sections}/>
+                <CourseSearch/>
+            </Group>
+            <FrameworkCoursesTable/>
+        </Flex>
     );
-}
+});

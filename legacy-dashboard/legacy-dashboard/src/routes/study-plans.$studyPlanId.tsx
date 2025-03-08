@@ -1,12 +1,13 @@
 import {createFileRoute} from "@tanstack/react-router";
 import {ProgramMapTab} from "@/features/study-plan/components/ProgramMapTab.tsx";
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/shared/components/ui/tabs.tsx";
 import {SectionsTab} from "@/features/study-plan/components/SectionsTab.tsx";
 import {getProgramQuery} from "@/features/program/queries.ts";
 import {getStudyPlanQuery} from "@/features/study-plan/queries.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useProgram} from "@/features/program/hooks/useProgram.ts";
 import {getCourseListQuery} from "@/features/course/queries.ts";
+import {Folder, Map, ScrollText} from "lucide-react";
+import {Tabs} from "@mantine/core";
 
 export const Route = createFileRoute("/study-plans/$studyPlanId")({
     component: RouteComponent,
@@ -27,20 +28,30 @@ function RouteComponent() {
     const {data: program} = useProgram(studyPlan.program);
 
     return (
-        <Tabs defaultValue="program-map" className="flex flex-col gap-1 items-center">
-            <TabsList>
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="password">Framework</TabsTrigger>
-                <TabsTrigger value="program-map">Program Map</TabsTrigger>
-            </TabsList>
-            <div className="place-self-start w-full">
-                <TabsContent value="program-map">
-                    <ProgramMapTab duration={studyPlan.duration} coursePlacements={studyPlan.coursePlacements}/>
-                </TabsContent>
-                <TabsContent value="password">
-                    <SectionsTab sections={studyPlan.sections}/>
-                </TabsContent>
-            </div>
+        <Tabs defaultValue="overview">
+            <Tabs.List justify="center">
+                <Tabs.Tab value="overview" leftSection={<ScrollText size={14}/>}>
+                    Overview
+                </Tabs.Tab>
+                <Tabs.Tab value="framework" leftSection={<Folder size={14}/>}>
+                    Framework
+                </Tabs.Tab>
+                <Tabs.Tab value="program-map" leftSection={<Map size={14}/>}>
+                    Program Map
+                </Tabs.Tab>
+            </Tabs.List>
+
+            <Tabs.Panel value="overview">
+                Overview placeholder
+            </Tabs.Panel>
+
+            <Tabs.Panel value="framework">
+                <SectionsTab sections={studyPlan.sections}/>
+            </Tabs.Panel>
+
+            <Tabs.Panel value="program-map">
+                <ProgramMapTab duration={studyPlan.duration} coursePlacements={studyPlan.coursePlacements}/>
+            </Tabs.Panel>
         </Tabs>
     );
 }

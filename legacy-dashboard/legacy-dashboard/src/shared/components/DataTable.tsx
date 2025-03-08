@@ -1,14 +1,12 @@
-import { Table as TanStackTable } from "@tanstack/table-core";
-import { flexRender } from "@tanstack/react-table";
-import { Table } from "@mantine/core";
-import React from "react";
+import {Table as TanStackTable} from "@tanstack/table-core";
+import {flexRender} from "@tanstack/react-table";
+import {Table} from "@mantine/core";
 
 type DataTableProps<TData> = {
     table: TanStackTable<TData>;
-    rowProps?: (row: any) => React.HTMLAttributes<HTMLTableRowElement>;
 };
 
-export function DataTable<TData>({ table, rowProps }: DataTableProps<TData>) {
+export function DataTable<TData>({table}: DataTableProps<TData>) {
     return (
         <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} layout="fixed">
             <Table.Thead>
@@ -27,12 +25,12 @@ export function DataTable<TData>({ table, rowProps }: DataTableProps<TData>) {
             <Table.Tbody>
                 {table.getRowModel().rows.length ? (
                     table.getRowModel().rows.map((row) => (
-                        <Table.Tr key={row.id} {...(rowProps ? rowProps(row) : {})}>
-                            {row.getVisibleCells().map((cell) => (
-                                <Table.Td key={cell.id}>
-                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                </Table.Td>
-                            ))}
+                        <Table.Tr key={row.id}>
+                                  {row.getVisibleCells().map((cell) => (
+                                      <Table.Td key={cell.id}>
+                                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                      </Table.Td>
+                                  ))}
                         </Table.Tr>
                     ))
                 ) : (

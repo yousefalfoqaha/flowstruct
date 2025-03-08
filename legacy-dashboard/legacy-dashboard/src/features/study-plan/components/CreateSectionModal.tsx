@@ -8,7 +8,7 @@ import {useDisclosure} from "@mantine/hooks";
 import {Flex, LoadingOverlay, Modal, Button} from "@mantine/core";
 import {SectionDetailsFormFields} from "@/features/study-plan/components/SectionDetailsFormFields.tsx";
 
-export function CreateSectionModal() {
+export function CreateSectionModal({ closeDropdown }: { closeDropdown: () => void }) {
     const [opened, {open, close}] = useDisclosure(false);
 
     const {handleSubmit, control, reset, getValues, formState: {errors}} = useForm<SectionDetailsFormValues>({
@@ -29,28 +29,41 @@ export function CreateSectionModal() {
                 close();
             }
         });
-
     };
 
     return (
         <>
-            <Modal opened={opened} onClose={() => {
-                reset();
-                close();
-            }} title="Create Section" centered>
+            <Modal
+                opened={opened}
+                onClose={() => {
+                    reset();
+                    close();
+                }}
+                title="Create Section"
+                centered
+            >
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Flex gap="md" direction="column">
-                        <LoadingOverlay visible={createSection.isPending} zIndex={1000}
-                                        overlayProps={{radius: "sm", blur: 2}}/>
-
+                        <LoadingOverlay
+                            visible={createSection.isPending}
+                            zIndex={1000}
+                            overlayProps={{radius: "sm", blur: 2}}
+                        />
                         <SectionDetailsFormFields control={control} errors={errors} getValues={getValues}/>
-
                         <Button type="submit" fullWidth mt="md">Create Section</Button>
                     </Flex>
                 </form>
             </Modal>
 
-            <Button onClick={open} leftSection={<Plus size={14}/>}>
+            <Button
+                fullWidth
+                variant="subtle"
+                onClick={() => {
+                    closeDropdown();
+                    open();
+                }}
+                leftSection={<Plus size={14}/>}
+            >
                 Create Section
             </Button>
         </>
