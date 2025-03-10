@@ -114,6 +114,7 @@ export function CourseSearch() {
             opened={opened}
             onChange={setOpened}
             width={360}
+            trapFocus
         >
             <Popover.Target>
                 <Button onClick={() => setOpened((o) => !o)} leftSection={<Plus size={18}/>}>
@@ -122,7 +123,19 @@ export function CourseSearch() {
             </Popover.Target>
 
             <Popover.Dropdown>
-                <Flex direction="column" gap="md">
+                <Flex direction="column" gap="sm">
+                    {selectedCourses.length > 0 && selectedSection && (
+                        <Button
+                            onClick={handleAddCourses}
+                            disabled={addCoursesToSection.isPending}
+                            leftSection={
+                                addCoursesToSection.isPending ? <Loader size={14}/> : <Plus size={14}/>
+                            }
+                        >
+                            Add To Study Plan
+                        </Button>
+                    )}
+
                     <Select
                         label="Section"
                         placeholder="Select a section"
@@ -209,18 +222,6 @@ export function CourseSearch() {
                         )}
                     </Combobox>
 
-                    {selectedCourses.length > 0 && selectedSection && (
-                        <Button
-                            fullWidth
-                            onClick={handleAddCourses}
-                            disabled={addCoursesToSection.isPending}
-                            leftSection={
-                                addCoursesToSection.isPending ? <Loader size={14}/> : <Plus size={14}/>
-                            }
-                        >
-                            Add To Study Plan
-                        </Button>
-                    )}
                 </Flex>
             </Popover.Dropdown>
         </Popover>

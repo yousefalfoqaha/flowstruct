@@ -8,7 +8,7 @@ type DataTableProps<TData> = {
 
 export function DataTable<TData>({table}: DataTableProps<TData>) {
     return (
-        <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} layout="fixed">
+        <Table stickyHeader stickyHeaderOffset={60}>
             <Table.Thead>
                 {table.getHeaderGroups().map((headerGroup) => (
                     <Table.Tr key={headerGroup.id}>

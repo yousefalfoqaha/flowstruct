@@ -1,5 +1,5 @@
 import {Section} from "@/features/study-plan/types.ts";
-import {ActionIcon, Badge, Button, Combobox, Flex, Group, Loader, Text, useCombobox} from "@mantine/core";
+import {ActionIcon, Badge, Button, Combobox, Flex, Group, Loader, ScrollArea, Text, useCombobox} from "@mantine/core";
 import {List, Pencil, Trash} from "lucide-react";
 import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
 import {modals} from "@mantine/modals";
@@ -92,7 +92,9 @@ export function SectionsList({sections}: { sections: Section[] }) {
                         <Combobox.Header>
                             <CreateSectionModal closeDropdown={() => combobox.closeDropdown()}/>
                         </Combobox.Header>
+                        <ScrollArea.Autosize mah={300} type="scroll">
                         {options}
+                        </ScrollArea.Autosize>
 
                     </Combobox.Options>
                 </Combobox.Dropdown>

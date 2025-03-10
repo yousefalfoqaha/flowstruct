@@ -3,12 +3,13 @@ import {useParams} from "@tanstack/react-router";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {createColumnHelper, getCoreRowModel, getPaginationRowModel, useReactTable} from "@tanstack/react-table";
 import {Course} from "@/features/course/types.ts";
-import {CircleMinus, Plus} from "lucide-react";
-import {ActionIcon, Badge, Button, Flex, Group, Loader, Pagination, Pill, Text} from "@mantine/core";
+import {CircleMinus} from "lucide-react";
+import {ActionIcon, Badge, Flex, Group, Loader, Pagination, Pill} from "@mantine/core";
 import React from "react";
 import {DataTable} from "@/shared/components/DataTable.tsx";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {CoursePrerequisite} from "@/features/study-plan/types.ts";
+import {PrerequisiteMultiSelect} from "@/features/study-plan/components/PrerequisiteMultiSelect.tsx";
 
 const columnHelper = createColumnHelper<Course & { sectionCourse: { prerequisites: CoursePrerequisite[] } }>();
 
@@ -65,9 +66,7 @@ export function FrameworkCoursesTable() {
                                 </Pill>
                             );
                         })}
-                        <Button variant="subtle" size="xs" leftSection={<Plus size={14}/>}>
-                            Add
-                        </Button>
+                        <PrerequisiteMultiSelect/>
                     </Pill.Group>
                 );
             },
@@ -113,7 +112,7 @@ export function FrameworkCoursesTable() {
 
     const [pagination, setPagination] = React.useState({
         pageIndex: 0,
-        pageSize: 10,
+        pageSize: 8,
     });
 
     const table = useReactTable({

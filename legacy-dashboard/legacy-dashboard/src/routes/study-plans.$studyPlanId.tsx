@@ -8,6 +8,7 @@ import {useProgram} from "@/features/program/hooks/useProgram.ts";
 import {getCourseListQuery} from "@/features/course/queries.ts";
 import {Folder, Map, ScrollText} from "lucide-react";
 import {Tabs} from "@mantine/core";
+import {CoursesGraphProvider} from "@/contexts/CoursesGraphContext.tsx";
 
 export const Route = createFileRoute("/study-plans/$studyPlanId")({
     component: RouteComponent,
@@ -45,13 +46,15 @@ function RouteComponent() {
                 Overview placeholder
             </Tabs.Panel>
 
-            <Tabs.Panel value="framework">
-                <SectionsTab sections={studyPlan.sections}/>
-            </Tabs.Panel>
+            <CoursesGraphProvider>
+                <Tabs.Panel value="framework">
+                    <SectionsTab sections={studyPlan.sections}/>
+                </Tabs.Panel>
 
-            <Tabs.Panel value="program-map">
-                <ProgramMapTab duration={studyPlan.duration} coursePlacements={studyPlan.coursePlacements}/>
-            </Tabs.Panel>
+                <Tabs.Panel value="program-map">
+                    <ProgramMapTab duration={studyPlan.duration} coursePlacements={studyPlan.coursePlacements}/>
+                </Tabs.Panel>
+            </CoursesGraphProvider>
         </Tabs>
     );
 }
