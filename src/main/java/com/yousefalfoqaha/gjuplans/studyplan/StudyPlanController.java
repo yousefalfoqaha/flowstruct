@@ -108,4 +108,16 @@ public class StudyPlanController {
                 HttpStatus.OK
         );
     }
+
+    @PutMapping("/{studyPlanId}/courses/{courseId}")
+    public ResponseEntity<StudyPlanResponse> assignCoursePrerequisites(
+            @PathVariable long studyPlanId,
+            @PathVariable long courseId,
+            @RequestBody AssignCoursePrerequisitesRequest request
+    ) {
+        return new ResponseEntity<>(
+                studyPlanService.assignCoursePrerequisites(studyPlanId, courseId, request),
+                HttpStatus.OK
+        );
+    }
 }

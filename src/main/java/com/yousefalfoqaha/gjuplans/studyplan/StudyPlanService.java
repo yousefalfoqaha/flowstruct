@@ -259,6 +259,28 @@ public class StudyPlanService {
         return studyPlanResponseMapper.apply(updatedStudyPlan);
     }
 
+    public StudyPlanResponse assignCoursePrerequisites(
+            long studyPlanId,
+            long courseId,
+            AssignCoursePrerequisitesRequest request
+    ) {
+        var studyPlan = findStudyPlan(studyPlanId);
+
+        Map<Long, SectionCourse> studyPlanCourses = studyPlan.getSections()
+                .stream()
+                .flatMap(section -> section.getCourses().entrySet().stream())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                ));
+
+        request.prerequisites()
+                .stream()
+                .forEach(prerequisite -> {
+
+                });
+    }
+
     private StudyPlan findStudyPlan(long studyPlanId) {
         return studyPlanRepository.findById(studyPlanId)
                 .orElseThrow(() -> new StudyPlanNotFoundException("Study plan with id " + studyPlanId + " was not found."));
