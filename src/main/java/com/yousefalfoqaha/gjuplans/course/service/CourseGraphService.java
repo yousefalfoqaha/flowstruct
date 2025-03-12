@@ -20,27 +20,27 @@ public class CourseGraphService {
 //        var course = courses.get(courseId);
 //
 //        for (var prerequisite : course.getPrerequisites()) {
-//            var prerequisiteId = prerequisite.getPrerequisite().getId();
+//            var prerequisite = prerequisite.getPrerequisite().getId();
 //
-//            if (courses.get(prerequisiteId) == null) {
+//            if (courses.get(prerequisite) == null) {
 //                continue;
 //            }
 //
-//            if (courses.get(prerequisiteId).isRemedial()) {
+//            if (courses.get(prerequisite).isRemedial()) {
 //                continue;
 //            }
 //
-//            if (!visited.contains(prerequisiteId)) {
-//                traversePrerequisites(prerequisiteId, courses, visited, courseSequencesMap);
+//            if (!visited.contains(prerequisite)) {
+//                traversePrerequisites(prerequisite, courses, visited, courseSequencesMap);
 //            }
 //
 //            var courseSequences = courseSequencesMap.get(courseId);
-//            var prerequisiteCourseSequences = courseSequencesMap.get(prerequisiteId);
+//            var prerequisiteCourseSequences = courseSequencesMap.get(prerequisite);
 //
 //            courseSequences.getPrerequisiteSequence()
 //                    .addAll(prerequisiteCourseSequences.getPrerequisiteSequence());
 //
-//            courseSequences.getPrerequisiteSequence().add(prerequisiteId);
+//            courseSequences.getPrerequisiteSequence().add(prerequisite);
 //
 //            prerequisiteCourseSequences.getPostrequisiteSequence().add(courseId);
 //

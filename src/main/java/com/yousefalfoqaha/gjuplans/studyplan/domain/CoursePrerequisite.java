@@ -14,6 +14,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Setter
 @Table("course_prerequisite")
 public class CoursePrerequisite {
+        private AggregateReference<Course, Long> course;
 
         private AggregateReference<Course, Long> prerequisite;
 

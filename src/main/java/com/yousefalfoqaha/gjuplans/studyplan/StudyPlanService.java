@@ -2,11 +2,9 @@ package com.yousefalfoqaha.gjuplans.studyplan;
 
 import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
+import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import com.yousefalfoqaha.gjuplans.course.service.CourseService;
-import com.yousefalfoqaha.gjuplans.studyplan.domain.CoursePlacement;
-import com.yousefalfoqaha.gjuplans.studyplan.domain.Section;
-import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionCourse;
-import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
@@ -25,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -262,7 +261,7 @@ public class StudyPlanService {
     public StudyPlanResponse assignCoursePrerequisites(
             long studyPlanId,
             long courseId,
-            AssignCoursePrerequisitesRequest request
+            List<CoursePrerequisiteRequest> prerequisiteRequests
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
 
@@ -274,11 +273,70 @@ public class StudyPlanService {
                         Map.Entry::getValue
                 ));
 
-        request.prerequisites()
-                .stream()
-                .forEach(prerequisite -> {
+        Set<Long> visited = new HashSet<>();
 
-                });
+        var parentCourse = studyPlanCourses.get(courseId);
+
+        for (var prerequisite : prerequisiteRequests) {
+            if (!visited.contains(prerequisite.prerequisite())) {
+                detectCycle(courseId, prerequisite.prerequisite(), visited, studyPlanCourses);
+            }
+
+            parentCourse.getPrerequisites().add(
+                    new CoursePrerequisite(
+                            AggregateReference.to(courseId),
+                            AggregateReference.to(prerequisite.prerequisite()),
+                            Relation.AND
+                    )
+            );
+        }
+
+        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
+        return studyPlanResponseMapper.apply(updatedStudyPlan);
+    }
+
+    public StudyPlanResponse removeCoursePrerequisite(
+            long studyPlanId,
+            long courseId,
+            long prerequisiteId
+    ) {
+        var studyPlan = findStudyPlan(studyPlanId);
+
+        var section = studyPlan.getSections()
+                .stream()
+                .filter(s -> s.getCourses().containsKey(courseId))
+                .findFirst()
+                .orElseThrow(() -> new CourseNotFoundException("Course not found in any section"));
+
+        var sectionCourse = section.getCourses().get(courseId);
+
+        boolean removed = sectionCourse.getPrerequisites()
+                .removeIf(prerequisite -> prerequisite.getPrerequisite().getId() == prerequisiteId);
+
+        if (!removed) throw new CourseNotFoundException("Prerequisite not found");
+
+        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
+        return studyPlanResponseMapper.apply(updatedStudyPlan);
+    }
+
+
+    private void detectCycle(
+            long originalCourseId,
+            long prerequisiteId,
+            Set<Long> visited,
+            Map<Long, SectionCourse> studyPlanCourses
+    ) {
+        if (visited.contains(prerequisiteId)) return;
+
+        if (originalCourseId == prerequisiteId) throw new RuntimeException("Cycle detected.");
+
+        for (var prerequisite : studyPlanCourses.get(prerequisiteId).getPrerequisites()) {
+            if (!visited.contains(prerequisite.getPrerequisite().getId())) {
+                detectCycle(originalCourseId, prerequisite.getPrerequisite().getId(), visited, studyPlanCourses);
+            }
+        }
+
+        visited.add(prerequisiteId);
     }
 
     private StudyPlan findStudyPlan(long studyPlanId) {

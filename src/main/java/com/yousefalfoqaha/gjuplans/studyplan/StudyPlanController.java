@@ -109,14 +109,26 @@ public class StudyPlanController {
         );
     }
 
-    @PutMapping("/{studyPlanId}/courses/{courseId}")
+    @PostMapping("/{studyPlanId}/courses/{courseId}/prerequisites")
     public ResponseEntity<StudyPlanResponse> assignCoursePrerequisites(
             @PathVariable long studyPlanId,
             @PathVariable long courseId,
-            @RequestBody AssignCoursePrerequisitesRequest request
+            @RequestBody List<CoursePrerequisiteRequest> prerequisiteRequests
     ) {
         return new ResponseEntity<>(
-                studyPlanService.assignCoursePrerequisites(studyPlanId, courseId, request),
+                studyPlanService.assignCoursePrerequisites(studyPlanId, courseId, prerequisiteRequests),
+                HttpStatus.OK
+        );
+    }
+
+    @DeleteMapping("/{studyPlanId}/courses/{courseId}/prerequisites/{prerequisiteId}")
+    public ResponseEntity<StudyPlanResponse> removeCoursePrerequisite(
+            @PathVariable long studyPlanId,
+            @PathVariable long courseId,
+            @PathVariable long prerequisiteId
+    ) {
+        return new ResponseEntity<>(
+                studyPlanService.removeCoursePrerequisite(studyPlanId, courseId, prerequisiteId),
                 HttpStatus.OK
         );
     }
