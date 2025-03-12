@@ -66,7 +66,7 @@ export function CourseSearch() {
                     combobox.closeDropdown();
                     setSelectedCourses([]);
                     setSearch("");
-                    setOpened(false); // Close the popover on success
+                    setOpened(false);
                 }
             }
         );

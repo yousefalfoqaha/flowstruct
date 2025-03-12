@@ -10,11 +10,13 @@ import {DataTable} from "@/shared/components/DataTable.tsx";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {CoursePrerequisite} from "@/features/study-plan/types.ts";
 import {PrerequisiteMultiSelect} from "@/features/study-plan/components/PrerequisiteMultiSelect.tsx";
+import {useRemoveCoursePrerequisite} from "@/features/study-plan/hooks/useRemoveCoursePrerequisite.ts";
 
 const columnHelper = createColumnHelper<Course & { sectionCourse: { prerequisites: CoursePrerequisite[] } }>();
 
 export function FrameworkCoursesTable() {
     const removeCourseFromSection = useRemoveCourseFromSection();
+    const removePrerequisite = useRemoveCoursePrerequisite();
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
     const {data: courses} = useCourseList(studyPlanId);
     const {data: studyPlan} = useStudyPlan(studyPlanId);
@@ -56,18 +58,34 @@ export function FrameworkCoursesTable() {
                 const prerequisites = row.original.sectionCourse.prerequisites || [];
 
                 return (
-                    <Pill.Group>
+                    <Flex align="center" wrap="wrap" gap={5} w={300}>
                         {prerequisites.map((prerequisite) => {
                             const prereqCourse = courses[prerequisite.prerequisite];
                             if (!prereqCourse) return null;
+
+                            const isRemovingPrerequisite =
+                                removePrerequisite.isPending &&
+                                removePrerequisite.variables.prerequisiteId === prereqCourse.id &&
+                                removePrerequisite.variables.courseId === row.original.id;
+
                             return (
-                                <Pill key={prereqCourse.id} withRemoveButton>
-                                    {prereqCourse.code} {prereqCourse.name}
+                                <Pill
+                                    key={prereqCourse.id}
+                                    withRemoveButton
+                                    disabled={isRemovingPrerequisite}
+                                    onRemove={() => removePrerequisite.mutate({
+                                        studyPlanId: studyPlanId,
+                                        courseId: row.original.id,
+                                        prerequisiteId: prerequisite.prerequisite
+                                    })}
+                                >
+                                    {prereqCourse.code}
                                 </Pill>
                             );
                         })}
-                        <PrerequisiteMultiSelect/>
-                    </Pill.Group>
+                        <PrerequisiteMultiSelect parentCourse={row.original.id}/>
+                        {removePrerequisite.isPending && removePrerequisite.variables.courseId === row.original.id ? <Loader size={14}/> : null}
+                    </Flex>
                 );
             },
         }),
@@ -131,7 +149,7 @@ export function FrameworkCoursesTable() {
             <DataTable table={table}/>
 
             <Pagination total={table.getPageCount()}
-                        onChange={(page) => setPagination({pageIndex: page, pageSize: 10})}/>
+                        onChange={(page) => setPagination({pageIndex: page, pageSize: 8})}/>
         </Flex>
     );
 }

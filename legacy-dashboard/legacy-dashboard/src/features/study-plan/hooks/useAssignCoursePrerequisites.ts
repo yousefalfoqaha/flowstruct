@@ -1,26 +1,18 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {addCoursesToSectionRequest} from "@/features/study-plan/api.ts";
-import {Course} from "@/features/course/types.ts";
+import {assignCoursePrerequisitesRequest} from "@/features/study-plan/api.ts";
 import {notifications} from "@mantine/notifications";
 
-export const useAddCoursesToSection = () => {
+export const useAssignCoursePrerequisites = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: addCoursesToSectionRequest,
-        onSuccess: (updatedStudyPlan, {addedCourses}) => {
-            queryClient.setQueryData(["courses"], (previous: Record<number, Course> = {}) => {
-                return {
-                    ...previous,
-                    ...Object.fromEntries(addedCourses.map(course => [course.id, course]))
-                };
-            });
-
+        mutationFn: assignCoursePrerequisitesRequest,
+        onSuccess: (updatedStudyPlan) => {
             queryClient.setQueryData(["study-plan", "detail", updatedStudyPlan.id], updatedStudyPlan);
 
             notifications.show({
                 title: "Success!",
-                message: "Courses added to section successfully.",
+                message: "Prerequisites assigned successfully.",
                 color: "green"
             });
         },
@@ -32,5 +24,4 @@ export const useAddCoursesToSection = () => {
             });
         },
     });
-};
-
+}

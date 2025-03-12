@@ -1,4 +1,4 @@
-import {Section, StudyPlan, StudyPlanListItem} from "@/features/study-plan/types.ts";
+import {CoursePrerequisite, Section, StudyPlan, StudyPlanListItem} from "@/features/study-plan/types.ts";
 import {Course} from "@/features/course/types.ts";
 
 export const getStudyPlanListRequest = async (programId: number) => {
@@ -153,6 +153,42 @@ export const deleteSectionRequest = async ({studyPlanId, sectionId}: {
     sectionId: number
 }) => {
     const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/sections/${sectionId}`, {
+        method: 'DELETE'
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'An unknown error occurred');
+    }
+
+    return await res.json() as StudyPlan;
+}
+
+export const assignCoursePrerequisitesRequest = async ({studyPlanId, courseId, prerequisites}: {
+    studyPlanId: number,
+    courseId: number,
+    prerequisites: CoursePrerequisite[]
+}) => {
+    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/courses/${courseId}/prerequisites`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(prerequisites)
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'An unknown error occurred');
+    }
+
+    return await res.json() as StudyPlan;
+}
+
+export const removeCoursePrerequisiteRequest = async ({studyPlanId, courseId, prerequisiteId}: {
+    studyPlanId: number,
+    courseId: number,
+    prerequisiteId: number
+}) => {
+    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/courses/${courseId}/prerequisites/${prerequisiteId}`, {
         method: 'DELETE'
     });
 
