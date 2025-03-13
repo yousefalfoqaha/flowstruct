@@ -4,7 +4,16 @@ import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {createColumnHelper, getCoreRowModel, getPaginationRowModel, useReactTable} from "@tanstack/react-table";
 import {Course} from "@/features/course/types.ts";
 import {CircleMinus} from "lucide-react";
-import {ActionIcon, Badge, Flex, Group, Loader, Pagination, Pill} from "@mantine/core";
+import {
+    ActionIcon,
+    Badge,
+    Flex,
+    Group,
+    Loader,
+    Pagination,
+    Pill,
+    Text
+} from "@mantine/core";
 import React from "react";
 import {DataTable} from "@/shared/components/DataTable.tsx";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
@@ -58,7 +67,7 @@ export function FrameworkCoursesTable() {
                 const prerequisites = row.original.sectionCourse.prerequisites || [];
 
                 return (
-                    <Flex align="center" wrap="wrap" gap={5} w={300}>
+                    <Flex align="center" wrap="wrap" gap={7} w={300}>
                         {prerequisites.map((prerequisite) => {
                             const prereqCourse = courses[prerequisite.prerequisite];
                             if (!prereqCourse) return null;
@@ -84,7 +93,8 @@ export function FrameworkCoursesTable() {
                             );
                         })}
                         <PrerequisiteMultiSelect parentCourse={row.original.id}/>
-                        {removePrerequisite.isPending && removePrerequisite.variables.courseId === row.original.id ? <Loader size={14}/> : null}
+                        {removePrerequisite.isPending && removePrerequisite.variables.courseId === row.original.id ?
+                            <Loader size={14}/> : null}
                     </Flex>
                 );
             },
@@ -110,6 +120,7 @@ export function FrameworkCoursesTable() {
                 return (
                     <Group justify="flex-end">
                         <ActionIcon
+                            loading={isRemovingCourse}
                             size="lg"
                             variant="subtle"
                             onClick={() =>
@@ -120,7 +131,7 @@ export function FrameworkCoursesTable() {
                             }
                             disabled={isRemovingCourse}
                         >
-                            {isRemovingCourse ? <Loader size={16}/> : <CircleMinus size={16}/>}
+                            <CircleMinus size={16}/>
                         </ActionIcon>
                     </Group>
                 );
@@ -142,14 +153,23 @@ export function FrameworkCoursesTable() {
         state: {
             pagination,
         },
+        autoResetPageIndex: false,
     });
+
+    const paginationMessage = `Showing ${pagination.pageSize * (pagination.pageIndex) + 1} – ${Math.min(rowData.length, pagination.pageSize * (pagination.pageIndex + 1))} of ${rowData.length}`;
 
     return (
         <Flex direction="column" align="center" gap="md">
             <DataTable table={table}/>
 
-            <Pagination total={table.getPageCount()}
-                        onChange={(page) => setPagination({pageIndex: page - 1, pageSize: 8})}/>
+            <Group justify="flex-end">
+                <Text size="sm">{paginationMessage}</Text>
+                <Pagination total={table.getPageCount()}
+                            onChange={(page) => setPagination({pageIndex: page - 1, pageSize: pagination.pageSize})}
+                            value={pagination.pageIndex + 1}
+                            withPages={false}
+                />
+            </Group>
         </Flex>
     );
 }

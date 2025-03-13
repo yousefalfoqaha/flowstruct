@@ -12,7 +12,7 @@ export const useRemoveCoursePrerequisite = () => {
 
             notifications.show({
                 title: "Success!",
-                message: "Prerequisites assigned successfully.",
+                message: "Prerequisite removed successfully.",
                 color: "green"
             });
         },

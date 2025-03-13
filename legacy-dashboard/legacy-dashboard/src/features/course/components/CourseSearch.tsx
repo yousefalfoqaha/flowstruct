@@ -10,10 +10,10 @@ import {
     Pill,
     PillsInput,
     Select,
-    Popover
+    Popover, Group
 } from "@mantine/core";
 import React from "react";
-import {Plus} from "lucide-react";
+import {CirclePlus, Plus} from "lucide-react";
 import {useDebouncedValue} from "@mantine/hooks";
 import {Course} from "@/features/course/types.ts";
 import {useAddCoursesToSection} from "@/features/study-plan/hooks/useAddCoursesToSection.ts";
@@ -99,7 +99,7 @@ export function CourseSearch() {
                                 style={{pointerEvents: "none"}}
                             />
                             <span>
-                                {course.code} {course.name}
+                                {course.code}: {course.name}
                             </span>
                         </Flex>
                     </Combobox.Option>
@@ -127,10 +127,7 @@ export function CourseSearch() {
                     {selectedCourses.length > 0 && selectedSection && (
                         <Button
                             onClick={handleAddCourses}
-                            disabled={addCoursesToSection.isPending}
-                            leftSection={
-                                addCoursesToSection.isPending ? <Loader size={14}/> : <Plus size={14}/>
-                            }
+                            loading={addCoursesToSection.isPending}
                         >
                             Add To Study Plan
                         </Button>
@@ -192,8 +189,20 @@ export function CourseSearch() {
                         {debouncedSearch !== "" && isFetched && (
                             <Combobox.Dropdown>
                                 <>
+                                    <Combobox.Header>
+                                        {debouncedSearch.trim().length > 0 && (
+                                            <Button
+                                                leftSection={<Plus size={14}/>}
+                                                variant="transparent"
+                                                fullWidth
+                                            >
+                                                Create "{debouncedSearch}"
+                                            </Button>
+                                        )}
+                                    </Combobox.Header>
+
                                     <Combobox.Options>
-                                        <ScrollArea.Autosize mah={190} type="scroll" scrollbarSize={6}>
+                                        <ScrollArea.Autosize mah={250} type="scroll" scrollbarSize={6}>
                                             {options.length > 0 ? options :
                                                 <Combobox.Empty>Nothing found</Combobox.Empty>}
                                         </ScrollArea.Autosize>

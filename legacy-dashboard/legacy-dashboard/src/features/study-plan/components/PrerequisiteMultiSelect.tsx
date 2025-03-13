@@ -48,7 +48,7 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
         const course = courses[Number(id)];
         return (
             <Pill key={id} withRemoveButton onRemove={() => handleValueRemove(id)}>
-                {course.code} {course.name}
+                {course.code}: {course.name}
             </Pill>
         );
     });
@@ -77,7 +77,7 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
                         tabIndex={-1}
                         style={{pointerEvents: 'none'}}
                     />
-                    <span>{course.code} {course.name}</span>
+                    {course.code}: {course.name}
                 </Flex>
             </Combobox.Option>
         ) : null;
@@ -119,7 +119,7 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
 
                     <Combobox store={combobox} onOptionSubmit={handleValueSelect} withinPortal={false}>
                         <Combobox.DropdownTarget>
-                            <PillsInput onClick={() => combobox.openDropdown()}>
+                            <PillsInput label="Selected Prerequisites" onClick={() => combobox.openDropdown()}>
                                 <Pill.Group>
                                     {values}
                                     <Combobox.EventsTarget>
@@ -140,7 +140,7 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
 
                         <Combobox.Dropdown>
                             <Combobox.Options>
-                                <ScrollArea.Autosize mah={190} type="scroll" scrollbarSize={6}>
+                                <ScrollArea.Autosize mah={300} type="scroll" scrollbarSize={6}>
                                     {options.length > 0 ? options : <Combobox.Empty>Nothing found...</Combobox.Empty>}
                                 </ScrollArea.Autosize>
                             </Combobox.Options>
