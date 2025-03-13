@@ -149,7 +149,7 @@ export function FrameworkCoursesTable() {
             <DataTable table={table}/>
 
             <Pagination total={table.getPageCount()}
-                        onChange={(page) => setPagination({pageIndex: page, pageSize: 8})}/>
+                        onChange={(page) => setPagination({pageIndex: page - 1, pageSize: 8})}/>
         </Flex>
     );
 }
