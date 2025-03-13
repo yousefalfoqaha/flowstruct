@@ -1,8 +1,8 @@
-export enum CourseType {
-    F2F = "F2F",
-    BLD = "BLD",
-    OL = "OL"
-}
+export const CourseType = {
+    F2F: "Face-to-Face",
+    BLD: "Blended",
+    OL: "Online"
+} as const;
 
 export type Course = {
     id: number;
@@ -12,7 +12,7 @@ export type Course = {
     ects: number;
     lectureHours: number;
     practicalHours: number;
-    type: CourseType;
+    type: string;
     isRemedial: boolean;
 }
 

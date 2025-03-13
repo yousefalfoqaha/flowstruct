@@ -10,30 +10,34 @@ import {
     Flex
 } from "@mantine/core";
 import React from "react";
-import {Plus, Link} from "lucide-react";
-import {useCoursesGraph} from "@/contexts/CoursesGraphContext.tsx";
-import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
-import {useParams} from "@tanstack/react-router";
-import {useDebouncedValue} from "@mantine/hooks";
-import {useAssignCoursePrerequisites} from "@/features/study-plan/hooks/useAssignCoursePrerequisites.ts";
-import {CourseRelation} from "@/features/study-plan/types.ts";
+import { Plus, Link } from "lucide-react";
+import { useCoursesGraph } from "@/contexts/CoursesGraphContext.tsx";
+import { useCourseList } from "@/features/course/hooks/useCourseList.ts";
+import { useParams } from "@tanstack/react-router";
+import { useDebouncedValue } from "@mantine/hooks";
+import { useAssignCoursePrerequisites } from "@/features/study-plan/hooks/useAssignCoursePrerequisites.ts";
+import { CourseRelation } from "@/features/study-plan/types.ts";
 
-export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }) {
+export function PrerequisiteMultiSelect({ parentCourse }: { parentCourse: number }) {
     const combobox = useCombobox({
         onDropdownClose: () => combobox.resetSelectedOption(),
-        onDropdownOpen: () => combobox.updateSelectedOptionIndex('active'),
+        onDropdownOpen: () => combobox.updateSelectedOptionIndex("active")
     });
 
-    const {coursesGraph} = useCoursesGraph();
-    const [search, setSearch] = React.useState('');
+    const { coursesGraph } = useCoursesGraph();
+    const [search, setSearch] = React.useState("");
     const [debouncedSearch] = useDebouncedValue(search, 400);
     const [value, setValue] = React.useState<Set<string>>(new Set());
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
-    const {data: courses} = useCourseList(studyPlanId);
+    const studyPlanId = parseInt(useParams({ strict: false }).studyPlanId ?? "");
+    const { data: courses } = useCourseList(studyPlanId);
     const assignPrerequisites = useAssignCoursePrerequisites();
 
     const handleValueSelect = (val: string) => {
-        setValue((current) => new Set(current.has(val) ? [...current].filter((v) => v !== val) : [...current, val]));
+        setSearch("");
+        combobox.closeDropdown();
+        setValue((current) =>
+            new Set(current.has(val) ? [...current].filter((v) => v !== val) : [...current, val])
+        );
     };
 
     const handleValueRemove = (val: string) => {
@@ -57,7 +61,7 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
         const course = courses[id];
         if (!course) return null;
 
-        const codeAndName = course.code + ' ' + course.name;
+        const codeAndName = course.code + " " + course.name;
         const isSelected = value.has(id.toString());
         const createsCycle = coursesGraph.get(parentCourse)?.postrequisiteSequence.has(id);
 
@@ -71,11 +75,10 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
                 <Flex align="center" gap="sm">
                     <Checkbox
                         checked={isSelected}
-                        onChange={() => {
-                        }}
+                        onChange={() => {}}
                         aria-hidden
                         tabIndex={-1}
-                        style={{pointerEvents: 'none'}}
+                        style={{ pointerEvents: "none" }}
                     />
                     {course.code}: {course.name}
                 </Flex>
@@ -86,32 +89,36 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
     return (
         <Popover position="left-start" shadow="md" width={360} trapFocus>
             <Popover.Target>
-                <Button radius="xl" variant="subtle" size="compact-xs" leftSection={<Plus size={14}/>}>Add</Button>
+                <Button radius="xl" variant="subtle" size="compact-xs" leftSection={<Plus size={14} />}>
+                    Add
+                </Button>
             </Popover.Target>
 
             <Popover.Dropdown>
                 <Flex direction="column" gap="sm">
                     {value.size > 0 && (
                         <Button
-                            leftSection={<Link size={14}/>}
+                            leftSection={<Link size={14} />}
                             loading={assignPrerequisites.isPending}
-                            onClick={() => assignPrerequisites.mutate(
-                                {
-                                    courseId: parentCourse,
-                                    studyPlanId: studyPlanId,
-                                    prerequisites: Array.from(value).map(id => ({
-                                        prerequisite: parseInt(id),
-                                        relation: CourseRelation.AND
-                                    }))
-                                },
-                                {
-                                    onSuccess: () => {
-                                        combobox.closeDropdown();
-                                        setValue(new Set());
-                                        setSearch("");
+                            onClick={() =>
+                                assignPrerequisites.mutate(
+                                    {
+                                        courseId: parentCourse,
+                                        studyPlanId: studyPlanId,
+                                        prerequisites: Array.from(value).map(id => ({
+                                            prerequisite: parseInt(id),
+                                            relation: CourseRelation.AND
+                                        }))
+                                    },
+                                    {
+                                        onSuccess: () => {
+                                            combobox.closeDropdown();
+                                            setValue(new Set());
+                                            setSearch("");
+                                        }
                                     }
-                                }
-                            )}
+                                )
+                            }
                         >
                             Assign Prerequisites
                         </Button>
@@ -119,19 +126,29 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
 
                     <Combobox store={combobox} onOptionSubmit={handleValueSelect} withinPortal={false}>
                         <Combobox.DropdownTarget>
-                            <PillsInput label="Selected Prerequisites" onClick={() => combobox.openDropdown()}>
+                            <PillsInput label="Selected Prerequisites">
                                 <Pill.Group>
                                     {values}
                                     <Combobox.EventsTarget>
                                         <PillsInput.Field
-                                            onFocus={() => combobox.openDropdown()}
-                                            onBlur={() => combobox.closeDropdown()}
                                             value={search}
                                             placeholder="Search study plan courses"
                                             onChange={(event) => {
-                                                combobox.updateSelectedOptionIndex();
-                                                setSearch(event.currentTarget.value);
+                                                const newVal = event.currentTarget.value;
+                                                setSearch(newVal);
+                                                if (newVal.trim() !== "") {
+                                                    combobox.openDropdown();
+                                                } else {
+                                                    combobox.closeDropdown();
+                                                }
                                             }}
+                                            onFocus={() => {
+                                                if (search.trim() !== "") {
+                                                    combobox.openDropdown();
+                                                }
+                                            }}
+                                            onBlur={() => combobox.closeDropdown()}
+                                            autoComplete="off"
                                         />
                                     </Combobox.EventsTarget>
                                 </Pill.Group>

@@ -10,22 +10,28 @@ import {
     Pill,
     PillsInput,
     Select,
-    Popover, Group
+    Popover
 } from "@mantine/core";
 import React from "react";
-import {CirclePlus, Plus} from "lucide-react";
+import {Plus} from "lucide-react";
 import {useDebouncedValue} from "@mantine/hooks";
 import {Course} from "@/features/course/types.ts";
 import {useAddCoursesToSection} from "@/features/study-plan/hooks/useAddCoursesToSection.ts";
 import {useParams} from "@tanstack/react-router";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {usePaginatedCourses} from "@/features/course/hooks/usePaginatedCourses.ts";
+import {CreateCourseModal} from "@/features/course/components/CreateCourseModal.tsx";
 
 export function CourseSearch() {
-    const [opened, setOpened] = React.useState(false);
+    // State for popover open/close
+    const [popoverOpened, setPopoverOpened] = React.useState(false);
+    // State for search string and selected courses/section
     const [search, setSearch] = React.useState<string>("");
     const [selectedCourses, setSelectedCourses] = React.useState<Course[]>([]);
     const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
+    // State for the Create Course modal (lifted state)
+    const [createModalOpen, setCreateModalOpen] = React.useState(false);
+
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
     const {data: studyPlan} = useStudyPlan(studyPlanId);
     const [debouncedSearch] = useDebouncedValue(search, 750);
@@ -40,6 +46,8 @@ export function CourseSearch() {
     const {data, isFetching, isFetched, fetchNextPage, hasNextPage} = usePaginatedCourses(debouncedSearch);
 
     const handleCourseSelect = (courseString: string) => {
+        setSearch('');
+        combobox.closeDropdown();
         const course: Course = JSON.parse(courseString);
         setSelectedCourses((current) =>
             current.some(c => c.id === course.id)
@@ -66,7 +74,7 @@ export function CourseSearch() {
                     combobox.closeDropdown();
                     setSelectedCourses([]);
                     setSearch("");
-                    setOpened(false);
+                    setPopoverOpened(false);
                 }
             }
         );
@@ -74,7 +82,7 @@ export function CourseSearch() {
 
     const selectedOptions = selectedCourses.map((course) => (
         <Pill key={course.id} withRemoveButton onRemove={() => handleCourseRemove(course.id)}>
-            {course.code} {course.name}
+            {course.code}: {course.name}
         </Pill>
     ));
 
@@ -82,7 +90,6 @@ export function CourseSearch() {
         data?.pages.flatMap(page =>
             page.content.map(course => {
                 const alreadyAdded = studyPlan?.sections.some(s => course.id in s.courses);
-
                 return (
                     <Combobox.Option
                         value={JSON.stringify(course)}
@@ -99,8 +106,8 @@ export function CourseSearch() {
                                 style={{pointerEvents: "none"}}
                             />
                             <span>
-                                {course.code}: {course.name}
-                            </span>
+                {course.code}: {course.name}
+              </span>
                         </Flex>
                     </Combobox.Option>
                 );
@@ -108,131 +115,142 @@ export function CourseSearch() {
         ) ?? [];
 
     return (
-        <Popover
-            position="left-start"
-            shadow="md"
-            opened={opened}
-            onChange={setOpened}
-            width={360}
-            trapFocus
-        >
-            <Popover.Target>
-                <Button onClick={() => setOpened((o) => !o)} leftSection={<Plus size={18}/>}>
-                    Add Courses
-                </Button>
-            </Popover.Target>
+        <>
+            {/* Create Course Modal is controlled by the parent */}
+            <CreateCourseModal
+                opened={createModalOpen}
+                setOpened={setCreateModalOpen}
+                openCourseSearch={() => {
+                    setSearch('');
+                    combobox.closeDropdown();
+                    setPopoverOpened(true);
+                }}
+                selectCreatedCourse={(newCourse) =>
+                    setSelectedCourses((current) => [...current, newCourse])
+                }
+            />
 
-            <Popover.Dropdown>
-                <Flex direction="column" gap="sm">
-                    {selectedCourses.length > 0 && selectedSection && (
-                        <Button
-                            onClick={handleAddCourses}
-                            loading={addCoursesToSection.isPending}
-                        >
-                            Add To Study Plan
-                        </Button>
-                    )}
+            <Popover
+                position="left-start"
+                shadow="md"
+                opened={popoverOpened}
+                onChange={setPopoverOpened}
+                width={360}
+                trapFocus
+            >
+                <Popover.Target>
+                    <Button onClick={() => setPopoverOpened((o) => !o)} leftSection={<Plus size={18}/>}>
+                        Add Courses
+                    </Button>
+                </Popover.Target>
 
-                    <Select
-                        label="Section"
-                        placeholder="Select a section"
-                        data={
-                            studyPlan
-                                ? studyPlan.sections.map((section) => ({
-                                    value: section.id.toString(),
-                                    label: `${section.level} ${section.type}${
-                                        section.name ? " - " + section.name : ""
-                                    }`
-                                }))
-                                : []
-                        }
-                        comboboxProps={{withinPortal: false}}
-                        value={selectedSection}
-                        onChange={setSelectedSection}
-                    />
-
-                    <Combobox
-                        store={combobox}
-                        onOptionSubmit={handleCourseSelect}
-                        withinPortal={false}
-                    >
-                        <Combobox.Target>
-                            <PillsInput
-                                label="Selected Courses"
-                                rightSection={isFetching ? <Loader size={14}/> : null}
-                                onClick={() => combobox.openDropdown()}
-                            >
-                                <Pill.Group>
-                                    {selectedOptions}
-                                    <PillsInput.Field
-                                        value={search}
-                                        placeholder="Search courses"
-                                        onChange={(event) => {
-                                            combobox.updateSelectedOptionIndex();
-                                            setSearch(event.currentTarget.value);
-                                            if (!combobox.dropdownOpened) {
-                                                combobox.openDropdown();
-                                            }
-                                        }}
-                                        onKeyDown={(event) => {
-                                            if (event.key === "Backspace" && search.length === 0) {
-                                                event.preventDefault();
-                                                handleCourseRemove(selectedCourses[selectedCourses.length - 1]?.id);
-                                            }
-                                        }}
-                                        autoComplete="off"
-                                    />
-                                </Pill.Group>
-                            </PillsInput>
-                        </Combobox.Target>
-
-                        {debouncedSearch !== "" && isFetched && (
-                            <Combobox.Dropdown>
-                                <>
-                                    <Combobox.Header>
-                                        {debouncedSearch.trim().length > 0 && (
-                                            <Button
-                                                leftSection={<Plus size={14}/>}
-                                                variant="transparent"
-                                                fullWidth
-                                            >
-                                                Create "{debouncedSearch}"
-                                            </Button>
-                                        )}
-                                    </Combobox.Header>
-
-                                    <Combobox.Options>
-                                        <ScrollArea.Autosize mah={250} type="scroll" scrollbarSize={6}>
-                                            {options.length > 0 ? options :
-                                                <Combobox.Empty>Nothing found</Combobox.Empty>}
-                                        </ScrollArea.Autosize>
-                                    </Combobox.Options>
-
-                                    {options.length > 0 && (
-                                        <Combobox.Footer>
-                                            {hasNextPage ? (
-                                                <Button
-                                                    size="compact-sm"
-                                                    fullWidth
-                                                    variant="subtle"
-                                                    onClick={() => fetchNextPage()}
-                                                >
-                                                    Load more ({data?.pages[0].totalCourses} results total)
-                                                </Button>
-                                            ) : (
-                                                <Text size="sm" c="dimmed" ta="center">
-                                                    {data?.pages[0].totalCourses} results
-                                                </Text>
-                                            )}
-                                        </Combobox.Footer>
-                                    )}
-                                </>
-                            </Combobox.Dropdown>
+                <Popover.Dropdown>
+                    <Flex direction="column" gap="sm">
+                        {selectedCourses.length > 0 && selectedSection && (
+                            <Button leftSection={<Plus size={14} />} onClick={handleAddCourses} loading={addCoursesToSection.isPending}>
+                                Add To Study Plan
+                            </Button>
                         )}
-                    </Combobox>
 
-                </Flex>
-            </Popover.Dropdown>
-        </Popover>
+                        <Select
+                            label="Section"
+                            placeholder="Select a section"
+                            data={
+                                studyPlan
+                                    ? studyPlan.sections.map((section) => ({
+                                        value: section.id.toString(),
+                                        label: `${section.level} ${section.type}${section.name ? " - " + section.name : ""}`
+                                    }))
+                                    : []
+                            }
+                            comboboxProps={{withinPortal: false}}
+                            value={selectedSection}
+                            onChange={setSelectedSection}
+                        />
+
+                        <Combobox store={combobox} onOptionSubmit={handleCourseSelect} withinPortal={false}>
+                            <Combobox.Target>
+                                <PillsInput
+                                    label="Selected Courses"
+                                    rightSection={isFetching ? <Loader size={14}/> : null}
+                                    onClick={() => combobox.openDropdown()}
+                                >
+                                    <Pill.Group>
+                                        {selectedOptions}
+                                        <PillsInput.Field
+                                            value={search}
+                                            placeholder="Search courses"
+                                            onChange={(event) => {
+                                                combobox.updateSelectedOptionIndex();
+                                                setSearch(event.currentTarget.value);
+                                                if (!combobox.dropdownOpened) {
+                                                    combobox.openDropdown();
+                                                }
+                                            }}
+                                            onKeyDown={(event) => {
+                                                if (event.key === "Backspace" && search.length === 0) {
+                                                    event.preventDefault();
+                                                    handleCourseRemove(selectedCourses[selectedCourses.length - 1]?.id);
+                                                }
+                                            }}
+                                            autoComplete="off"
+                                        />
+                                    </Pill.Group>
+                                </PillsInput>
+                            </Combobox.Target>
+
+                            {debouncedSearch !== "" && isFetched && (
+                                <Combobox.Dropdown>
+                                    <>
+                                        <Combobox.Header>
+                                            {debouncedSearch.trim().length > 0 && (
+                                                // When clicking the create button, close the popover and open the modal.
+                                                <Button
+                                                    variant="transparent"
+                                                    fullWidth
+                                                    onClick={() => {
+                                                        setPopoverOpened(false);
+                                                        setCreateModalOpen(true);
+                                                    }}
+                                                    leftSection={<Plus size={14}/>}
+                                                >
+                                                    Create "{debouncedSearch}"
+                                                </Button>
+                                            )}
+                                        </Combobox.Header>
+
+                                        <Combobox.Options>
+                                            <ScrollArea.Autosize mah={250} type="scroll" scrollbarSize={6}>
+                                                {options.length > 0 ? options :
+                                                    <Combobox.Empty>Nothing found</Combobox.Empty>}
+                                            </ScrollArea.Autosize>
+                                        </Combobox.Options>
+
+                                        {options.length > 0 && (
+                                            <Combobox.Footer>
+                                                {hasNextPage ? (
+                                                    <Button
+                                                        size="compact-sm"
+                                                        fullWidth
+                                                        variant="subtle"
+                                                        onClick={() => fetchNextPage()}
+                                                    >
+                                                        Load more ({data?.pages[0].totalCourses} results total)
+                                                    </Button>
+                                                ) : (
+                                                    <Text size="sm" c="dimmed" ta="center">
+                                                        {data?.pages[0].totalCourses} results
+                                                    </Text>
+                                                )}
+                                            </Combobox.Footer>
+                                        )}
+                                    </>
+                                </Combobox.Dropdown>
+                            )}
+                        </Combobox>
+                    </Flex>
+                </Popover.Dropdown>
+            </Popover>
+        </>
     );
 }
