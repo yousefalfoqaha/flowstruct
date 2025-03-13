@@ -20,10 +20,7 @@ import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -244,13 +241,23 @@ public class StudyPlanService {
         return studyPlanResponseMapper.apply(updatedStudyPlan);
     }
 
-    public StudyPlanResponse removeCourseFromSection(
-            long studyPlanId,
-            long courseId
-    ) {
+    @Transactional
+    public StudyPlanResponse removeCourseFromSection(long studyPlanId, long courseId) {
         var studyPlan = findStudyPlan(studyPlanId);
 
-        studyPlan.getSections().forEach(section -> section.getCourses().remove(courseId));
+        studyPlan.getSections().forEach(section -> {
+            section.getCourses().remove(courseId);
+
+            section.getCourses().values().forEach(sectionCourse -> {
+                sectionCourse.getPrerequisites().removeIf(
+                        prerequisite -> Objects.equals(prerequisite.getPrerequisite().getId(), courseId)
+                );
+
+                sectionCourse.getCorequisites().removeIf(
+                        corequisite -> Objects.equals(corequisite.getCorequisite().getId(), courseId)
+                );
+            });
+        });
 
         studyPlan.getCoursePlacements().remove(courseId);
 
@@ -258,6 +265,7 @@ public class StudyPlanService {
         return studyPlanResponseMapper.apply(updatedStudyPlan);
     }
 
+    @Transactional
     public StudyPlanResponse assignCoursePrerequisites(
             long studyPlanId,
             long courseId,
@@ -295,6 +303,7 @@ public class StudyPlanService {
         return studyPlanResponseMapper.apply(updatedStudyPlan);
     }
 
+    @Transactional
     public StudyPlanResponse removeCoursePrerequisite(
             long studyPlanId,
             long courseId,
@@ -318,7 +327,6 @@ public class StudyPlanService {
         var updatedStudyPlan = studyPlanRepository.save(studyPlan);
         return studyPlanResponseMapper.apply(updatedStudyPlan);
     }
-
 
     private void detectCycle(
             long originalCourseId,
