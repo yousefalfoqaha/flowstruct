@@ -132,4 +132,28 @@ public class StudyPlanController {
                 HttpStatus.OK
         );
     }
+
+    @PostMapping("/{studyPlanId}/courses/{courseId}/corequisites")
+    public ResponseEntity<StudyPlanResponse> assignCourseCorequisites(
+            @PathVariable long studyPlanId,
+            @PathVariable long courseId,
+            @RequestBody List<Long> corequisiteRequests
+    ) {
+        return new ResponseEntity<>(
+                studyPlanService.assignCourseCorequisites(studyPlanId, courseId, corequisiteRequests),
+                HttpStatus.OK
+        );
+    }
+
+    @DeleteMapping("/{studyPlanId}/courses/{courseId}/corequisites/{corequisiteId}")
+    public ResponseEntity<StudyPlanResponse> removeCourseCorequisite(
+            @PathVariable long studyPlanId,
+            @PathVariable long courseId,
+            @PathVariable long corequisiteId
+    ) {
+        return new ResponseEntity<>(
+                studyPlanService.removeCourseCorequisite(studyPlanId, courseId, corequisiteId),
+                HttpStatus.OK
+        );
+    }
 }

@@ -2,6 +2,7 @@ package com.yousefalfoqaha.gjuplans.studyplan.dto.response;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public record StudyPlanResponse(
         long id,
@@ -11,6 +12,8 @@ public record StudyPlanResponse(
         boolean isPrivate,
         long program,
         List<SectionResponse> sections,
-        Map<Long, Integer> coursePlacements
+        Map<Long, Integer> coursePlacements,
+        Map<Long, Set<CoursePrerequisiteResponse>> coursePrerequisites,
+        Map<Long, Set<Long>> courseCorequisites
 ) {
 }

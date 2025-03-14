@@ -14,6 +14,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Setter
 @Table("course_placement")
 public class CoursePlacement {
+
     private AggregateReference<Course, Long> course;
 
     private int semester;

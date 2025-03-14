@@ -61,18 +61,10 @@ public class StudyPlanService {
 
         var studyPlan = findStudyPlan(studyPlanId);
         var courses = courseService.getCourses(request.courseIds());
-
-        Map<Long, SectionCourse> courseRequisitesMap = studyPlan.getSections()
-                .stream()
-                .flatMap(section -> section.getCourses().entrySet().stream())
-                .filter(entry -> courses.containsKey(entry.getKey()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue
-                ));
+        var coursePrerequisitesMap = studyPlan.getCoursePrerequisitesMap();
 
         for (Map.Entry<Long, CourseResponse> entry : courses.entrySet()) {
-            var prerequisites = courseRequisitesMap.get(entry.getKey()).getPrerequisites();
+            var prerequisites = coursePrerequisitesMap.get(entry.getKey());
 
             prerequisites.forEach(prerequisite -> {
                 var prerequisitePlacement = studyPlan.getCoursePlacements().get(prerequisite.getPrerequisite().getId());
@@ -187,6 +179,8 @@ public class StudyPlanService {
                 .findFirst()
                 .orElseThrow(() -> new SectionNotFoundException("Section not found"));
 
+        // remove pre/co req relationships
+
         section.getCourses()
                 .keySet()
                 .forEach(course -> studyPlan.getCoursePlacements().remove(course));
@@ -245,19 +239,15 @@ public class StudyPlanService {
     public StudyPlanResponse removeCourseFromSection(long studyPlanId, long courseId) {
         var studyPlan = findStudyPlan(studyPlanId);
 
-        studyPlan.getSections().forEach(section -> {
-            section.getCourses().remove(courseId);
+        studyPlan.getSections().forEach(section -> section.getCourses().remove(courseId));
 
-            section.getCourses().values().forEach(sectionCourse -> {
-                sectionCourse.getPrerequisites().removeIf(
-                        prerequisite -> Objects.equals(prerequisite.getPrerequisite().getId(), courseId)
-                );
+        studyPlan.getCoursePrerequisites().removeIf(coursePrerequisite ->
+                coursePrerequisite.getCourse().getId() == courseId || coursePrerequisite.getPrerequisite().getId() == courseId
+        );
 
-                sectionCourse.getCorequisites().removeIf(
-                        corequisite -> Objects.equals(corequisite.getCorequisite().getId(), courseId)
-                );
-            });
-        });
+        studyPlan.getCourseCorequisites().removeIf(coursePrerequisite ->
+                coursePrerequisite.getCourse().getId() == courseId || coursePrerequisite.getCorequisite().getId() == courseId
+        );
 
         studyPlan.getCoursePlacements().remove(courseId);
 
@@ -272,25 +262,16 @@ public class StudyPlanService {
             List<CoursePrerequisiteRequest> prerequisiteRequests
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
-
-        Map<Long, SectionCourse> studyPlanCourses = studyPlan.getSections()
-                .stream()
-                .flatMap(section -> section.getCourses().entrySet().stream())
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue
-                ));
+        var coursePrerequisitesMap = studyPlan.getCoursePrerequisitesMap();
 
         Set<Long> visited = new HashSet<>();
 
-        var parentCourse = studyPlanCourses.get(courseId);
-
         for (var prerequisite : prerequisiteRequests) {
             if (!visited.contains(prerequisite.prerequisite())) {
-                detectCycle(courseId, prerequisite.prerequisite(), visited, studyPlanCourses);
+                detectCycle(courseId, prerequisite.prerequisite(), visited, coursePrerequisitesMap);
             }
 
-            parentCourse.getPrerequisites().add(
+            studyPlan.getCoursePrerequisites().add(
                     new CoursePrerequisite(
                             AggregateReference.to(courseId),
                             AggregateReference.to(prerequisite.prerequisite()),
@@ -304,6 +285,45 @@ public class StudyPlanService {
     }
 
     @Transactional
+    public StudyPlanResponse assignCourseCorequisites(
+            long studyPlanId,
+            long courseId,
+            List<Long> corequisites
+    ) {
+        var studyPlan = findStudyPlan(studyPlanId);
+
+        for (var corequisite : corequisites) {
+            studyPlan.getCourseCorequisites().add(
+                    new CourseCorequisite(
+                            AggregateReference.to(courseId),
+                            AggregateReference.to(corequisite)
+                    )
+            );
+        }
+
+        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
+        return studyPlanResponseMapper.apply(updatedStudyPlan);
+    }
+
+    @Transactional
+    public StudyPlanResponse removeCourseCorequisite(
+            long studyPlanId,
+            long courseId,
+            long corequisiteId
+    ) {
+        var studyPlan = findStudyPlan(studyPlanId);
+
+        boolean removed = studyPlan.getCourseCorequisites().removeIf(courseCorequisite ->
+                courseCorequisite.getCourse().getId() == courseId && courseCorequisite.getCorequisite().getId() == corequisiteId
+        );
+
+        if (!removed) throw new CourseNotFoundException("Corequisite not found");
+
+        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
+        return studyPlanResponseMapper.apply(updatedStudyPlan);
+    }
+
+    @Transactional
     public StudyPlanResponse removeCoursePrerequisite(
             long studyPlanId,
             long courseId,
@@ -311,16 +331,9 @@ public class StudyPlanService {
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
 
-        var section = studyPlan.getSections()
-                .stream()
-                .filter(s -> s.getCourses().containsKey(courseId))
-                .findFirst()
-                .orElseThrow(() -> new CourseNotFoundException("Course not found in any section"));
-
-        var sectionCourse = section.getCourses().get(courseId);
-
-        boolean removed = sectionCourse.getPrerequisites()
-                .removeIf(prerequisite -> prerequisite.getPrerequisite().getId() == prerequisiteId);
+        boolean removed = studyPlan.getCoursePrerequisites().removeIf(coursePrerequisite ->
+                coursePrerequisite.getCourse().getId() == courseId && coursePrerequisite.getPrerequisite().getId() == prerequisiteId
+        );
 
         if (!removed) throw new CourseNotFoundException("Prerequisite not found");
 
@@ -332,15 +345,19 @@ public class StudyPlanService {
             long originalCourseId,
             long prerequisiteId,
             Set<Long> visited,
-            Map<Long, SectionCourse> studyPlanCourses
+            Map<Long, List<CoursePrerequisite>> coursePrerequisitesMap
     ) {
         if (visited.contains(prerequisiteId)) return;
 
         if (originalCourseId == prerequisiteId) throw new RuntimeException("Cycle detected.");
 
-        for (var prerequisite : studyPlanCourses.get(prerequisiteId).getPrerequisites()) {
+        var prerequisites = coursePrerequisitesMap.get(prerequisiteId);
+
+        if (prerequisites == null) return;
+
+        for (var prerequisite : prerequisites) {
             if (!visited.contains(prerequisite.getPrerequisite().getId())) {
-                detectCycle(originalCourseId, prerequisite.getPrerequisite().getId(), visited, studyPlanCourses);
+                detectCycle(originalCourseId, prerequisite.getPrerequisite().getId(), visited, coursePrerequisitesMap);
             }
         }
 

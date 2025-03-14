@@ -10,8 +10,10 @@ import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,22 +22,40 @@ import java.util.Set;
 @Table("study_plan")
 public class StudyPlan {
 
-        @Id
-        private long id;
+    @Id
+    private long id;
 
-        private int year;
+    private int year;
 
-        private int duration;
+    private int duration;
 
-        private String track;
+    private String track;
 
-        private boolean isPrivate;
+    private boolean isPrivate;
 
-        private AggregateReference<Program, Long> program;
+    private AggregateReference<Program, Long> program;
 
-        @MappedCollection(idColumn = "study_plan")
-        private Set<Section> sections;
+    @MappedCollection(idColumn = "study_plan")
+    private Set<Section> sections;
 
-        @MappedCollection(idColumn = "study_plan", keyColumn = "course")
-        private Map<Long, CoursePlacement> coursePlacements;
+    @MappedCollection(idColumn = "study_plan", keyColumn = "course")
+    private Map<Long, CoursePlacement> coursePlacements;
+
+    @MappedCollection(idColumn = "study_plan")
+    private Set<CoursePrerequisite> coursePrerequisites;
+
+    @MappedCollection(idColumn = "study_plan")
+    private Set<CourseCorequisite> courseCorequisites;
+
+    public Map<Long, List<CoursePrerequisite>> getCoursePrerequisitesMap() {
+        return coursePrerequisites
+                .stream()
+                .collect(Collectors.groupingBy(coursePrerequisite -> coursePrerequisite.getCourse().getId()));
+    }
+
+    public Map<Long, List<CourseCorequisite>> getCourseCorequisitesMap() {
+        return courseCorequisites
+                .stream()
+                .collect(Collectors.groupingBy(courseCorequisite -> courseCorequisite.getCourse().getId()));
+    }
 }
