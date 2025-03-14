@@ -199,3 +199,39 @@ export const removeCoursePrerequisiteRequest = async ({studyPlanId, courseId, pr
 
     return await res.json() as StudyPlan;
 }
+
+export const assignCourseCorequisitesRequest = async ({studyPlanId, courseId, corequisites}: {
+    studyPlanId: number,
+    courseId: number,
+    corequisites: number[]
+}) => {
+    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/courses/${courseId}/corequisites`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(corequisites)
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'An unknown error occurred');
+    }
+
+    return await res.json() as StudyPlan;
+}
+
+export const removeCourseCorequisiteRequest = async ({studyPlanId, courseId, corequisiteId}: {
+    studyPlanId: number,
+    courseId: number,
+    corequisiteId: number
+}) => {
+    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/courses/${courseId}/corequisites/${corequisiteId}`, {
+        method: 'DELETE'
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'An unknown error occurred');
+    }
+
+    return await res.json() as StudyPlan;
+}

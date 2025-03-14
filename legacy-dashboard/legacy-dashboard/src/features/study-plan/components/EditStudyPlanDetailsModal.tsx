@@ -15,7 +15,6 @@ export function EditStudyPlanDetailsModal({studyPlan}: { studyPlan: StudyPlanLis
     });
 
     const onSubmit = (data: StudyPlanDetailsFormValues) => {
-        console.log(data);
         editStudyPlanDetails.mutate({
             studyPlanId: studyPlan.id,
             updatedStudyPlanDetails: {...data, year: data.year.getFullYear()}

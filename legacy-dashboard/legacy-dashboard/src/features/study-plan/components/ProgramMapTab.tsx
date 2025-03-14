@@ -1,8 +1,8 @@
 import {CourseCard} from "@/features/course/components/CourseCard.tsx";
-import {Button} from "@/shared/components/ui/button.tsx";
 import {Plus} from "lucide-react";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {useParams} from "@tanstack/react-router";
+import {Button} from "@mantine/core";
 
 type ProgramMapTabProps = {
     duration: number;

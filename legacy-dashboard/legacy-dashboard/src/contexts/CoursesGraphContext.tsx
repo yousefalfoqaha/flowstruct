@@ -1,8 +1,7 @@
 import React, {ReactNode} from "react";
 import {useParams} from "@tanstack/react-router";
-import {SectionCourse, StudyPlan} from "@/features/study-plan/types.ts";
+import {CoursePrerequisite, StudyPlan} from "@/features/study-plan/types.ts";
 import {useQueryClient} from "@tanstack/react-query";
-import {Course} from "@/features/course/types.ts";
 
 type CoursesGraphContextType = {
     coursesGraph: Map<number, CourseRequisites>;
@@ -20,40 +19,27 @@ function CoursesGraphProvider({children}: { children: ReactNode }) {
     const queryClient = useQueryClient();
 
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
-    const studyPlan: StudyPlan | undefined = queryClient.getQueryData(["study-plan", "detail", studyPlanId]);
 
-    const coursesData: Record<number, Course> | undefined = queryClient.getQueryData(["courses"]);
+    const studyPlan: StudyPlan | undefined = queryClient.getQueryData(["study-plan", "detail", studyPlanId]);
 
     React.useEffect(() => {
         if (!studyPlan) return;
 
-        const sectionCourses: Map<number, SectionCourse> = new Map(
-            studyPlan.sections.flatMap((section) =>
-                Object.entries(section.courses).map(([courseId, sectionCourse]) => [
-                    Number(courseId),
-                    sectionCourse,
-                ])
-            )
-        );
-
         const traversePrerequisites = (
             courseId: number,
-            courses: Map<number, SectionCourse>,
+            coursePrerequisitesMap: Record<number, CoursePrerequisite[]>,
             visited: Set<number>,
             graph: Map<number, CourseRequisites>
         ) => {
-            const course = courses.get(courseId);
-            if (!course) return;
+            const prerequisites = coursePrerequisitesMap[courseId];
+            if (!prerequisites) return;
 
-            for (const prereq of course.prerequisites) {
+            for (const prereq of prerequisites) {
                 const prereqId = prereq.prerequisite;
 
-                if (!courses.has(prereqId)) continue;
-
-                if (coursesData && coursesData[prereqId]?.isRemedial) continue;
 
                 if (!visited.has(prereqId)) {
-                    traversePrerequisites(prereqId, courses, visited, graph);
+                    traversePrerequisites(prereqId, coursePrerequisitesMap, visited, graph);
                 }
 
                 const currentSeq = graph.get(courseId)!;
@@ -69,7 +55,6 @@ function CoursesGraphProvider({children}: { children: ReactNode }) {
 
         const traversePostrequisites = (
             courseId: number,
-            courses: Map<number, SectionCourse>,
             visited: Set<number>,
             graph: Map<number, CourseRequisites>
         ) => {
@@ -77,12 +62,9 @@ function CoursesGraphProvider({children}: { children: ReactNode }) {
             const postCourses = new Set(currentSeq.postrequisiteSequence);
 
             for (const postId of postCourses) {
-                if (!courses.has(postId)) continue;
-
-                if (coursesData && coursesData[postId]?.isRemedial) continue;
 
                 if (!visited.has(postId)) {
-                    traversePostrequisites(postId, courses, visited, graph);
+                    traversePostrequisites(postId, visited, graph);
                 }
 
                 const postSeq = graph.get(postId)!;
@@ -93,34 +75,34 @@ function CoursesGraphProvider({children}: { children: ReactNode }) {
             visited.add(courseId);
         };
 
-        const buildCoursesGraph = (courses: Map<number, SectionCourse>): Map<number, CourseRequisites> => {
+        const buildCoursesGraph = (courses: number[]): Map<number, CourseRequisites> => {
             const visited = new Set<number>();
             const graph = new Map<number, CourseRequisites>();
 
-            courses.forEach((_, courseId) => {
+            courses.forEach((courseId) => {
                 graph.set(courseId, {prerequisiteSequence: new Set(), postrequisiteSequence: new Set()});
             });
 
-            courses.forEach((_, courseId) => {
+            courses.forEach((courseId) => {
                 if (!visited.has(courseId)) {
-                    traversePrerequisites(courseId, courses, visited, graph);
+                    traversePrerequisites(courseId, studyPlan.coursePrerequisites, visited, graph);
                 }
             });
 
             visited.clear();
 
-            courses.forEach((_, courseId) => {
+            courses.forEach((courseId) => {
                 if (!visited.has(courseId)) {
-                    traversePostrequisites(courseId, courses, visited, graph);
+                    traversePostrequisites(courseId, visited, graph);
                 }
             });
 
             return graph;
         };
 
-        const newGraph = buildCoursesGraph(sectionCourses);
+        const newGraph = buildCoursesGraph(studyPlan.sections.flatMap(section => section.courses));
         setCoursesGraph(newGraph);
-    }, [studyPlan?.sections, coursesData, studyPlan]);
+    }, [studyPlan?.sections, studyPlan]);
 
     return (
         <CoursesGraphContext.Provider value={{coursesGraph}}>
@@ -139,4 +121,4 @@ const useCoursesGraph = () => {
     return context;
 }
 
-export { useCoursesGraph, CoursesGraphContext, CoursesGraphProvider};
+export {useCoursesGraph, CoursesGraphContext, CoursesGraphProvider};

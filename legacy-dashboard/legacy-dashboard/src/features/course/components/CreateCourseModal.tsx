@@ -33,7 +33,7 @@ export function CreateCourseModal({opened, setOpened, openCourseSearch, selectCr
                 selectCreatedCourse(newCourse);
                 handleClose();
             }
-        })
+        });
     };
 
     return (

@@ -7,8 +7,8 @@ export const useCourseList = (studyPlanId: number) => {
     const {data: studyPlan} = useStudyPlan(studyPlanId);
 
     const courses = React.useMemo(() => {
-        return studyPlan.sections.flatMap(s => Object.keys(s.courses).map(Number));
-    }, [studyPlan]);
+        return studyPlan.sections.flatMap(section => section.courses);
+    }, [studyPlan.sections]);
 
     return useSuspenseQuery(getCourseListQuery(courses));
 };

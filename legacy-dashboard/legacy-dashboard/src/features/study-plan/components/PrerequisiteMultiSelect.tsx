@@ -7,30 +7,38 @@ import {
     Popover,
     ScrollArea,
     useCombobox,
-    Flex
+    Flex, SegmentedControl, Group
 } from "@mantine/core";
 import React from "react";
-import { Plus, Link } from "lucide-react";
-import { useCoursesGraph } from "@/contexts/CoursesGraphContext.tsx";
-import { useCourseList } from "@/features/course/hooks/useCourseList.ts";
-import { useParams } from "@tanstack/react-router";
-import { useDebouncedValue } from "@mantine/hooks";
-import { useAssignCoursePrerequisites } from "@/features/study-plan/hooks/useAssignCoursePrerequisites.ts";
-import { CourseRelation } from "@/features/study-plan/types.ts";
+import {Plus, Link} from "lucide-react";
+import {useCoursesGraph} from "@/contexts/CoursesGraphContext.tsx";
+import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
+import {useParams} from "@tanstack/react-router";
+import {useDebouncedValue} from "@mantine/hooks";
+import {useAssignCoursePrerequisites} from "@/features/study-plan/hooks/useAssignCoursePrerequisites.ts";
+import {CourseRelation} from "@/features/study-plan/types.ts";
+import {useAssignCourseCorequisites} from "@/features/study-plan/hooks/useAssignCourseCorequisites.ts";
+import {useStudyPlan} from "../hooks/useStudyPlan";
 
-export function PrerequisiteMultiSelect({ parentCourse }: { parentCourse: number }) {
+export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }) {
     const combobox = useCombobox({
         onDropdownClose: () => combobox.resetSelectedOption(),
         onDropdownOpen: () => combobox.updateSelectedOptionIndex("active")
     });
 
-    const { coursesGraph } = useCoursesGraph();
     const [search, setSearch] = React.useState("");
-    const [debouncedSearch] = useDebouncedValue(search, 400);
     const [value, setValue] = React.useState<Set<string>>(new Set());
-    const studyPlanId = parseInt(useParams({ strict: false }).studyPlanId ?? "");
-    const { data: courses } = useCourseList(studyPlanId);
+    const [requisiteType, setRequisiteType] = React.useState<'PRE' | 'CO'>('PRE');
+    const [debouncedSearch] = useDebouncedValue(search, 400);
+
+    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
+    const {data: studyPlan} = useStudyPlan(studyPlanId);
+
+    const {data: courses} = useCourseList(studyPlanId);
+    const {coursesGraph} = useCoursesGraph();
+
     const assignPrerequisites = useAssignCoursePrerequisites();
+    const assignCorequisites = useAssignCourseCorequisites();
 
     const handleValueSelect = (val: string) => {
         setSearch("");
@@ -48,6 +56,45 @@ export function PrerequisiteMultiSelect({ parentCourse }: { parentCourse: number
         });
     };
 
+    const handleAssignCourses = () => {
+        if (requisiteType === "PRE") {
+            assignPrerequisites.mutate(
+                {
+                    courseId: parentCourse,
+                    studyPlanId: studyPlanId,
+                    prerequisites: Array.from(value).map(id => ({
+                        prerequisite: parseInt(id),
+                        relation: CourseRelation.AND
+                    }))
+                },
+                {
+                    onSuccess: () => {
+                        combobox.closeDropdown();
+                        setValue(new Set());
+                        setSearch("");
+                    }
+                }
+            )
+            return;
+        }
+
+        assignCorequisites.mutate(
+            {
+                courseId: parentCourse,
+                studyPlanId: studyPlanId,
+                corequisites: Array.from(value).map(id => parseInt(id))
+            },
+            {
+                onSuccess: () => {
+                    combobox.closeDropdown();
+                    setValue(new Set());
+                    setSearch("");
+                    setRequisiteType("PRE");
+                }
+            }
+        )
+    }
+
     const values = Array.from(value).map((id) => {
         const course = courses[Number(id)];
         return (
@@ -64,21 +111,23 @@ export function PrerequisiteMultiSelect({ parentCourse }: { parentCourse: number
         const codeAndName = course.code + " " + course.name;
         const isSelected = value.has(id.toString());
         const createsCycle = coursesGraph.get(parentCourse)?.postrequisiteSequence.has(id);
+        const alreadyAdded = coursesGraph.get(parentCourse)?.prerequisiteSequence.has(id) || studyPlan.courseCorequisites[parentCourse]?.includes(id);
 
         return codeAndName.toLowerCase().includes(debouncedSearch.trim().toLowerCase()) ? (
             <Combobox.Option
-                disabled={createsCycle || parentCourse === id}
+                disabled={createsCycle || parentCourse === id || alreadyAdded}
                 value={id.toString()}
                 key={id}
                 active={isSelected}
             >
                 <Flex align="center" gap="sm">
                     <Checkbox
-                        checked={isSelected}
-                        onChange={() => {}}
+                        checked={isSelected || alreadyAdded}
+                        onChange={() => {
+                        }}
                         aria-hidden
                         tabIndex={-1}
-                        style={{ pointerEvents: "none" }}
+                        style={{pointerEvents: "none"}}
                     />
                     {course.code}: {course.name}
                 </Flex>
@@ -89,7 +138,7 @@ export function PrerequisiteMultiSelect({ parentCourse }: { parentCourse: number
     return (
         <Popover position="left-start" shadow="md" width={360} trapFocus>
             <Popover.Target>
-                <Button radius="xl" variant="subtle" size="compact-xs" leftSection={<Plus size={14} />}>
+                <Button radius="xl" variant="subtle" size="compact-xs" leftSection={<Plus size={14}/>}>
                     Add
                 </Button>
             </Popover.Target>
@@ -97,36 +146,30 @@ export function PrerequisiteMultiSelect({ parentCourse }: { parentCourse: number
             <Popover.Dropdown>
                 <Flex direction="column" gap="sm">
                     {value.size > 0 && (
-                        <Button
-                            leftSection={<Link size={14} />}
-                            loading={assignPrerequisites.isPending}
-                            onClick={() =>
-                                assignPrerequisites.mutate(
-                                    {
-                                        courseId: parentCourse,
-                                        studyPlanId: studyPlanId,
-                                        prerequisites: Array.from(value).map(id => ({
-                                            prerequisite: parseInt(id),
-                                            relation: CourseRelation.AND
-                                        }))
-                                    },
-                                    {
-                                        onSuccess: () => {
-                                            combobox.closeDropdown();
-                                            setValue(new Set());
-                                            setSearch("");
-                                        }
-                                    }
-                                )
-                            }
-                        >
-                            Assign Prerequisites
-                        </Button>
+                        <Group grow preventGrowOverflow={false} gap="xs" wrap="nowrap">
+                            <SegmentedControl
+                                color="blue"
+                                value={requisiteType}
+                                onChange={setRequisiteType}
+                                size="xs"
+                                data={[
+                                    {label: 'PRE', value: 'PRE'},
+                                    {label: 'CO', value: 'CO'},
+                                ]}
+                            />
+                            <Button
+                                leftSection={<Link size={14}/>}
+                                loading={assignPrerequisites.isPending}
+                                onClick={handleAssignCourses}
+                            >
+                                Assign {requisiteType === 'PRE' ? 'Prerequisites' : 'Corequisites'}
+                            </Button>
+                        </Group>
                     )}
 
                     <Combobox store={combobox} onOptionSubmit={handleValueSelect} withinPortal={false}>
                         <Combobox.DropdownTarget>
-                            <PillsInput label="Selected Prerequisites">
+                            <PillsInput label="Selected Courses">
                                 <Pill.Group>
                                     {values}
                                     <Combobox.EventsTarget>

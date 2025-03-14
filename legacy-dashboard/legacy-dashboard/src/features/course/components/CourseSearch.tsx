@@ -23,13 +23,10 @@ import {usePaginatedCourses} from "@/features/course/hooks/usePaginatedCourses.t
 import {CreateCourseModal} from "@/features/course/components/CreateCourseModal.tsx";
 
 export function CourseSearch() {
-    // State for popover open/close
     const [popoverOpened, setPopoverOpened] = React.useState(false);
-    // State for search string and selected courses/section
     const [search, setSearch] = React.useState<string>("");
     const [selectedCourses, setSelectedCourses] = React.useState<Course[]>([]);
     const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
-    // State for the Create Course modal (lifted state)
     const [createModalOpen, setCreateModalOpen] = React.useState(false);
 
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
@@ -46,8 +43,6 @@ export function CourseSearch() {
     const {data, isFetching, isFetched, fetchNextPage, hasNextPage} = usePaginatedCourses(debouncedSearch);
 
     const handleCourseSelect = (courseString: string) => {
-        setSearch('');
-        combobox.closeDropdown();
         const course: Course = JSON.parse(courseString);
         setSelectedCourses((current) =>
             current.some(c => c.id === course.id)
@@ -89,7 +84,7 @@ export function CourseSearch() {
     const options =
         data?.pages.flatMap(page =>
             page.content.map(course => {
-                const alreadyAdded = studyPlan?.sections.some(s => course.id in s.courses);
+                const alreadyAdded = studyPlan?.sections.some(s => s.courses.includes(course.id));
                 return (
                     <Combobox.Option
                         value={JSON.stringify(course)}
@@ -116,7 +111,6 @@ export function CourseSearch() {
 
     return (
         <>
-            {/* Create Course Modal is controlled by the parent */}
             <CreateCourseModal
                 opened={createModalOpen}
                 setOpened={setCreateModalOpen}
@@ -131,7 +125,7 @@ export function CourseSearch() {
             />
 
             <Popover
-                position="left-start"
+                position="bottom-end"
                 shadow="md"
                 opened={popoverOpened}
                 onChange={setPopoverOpened}
@@ -147,7 +141,8 @@ export function CourseSearch() {
                 <Popover.Dropdown>
                     <Flex direction="column" gap="sm">
                         {selectedCourses.length > 0 && selectedSection && (
-                            <Button leftSection={<Plus size={14} />} onClick={handleAddCourses} loading={addCoursesToSection.isPending}>
+                            <Button leftSection={<Plus size={14}/>} onClick={handleAddCourses}
+                                    loading={addCoursesToSection.isPending}>
                                 Add To Study Plan
                             </Button>
                         )}
@@ -179,18 +174,12 @@ export function CourseSearch() {
                                         {selectedOptions}
                                         <PillsInput.Field
                                             value={search}
-                                            placeholder="Search courses"
+                                            placeholder="Search university courses"
                                             onChange={(event) => {
                                                 combobox.updateSelectedOptionIndex();
                                                 setSearch(event.currentTarget.value);
                                                 if (!combobox.dropdownOpened) {
                                                     combobox.openDropdown();
-                                                }
-                                            }}
-                                            onKeyDown={(event) => {
-                                                if (event.key === "Backspace" && search.length === 0) {
-                                                    event.preventDefault();
-                                                    handleCourseRemove(selectedCourses[selectedCourses.length - 1]?.id);
                                                 }
                                             }}
                                             autoComplete="off"
@@ -204,7 +193,6 @@ export function CourseSearch() {
                                     <>
                                         <Combobox.Header>
                                             {debouncedSearch.trim().length > 0 && (
-                                                // When clicking the create button, close the popover and open the modal.
                                                 <Button
                                                     variant="transparent"
                                                     fullWidth

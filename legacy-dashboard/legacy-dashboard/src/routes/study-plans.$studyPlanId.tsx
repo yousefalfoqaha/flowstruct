@@ -18,7 +18,7 @@ export const Route = createFileRoute("/study-plans/$studyPlanId")({
         const studyPlan = await queryClient.ensureQueryData(getStudyPlanQuery(studyPlanId));
         await queryClient.ensureQueryData(getProgramQuery(studyPlan.program));
 
-        const coursesIds = studyPlan.sections.flatMap(s => Object.keys(s.courses).map(Number));
+        const coursesIds = studyPlan.sections.flatMap(section => section.courses);
         await queryClient.ensureQueryData(getCourseListQuery(coursesIds));
     },
 });

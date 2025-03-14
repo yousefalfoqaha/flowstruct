@@ -5,7 +5,7 @@ import {CourseType} from "@/features/course/types.ts";
 export function CourseDetailsFormFields({control, errors}: { control: any, errors: any }) {
     return (
         <Stack gap="md">
-            <Group>
+            <Group preventGrowOverflow={false} wrap="nowrap">
                 <Controller
                     name="code"
                     control={control}
@@ -38,7 +38,7 @@ export function CourseDetailsFormFields({control, errors}: { control: any, error
             </Group>
 
 
-            <Group>
+            <Group preventGrowOverflow={false} wrap="nowrap">
                 <Controller
                     name="creditHours"
                     control={control}
@@ -72,7 +72,7 @@ export function CourseDetailsFormFields({control, errors}: { control: any, error
             </Group>
 
 
-            <Group>
+            <Group preventGrowOverflow={false} wrap="nowrap">
                 <Controller
                     name="lectureHours"
                     control={control}
@@ -106,7 +106,7 @@ export function CourseDetailsFormFields({control, errors}: { control: any, error
                 />
             </Group>
 
-            <Group align="flex-end">
+            <Group preventGrowOverflow={false} wrap="nowrap" align="flex-end">
                 <Controller
                     name="type"
                     control={control}

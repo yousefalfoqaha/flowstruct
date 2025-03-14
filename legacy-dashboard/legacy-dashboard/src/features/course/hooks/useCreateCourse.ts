@@ -1,6 +1,7 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createCourseRequest } from "@/features/course/api.ts";
-import { Course } from "@/features/course/types.ts";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {createCourseRequest} from "@/features/course/api.ts";
+import {Course} from "@/features/course/types.ts";
+import {notifications} from "@mantine/notifications";
 
 export const useCreateCourse = () => {
     const queryClient = useQueryClient();
@@ -17,6 +18,13 @@ export const useCreateCourse = () => {
                     };
                 }
             );
-        }
+        },
+        onError: (error) => {
+            notifications.show({
+                title: "An error occurred.",
+                message: error.message,
+                color: "red",
+            });
+        },
     });
 };

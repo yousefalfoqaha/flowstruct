@@ -12,7 +12,10 @@ export const courseDetailsSchema = z.object({
     code: z.string(),
     name: z.string(),
     creditHours: z.number().min(0, {message: "Must be positive"}),
-    ects: z.number().min(0, {message: "Must be positive"}),
+    ects: z.number()
+        .min(0, {message: "Must be positive"})
+        .optional()
+        .transform(val => val ?? 0),
     lectureHours: z.number().min(0, {message: "Must be positive"}),
     practicalHours: z.number().min(0, {message: "Must be positive"}),
     type: z.enum(

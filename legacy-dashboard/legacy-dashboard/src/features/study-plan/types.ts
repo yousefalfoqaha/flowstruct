@@ -20,18 +20,13 @@ export type CoursePrerequisite = {
     relation: CourseRelation;
 }
 
-export type SectionCourse = {
-    prerequisites: CoursePrerequisite[];
-    corequisites: number[];
-}
-
 export type Section = {
     id: number;
     level: SectionLevel;
     type: SectionType;
     requiredCreditHours: number;
     name: string | null;
-    courses: Record<number, SectionCourse>;
+    courses: number[];
 }
 
 export type StudyPlan = {
@@ -43,6 +38,8 @@ export type StudyPlan = {
     program: number;
     sections: Section[];
     coursePlacements: Record<number, number>;
+    coursePrerequisites: Record<number, CoursePrerequisite[]>;
+    courseCorequisites: Record<number, number[]>;
 }
 
 export type StudyPlanListItem = Pick<StudyPlan, "id" | "year" | "duration" | "track" | "isPrivate" | "program">;

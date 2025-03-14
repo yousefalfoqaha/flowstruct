@@ -8,7 +8,7 @@ import {
     ActionIcon,
     Badge,
     Flex,
-    Group,
+    Group, Indicator,
     Loader,
     Pagination,
     Pill,
@@ -20,12 +20,15 @@ import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {CoursePrerequisite} from "@/features/study-plan/types.ts";
 import {PrerequisiteMultiSelect} from "@/features/study-plan/components/PrerequisiteMultiSelect.tsx";
 import {useRemoveCoursePrerequisite} from "@/features/study-plan/hooks/useRemoveCoursePrerequisite.ts";
+import {useRemoveCourseCorequisite} from "@/features/study-plan/hooks/useRemoveCourseCorequisite.ts";
 
-const columnHelper = createColumnHelper<Course & { sectionCourse: { prerequisites: CoursePrerequisite[] } }>();
+const columnHelper = createColumnHelper<Course & { prerequisites: CoursePrerequisite[], corequisites: number[] }>();
 
 export function FrameworkCoursesTable() {
     const removeCourseFromSection = useRemoveCourseFromSection();
     const removePrerequisite = useRemoveCoursePrerequisite();
+    const removeCorequisite = useRemoveCourseCorequisite();
+
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
     const {data: courses} = useCourseList(studyPlanId);
     const {data: studyPlan} = useStudyPlan(studyPlanId);
@@ -33,14 +36,17 @@ export function FrameworkCoursesTable() {
     const rowData = React.useMemo(() => {
         if (!studyPlan || !courses) return [];
 
-        const rows: (Course & { sectionCourse: { prerequisites: CoursePrerequisite[] } })[] = [];
+        const rows: (Course & { prerequisites: CoursePrerequisite[], corequisites: number[] })[] = [];
 
         studyPlan.sections.forEach((section) => {
-            Object.entries(section.courses).forEach(([courseId, sectionCourse]) => {
+            section.courses.forEach(courseId => {
                 const course = courses[Number(courseId)];
                 if (!course) return;
 
-                rows.push({...course, sectionCourse});
+                const prerequisites = studyPlan.coursePrerequisites[courseId];
+                const corequisites = studyPlan.courseCorequisites[courseId];
+
+                rows.push({...course, prerequisites, corequisites});
             });
         });
 
@@ -62,9 +68,10 @@ export function FrameworkCoursesTable() {
         }),
         columnHelper.display({
             id: "prerequisites",
-            header: "Prerequisites",
+            header: "Prerequisites / Corequisites",
             cell: ({row}) => {
-                const prerequisites = row.original.sectionCourse.prerequisites || [];
+                const prerequisites = row.original.prerequisites || [];
+                const corequisites = row.original.corequisites || [];
 
                 return (
                     <Flex align="center" wrap="wrap" gap={7} w={300}>
@@ -76,6 +83,7 @@ export function FrameworkCoursesTable() {
                                 removePrerequisite.isPending &&
                                 removePrerequisite.variables.prerequisiteId === prereqCourse.id &&
                                 removePrerequisite.variables.courseId === row.original.id;
+
 
                             return (
                                 <Pill
@@ -92,9 +100,52 @@ export function FrameworkCoursesTable() {
                                 </Pill>
                             );
                         })}
+
+                        {corequisites.map(corequisite => {
+                            const coreqCourse = courses[corequisite];
+                            if (!coreqCourse) return null;
+
+                            const isRemovingCorequisite =
+                                removeCorequisite.isPending &&
+                                removeCorequisite.variables.corequisiteId === coreqCourse.id &&
+                                removeCorequisite.variables.courseId === row.original.id;
+
+                            return (
+                                <Indicator
+                                    key={coreqCourse.id}
+                                    size={14}
+                                    color="gray"
+                                    position="middle-start"
+                                    offset={18}
+                                    fw="bold"
+                                    inline
+                                    label="CO"
+                                >
+                                    <Pill
+                                        fw="normal"
+                                        pl={35}
+                                        disabled={isRemovingCorequisite}
+                                        key={coreqCourse.id}
+                                        withRemoveButton
+                                        onRemove={() => removeCorequisite.mutate({
+                                            studyPlanId: studyPlanId,
+                                            courseId: row.original.id,
+                                            corequisiteId: corequisite
+                                        })}
+                                    >
+                                        {coreqCourse.code}
+                                    </Pill>
+                                </Indicator>
+                            )
+                        })}
+
                         <PrerequisiteMultiSelect parentCourse={row.original.id}/>
-                        {removePrerequisite.isPending && removePrerequisite.variables.courseId === row.original.id ?
-                            <Loader size={14}/> : null}
+                        {
+                            removePrerequisite.isPending && removePrerequisite.variables.courseId === row.original.id ||
+                            removeCorequisite.isPending && removeCorequisite.variables.courseId === row.original.id
+                                ? <Loader size={14}/>
+                                : null
+                        }
                     </Flex>
                 );
             },

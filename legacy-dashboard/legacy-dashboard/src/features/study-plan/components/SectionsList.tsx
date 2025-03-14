@@ -23,7 +23,6 @@ export function SectionsList({ sections }: { sections: Section[] }) {
     const combobox = useCombobox();
     const studyPlanId = parseInt(useParams({ strict: false }).studyPlanId ?? "");
     const deleteSection = useDeleteSection();
-    // Lift state for CreateSectionModal here
     const [createModalOpened, setCreateModalOpened] = React.useState(false);
 
     const options = sections.map((section, index) => {
@@ -104,7 +103,6 @@ export function SectionsList({ sections }: { sections: Section[] }) {
 
     return (
         <>
-            {/* Controlled Create Section Modal */}
             <CreateSectionModal
                 opened={createModalOpened}
                 setOpened={setCreateModalOpened}
@@ -128,7 +126,6 @@ export function SectionsList({ sections }: { sections: Section[] }) {
                 <Combobox.Dropdown>
                     <Combobox.Options>
                         <Combobox.Header>
-                            {/* When the "Create Section" button is clicked, it closes the dropdown and opens the modal */}
                             <Button
                                 fullWidth
                                 variant="subtle"
