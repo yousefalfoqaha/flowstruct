@@ -156,4 +156,16 @@ public class StudyPlanController {
                 HttpStatus.OK
         );
     }
+
+    @PutMapping("/{studyPlanId}/courses/{courseId}/move-to-section/{sectionId}")
+    public ResponseEntity<StudyPlanResponse> moveCourseToSection(
+            @PathVariable long studyPlanId,
+            @PathVariable long courseId,
+            @PathVariable long sectionId
+    ) {
+        return new ResponseEntity<>(
+                studyPlanService.moveCourseSection(studyPlanId, courseId, sectionId),
+                HttpStatus.OK
+        );
+    }
 }

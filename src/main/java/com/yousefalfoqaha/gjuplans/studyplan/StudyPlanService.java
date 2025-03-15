@@ -341,6 +341,31 @@ public class StudyPlanService {
         return studyPlanResponseMapper.apply(updatedStudyPlan);
     }
 
+    @Transactional
+    public StudyPlanResponse moveCourseSection(
+            long studyPlanId,
+            long courseId,
+            long sectionId
+    ) {
+        var studyPlan = findStudyPlan(studyPlanId);
+
+        studyPlan.getSections().forEach(section -> section.getCourses().remove(courseId));
+
+        var targetSection = studyPlan.getSections().stream()
+                .filter(section -> section.getId() == sectionId)
+                .findFirst()
+                .orElseThrow(() -> new SectionNotFoundException("Target section not found"));
+
+        if (targetSection.getType() == SectionType.Elective || targetSection.getType() ==  SectionType.Remedial) {
+            studyPlan.getCoursePlacements().remove(courseId);
+        }
+
+        targetSection.getCourses().put(courseId, new SectionCourse(AggregateReference.to(courseId)));
+
+        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
+        return studyPlanResponseMapper.apply(updatedStudyPlan);
+    }
+
     private void detectCycle(
             long originalCourseId,
             long prerequisiteId,
