@@ -8,7 +8,7 @@ type DataTableProps<TData> = {
 
 export function DataTable<TData>({table}: DataTableProps<TData>) {
     return (
-        <Table stickyHeader stickyHeaderOffset={60}>
+        <Table verticalSpacing="md" stickyHeader stickyHeaderOffset={60}>
             <Table.Thead>
                 {table.getHeaderGroups().map((headerGroup) => (
                     <Table.Tr key={headerGroup.id}>
@@ -35,7 +35,7 @@ export function DataTable<TData>({table}: DataTableProps<TData>) {
                     ))
                 ) : (
                     <Table.Tr>
-                        <Table.Td colSpan={table.getLeafHeaders().length} className="h-24 text-center">
+                        <Table.Td colSpan={table.getLeafHeaders().length}>
                             No results.
                         </Table.Td>
                     </Table.Tr>

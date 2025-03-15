@@ -235,3 +235,20 @@ export const removeCourseCorequisiteRequest = async ({studyPlanId, courseId, cor
 
     return await res.json() as StudyPlan;
 }
+
+export const moveCourseSectionRequest = async ({studyPlanId, courseId, sectionId}: {
+    studyPlanId: number,
+    courseId: number,
+    sectionId: number
+}) => {
+    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/courses/${courseId}/move-to-section/${sectionId}`, {
+        method: 'PUT'
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'An unknown error occurred');
+    }
+
+    return await res.json() as StudyPlan;
+}

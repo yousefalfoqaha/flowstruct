@@ -27,22 +27,20 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
     });
 
     const [search, setSearch] = React.useState("");
+    const [debouncedSearch] = useDebouncedValue(search, 400);
     const [value, setValue] = React.useState<Set<string>>(new Set());
     const [requisiteType, setRequisiteType] = React.useState<'PRE' | 'CO'>('PRE');
-    const [debouncedSearch] = useDebouncedValue(search, 400);
 
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
     const {data: studyPlan} = useStudyPlan(studyPlanId);
-
     const {data: courses} = useCourseList(studyPlanId);
+
     const {coursesGraph} = useCoursesGraph();
 
     const assignPrerequisites = useAssignCoursePrerequisites();
     const assignCorequisites = useAssignCourseCorequisites();
 
     const handleValueSelect = (val: string) => {
-        setSearch("");
-        combobox.closeDropdown();
         setValue((current) =>
             new Set(current.has(val) ? [...current].filter((v) => v !== val) : [...current, val])
         );
@@ -157,6 +155,7 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
                                     {label: 'CO', value: 'CO'},
                                 ]}
                             />
+
                             <Button
                                 leftSection={<Link size={14}/>}
                                 loading={assignPrerequisites.isPending}

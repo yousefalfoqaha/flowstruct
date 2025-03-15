@@ -1,18 +1,18 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {removeCourseCorequisiteRequest} from "@/features/study-plan/api.ts";
+import {moveCourseSectionRequest} from "@/features/study-plan/api.ts";
 import {notifications} from "@mantine/notifications";
 
-export const useRemoveCourseCorequisite = () => {
+export const useMoveCourseSection = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: removeCourseCorequisiteRequest,
+        mutationFn: moveCourseSectionRequest,
         onSuccess: (updatedStudyPlan) => {
             queryClient.setQueryData(["study-plan", "detail", updatedStudyPlan.id], updatedStudyPlan);
 
             notifications.show({
                 title: "Success!",
-                message: "Corequisite removed successfully.",
+                message: "Changed course section successfully.",
                 color: "green"
             });
         },

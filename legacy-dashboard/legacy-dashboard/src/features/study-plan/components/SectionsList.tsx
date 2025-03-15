@@ -1,4 +1,4 @@
-import { Section } from "@/features/study-plan/types.ts";
+import {Section} from "@/features/study-plan/types.ts";
 import {
     ActionIcon,
     Badge,
@@ -11,30 +11,39 @@ import {
     Text,
     useCombobox
 } from "@mantine/core";
-import { List, Pencil, Trash } from "lucide-react";
-import { EditSectionDetailsModal } from "@/features/study-plan/components/EditSectionDetailsModal.tsx";
-import { useParams } from "@tanstack/react-router";
-import { modals } from "@mantine/modals";
-import { useDeleteSection } from "@/features/study-plan/hooks/useDeleteSection.ts";
-import { CreateSectionModal } from "@/features/study-plan/components/CreateSectionModal.tsx";
+import {List, Pencil, Trash} from "lucide-react";
+import {EditSectionDetailsModal} from "@/features/study-plan/components/EditSectionDetailsModal.tsx";
+import {useParams} from "@tanstack/react-router";
+import {modals} from "@mantine/modals";
+import {useDeleteSection} from "@/features/study-plan/hooks/useDeleteSection.ts";
+import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
 import React from "react";
+import {getSectionCode} from "@/lib/getSectionCode.ts";
 
-export function SectionsList({ sections }: { sections: Section[] }) {
-    const combobox = useCombobox();
-    const studyPlanId = parseInt(useParams({ strict: false }).studyPlanId ?? "");
+export function SectionsList({sections}: { sections: Section[] }) {
     const deleteSection = useDeleteSection();
+
+    const combobox = useCombobox();
     const [createModalOpened, setCreateModalOpened] = React.useState(false);
 
-    const options = sections.map((section, index) => {
+    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
+
+    const sortedSections = sections.sort((a, b) => {
+        const codeA = getSectionCode(a);
+        const codeB = getSectionCode(b);
+        return codeA.localeCompare(codeB);
+    });
+
+    const options = sortedSections.map(section => {
         const isDeleting =
             deleteSection.isPending && deleteSection.variables.sectionId === section.id;
 
         return (
             <Combobox.Option value={section.id.toString()} key={section.id}>
                 <Group justify="space-between">
-                    <Group>
+                    <Group gap="xs">
                         <Badge variant="outline">
-                            {index}.{index + 1}.1
+                            {getSectionCode(section)}
                         </Badge>
                         <div>
                             <Text>
@@ -67,7 +76,7 @@ export function SectionsList({ sections }: { sections: Section[] }) {
                                 });
                             }}
                         >
-                            <Pencil size={18} />
+                            <Pencil size={18}/>
                         </ActionIcon>
 
                         <ActionIcon
@@ -84,7 +93,7 @@ export function SectionsList({ sections }: { sections: Section[] }) {
                                             program map as well, are you absolutely sure?
                                         </Text>
                                     ),
-                                    labels: { confirm: "Confirm", cancel: "Cancel" },
+                                    labels: {confirm: "Confirm", cancel: "Cancel"},
                                     onConfirm: () =>
                                         deleteSection.mutate({
                                             studyPlanId: studyPlanId,
@@ -93,7 +102,7 @@ export function SectionsList({ sections }: { sections: Section[] }) {
                                 });
                             }}
                         >
-                            {isDeleting ? <Loader size={18} /> : <Trash size={18} />}
+                            {isDeleting ? <Loader size={18}/> : <Trash size={18}/>}
                         </ActionIcon>
                     </Flex>
                 </Group>
@@ -116,7 +125,7 @@ export function SectionsList({ sections }: { sections: Section[] }) {
             >
                 <Combobox.Target>
                     <Button
-                        leftSection={<List size={18} />}
+                        leftSection={<List size={18}/>}
                         onClick={() => combobox.toggleDropdown()}
                     >
                         Manage Sections
@@ -133,7 +142,7 @@ export function SectionsList({ sections }: { sections: Section[] }) {
                                     combobox.closeDropdown();
                                     setCreateModalOpened(true);
                                 }}
-                                leftSection={<List size={14} />}
+                                leftSection={<List size={14}/>}
                             >
                                 Create Section
                             </Button>

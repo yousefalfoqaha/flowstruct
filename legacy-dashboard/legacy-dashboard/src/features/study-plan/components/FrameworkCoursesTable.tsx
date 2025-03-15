@@ -1,12 +1,18 @@
 import {useRemoveCourseFromSection} from "@/features/study-plan/hooks/useRemoveCourseFromSection.ts";
 import {useParams} from "@tanstack/react-router";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
-import {createColumnHelper, getCoreRowModel, getPaginationRowModel, useReactTable} from "@tanstack/react-table";
+import {
+    createColumnHelper,
+    getCoreRowModel,
+    getPaginationRowModel, getSortedRowModel, RowSelectionState,
+    SortingState,
+    useReactTable
+} from "@tanstack/react-table";
 import {Course} from "@/features/course/types.ts";
-import {CircleMinus} from "lucide-react";
+import {ChevronsUpDown, CircleMinus} from "lucide-react";
 import {
     ActionIcon,
-    Badge,
+    Badge, Checkbox,
     Flex,
     Group, Indicator,
     Loader,
@@ -21,8 +27,17 @@ import {CoursePrerequisite} from "@/features/study-plan/types.ts";
 import {PrerequisiteMultiSelect} from "@/features/study-plan/components/PrerequisiteMultiSelect.tsx";
 import {useRemoveCoursePrerequisite} from "@/features/study-plan/hooks/useRemoveCoursePrerequisite.ts";
 import {useRemoveCourseCorequisite} from "@/features/study-plan/hooks/useRemoveCourseCorequisite.ts";
+import {SectionsCombobox} from "@/features/study-plan/components/SectionsCombobox.tsx";
+import {getSectionCode} from "@/lib/getSectionCode.ts";
 
-const columnHelper = createColumnHelper<Course & { prerequisites: CoursePrerequisite[], corequisites: number[] }>();
+type FrameworkCourse = Course & {
+    prerequisites: CoursePrerequisite[],
+    corequisites: number[],
+    section: number,
+    sectionCode: string
+}
+
+const columnHelper = createColumnHelper<FrameworkCourse>();
 
 export function FrameworkCoursesTable() {
     const removeCourseFromSection = useRemoveCourseFromSection();
@@ -33,38 +48,48 @@ export function FrameworkCoursesTable() {
     const {data: courses} = useCourseList(studyPlanId);
     const {data: studyPlan} = useStudyPlan(studyPlanId);
 
-    const rowData = React.useMemo(() => {
-        if (!studyPlan || !courses) return [];
-
-        const rows: (Course & { prerequisites: CoursePrerequisite[], corequisites: number[] })[] = [];
-
-        studyPlan.sections.forEach((section) => {
-            section.courses.forEach(courseId => {
-                const course = courses[Number(courseId)];
-                if (!course) return;
-
-                const prerequisites = studyPlan.coursePrerequisites[courseId];
-                const corequisites = studyPlan.courseCorequisites[courseId];
-
-                rows.push({...course, prerequisites, corequisites});
-            });
-        });
-
-        return rows;
-    }, [studyPlan, courses]);
+    const [sorting, setSorting] = React.useState<SortingState>([{id: 'code', desc: false}]);
+    const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
+    const [pagination, setPagination] = React.useState({pageIndex: 0, pageSize: 8,});
 
     const columns = [
+        columnHelper.display({
+            id: 'selection',
+            header: () => (
+                <Checkbox
+                    onClick={() => {
+                    }}
+                />
+            )
+        }),
         columnHelper.accessor("code", {
-            header: "Code",
+            header: ({column}) => (
+                <Group>
+                    <ActionIcon variant="transparent" onClick={() => column.toggleSorting()} size="xs">
+                        <ChevronsUpDown size={14}/>
+                    </ActionIcon>
+                    Code
+                </Group>
+            ),
+            sortingFn: 'alphanumeric',
             cell: ({row}) => (
                 <Badge variant="light">{row.original.code}</Badge>
             ),
         }),
         columnHelper.accessor("name", {
-            header: "Name",
+            header: ({column}) => (
+                <Group>
+                    <ActionIcon variant="transparent" onClick={() => column.toggleSorting()} size="xs">
+                        <ChevronsUpDown size={14}/>
+                    </ActionIcon>
+                    Name
+                </Group>
+            ),
+            sortingFn: 'alphanumeric'
         }),
         columnHelper.accessor("creditHours", {
-            header: "Credits",
+            header: 'Credits',
+            sortingFn: 'alphanumeric',
         }),
         columnHelper.display({
             id: "prerequisites",
@@ -83,7 +108,6 @@ export function FrameworkCoursesTable() {
                                 removePrerequisite.isPending &&
                                 removePrerequisite.variables.prerequisiteId === prereqCourse.id &&
                                 removePrerequisite.variables.courseId === row.original.id;
-
 
                             return (
                                 <Pill
@@ -154,60 +178,57 @@ export function FrameworkCoursesTable() {
             id: "section",
             header: "Section",
             cell: ({row}) => {
-                const section = studyPlan.sections.find(section =>
-                    section.courses[row.original.id]
-                );
-
-                return <Badge variant="outline" style={{textWrap: "wrap"}}>2.1.4</Badge>
-            }
-        }),
-        columnHelper.display({
-            id: "actions",
-            cell: ({row}) => {
-                const isRemovingCourse =
-                    removeCourseFromSection.isPending &&
-                    removeCourseFromSection.variables.courseId === row.original.id;
-
                 return (
-                    <Group justify="flex-end">
-                        <ActionIcon
-                            loading={isRemovingCourse}
-                            size="lg"
-                            variant="subtle"
-                            onClick={() =>
-                                removeCourseFromSection.mutate({
-                                    studyPlanId: studyPlanId,
-                                    courseId: row.original.id,
-                                })
-                            }
-                            disabled={isRemovingCourse}
-                        >
-                            <CircleMinus size={16}/>
-                        </ActionIcon>
-                    </Group>
+                    <SectionsCombobox
+                        courseId={row.original.id}
+                        sectionId={row.original.section}
+                        courseSectionCode={row.original.sectionCode}
+                    />
                 );
-            },
+            }
         }),
     ];
 
-    const [pagination, setPagination] = React.useState({
-        pageIndex: 0,
-        pageSize: 8,
-    });
+    const frameworkCourses = React.useMemo(() => {
+        if (!studyPlan || !courses) return [];
+
+        const rows: FrameworkCourse[] = [];
+
+        studyPlan.sections.forEach((section) => {
+            const sectionCode = getSectionCode(section);
+
+            section.courses.forEach(courseId => {
+                const course = courses[Number(courseId)];
+                if (!course) return;
+
+                const prerequisites = studyPlan.coursePrerequisites[courseId];
+                const corequisites = studyPlan.courseCorequisites[courseId];
+
+                rows.push({...course, prerequisites, corequisites, section: section.id, sectionCode: sectionCode});
+            });
+        });
+
+        return rows;
+    }, [studyPlan, courses]);
 
     const table = useReactTable({
         columns,
-        data: rowData,
+        data: frameworkCourses,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        onPaginationChange: setPagination,
+        getSortedRowModel: getSortedRowModel(),
+        onRowSelectionChange: setRowSelection,
         state: {
             pagination,
+            sorting,
+            rowSelection
         },
+        onPaginationChange: setPagination,
+        onSortingChange: setSorting,
         autoResetPageIndex: false,
     });
 
-    const paginationMessage = `Showing ${pagination.pageSize * (pagination.pageIndex) + 1} – ${Math.min(rowData.length, pagination.pageSize * (pagination.pageIndex + 1))} of ${rowData.length}`;
+    const paginationMessage = `Showing ${pagination.pageSize * (pagination.pageIndex) + 1} – ${Math.min(frameworkCourses.length, pagination.pageSize * (pagination.pageIndex + 1))} of ${frameworkCourses.length}`;
 
     return (
         <Flex direction="column" align="center" gap="md">
