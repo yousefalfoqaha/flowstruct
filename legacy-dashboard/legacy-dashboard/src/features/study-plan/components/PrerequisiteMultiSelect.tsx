@@ -2,15 +2,17 @@ import {
     Button,
     Checkbox,
     Combobox,
+    Flex,
+    Group,
     Pill,
     PillsInput,
     Popover,
     ScrollArea,
-    useCombobox,
-    Flex, SegmentedControl, Group
+    SegmentedControl,
+    useCombobox
 } from "@mantine/core";
 import React from "react";
-import {Plus, Link} from "lucide-react";
+import {Link, Plus} from "lucide-react";
 import {useCoursesGraph} from "@/contexts/CoursesGraphContext.tsx";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {useParams} from "@tanstack/react-router";
@@ -109,7 +111,8 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
         const codeAndName = course.code + " " + course.name;
         const isSelected = value.has(id.toString());
         const createsCycle = coursesGraph.get(parentCourse)?.postrequisiteSequence.has(id);
-        const alreadyAdded = coursesGraph.get(parentCourse)?.prerequisiteSequence.has(id) || studyPlan.courseCorequisites[parentCourse]?.includes(id);
+        const alreadyAdded = studyPlan.coursePrerequisites[parentCourse]?.[id] !== undefined ||
+            studyPlan.courseCorequisites[parentCourse]?.includes(id);
 
         return codeAndName.toLowerCase().includes(debouncedSearch.trim().toLowerCase()) ? (
             <Combobox.Option

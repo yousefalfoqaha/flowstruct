@@ -1,6 +1,6 @@
 import React, {ReactNode} from "react";
 import {useParams} from "@tanstack/react-router";
-import {CoursePrerequisite, StudyPlan} from "@/features/study-plan/types.ts";
+import {CoursePrerequisite, CourseRelation, StudyPlan} from "@/features/study-plan/types.ts";
 import {useQueryClient} from "@tanstack/react-query";
 
 type CoursesGraphContextType = {
@@ -27,15 +27,15 @@ function CoursesGraphProvider({children}: { children: ReactNode }) {
 
         const traversePrerequisites = (
             courseId: number,
-            coursePrerequisitesMap: Record<number, CoursePrerequisite[]>,
+            coursePrerequisitesMap: Record<number, Record<number, CourseRelation>>,
             visited: Set<number>,
             graph: Map<number, CourseRequisites>
         ) => {
             const prerequisites = coursePrerequisitesMap[courseId];
             if (!prerequisites) return;
 
-            for (const prereq of prerequisites) {
-                const prereqId = prereq.prerequisite;
+            for (const prereq in prerequisites) {
+                const prereqId = Number(prereq);
 
 
                 if (!visited.has(prereqId)) {

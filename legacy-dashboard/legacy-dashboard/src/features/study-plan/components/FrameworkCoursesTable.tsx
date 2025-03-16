@@ -1,4 +1,4 @@
-import {useRemoveCourseFromSection} from "@/features/study-plan/hooks/useRemoveCourseFromSection.ts";
+import {useRemoveCoursesFromSection} from "@/features/study-plan/hooks/useRemoveCourseFromSection.ts";
 import {useParams} from "@tanstack/react-router";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {
@@ -9,10 +9,10 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import {Course} from "@/features/course/types.ts";
-import {ChevronsUpDown, CircleMinus} from "lucide-react";
+import {ChevronsUpDown, Trash} from "lucide-react";
 import {
     ActionIcon,
-    Badge, Checkbox,
+    Badge, Button, Checkbox,
     Flex,
     Group, Indicator,
     Loader,
@@ -23,15 +23,18 @@ import {
 import React from "react";
 import {DataTable} from "@/shared/components/DataTable.tsx";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
-import {CoursePrerequisite} from "@/features/study-plan/types.ts";
+import {CourseRelation} from "@/features/study-plan/types.ts";
 import {PrerequisiteMultiSelect} from "@/features/study-plan/components/PrerequisiteMultiSelect.tsx";
 import {useRemoveCoursePrerequisite} from "@/features/study-plan/hooks/useRemoveCoursePrerequisite.ts";
 import {useRemoveCourseCorequisite} from "@/features/study-plan/hooks/useRemoveCourseCorequisite.ts";
 import {SectionsCombobox} from "@/features/study-plan/components/SectionsCombobox.tsx";
 import {getSectionCode} from "@/lib/getSectionCode.ts";
+import {SectionsList} from "@/features/study-plan/components/SectionsList.tsx";
+import {CourseSearch} from "@/features/course/components/CourseSearch.tsx";
+import {openConfirmModal} from "@mantine/modals";
 
 type FrameworkCourse = Course & {
-    prerequisites: CoursePrerequisite[],
+    prerequisites: Record<number, CourseRelation>,
     corequisites: number[],
     section: number,
     sectionCode: string
@@ -40,7 +43,7 @@ type FrameworkCourse = Course & {
 const columnHelper = createColumnHelper<FrameworkCourse>();
 
 export function FrameworkCoursesTable() {
-    const removeCourseFromSection = useRemoveCourseFromSection();
+    const removeCoursesFromSection = useRemoveCoursesFromSection();
     const removePrerequisite = useRemoveCoursePrerequisite();
     const removeCorequisite = useRemoveCourseCorequisite();
 
@@ -57,10 +60,18 @@ export function FrameworkCoursesTable() {
             id: 'selection',
             header: () => (
                 <Checkbox
-                    onClick={() => {
-                    }}
+                    checked={table.getIsAllRowsSelected()}
+                    indeterminate={table.getIsSomeRowsSelected()}
+                    onChange={table.getToggleAllRowsSelectedHandler()}
                 />
-            )
+            ),
+            cell: ({row}) => (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    disabled={!row.getCanSelect()}
+                    onChange={row.getToggleSelectedHandler()}
+                />
+            ),
         }),
         columnHelper.accessor("code", {
             header: ({column}) => (
@@ -100,8 +111,8 @@ export function FrameworkCoursesTable() {
 
                 return (
                     <Flex align="center" wrap="wrap" gap={7} w={300}>
-                        {prerequisites.map((prerequisite) => {
-                            const prereqCourse = courses[prerequisite.prerequisite];
+                        {Object.keys(prerequisites).map((prerequisite) => {
+                            const prereqCourse = courses[parseInt(prerequisite)];
                             if (!prereqCourse) return null;
 
                             const isRemovingPrerequisite =
@@ -117,7 +128,7 @@ export function FrameworkCoursesTable() {
                                     onRemove={() => removePrerequisite.mutate({
                                         studyPlanId: studyPlanId,
                                         courseId: row.original.id,
-                                        prerequisiteId: prerequisite.prerequisite
+                                        prerequisiteId: prereqCourse.id
                                     })}
                                 >
                                     {prereqCourse.code}
@@ -229,9 +240,39 @@ export function FrameworkCoursesTable() {
     });
 
     const paginationMessage = `Showing ${pagination.pageSize * (pagination.pageIndex) + 1} – ${Math.min(frameworkCourses.length, pagination.pageSize * (pagination.pageIndex + 1))} of ${frameworkCourses.length}`;
+    const selectedRows = table.getSelectedRowModel().rows;
 
     return (
         <Flex direction="column" align="center" gap="md">
+            <Group justify="space-between" align="center">
+                <SectionsList sections={studyPlan.sections}/>
+
+                {selectedRows.length &&
+                    <Button
+                        onClick={() => openConfirmModal({
+                            title: 'Please confirm your action',
+                            children: (
+                                <Text size="sm">
+                                    Deleting these courses will remove them from the program map and any prerequisite
+                                    relationships. Are you sure you want to proceed?
+                                </Text>
+                            ),
+                            labels: {confirm: 'Remove Courses', cancel: 'Cancel'},
+                            onConfirm: () => removeCoursesFromSection.mutate({
+                                studyPlanId: studyPlanId,
+                                courseIds: selectedRows.map(row => row.original.id),
+                            }, {onSuccess: () => setRowSelection({})})
+                        })}
+                        color="red"
+                        leftSection={<Trash size={18}/>}
+                        loading={removeCoursesFromSection.isPending}
+                    >
+                        Remove ({selectedRows.length})
+                    </Button>
+                }
+
+                <CourseSearch/>
+            </Group>
             <DataTable table={table}/>
 
             <Group justify="flex-end">

@@ -38,7 +38,7 @@ export type StudyPlan = {
     program: number;
     sections: Section[];
     coursePlacements: Record<number, number>;
-    coursePrerequisites: Record<number, CoursePrerequisite[]>;
+    coursePrerequisites: Record<number, Record<number, CourseRelation>>;
     courseCorequisites: Record<number, number[]>;
 }
 

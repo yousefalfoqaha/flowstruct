@@ -9,6 +9,7 @@ import {getCourseListQuery} from "@/features/course/queries.ts";
 import {Folder, Map, ScrollText} from "lucide-react";
 import {Tabs} from "@mantine/core";
 import {CoursesGraphProvider} from "@/contexts/CoursesGraphContext.tsx";
+import {FrameworkCoursesTable} from "@/features/study-plan/components/FrameworkCoursesTable.tsx";
 
 export const Route = createFileRoute("/study-plans/$studyPlanId")({
     component: RouteComponent,
@@ -48,7 +49,7 @@ function RouteComponent() {
 
             <CoursesGraphProvider>
                 <Tabs.Panel value="framework">
-                    <SectionsTab sections={studyPlan.sections}/>
+                    <FrameworkCoursesTable />
                 </Tabs.Panel>
 
                 <Tabs.Panel value="program-map">

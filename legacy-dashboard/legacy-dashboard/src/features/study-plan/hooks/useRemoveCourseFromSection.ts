@@ -1,28 +1,22 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {removeCourseFromSectionRequest} from "@/features/study-plan/api.ts";
+import {removeCoursesFromSectionRequest} from "@/features/study-plan/api.ts";
 import {Course} from "@/features/course/types.ts";
 import {notifications} from "@mantine/notifications";
 
-export const useRemoveCourseFromSection = () => {
+export const useRemoveCoursesFromSection = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: removeCourseFromSectionRequest,
-        onSuccess: (updatedStudyPlan, {courseId}) => {
+        mutationFn: removeCoursesFromSectionRequest,
+        onSuccess: (updatedStudyPlan, {courseIds}) => {
             const courses = queryClient.getQueryData<Record<number, Course>>(["courses"]);
             if (!courses) return;
-
-            const removedCourse = courses[courseId];
-
-            if (!removedCourse) {
-                notifications.show({message: "Course was not found."});
-            }
 
             queryClient.setQueryData(["study-plan", "detail", updatedStudyPlan.id], updatedStudyPlan);
 
             notifications.show({
                 title: "Success!",
-                message: `${removedCourse.code} ${removedCourse.name} was removed successfully.`,
+                message: `${courseIds.length} courses were removed successfully.`,
                 color: "green"
             });
         },
