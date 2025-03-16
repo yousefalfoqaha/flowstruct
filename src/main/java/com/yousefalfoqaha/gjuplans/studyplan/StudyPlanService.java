@@ -236,20 +236,22 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanResponse removeCourseFromSection(long studyPlanId, long courseId) {
+    public StudyPlanResponse removeCourseFromSection(long studyPlanId, List<Long> courseIds) {
         var studyPlan = findStudyPlan(studyPlanId);
 
-        studyPlan.getSections().forEach(section -> section.getCourses().remove(courseId));
+        for (var courseId : courseIds) {
+            studyPlan.getSections().forEach(section -> section.getCourses().remove(courseId));
 
-        studyPlan.getCoursePrerequisites().removeIf(coursePrerequisite ->
-                coursePrerequisite.getCourse().getId() == courseId || coursePrerequisite.getPrerequisite().getId() == courseId
-        );
+            studyPlan.getCoursePrerequisites().removeIf(coursePrerequisite ->
+                    Objects.equals(coursePrerequisite.getCourse().getId(), courseId) || Objects.equals(coursePrerequisite.getPrerequisite().getId(), courseId)
+            );
 
-        studyPlan.getCourseCorequisites().removeIf(coursePrerequisite ->
-                coursePrerequisite.getCourse().getId() == courseId || coursePrerequisite.getCorequisite().getId() == courseId
-        );
+            studyPlan.getCourseCorequisites().removeIf(coursePrerequisite ->
+                    Objects.equals(coursePrerequisite.getCourse().getId(), courseId) || Objects.equals(coursePrerequisite.getCorequisite().getId(), courseId)
+            );
 
-        studyPlan.getCoursePlacements().remove(courseId);
+            studyPlan.getCoursePlacements().remove(courseId);
+        }
 
         var updatedStudyPlan = studyPlanRepository.save(studyPlan);
         return studyPlanResponseMapper.apply(updatedStudyPlan);
@@ -356,7 +358,7 @@ public class StudyPlanService {
                 .findFirst()
                 .orElseThrow(() -> new SectionNotFoundException("Target section not found"));
 
-        if (targetSection.getType() == SectionType.Elective || targetSection.getType() ==  SectionType.Remedial) {
+        if (targetSection.getType() == SectionType.Elective || targetSection.getType() == SectionType.Remedial) {
             studyPlan.getCoursePlacements().remove(courseId);
         }
 

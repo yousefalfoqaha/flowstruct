@@ -1,7 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan.mapper;
 
 import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.response.CoursePrerequisiteResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.SectionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import org.springframework.stereotype.Service;
@@ -43,20 +42,17 @@ public class StudyPlanResponseMapper implements Function<StudyPlan, StudyPlanRes
                         .stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
-                                entry -> entry.getValue()
-                                        .stream()
-                                        .map(prerequisite -> new CoursePrerequisiteResponse(
-                                                prerequisite.getPrerequisite().getId(),
-                                                prerequisite.getRelation()
+                                entry -> entry.getValue().stream()
+                                        .collect(Collectors.toMap(
+                                                prerequisite -> prerequisite.getPrerequisite().getId(),
+                                                prerequisite -> prerequisite.getRelation()
                                         ))
-                                        .collect(Collectors.toSet())
                         )),
                 studyPlan.getCourseCorequisitesMap().entrySet()
                         .stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
-                                entry -> entry.getValue()
-                                        .stream()
+                                entry -> entry.getValue().stream()
                                         .map(corequisite -> corequisite.getCorequisite().getId())
                                         .collect(Collectors.toSet())
                         ))

@@ -1,5 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan.dto.response;
 
+import com.yousefalfoqaha.gjuplans.studyplan.domain.Relation;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +15,7 @@ public record StudyPlanResponse(
         long program,
         List<SectionResponse> sections,
         Map<Long, Integer> coursePlacements,
-        Map<Long, Set<CoursePrerequisiteResponse>> coursePrerequisites,
+        Map<Long, Map<Long, Relation>> coursePrerequisites,
         Map<Long, Set<Long>> courseCorequisites
 ) {
 }
