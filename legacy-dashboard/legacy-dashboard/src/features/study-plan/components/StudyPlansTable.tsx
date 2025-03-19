@@ -23,8 +23,11 @@ export function StudyPlansTable({studyPlanList}: StudyPlansTableProps) {
         display({
             id: 'open',
             cell: ({row}) => (
-                <Link to="/study-plans/$studyPlanId"
-                      params={{studyPlanId: String(row.original.id)}}>
+                <Link to="/study-plans/$studyPlanId/$page"
+                      params={{
+                          studyPlanId: String(row.original.id),
+                          page: 'overview'
+                      }}>
                     <Button variant="outline" rightSection={<ArrowRightFromLine size={14}/>}>
                         View
                     </Button>
@@ -89,7 +92,8 @@ export function StudyPlansTable({studyPlanList}: StudyPlansTableProps) {
                                 title: 'Please confirm your action',
                                 children: (
                                     <Text size="sm">
-                                        Deleting this study plan will delete all of its sections, program map, and overview, are you absolutely
+                                        Deleting this study plan will delete all of its sections, program map, and
+                                        overview, are you absolutely
                                         sure?
                                     </Text>
                                 ),

@@ -3,7 +3,7 @@ import {StudyPlansTable} from '@/features/study-plan/components/StudyPlansTable.
 import {CreateStudyPlanModal} from '@/features/study-plan/components/CreateStudyPlanModal.tsx';
 import {getProgramQuery} from "@/features/program/queries.ts";
 import {getStudyPlanListQuery} from "@/features/study-plan/queries.ts";
-import {useProgram} from "@/features/program/hooks/useProgram.ts";
+// import {useProgram} from "@/features/program/hooks/useProgram.ts";
 import {useStudyPlanList} from "@/features/study-plan/hooks/useStudyPlanList.ts";
 import {Loader2} from "lucide-react";
 
@@ -19,7 +19,7 @@ export const Route = createFileRoute('/programs/$programId/study-plans')({
 
 function RouteComponent() {
     const programId = parseInt(Route.useParams().programId);
-    const program = useProgram(programId);
+    // const program = useProgram(programId);
     const studyPlanList = useStudyPlanList(programId);
 
     if (!studyPlanList.data) return;
