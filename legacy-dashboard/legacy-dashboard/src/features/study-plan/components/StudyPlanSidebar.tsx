@@ -1,24 +1,25 @@
 import classes from './StudyPlanSidebar.module.css';
 import {ArrowRightLeft, Folder, LogOut, ScrollText, Map} from "lucide-react";
-import {Link, useParams} from "@tanstack/react-router";
+import {Link, useRouterState} from "@tanstack/react-router";
 
 const data = [
-    {label: 'Overview', icon: ScrollText, page: 'overview'},
-    {label: 'Framework', icon: Folder, page: 'framework'},
-    {label: 'Program Map', icon: Map, page: 'program-map'}
+    {label: 'Overview', icon: ScrollText, page: 'overview' as const},
+    {label: 'Framework', icon: Folder, page: 'framework' as const},
+    {label: 'Program Map', icon: Map, page: 'program-map' as const}
 ];
 
 export function StudyPlanSidebar({studyPlanId}: { studyPlanId: number }) {
-    const {page: activePage} = useParams({strict: false});
+    const {location} = useRouterState();
+    const segments = location.pathname.split('/');
+    const activePage = segments.pop();
 
     const links = data.map((item) => {
         const Icon = item.icon;
         return (
             <Link
-                to="/study-plans/$studyPlanId/$page"
+                to={`/study-plans/$studyPlanId/${item.page}`}
                 params={{
-                    studyPlanId: String(studyPlanId),
-                    page: item.page
+                    studyPlanId: String(studyPlanId)
                 }}
                 className={classes.link}
                 data-active={item.page === activePage || undefined}
@@ -29,7 +30,6 @@ export function StudyPlanSidebar({studyPlanId}: { studyPlanId: number }) {
             </Link>
         );
     });
-
 
     return (
         <nav className={classes.navbar}>

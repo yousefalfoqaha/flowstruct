@@ -6,7 +6,7 @@ import {AppShell, Burger} from '@mantine/core'
 import {StudyPlanSidebar} from '@/features/study-plan/components/StudyPlanSidebar.tsx'
 import {useDisclosure} from '@mantine/hooks'
 
-export const Route = createFileRoute('/study-plans/$studyPlanId/$page')({
+export const Route = createFileRoute('/study-plans/$studyPlanId')({
     component: RouteComponent,
     loader: async ({context: {queryClient}, params}) => {
         const studyPlanId = parseInt(params.studyPlanId)
@@ -17,20 +17,19 @@ export const Route = createFileRoute('/study-plans/$studyPlanId/$page')({
         await queryClient.ensureQueryData(getProgramQuery(studyPlan.program))
 
         const coursesIds = studyPlan.sections.flatMap((section) => section.courses)
-        await queryClient.ensureQueryData(getCourseListQuery(coursesIds))
+        await queryClient.ensureQueryData(getCourseListQuery(coursesIds));
     },
-})
+});
 
 function RouteComponent() {
     const [opened, {toggle}] = useDisclosure()
-    const {studyPlanId} = Route.useParams();
-
+    const {studyPlanId} = Route.useParams()
 
     return (
         <AppShell
             header={{height: 60}}
             navbar={{
-                width: '',
+                width: '334',
                 breakpoint: 'sm',
                 collapsed: {mobile: !opened},
             }}
