@@ -22,11 +22,11 @@ import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {usePaginatedCourses} from "@/features/course/hooks/usePaginatedCourses.ts";
 import {CreateCourseModal} from "@/features/course/components/CreateCourseModal.tsx";
 
-export function CourseSearch() {
+export function CourseSearch({focusedSection}: { focusedSection: number | null }) {
     const [popoverOpened, setPopoverOpened] = React.useState(false);
     const [search, setSearch] = React.useState<string>("");
     const [selectedCourses, setSelectedCourses] = React.useState<Course[]>([]);
-    const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
+    const [selectedSection, setSelectedSection] = React.useState<string | null>(focusedSection !== null ? String(focusedSection) : null);
     const [createModalOpen, setCreateModalOpen] = React.useState(false);
 
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");

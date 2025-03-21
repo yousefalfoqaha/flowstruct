@@ -29,7 +29,7 @@ function RouteComponent() {
         <AppShell
             header={{height: 60}}
             navbar={{
-                width: '334',
+                width: '250',
                 breakpoint: 'lg',
                 collapsed: {mobile: !opened},
             }}

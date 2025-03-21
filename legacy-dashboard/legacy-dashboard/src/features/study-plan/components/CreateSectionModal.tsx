@@ -62,9 +62,9 @@ export function CreateSectionModal() {
                 </form>
             </Modal>
 
-            <ActionIcon variant="subtle" onClick={open}>
-                <Plus />
-            </ActionIcon>
+            <Button variant="subtle" onClick={open} leftSection={<Plus size={18} />}>
+                Create Section
+            </Button>
         </>
     );
 }

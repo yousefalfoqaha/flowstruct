@@ -2,8 +2,9 @@ import {useRemoveCoursesFromSection} from "@/features/study-plan/hooks/useRemove
 import {useParams} from "@tanstack/react-router";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {
-    createColumnHelper,
-    getCoreRowModel,
+    ColumnFiltersState,
+    createColumnHelper, FilterFn,
+    getCoreRowModel, getFilteredRowModel,
     getPaginationRowModel, getSortedRowModel, RowSelectionState,
     SortingState,
     useReactTable
@@ -31,6 +32,7 @@ import {SectionsCombobox} from "@/features/study-plan/components/SectionsCombobo
 import {getSectionCode} from "@/lib/getSectionCode.ts";
 import {openConfirmModal} from "@mantine/modals";
 import {SectionsTabs} from "@/features/study-plan/components/SectionsTabs.tsx";
+import {CourseSearch} from "@/features/course/components/CourseSearch.tsx";
 
 type FrameworkCourse = Course & {
     prerequisites: Record<number, CourseRelation>,
@@ -187,6 +189,7 @@ export function FrameworkCoursesTable() {
         columnHelper.display({
             id: "section",
             header: "Section",
+            enableColumnFilter: true,
             cell: ({row}) => {
                 return (
                     <SectionsCombobox
@@ -195,7 +198,10 @@ export function FrameworkCoursesTable() {
                         courseSectionCode={row.original.sectionCode}
                     />
                 );
-            }
+            },
+            filterFn: (row, _, filterValue: number) => {
+                return row.original.section === filterValue
+            },
         }),
     ];
 
@@ -221,18 +227,34 @@ export function FrameworkCoursesTable() {
         return rows;
     }, [studyPlan, courses]);
 
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+
+    const selectSectionHandler = (sectionId: number | null) => {
+        if (sectionId === null) {
+            setColumnFilters([]);
+        } else {
+            setColumnFilters([{
+                id: 'section',
+                value: sectionId
+            }]);
+        }
+    };
+
     const table = useReactTable({
         columns,
         data: frameworkCourses,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
         onRowSelectionChange: setRowSelection,
         state: {
             pagination,
             sorting,
-            rowSelection
+            rowSelection,
+            columnFilters
         },
+        onColumnFiltersChange: setColumnFilters,
         onPaginationChange: setPagination,
         onSortingChange: setSorting,
         autoResetPageIndex: false,
@@ -242,54 +264,58 @@ export function FrameworkCoursesTable() {
     const selectedRows = table.getSelectedRowModel().rows;
 
     return (
-        <Flex direction="column" gap="xl">
-            <SectionsTabs/>
+        <Flex gap="xl">
+            <SectionsTabs selectSection={selectSectionHandler}/>
 
-            <Group justify="space-between">
-                <Input
-                    w={450}
-                    leftSection={<Search size={18}/>}
-                    placeholder="Search"
-                />
+            <Flex direction="column" style={{flex: 1}} gap="sm">
+                <Group justify="space-between">
+                    <Input
+                        w={450}
+                        leftSection={<Search size={18}/>}
+                        placeholder="Search"
+                    />
 
-                <Group gap="sm">
-                    {selectedRows.length &&
-                        <Button
-                            onClick={() => openConfirmModal({
-                                title: 'Please confirm your action',
-                                children: (
-                                    <Text size="sm">
-                                        Deleting these courses will remove them from the program map and any
-                                        prerequisite
-                                        relationships. Are you sure you want to proceed?
-                                    </Text>
-                                ),
-                                labels: {confirm: 'Remove Courses', cancel: 'Cancel'},
-                                onConfirm: () => removeCoursesFromSection.mutate({
-                                    studyPlanId: studyPlanId,
-                                    courseIds: selectedRows.map(row => row.original.id),
-                                }, {onSuccess: () => setRowSelection({})})
-                            })}
-                            color="red"
-                            leftSection={<Trash size={18}/>}
-                            loading={removeCoursesFromSection.isPending}
-                        >
-                            Remove ({selectedRows.length})
-                        </Button>
-                    }
+                    <Group gap="sm">
+                        {selectedRows.length &&
+                            <Button
+                                onClick={() => openConfirmModal({
+                                    title: 'Please confirm your action',
+                                    children: (
+                                        <Text size="sm">
+                                            Deleting these courses will remove them from the program map and any
+                                            prerequisite
+                                            relationships. Are you sure you want to proceed?
+                                        </Text>
+                                    ),
+                                    labels: {confirm: 'Remove Courses', cancel: 'Cancel'},
+                                    onConfirm: () => removeCoursesFromSection.mutate({
+                                        studyPlanId: studyPlanId,
+                                        courseIds: selectedRows.map(row => row.original.id),
+                                    }, {onSuccess: () => setRowSelection({})})
+                                })}
+                                color="red"
+                                leftSection={<Trash size={18}/>}
+                                loading={removeCoursesFromSection.isPending}
+                            >
+                                Remove ({selectedRows.length})
+                            </Button>
+                        }
+
+                        <CourseSearch focusedSection={columnFilters.find(filter => filter.id === 'section')?.value ?? null} />
+                    </Group>
                 </Group>
-            </Group>
 
-            <DataTable table={table}/>
+                <DataTable table={table}/>
 
-            <Group justify="flex-end">
-                <Text size="sm">{paginationMessage}</Text>
-                <Pagination total={table.getPageCount()}
-                            onChange={(page) => setPagination({pageIndex: page - 1, pageSize: pagination.pageSize})}
-                            value={pagination.pageIndex + 1}
-                            withPages={false}
-                />
-            </Group>
+                <Group justify="flex-end">
+                    <Text size="sm">{paginationMessage}</Text>
+                    <Pagination total={table.getPageCount()}
+                                onChange={(page) => setPagination({pageIndex: page - 1, pageSize: pagination.pageSize})}
+                                value={pagination.pageIndex + 1}
+                                withPages={false}
+                    />
+                </Group>
+            </Flex>
         </Flex>
     );
 }
