@@ -8,39 +8,42 @@ type DataTableProps<TData> = {
 
 export function DataTable<TData>({table}: DataTableProps<TData>) {
     return (
-        <Table verticalSpacing="md" stickyHeader stickyHeaderOffset={60}>
-            <Table.Thead>
-                {table.getHeaderGroups().map((headerGroup) => (
-                    <Table.Tr key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
-                            <Table.Th key={header.id}>
-                                {header.isPlaceholder
-                                    ? null
-                                    : flexRender(header.column.columnDef.header, header.getContext())}
-                            </Table.Th>
-                        ))}
-                    </Table.Tr>
-                ))}
-            </Table.Thead>
-            <Table.Tbody>
-                {table.getRowModel().rows.length ? (
-                    table.getRowModel().rows.map((row) => (
-                        <Table.Tr key={row.id}>
-                                  {row.getVisibleCells().map((cell) => (
-                                      <Table.Td key={cell.id}>
-                                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                      </Table.Td>
-                                  ))}
+        <div style={{ borderRadius: 4, border: "1px solid #dee2e6" }}>
+            <Table horizontalSpacing="md" verticalSpacing="md">
+                <Table.Thead>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                        <Table.Tr key={headerGroup.id}>
+                            {headerGroup.headers.map((header) => (
+                                <Table.Th key={header.id}>
+                                    {header.isPlaceholder
+                                        ? null
+                                        : flexRender(header.column.columnDef.header, header.getContext())}
+                                </Table.Th>
+                            ))}
                         </Table.Tr>
-                    ))
-                ) : (
-                    <Table.Tr>
-                        <Table.Td colSpan={table.getLeafHeaders().length}>
-                            No results.
-                        </Table.Td>
-                    </Table.Tr>
-                )}
-            </Table.Tbody>
-        </Table>
+                    ))}
+                </Table.Thead>
+                <Table.Tbody>
+                    {table.getRowModel().rows.length ? (
+                        table.getRowModel().rows.map((row) => (
+                            <Table.Tr key={row.id}>
+                                      {row.getVisibleCells().map((cell) => (
+                                          <Table.Td key={cell.id}>
+                                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                          </Table.Td>
+                                      ))}
+                            </Table.Tr>
+                        ))
+                    ) : (
+                        <Table.Tr>
+                            <Table.Td colSpan={table.getLeafHeaders().length}>
+                                No results.
+                            </Table.Td>
+                        </Table.Tr>
+                    )}
+                </Table.Tbody>
+            </Table>
+
+        </div>
     );
 }

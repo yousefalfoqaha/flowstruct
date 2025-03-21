@@ -9,12 +9,12 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import {Course} from "@/features/course/types.ts";
-import {ChevronsUpDown, Trash} from "lucide-react";
+import {ChevronsUpDown, Search, Trash} from "lucide-react";
 import {
     ActionIcon,
     Badge, Button, Checkbox,
     Flex,
-    Group, Indicator,
+    Group, Indicator, Input,
     Loader,
     Pagination,
     Pill,
@@ -29,9 +29,8 @@ import {useRemoveCoursePrerequisite} from "@/features/study-plan/hooks/useRemove
 import {useRemoveCourseCorequisite} from "@/features/study-plan/hooks/useRemoveCourseCorequisite.ts";
 import {SectionsCombobox} from "@/features/study-plan/components/SectionsCombobox.tsx";
 import {getSectionCode} from "@/lib/getSectionCode.ts";
-import {SectionsList} from "@/features/study-plan/components/SectionsList.tsx";
-import {CourseSearch} from "@/features/course/components/CourseSearch.tsx";
 import {openConfirmModal} from "@mantine/modals";
+import {SectionsTabs} from "@/features/study-plan/components/SectionsTabs.tsx";
 
 type FrameworkCourse = Course & {
     prerequisites: Record<number, CourseRelation>,
@@ -75,7 +74,7 @@ export function FrameworkCoursesTable() {
         }),
         columnHelper.accessor("code", {
             header: ({column}) => (
-                <Group>
+                <Group wrap="nowrap">
                     <ActionIcon variant="transparent" onClick={() => column.toggleSorting()} size="xs">
                         <ChevronsUpDown size={14}/>
                     </ActionIcon>
@@ -89,7 +88,7 @@ export function FrameworkCoursesTable() {
         }),
         columnHelper.accessor("name", {
             header: ({column}) => (
-                <Group>
+                <Group wrap="nowrap">
                     <ActionIcon variant="transparent" onClick={() => column.toggleSorting()} size="xs">
                         <ChevronsUpDown size={14}/>
                     </ActionIcon>
@@ -110,7 +109,7 @@ export function FrameworkCoursesTable() {
                 const corequisites = row.original.corequisites || [];
 
                 return (
-                    <Flex align="center" wrap="wrap" gap={7} w={300}>
+                    <Flex align="center" wrap="wrap" gap={7}>
                         {Object.keys(prerequisites).map((prerequisite) => {
                             const prereqCourse = courses[parseInt(prerequisite)];
                             if (!prereqCourse) return null;
@@ -243,36 +242,44 @@ export function FrameworkCoursesTable() {
     const selectedRows = table.getSelectedRowModel().rows;
 
     return (
-        <Flex direction="column" align="center" gap="md">
-            <Group justify="space-between" align="center">
-                <SectionsList sections={studyPlan.sections}/>
+        <Flex direction="column" gap="xl">
+            <SectionsTabs/>
 
-                {selectedRows.length &&
-                    <Button
-                        onClick={() => openConfirmModal({
-                            title: 'Please confirm your action',
-                            children: (
-                                <Text size="sm">
-                                    Deleting these courses will remove them from the program map and any prerequisite
-                                    relationships. Are you sure you want to proceed?
-                                </Text>
-                            ),
-                            labels: {confirm: 'Remove Courses', cancel: 'Cancel'},
-                            onConfirm: () => removeCoursesFromSection.mutate({
-                                studyPlanId: studyPlanId,
-                                courseIds: selectedRows.map(row => row.original.id),
-                            }, {onSuccess: () => setRowSelection({})})
-                        })}
-                        color="red"
-                        leftSection={<Trash size={18}/>}
-                        loading={removeCoursesFromSection.isPending}
-                    >
-                        Remove ({selectedRows.length})
-                    </Button>
-                }
+            <Group justify="space-between">
+                <Input
+                    w={450}
+                    leftSection={<Search size={18}/>}
+                    placeholder="Search"
+                />
 
-                <CourseSearch/>
+                <Group gap="sm">
+                    {selectedRows.length &&
+                        <Button
+                            onClick={() => openConfirmModal({
+                                title: 'Please confirm your action',
+                                children: (
+                                    <Text size="sm">
+                                        Deleting these courses will remove them from the program map and any
+                                        prerequisite
+                                        relationships. Are you sure you want to proceed?
+                                    </Text>
+                                ),
+                                labels: {confirm: 'Remove Courses', cancel: 'Cancel'},
+                                onConfirm: () => removeCoursesFromSection.mutate({
+                                    studyPlanId: studyPlanId,
+                                    courseIds: selectedRows.map(row => row.original.id),
+                                }, {onSuccess: () => setRowSelection({})})
+                            })}
+                            color="red"
+                            leftSection={<Trash size={18}/>}
+                            loading={removeCoursesFromSection.isPending}
+                        >
+                            Remove ({selectedRows.length})
+                        </Button>
+                    }
+                </Group>
             </Group>
+
             <DataTable table={table}/>
 
             <Group justify="flex-end">

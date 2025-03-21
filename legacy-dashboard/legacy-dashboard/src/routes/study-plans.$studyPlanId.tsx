@@ -2,7 +2,7 @@ import {createFileRoute, Outlet} from '@tanstack/react-router'
 import {getStudyPlanQuery} from '@/features/study-plan/queries.ts'
 import {getProgramQuery} from '@/features/program/queries.ts'
 import {getCourseListQuery} from '@/features/course/queries.ts'
-import {AppShell, Burger} from '@mantine/core'
+import {AppShell, Burger, Title} from '@mantine/core'
 import {StudyPlanSidebar} from '@/features/study-plan/components/StudyPlanSidebar.tsx'
 import {useDisclosure} from '@mantine/hooks'
 
@@ -30,13 +30,14 @@ function RouteComponent() {
             header={{height: 60}}
             navbar={{
                 width: '334',
-                breakpoint: 'sm',
+                breakpoint: 'lg',
                 collapsed: {mobile: !opened},
             }}
+            padding="xl"
         >
-            <AppShell.Header>
+            <AppShell.Header p="xs" pl="md">
                 <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm"/>
-                <div>Logo</div>
+                <Title fw={600} order={2}>GJUPlan Dashboard</Title>
             </AppShell.Header>
 
             <AppShell.Navbar p="md">

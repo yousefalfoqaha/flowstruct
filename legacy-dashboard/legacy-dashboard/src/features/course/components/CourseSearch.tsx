@@ -125,7 +125,7 @@ export function CourseSearch() {
             />
 
             <Popover
-                position="bottom-end"
+                position="left-start"
                 shadow="md"
                 opened={popoverOpened}
                 onChange={setPopoverOpened}
