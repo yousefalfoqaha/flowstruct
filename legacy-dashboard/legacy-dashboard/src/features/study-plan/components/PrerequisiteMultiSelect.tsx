@@ -92,7 +92,7 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
                     setRequisiteType("PRE");
                 }
             }
-        )
+        );
     }
 
     const values = Array.from(value).map((id) => {
@@ -104,7 +104,7 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
         );
     });
 
-    const options = Array.from(coursesGraph, ([id]) => {
+    const options = Array.from(studyPlan.sections.flatMap(s => s.courses)).map(id => {
         const course = courses[id];
         if (!course) return null;
 

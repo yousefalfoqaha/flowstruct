@@ -1,7 +1,7 @@
 import React, {ReactNode} from "react";
 import {useParams} from "@tanstack/react-router";
-import {CoursePrerequisite, CourseRelation, StudyPlan} from "@/features/study-plan/types.ts";
-import {useQueryClient} from "@tanstack/react-query";
+import {CourseRelation} from "@/features/study-plan/types.ts";
+import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 
 type CoursesGraphContextType = {
     coursesGraph: Map<number, CourseRequisites>;
@@ -16,11 +16,10 @@ const CoursesGraphContext = React.createContext<CoursesGraphContextType | undefi
 
 function CoursesGraphProvider({children}: { children: ReactNode }) {
     const [coursesGraph, setCoursesGraph] = React.useState<Map<number, CourseRequisites>>(new Map());
-    const queryClient = useQueryClient();
 
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
 
-    const studyPlan: StudyPlan | undefined = queryClient.getQueryData(["study-plan", "detail", studyPlanId]);
+    const {data: studyPlan} = useStudyPlan(studyPlanId);
 
     React.useEffect(() => {
         if (!studyPlan) return;
@@ -102,7 +101,7 @@ function CoursesGraphProvider({children}: { children: ReactNode }) {
 
         const newGraph = buildCoursesGraph(studyPlan.sections.flatMap(section => section.courses));
         setCoursesGraph(newGraph);
-    }, [studyPlan?.sections, studyPlan]);
+    }, [studyPlan, studyPlan?.sections]);
 
     return (
         <CoursesGraphContext.Provider value={{coursesGraph}}>

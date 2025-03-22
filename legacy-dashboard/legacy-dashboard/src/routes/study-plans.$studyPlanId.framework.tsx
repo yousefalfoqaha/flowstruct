@@ -10,12 +10,12 @@ export const Route = createFileRoute('/study-plans/$studyPlanId/framework')({
 
 function RouteComponent() {
     return (
-        <Flex direction="column" gap="lg">
-            <Flex direction="column" gap="md">
+        <Flex direction="column" gap="xl">
+            <Flex direction="column" gap="lg">
                 <StudyPlanBreadcrumbs/>
 
                 <Group justify="space-between">
-                    <Title fw={600} order={2}>Framework</Title>
+                    <Title fw={600} order={2}>Framework - 3.1.1 Program Requirements (Core Courses)</Title>
                 </Group>
             </Flex>
             <CoursesGraphProvider>

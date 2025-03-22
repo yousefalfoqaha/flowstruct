@@ -62,9 +62,7 @@ export function CreateSectionModal() {
                 </form>
             </Modal>
 
-            <Button variant="subtle" onClick={open} leftSection={<Plus size={18} />}>
-                Create Section
-            </Button>
+            <Button size="compact-sm" pr={0} onClick={open} leftSection={<Plus size={14}/>} variant="transparent">Create</Button>
         </>
     );
 }

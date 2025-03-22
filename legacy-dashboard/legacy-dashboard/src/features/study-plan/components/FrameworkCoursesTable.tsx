@@ -240,6 +240,8 @@ export function FrameworkCoursesTable() {
         }
     };
 
+    const [globalFilter, setGlobalFilter] = React.useState("");
+
     const table = useReactTable({
         columns,
         data: frameworkCourses,
@@ -252,9 +254,9 @@ export function FrameworkCoursesTable() {
             pagination,
             sorting,
             rowSelection,
-            columnFilters
+            globalFilter // ✅ Uses table state for filtering
         },
-        onColumnFiltersChange: setColumnFilters,
+        onGlobalFilterChange: setGlobalFilter, // ✅ Built-in filter state management
         onPaginationChange: setPagination,
         onSortingChange: setSorting,
         autoResetPageIndex: false,
@@ -273,6 +275,8 @@ export function FrameworkCoursesTable() {
                         w={450}
                         leftSection={<Search size={18}/>}
                         placeholder="Search"
+                        value={globalFilter} // ✅ Directly binds to table state
+                        onChange={(e) => setGlobalFilter(e.target.value)}
                     />
 
                     <Group gap="sm">
@@ -301,7 +305,7 @@ export function FrameworkCoursesTable() {
                             </Button>
                         }
 
-                        <CourseSearch focusedSection={columnFilters.find(filter => filter.id === 'section')?.value ?? null} />
+                        <CourseSearch focusedSection={columnFilters.find(filter => filter.id === 'section')?.value ?? null}/>
                     </Group>
                 </Group>
 

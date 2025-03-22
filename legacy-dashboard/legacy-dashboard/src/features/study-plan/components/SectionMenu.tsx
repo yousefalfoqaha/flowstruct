@@ -11,7 +11,7 @@ export function SectionMenu({section}: { section: Section }) {
     const deleteSection = useDeleteSection();
 
     return (
-        <Menu width={200} shadow="md">
+        <Menu shadow="md">
             <Menu.Target>
                 <ActionIcon
                     variant="default"
@@ -28,7 +28,6 @@ export function SectionMenu({section}: { section: Section }) {
             </Menu.Target>
 
             <Menu.Dropdown>
-                <Menu.Label>Options</Menu.Label>
                 <Menu.Item
                     onClick={e => {
                         e.stopPropagation();
