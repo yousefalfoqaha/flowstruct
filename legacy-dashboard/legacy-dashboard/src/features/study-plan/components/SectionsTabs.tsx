@@ -1,4 +1,4 @@
-import {Box, Button, Flex, Group, RenderTreeNodePayload, Stack, Text, Tree, TreeNodeData} from "@mantine/core";
+import {Box, Button, Flex, Group, RenderTreeNodePayload, Stack, Text, Tree, TreeNodeData, useTree} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useParams} from "@tanstack/react-router";
 import {SectionLevel, SectionType} from "@/features/study-plan/types.ts";
@@ -12,7 +12,6 @@ export function SectionsTabs({selectSection}: { selectSection: (sectionId: numbe
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
     const {data: studyPlan} = useStudyPlan(studyPlanId);
     const {data: courses} = useCourseList(studyPlanId);
-
 
     const data: TreeNodeData[] = Object.values(SectionLevel)
         .map(level => {
@@ -38,6 +37,22 @@ export function SectionsTabs({selectSection}: { selectSection: (sectionId: numbe
                 : null;
         })
         .filter(Boolean);
+
+    const filterSectionCourses: number[] = (selectedNode: TreeNodeData) => {
+        const sections: number[] = [];
+
+        const traverse = (rootNode: TreeNodeData) => {
+            const isSection = rootNode.nodeProps;
+
+            if (isSection) return sections.push(parseInt(rootNode.value));
+
+            rootNode.children?.forEach(child => traverse(child));
+        }
+
+        if (Number.isNaN(selectedNode.value)) {
+            selectedNode.children?.forEach(child => traverse(child));
+        }
+    }
 
     const Leaf = ({node, expanded, hasChildren, elementProps}: RenderTreeNodePayload) => {
         const section = studyPlan.sections.find(s => s.id.toString() === node.value);
