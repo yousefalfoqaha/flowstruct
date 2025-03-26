@@ -15,7 +15,7 @@ function RouteComponent() {
                 <StudyPlanBreadcrumbs/>
 
                 <Group justify="space-between">
-                    <Title fw={600} order={2}>Framework - 3.1.1 Program Requirements (Core Courses)</Title>
+                    <Title fw={600} order={2}>Framework</Title>
                 </Group>
             </Flex>
             <CoursesGraphProvider>

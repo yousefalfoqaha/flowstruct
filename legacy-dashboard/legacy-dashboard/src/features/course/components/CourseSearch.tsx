@@ -24,9 +24,11 @@ import {CreateCourseModal} from "@/features/course/components/CreateCourseModal.
 
 export function CourseSearch({focusedSection}: { focusedSection: number | null }) {
     const [popoverOpened, setPopoverOpened] = React.useState(false);
-    const [search, setSearch] = React.useState<string>("");
+    const [selectedSection, setSelectedSection] = React.useState<string | null>(
+        focusedSection ? String(focusedSection) : null
+    );
     const [selectedCourses, setSelectedCourses] = React.useState<Course[]>([]);
-    const [selectedSection, setSelectedSection] = React.useState<string | null>(focusedSection !== null ? String(focusedSection) : null);
+    const [search, setSearch] = React.useState<string>("");
     const [createModalOpen, setCreateModalOpen] = React.useState(false);
 
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
@@ -34,6 +36,10 @@ export function CourseSearch({focusedSection}: { focusedSection: number | null }
     const [debouncedSearch] = useDebouncedValue(search, 750);
 
     const addCoursesToSection = useAddCoursesToSection();
+
+    React.useEffect(() => {
+        setSelectedSection(String(focusedSection));
+    }, [focusedSection]);
 
     const combobox = useCombobox({
         onDropdownClose: () => combobox.resetSelectedOption(),

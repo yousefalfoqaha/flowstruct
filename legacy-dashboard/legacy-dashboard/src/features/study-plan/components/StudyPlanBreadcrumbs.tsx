@@ -1,18 +1,8 @@
-import {Breadcrumbs, Anchor} from '@mantine/core';
+import {Breadcrumbs, Button} from '@mantine/core';
 import {ChevronRight} from "lucide-react";
 import {Link, useParams} from "@tanstack/react-router";
 import {useProgram} from "@/features/program/hooks/useProgram.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
-
-const items = [
-    {title: 'All Programs', href: '/'},
-    {title: 'B.Sc. Electrical Engineering', href: '#'},
-    {title: '2023/2024 5G Track', href: '#'},
-].map((item, index) => (
-    <Link to={item.href} key={index}>
-        {item.title}
-    </Link>
-));
 
 export function StudyPlanBreadcrumbs() {
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
@@ -21,21 +11,27 @@ export function StudyPlanBreadcrumbs() {
 
     return (
         <>
-            <Breadcrumbs separator={<ChevronRight size={14}/>} separatorMargin="md" mt="xs">
+            <Breadcrumbs separator={<ChevronRight size={14}/>} separatorMargin="xs" mt="xs">
                 <Link to="/">
-                    All Programs
+                    <Button size="compact-md" variant="transparent">
+                        All Programs
+                    </Button>
                 </Link>
                 <Link
                     to="/programs/$programId/study-plans"
                     params={{programId: program.id.toString()}}
                 >
-                    {program.degree} {program.name}
+                    <Button size="compact-md" variant="transparent">
+                        {program.degree} {program.name}
+                    </Button>
                 </Link>
                 <Link
                     to="/study-plans/$studyPlanId/overview"
                     params={{studyPlanId: studyPlan.id.toString()}}
                 >
-                    {studyPlan.year}/{studyPlan.year + 1} {studyPlan.track && `- ${studyPlan.track}`}
+                    <Button size="compact-md" variant="transparent">
+                        {studyPlan.year}/{studyPlan.year + 1} {studyPlan.track && `- ${studyPlan.track}`}
+                    </Button>
                 </Link>
             </Breadcrumbs>
         </>

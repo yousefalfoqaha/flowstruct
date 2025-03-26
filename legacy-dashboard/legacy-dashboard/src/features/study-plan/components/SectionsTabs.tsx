@@ -1,19 +1,37 @@
-import {Box, Button, Flex, Group, RenderTreeNodePayload, Stack, Text, Tree, TreeNodeData, useTree} from "@mantine/core";
+import {
+    ActionIcon,
+    Box, Button,
+    Flex,
+    Group,
+    RenderTreeNodePayload,
+    Stack,
+    Text,
+    Tree,
+    TreeNodeData,
+    useTree
+} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useParams} from "@tanstack/react-router";
 import {SectionLevel, SectionType} from "@/features/study-plan/types.ts";
-import {ChevronDown} from "lucide-react";
+import {ChevronDown, Filter} from "lucide-react";
 import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
 import {SectionMenu} from "@/features/study-plan/components/SectionMenu.tsx";
 import classes from './SectionsTabs.module.css'
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
+import React from "react";
 
-export function SectionsTabs({selectSection}: { selectSection: (sectionId: number | undefined) => void }) {
+export function SectionsTabs({selectSection, selectedSection}: {
+    selectSection: (sectionId: number | null) => void,
+    selectedSection: number | null
+}) {
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
     const {data: studyPlan} = useStudyPlan(studyPlanId);
     const {data: courses} = useCourseList(studyPlanId);
+    const tree = useTree({
+        multiple: false
+    });
 
-    const data: TreeNodeData[] = Object.values(SectionLevel)
+    const data: TreeNodeData[] = React.useMemo(() => Object.values(SectionLevel)
         .map(level => {
             const children = Object.values(SectionType)
                 .map(type => {
@@ -36,25 +54,9 @@ export function SectionsTabs({selectSection}: { selectSection: (sectionId: numbe
                 ? {label: level.toString(), value: level.toString(), children}
                 : null;
         })
-        .filter(Boolean);
+        .filter(Boolean), [studyPlan]);
 
-    const filterSectionCourses: number[] = (selectedNode: TreeNodeData) => {
-        const sections: number[] = [];
-
-        const traverse = (rootNode: TreeNodeData) => {
-            const isSection = rootNode.nodeProps;
-
-            if (isSection) return sections.push(parseInt(rootNode.value));
-
-            rootNode.children?.forEach(child => traverse(child));
-        }
-
-        if (Number.isNaN(selectedNode.value)) {
-            selectedNode.children?.forEach(child => traverse(child));
-        }
-    }
-
-    const Leaf = ({node, expanded, hasChildren, elementProps}: RenderTreeNodePayload) => {
+    const Leaf = ({node, level, expanded, hasChildren, elementProps}: RenderTreeNodePayload) => {
         const section = studyPlan.sections.find(s => s.id.toString() === node.value);
 
         const totalCreditHours = section?.courses.reduce((acc, courseId) => {
@@ -62,18 +64,38 @@ export function SectionsTabs({selectSection}: { selectSection: (sectionId: numbe
             return acc + (course ? course.creditHours : 0);
         }, 0) ?? 0;
 
+        const isSelected = parseInt(node.value) === selectedSection;
+
+        const handleFilter = () => {
+            if (level > 2 && !isSelected) {
+                selectSection(Number(node.value));
+                return;
+            }
+            selectSection(null);
+        }
+
         return (
             <Box {...elementProps}>
                 <Stack gap={5}>
                     <Group gap={10} pr={hasChildren ? 'lg' : 10} py={5} pl={hasChildren ? 'sm' : 35}>
-                        {hasChildren && (
+                        {hasChildren ? (
                             <ChevronDown
                                 size={14}
                                 style={{transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)'}}
                             />
+                        ) : (
+                            <ActionIcon onClick={handleFilter} variant="transparent">
+                                <Filter size={14}/>
+                            </ActionIcon>
                         )}
 
-                        <span>{node.label}</span>
+                        <span
+                            style={{
+                                fontWeight: isSelected ? 600 : 'normal'
+                            }}
+                        >
+                            {node.label}
+                        </span>
 
                         {!hasChildren && (
                             <Text size="xs" c="dimmed">{totalCreditHours} Cr.</Text>
@@ -92,15 +114,24 @@ export function SectionsTabs({selectSection}: { selectSection: (sectionId: numbe
         <Flex direction="column" gap={8}>
             <Group style={{borderBottom: "1px solid #dee2e6"}} pb={10} justify="space-between">
                 <Text fw={500}>Sections</Text>
-                <CreateSectionModal/>
+
+                <Group>
+                    {selectedSection && (
+                        <Button onClick={() => selectSection(null)} size="compact-sm" p={0} leftSection={<Filter size={14}/>} color="gray" variant="transparent">
+                            Clear
+                        </Button>
+                    )}
+                    <CreateSectionModal/>
+                </Group>
             </Group>
             <Tree
+                tree={tree}
                 classNames={classes}
                 styles={{
                     node: {radius: 10}
                 }}
                 data={data}
-                selectOnClick
+                selectOnClick={false}
                 renderNode={(payload) => <Leaf {...payload} />}
             />
         </Flex>

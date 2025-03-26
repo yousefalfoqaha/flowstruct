@@ -3,7 +3,7 @@ import {useParams} from "@tanstack/react-router";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {
     ColumnFiltersState,
-    createColumnHelper, FilterFn,
+    createColumnHelper,
     getCoreRowModel, getFilteredRowModel,
     getPaginationRowModel, getSortedRowModel, RowSelectionState,
     SortingState,
@@ -229,16 +229,13 @@ export function FrameworkCoursesTable() {
 
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 
-    const selectSectionHandler = (sectionId: number | null) => {
+    const selectSectionHandler = ((sectionId: number | null) => {
         if (sectionId === null) {
             setColumnFilters([]);
-        } else {
-            setColumnFilters([{
-                id: 'section',
-                value: sectionId
-            }]);
+            return;
         }
-    };
+        setColumnFilters([{id: 'section', value: sectionId}]);
+    });
 
     const [globalFilter, setGlobalFilter] = React.useState("");
 
@@ -254,9 +251,11 @@ export function FrameworkCoursesTable() {
             pagination,
             sorting,
             rowSelection,
-            globalFilter // ✅ Uses table state for filtering
+            globalFilter,
+            columnFilters
         },
-        onGlobalFilterChange: setGlobalFilter, // ✅ Built-in filter state management
+        onColumnFiltersChange: setColumnFilters,
+        onGlobalFilterChange: setGlobalFilter,
         onPaginationChange: setPagination,
         onSortingChange: setSorting,
         autoResetPageIndex: false,
@@ -264,10 +263,15 @@ export function FrameworkCoursesTable() {
 
     const paginationMessage = `Showing ${pagination.pageSize * (pagination.pageIndex) + 1} – ${Math.min(frameworkCourses.length, pagination.pageSize * (pagination.pageIndex + 1))} of ${frameworkCourses.length}`;
     const selectedRows = table.getSelectedRowModel().rows;
+    const sectionFilter = columnFilters.find(filter => filter.id === 'section');
+    const selectedSection = sectionFilter?.value as number;
 
     return (
         <Flex gap="xl">
-            <SectionsTabs selectSection={selectSectionHandler}/>
+            <SectionsTabs
+                selectedSection={selectedSection}
+                selectSection={selectSectionHandler}
+            />
 
             <Flex direction="column" style={{flex: 1}} gap="sm">
                 <Group justify="space-between">
@@ -275,7 +279,7 @@ export function FrameworkCoursesTable() {
                         w={450}
                         leftSection={<Search size={18}/>}
                         placeholder="Search"
-                        value={globalFilter} // ✅ Directly binds to table state
+                        value={globalFilter}
                         onChange={(e) => setGlobalFilter(e.target.value)}
                     />
 
@@ -305,7 +309,7 @@ export function FrameworkCoursesTable() {
                             </Button>
                         }
 
-                        <CourseSearch focusedSection={columnFilters.find(filter => filter.id === 'section')?.value ?? null}/>
+                        <CourseSearch focusedSection={selectedSection}/>
                     </Group>
                 </Group>
 
