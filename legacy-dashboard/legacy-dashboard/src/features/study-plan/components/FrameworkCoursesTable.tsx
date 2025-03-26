@@ -10,7 +10,7 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import {Course} from "@/features/course/types.ts";
-import {ChevronsUpDown, Search, Trash} from "lucide-react";
+import {ArrowDownUp, ChevronsUpDown, Search, Trash} from "lucide-react";
 import {
     ActionIcon,
     Badge, Button, Checkbox,
@@ -54,7 +54,7 @@ export function FrameworkCoursesTable() {
 
     const [sorting, setSorting] = React.useState<SortingState>([{id: 'code', desc: false}]);
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
-    const [pagination, setPagination] = React.useState({pageIndex: 0, pageSize: 8,});
+    const [pagination, setPagination] = React.useState({pageIndex: 0, pageSize: 10,});
 
     const columns = [
         columnHelper.display({
@@ -78,7 +78,7 @@ export function FrameworkCoursesTable() {
             header: ({column}) => (
                 <Group wrap="nowrap">
                     <ActionIcon variant="transparent" onClick={() => column.toggleSorting()} size="xs">
-                        <ChevronsUpDown size={14}/>
+                        <ArrowDownUp size={14}/>
                     </ActionIcon>
                     Code
                 </Group>
@@ -92,7 +92,7 @@ export function FrameworkCoursesTable() {
             header: ({column}) => (
                 <Group wrap="nowrap">
                     <ActionIcon variant="transparent" onClick={() => column.toggleSorting()} size="xs">
-                        <ChevronsUpDown size={14}/>
+                        <ArrowDownUp size={14}/>
                     </ActionIcon>
                     Name
                 </Group>
@@ -111,7 +111,7 @@ export function FrameworkCoursesTable() {
                 const corequisites = row.original.corequisites || [];
 
                 return (
-                    <Flex align="center" wrap="wrap" gap={7}>
+                    <Flex align="center" w={250} wrap="wrap" gap={7}>
                         {Object.keys(prerequisites).map((prerequisite) => {
                             const prereqCourse = courses[parseInt(prerequisite)];
                             if (!prereqCourse) return null;
@@ -261,7 +261,7 @@ export function FrameworkCoursesTable() {
         autoResetPageIndex: false,
     });
 
-    const paginationMessage = `Showing ${pagination.pageSize * (pagination.pageIndex) + 1} – ${Math.min(frameworkCourses.length, pagination.pageSize * (pagination.pageIndex + 1))} of ${frameworkCourses.length}`;
+    const paginationMessage = `Showing ${pagination.pageSize * (pagination.pageIndex) + 1} – ${Math.min(table.getFilteredRowModel().rows.length, pagination.pageSize * (pagination.pageIndex + 1))} of ${table.getFilteredRowModel().rows.length}`;
     const selectedRows = table.getSelectedRowModel().rows;
     const sectionFilter = columnFilters.find(filter => filter.id === 'section');
     const selectedSection = sectionFilter?.value as number;

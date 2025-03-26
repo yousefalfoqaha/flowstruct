@@ -1,5 +1,5 @@
-import {Breadcrumbs, Button} from '@mantine/core';
-import {ChevronRight} from "lucide-react";
+import {ActionIcon, Breadcrumbs, Button} from '@mantine/core';
+import {ChevronRight, Home} from "lucide-react";
 import {Link, useParams} from "@tanstack/react-router";
 import {useProgram} from "@/features/program/hooks/useProgram.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
@@ -11,7 +11,12 @@ export function StudyPlanBreadcrumbs() {
 
     return (
         <>
-            <Breadcrumbs separator={<ChevronRight size={14}/>} separatorMargin="xs" mt="xs">
+            <Breadcrumbs separator={<ChevronRight size={14}/>} separatorMargin={5}>
+                <Link to="/">
+                    <ActionIcon mr="xs" size="compact-md" color="gray" variant="transparent">
+                        <Home size={18} />
+                    </ActionIcon>
+                </Link>
                 <Link to="/">
                     <Button size="compact-md" variant="transparent">
                         All Programs

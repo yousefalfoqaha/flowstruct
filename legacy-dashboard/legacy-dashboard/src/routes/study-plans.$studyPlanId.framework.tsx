@@ -1,8 +1,8 @@
 import {createFileRoute} from '@tanstack/react-router'
 import {FrameworkCoursesTable} from "@/features/study-plan/components/FrameworkCoursesTable.tsx";
 import {CoursesGraphProvider} from "@/contexts/CoursesGraphContext.tsx";
-import {Flex, Group, Title} from "@mantine/core";
-import {StudyPlanBreadcrumbs} from "@/features/study-plan/components/StudyPlanBreadcrumbs.tsx";
+import {Flex} from "@mantine/core";
+import {StudyPlanHeader} from "@/features/study-plan/components/StudyPlanHeader.tsx";
 
 export const Route = createFileRoute('/study-plans/$studyPlanId/framework')({
     component: RouteComponent,
@@ -11,13 +11,8 @@ export const Route = createFileRoute('/study-plans/$studyPlanId/framework')({
 function RouteComponent() {
     return (
         <Flex direction="column" gap="xl">
-            <Flex direction="column" gap="lg">
-                <StudyPlanBreadcrumbs/>
+            <StudyPlanHeader title={'Framework'}/>
 
-                <Group justify="space-between">
-                    <Title fw={600} order={2}>Framework</Title>
-                </Group>
-            </Flex>
             <CoursesGraphProvider>
                 <FrameworkCoursesTable/>
             </CoursesGraphProvider>

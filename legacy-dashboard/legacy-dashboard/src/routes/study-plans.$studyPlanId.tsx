@@ -2,7 +2,7 @@ import {createFileRoute, Outlet} from '@tanstack/react-router'
 import {getStudyPlanQuery} from '@/features/study-plan/queries.ts'
 import {getProgramQuery} from '@/features/program/queries.ts'
 import {getCourseListQuery} from '@/features/course/queries.ts'
-import {AppShell, Burger, Title} from '@mantine/core'
+import {AppShell} from '@mantine/core'
 import {StudyPlanSidebar} from '@/features/study-plan/components/StudyPlanSidebar.tsx'
 import {useDisclosure} from '@mantine/hooks'
 
@@ -22,12 +22,11 @@ export const Route = createFileRoute('/study-plans/$studyPlanId')({
 });
 
 function RouteComponent() {
-    const [opened, {toggle}] = useDisclosure()
+    const [opened] = useDisclosure()
     const {studyPlanId} = Route.useParams()
 
     return (
         <AppShell
-            header={{height: 60}}
             navbar={{
                 width: '250',
                 breakpoint: 'lg',
@@ -35,11 +34,6 @@ function RouteComponent() {
             }}
             padding="xl"
         >
-            <AppShell.Header p="xs" pl="md">
-                <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm"/>
-                <Title fw={600} order={2}>GJUPlan Dashboard</Title>
-            </AppShell.Header>
-
             <AppShell.Navbar p="md">
                 <StudyPlanSidebar studyPlanId={Number(studyPlanId)}/>
             </AppShell.Navbar>

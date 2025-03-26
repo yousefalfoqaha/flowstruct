@@ -1,5 +1,5 @@
 import {
-    ActionIcon,
+    ActionIcon, Badge,
     Box, Button,
     Flex,
     Group,
@@ -59,10 +59,10 @@ export function SectionsTabs({selectSection, selectedSection}: {
     const Leaf = ({node, level, expanded, hasChildren, elementProps}: RenderTreeNodePayload) => {
         const section = studyPlan.sections.find(s => s.id.toString() === node.value);
 
-        const totalCreditHours = section?.courses.reduce((acc, courseId) => {
-            const course = courses[courseId];
-            return acc + (course ? course.creditHours : 0);
-        }, 0) ?? 0;
+        // const totalCreditHours = section?.courses.reduce((acc, courseId) => {
+        //     const course = courses[courseId];
+        //     return acc + (course ? course.creditHours : 0);
+        // }, 0) ?? 0;
 
         const isSelected = parseInt(node.value) === selectedSection;
 
@@ -75,37 +75,33 @@ export function SectionsTabs({selectSection, selectedSection}: {
         }
 
         return (
-            <Box {...elementProps}>
-                <Stack gap={5}>
-                    <Group gap={10} pr={hasChildren ? 'lg' : 10} py={5} pl={hasChildren ? 'sm' : 35}>
-                        {hasChildren ? (
-                            <ChevronDown
-                                size={14}
-                                style={{transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)'}}
-                            />
-                        ) : (
-                            <ActionIcon onClick={handleFilter} variant="transparent">
-                                <Filter size={14}/>
-                            </ActionIcon>
-                        )}
+            <Box {...elementProps} w={250}>
+                <Group gap={10} pr={hasChildren ? 'lg' : 10} py={5} pl={hasChildren ? 'sm' : 35}>
+                    {hasChildren && (
+                        <ChevronDown
+                            size={14}
+                            style={{transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)'}}
+                        />
+                    )}
 
-                        <span
-                            style={{
-                                fontWeight: isSelected ? 600 : 'normal'
-                            }}
-                        >
-                            {node.label}
-                        </span>
+                    <span style={{fontWeight: isSelected ? 600 : 'normal'}}>
+                        {node.label}
+                    </span>
 
-                        {!hasChildren && (
-                            <Text size="xs" c="dimmed">{totalCreditHours} Cr.</Text>
-                        )}
+                    {!hasChildren && (
+                        <Group justify="space-between">
+                            <Badge size="sm" variant="default">{section?.requiredCreditHours} Cr. Req</Badge>
 
-                        {!hasChildren && (
-                            <SectionMenu section={section}/>
-                        )}
-                    </Group>
-                </Stack>
+                            <Group gap={5}>
+                                <ActionIcon onClick={handleFilter} variant="transparent">
+                                    <Filter size={14}/>
+                                </ActionIcon>
+
+                                <SectionMenu section={section}/>
+                            </Group>
+                        </Group>
+                    )}
+                </Group>
             </Box>
         );
     };
@@ -117,7 +113,8 @@ export function SectionsTabs({selectSection, selectedSection}: {
 
                 <Group>
                     {selectedSection && (
-                        <Button onClick={() => selectSection(null)} size="compact-sm" p={0} leftSection={<Filter size={14}/>} color="gray" variant="transparent">
+                        <Button onClick={() => selectSection(null)} size="compact-sm" p={0}
+                                leftSection={<Filter size={14}/>} color="gray" variant="transparent">
                             Clear
                         </Button>
                     )}
@@ -127,9 +124,6 @@ export function SectionsTabs({selectSection, selectedSection}: {
             <Tree
                 tree={tree}
                 classNames={classes}
-                styles={{
-                    node: {radius: 10}
-                }}
                 data={data}
                 selectOnClick={false}
                 renderNode={(payload) => <Leaf {...payload} />}
