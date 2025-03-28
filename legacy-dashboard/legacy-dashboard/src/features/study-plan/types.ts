@@ -26,6 +26,7 @@ export type Section = {
     type: SectionType;
     requiredCreditHours: number;
     name: string | null;
+    order: number;
     courses: number[];
 }
 

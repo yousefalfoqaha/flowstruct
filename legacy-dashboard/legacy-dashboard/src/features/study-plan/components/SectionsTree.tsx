@@ -2,9 +2,8 @@ import {
     ActionIcon, Badge,
     Box, Button,
     Flex,
-    Group,
+    Group, Indicator,
     RenderTreeNodePayload,
-    Stack,
     Text,
     Tree,
     TreeNodeData,
@@ -15,35 +14,46 @@ import {useParams} from "@tanstack/react-router";
 import {SectionLevel, SectionType} from "@/features/study-plan/types.ts";
 import {ChevronDown, Filter} from "lucide-react";
 import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
-import {SectionMenu} from "@/features/study-plan/components/SectionMenu.tsx";
-import classes from './SectionsTabs.module.css'
-import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
+import {SectionOptionsMenu} from "@/features/study-plan/components/SectionOptionsMenu.tsx";
+import classes from './SectionsTabs.module.css';
 import React from "react";
+import {MoveSectionMenu} from "@/features/study-plan/components/MoveSectionMenu.tsx";
+import {getSectionLevelCode, getSectionTypeCode} from "@/lib/getSectionCode.ts";
 
-export function SectionsTabs({selectSection, selectedSection}: {
+export function SectionsTree({selectSection, selectedSection}: {
     selectSection: (sectionId: number | null) => void,
     selectedSection: number | null
 }) {
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
     const {data: studyPlan} = useStudyPlan(studyPlanId);
-    const {data: courses} = useCourseList(studyPlanId);
     const tree = useTree({
         multiple: false
     });
 
     const data: TreeNodeData[] = React.useMemo(() => Object.values(SectionLevel)
         .map(level => {
+            const levelCode = getSectionLevelCode(level);
+
             const children = Object.values(SectionType)
                 .map(type => {
                     const sections = studyPlan.sections.filter(s => s.level === level && s.type === type);
+                    const typeCode = getSectionTypeCode(type);
 
                     if (sections.length === 0) return null;
+
+                    if (sections.length === 1) {
+                        const section = sections[0];
+                        return {
+                            label: `${levelCode}.${typeCode} ${type} ${section.name ? `- ${section.name}` : ''}`,
+                            value: section.id.toString()
+                        };
+                    }
 
                     return {
                         label: type.toString(),
                         value: `${level}_${type}`,
                         children: sections.map(section => ({
-                            label: section.name || "Core Courses",
+                            label: section.name ? `${levelCode}.${typeCode}.1 ${section.name}` : "General",
                             value: section.id.toString(),
                         }))
                     };
@@ -51,23 +61,18 @@ export function SectionsTabs({selectSection, selectedSection}: {
                 .filter(Boolean);
 
             return children.length > 0
-                ? {label: level.toString(), value: level.toString(), children}
+                ? {label: `${levelCode}. ${level}`, value: level.toString(), children}
                 : null;
         })
         .filter(Boolean), [studyPlan]);
 
-    const Leaf = ({node, level, expanded, hasChildren, elementProps}: RenderTreeNodePayload) => {
+    const Leaf = ({node, expanded, hasChildren, elementProps}: RenderTreeNodePayload) => {
         const section = studyPlan.sections.find(s => s.id.toString() === node.value);
-
-        // const totalCreditHours = section?.courses.reduce((acc, courseId) => {
-        //     const course = courses[courseId];
-        //     return acc + (course ? course.creditHours : 0);
-        // }, 0) ?? 0;
 
         const isSelected = parseInt(node.value) === selectedSection;
 
         const handleFilter = () => {
-            if (level > 2 && !isSelected) {
+            if (!isSelected) {
                 selectSection(Number(node.value));
                 return;
             }
@@ -84,21 +89,28 @@ export function SectionsTabs({selectSection, selectedSection}: {
                         />
                     )}
 
-                    <span style={{fontWeight: isSelected ? 600 : 'normal'}}>
-                        {node.label}
-                    </span>
+                    <Indicator position="middle-start" offset={-25} disabled={!isSelected}>
+                        <span style={{
+                            marginRight: 8,
+                            fontWeight: isSelected ? 600 : 'normal'
+                        }}>
+                            {node.label}
+                        </span>
+
+                        {!hasChildren && (
+                            <Badge size="xs" variant="default">{section?.requiredCreditHours} Cr. Req</Badge>
+                        )}
+                    </Indicator>
 
                     {!hasChildren && (
-                        <Group justify="space-between">
-                            <Badge size="sm" variant="default">{section?.requiredCreditHours} Cr. Req</Badge>
+                        <Group gap={5}>
+                            <MoveSectionMenu section={section}/>
 
-                            <Group gap={5}>
-                                <ActionIcon onClick={handleFilter} variant="transparent">
-                                    <Filter size={14}/>
-                                </ActionIcon>
+                            <ActionIcon onClick={handleFilter} variant="transparent">
+                                <Filter size={14}/>
+                            </ActionIcon>
 
-                                <SectionMenu section={section}/>
-                            </Group>
+                            <SectionOptionsMenu section={section}/>
                         </Group>
                     )}
                 </Group>

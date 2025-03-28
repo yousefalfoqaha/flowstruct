@@ -29,7 +29,7 @@ function RouteComponent() {
         <AppShell
             navbar={{
                 width: '250',
-                breakpoint: 'lg',
+                breakpoint: 'xl',
                 collapsed: {mobile: !opened},
             }}
             padding="xl"

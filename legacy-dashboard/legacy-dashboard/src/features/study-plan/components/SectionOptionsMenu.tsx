@@ -6,9 +6,11 @@ import {EditSectionDetailsModal} from "@/features/study-plan/components/EditSect
 import {useParams} from "@tanstack/react-router";
 import {useDeleteSection} from "@/features/study-plan/hooks/useDeleteSection.ts";
 
-export function SectionMenu({section}: { section: Section }) {
+export function SectionOptionsMenu({section}: { section: Section | undefined }) {
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
     const deleteSection = useDeleteSection();
+
+    if (!section) return;
 
     return (
         <Menu shadow="md">

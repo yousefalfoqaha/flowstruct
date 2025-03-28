@@ -31,7 +31,7 @@ import {useRemoveCourseCorequisite} from "@/features/study-plan/hooks/useRemoveC
 import {SectionsCombobox} from "@/features/study-plan/components/SectionsCombobox.tsx";
 import {getSectionCode} from "@/lib/getSectionCode.ts";
 import {openConfirmModal} from "@mantine/modals";
-import {SectionsTabs} from "@/features/study-plan/components/SectionsTabs.tsx";
+import {SectionsTree} from "@/features/study-plan/components/SectionsTree.tsx";
 import {CourseSearch} from "@/features/course/components/CourseSearch.tsx";
 
 type FrameworkCourse = Course & {
@@ -268,7 +268,7 @@ export function FrameworkCoursesTable() {
 
     return (
         <Flex gap="xl">
-            <SectionsTabs
+            <SectionsTree
                 selectedSection={selectedSection}
                 selectSection={selectSectionHandler}
             />

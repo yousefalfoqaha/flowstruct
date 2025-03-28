@@ -1,5 +1,5 @@
 import classes from './StudyPlanSidebar.module.css';
-import {ArrowRightLeft, Folder, LogOut, ScrollText, Map, Settings} from "lucide-react";
+import {ArrowRightLeft, Folder, ScrollText, Map, Settings} from "lucide-react";
 import {Link, useRouterState} from "@tanstack/react-router";
 import {Badge, Stack, Text, Title} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";

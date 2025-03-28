@@ -3,29 +3,48 @@ import {Section, SectionLevel, SectionType} from "@/features/study-plan/types.ts
 export const getSectionCode = (section: Section) => {
     let code = '';
 
-    switch (section.level) {
+    code += getSectionLevelCode(section.level);
+    code += '.' + getSectionTypeCode(section.type);
+
+    return code += section.order > 1 ? '.' + section.order : '';
+}
+
+export const getSectionLevelCode = (level: SectionLevel)=> {
+    let code = '';
+
+    switch (level) {
         case SectionLevel.University:
-            code += '1.';
+            code += '1';
             break;
         case SectionLevel.School:
-            code += '2.';
+            code += '2';
             break;
         case SectionLevel.Program:
-            code += '3.';
+            code += '3';
             break;
+        default:
+            return;
     }
 
-    switch (section.type) {
+    return code;
+}
+
+export const getSectionTypeCode = (type: SectionType)=> {
+    let code = '';
+
+    switch (type) {
         case SectionType.Requirement:
-            code += '1.';
+            code += '1';
             break;
         case SectionType.Elective:
-            code += '2.';
+            code += '2';
             break;
         case SectionType.Remedial:
-            code += '3.';
+            code += '3';
             break;
+        default:
+            return;
     }
 
-    return code += '1';
+    return code;
 }
