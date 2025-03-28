@@ -36,7 +36,6 @@ function CoursesGraphProvider({children}: { children: ReactNode }) {
             for (const prereq in prerequisites) {
                 const prereqId = Number(prereq);
 
-
                 if (!visited.has(prereqId)) {
                     traversePrerequisites(prereqId, coursePrerequisitesMap, visited, graph);
                 }

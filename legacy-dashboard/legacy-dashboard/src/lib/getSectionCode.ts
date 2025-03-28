@@ -6,10 +6,10 @@ export const getSectionCode = (section: Section) => {
     code += getSectionLevelCode(section.level);
     code += '.' + getSectionTypeCode(section.type);
 
-    return code += section.order > 1 ? '.' + section.order : '';
+    return code += section.position !== 0 ? '.' + section.position : '';
 }
 
-export const getSectionLevelCode = (level: SectionLevel)=> {
+export const getSectionLevelCode = (level: SectionLevel) => {
     let code = '';
 
     switch (level) {
@@ -29,7 +29,7 @@ export const getSectionLevelCode = (level: SectionLevel)=> {
     return code;
 }
 
-export const getSectionTypeCode = (type: SectionType)=> {
+export const getSectionTypeCode = (type: SectionType) => {
     let code = '';
 
     switch (type) {

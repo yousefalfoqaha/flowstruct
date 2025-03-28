@@ -15,6 +15,11 @@ export enum CourseRelation {
     OR = "OR"
 }
 
+export enum MoveDirection {
+    UP = "UP",
+    DOWN = "DOWN"
+}
+
 export type CoursePrerequisite = {
     prerequisite: number;
     relation: CourseRelation;
@@ -26,7 +31,7 @@ export type Section = {
     type: SectionType;
     requiredCreditHours: number;
     name: string | null;
-    order: number;
+    position: number;
     courses: number[];
 }
 

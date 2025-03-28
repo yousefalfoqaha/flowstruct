@@ -1,4 +1,4 @@
-import {CoursePrerequisite, Section, StudyPlan, StudyPlanListItem} from "@/features/study-plan/types.ts";
+import {CoursePrerequisite, MoveDirection, Section, StudyPlan, StudyPlanListItem} from "@/features/study-plan/types.ts";
 import {Course} from "@/features/course/types.ts";
 
 export const getStudyPlanListRequest = async (programId: number) => {
@@ -242,6 +242,23 @@ export const moveCourseSectionRequest = async ({studyPlanId, courseId, sectionId
     sectionId: number
 }) => {
     const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/courses/${courseId}/move-to-section/${sectionId}`, {
+        method: 'PUT'
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'An unknown error occurred');
+    }
+
+    return await res.json() as StudyPlan;
+}
+
+export const moveSectionRequest = async ({studyPlanId, sectionId, direction}: {
+    studyPlanId: number,
+    sectionId: number,
+    direction: MoveDirection
+}) => {
+    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/sections/${sectionId}/move?direction=${direction}`, {
         method: 'PUT'
     });
 

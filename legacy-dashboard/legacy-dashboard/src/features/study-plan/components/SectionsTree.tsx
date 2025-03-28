@@ -18,7 +18,7 @@ import {SectionOptionsMenu} from "@/features/study-plan/components/SectionOption
 import classes from './SectionsTabs.module.css';
 import React from "react";
 import {MoveSectionMenu} from "@/features/study-plan/components/MoveSectionMenu.tsx";
-import {getSectionLevelCode, getSectionTypeCode} from "@/lib/getSectionCode.ts";
+import {getSectionCode, getSectionLevelCode, getSectionTypeCode} from "@/lib/getSectionCode.ts";
 
 export function SectionsTree({selectSection, selectedSection}: {
     selectSection: (sectionId: number | null) => void,
@@ -44,18 +44,24 @@ export function SectionsTree({selectSection, selectedSection}: {
                     if (sections.length === 1) {
                         const section = sections[0];
                         return {
-                            label: `${levelCode}.${typeCode} ${type} ${section.name ? `- ${section.name}` : ''}`,
+                            label: `${getSectionCode(section)} ${type} ${section.name ? `- ${section.name}` : ''}`,
                             value: section.id.toString()
                         };
                     }
 
                     return {
-                        label: type.toString(),
+                        label: `${levelCode}.${typeCode} ${type}`,
                         value: `${level}_${type}`,
-                        children: sections.map(section => ({
-                            label: section.name ? `${levelCode}.${typeCode}.1 ${section.name}` : "General",
-                            value: section.id.toString(),
-                        }))
+                        children: sections
+                            .sort((a, b) => {
+                                const codeA = getSectionCode(a);
+                                const codeB = getSectionCode(b);
+                                return codeA.localeCompare(codeB);
+                            })
+                            .map(section => ({
+                                label: `${getSectionCode(section)} - ${section.name || "General"}`,
+                                value: section.id.toString(),
+                            }))
                     };
                 })
                 .filter(Boolean);
@@ -66,7 +72,7 @@ export function SectionsTree({selectSection, selectedSection}: {
         })
         .filter(Boolean), [studyPlan]);
 
-    const Leaf = ({node, expanded, hasChildren, elementProps}: RenderTreeNodePayload) => {
+    const Leaf = ({node, level, expanded, hasChildren, elementProps}: RenderTreeNodePayload) => {
         const section = studyPlan.sections.find(s => s.id.toString() === node.value);
 
         const isSelected = parseInt(node.value) === selectedSection;
@@ -81,7 +87,7 @@ export function SectionsTree({selectSection, selectedSection}: {
 
         return (
             <Box {...elementProps} w={250}>
-                <Group gap={10} pr={hasChildren ? 'lg' : 10} py={5} pl={hasChildren ? 'sm' : 35}>
+                <Group gap={10} py={5}>
                     {hasChildren && (
                         <ChevronDown
                             size={14}
@@ -89,7 +95,7 @@ export function SectionsTree({selectSection, selectedSection}: {
                         />
                     )}
 
-                    <Indicator position="middle-start" offset={-25} disabled={!isSelected}>
+                    <Indicator position="middle-start" offset={-20} disabled={!isSelected}>
                         <span style={{
                             marginRight: 8,
                             fontWeight: isSelected ? 600 : 'normal'
@@ -102,18 +108,23 @@ export function SectionsTree({selectSection, selectedSection}: {
                         )}
                     </Indicator>
 
-                    {!hasChildren && (
-                        <Group gap={5}>
-                            <MoveSectionMenu section={section}/>
-
-                            <ActionIcon onClick={handleFilter} variant="transparent">
-                                <Filter size={14}/>
-                            </ActionIcon>
-
-                            <SectionOptionsMenu section={section}/>
-                        </Group>
-                    )}
                 </Group>
+
+                {!hasChildren && (
+                    <Group gap={5}>
+                        {level > 2 && <MoveSectionMenu section={section}/>}
+
+                        <ActionIcon onClick={handleFilter} variant="transparent">
+                            <Filter size={14}/>
+                        </ActionIcon>
+
+                        <SectionOptionsMenu
+                            selectedSection={selectedSection}
+                            resetSelectedSection={() => selectSection(null)}
+                            section={section}
+                        />
+                    </Group>
+                )}
             </Box>
         );
     };
@@ -134,6 +145,7 @@ export function SectionsTree({selectSection, selectedSection}: {
                 </Group>
             </Group>
             <Tree
+                levelOffset="xl"
                 tree={tree}
                 classNames={classes}
                 data={data}

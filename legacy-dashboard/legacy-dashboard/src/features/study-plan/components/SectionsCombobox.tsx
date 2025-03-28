@@ -20,24 +20,33 @@ export function SectionsCombobox({courseId, sectionId, courseSectionCode}: Secti
     const courseSection = sections.find(section => section.id === sectionId);
     if (!courseSection) return;
 
-    const options = sections.map((section) => (
-        <Combobox.Option value={section.id.toString()} key={section.id}>
-            <Group gap="xs">
-                <Badge variant={section.id === sectionId ? 'filled' : 'outline'}>
-                    {getSectionCode(section)}
-                </Badge>
-                <div>
-                    <Text fw={section.id === sectionId ? 500 : 'normal'}>
-                        {section.level} {section.type}{" "}
-                        {section.name ? `- ${section.name}` : ""}
-                    </Text>
-                    <Text c="dimmed" size="xs">
-                        {section.requiredCreditHours} Credit Hours Required
-                    </Text>
-                </div>
-            </Group>
-        </Combobox.Option>
-    ));
+    const options = sections
+        .sort((a, b) => {
+            const codeA = getSectionCode(a);
+            const codeB = getSectionCode(b);
+            return codeA.localeCompare(codeB);
+        })
+        .map((section) => {
+            return (
+                <Combobox.Option value={section.id.toString()} key={section.id}>
+                    <Group gap="xs">
+                        <Badge variant={section.id === sectionId ? 'filled' : 'outline'}>
+                            {getSectionCode(section)}
+                        </Badge>
+
+                        <div>
+                            <Text fw={section.id === sectionId ? 500 : 'normal'}>
+                                {section.level} {section.type}{" "}
+                                {section.name ? `- ${section.name}` : ""}
+                            </Text>
+                            <Text c="dimmed" size="xs">
+                                {section.requiredCreditHours} Credit Hours Required
+                            </Text>
+                        </div>
+                    </Group>
+                </Combobox.Option>
+            );
+        });
 
     const onSubmit = (sectionId: string) => {
         moveCourseSection.mutate(
@@ -65,7 +74,7 @@ export function SectionsCombobox({courseId, sectionId, courseSectionCode}: Secti
                 <Badge
                     variant="outline"
                     onClick={() => combobox.toggleDropdown()}
-                    rightSection={moveCourseSection.isPending ? <Loader size={14}/> : <Combobox.Chevron size="xs" />}
+                    rightSection={moveCourseSection.isPending ? <Loader size={14}/> : <Combobox.Chevron size="xs"/>}
                 >
                     {courseSectionCode}
                 </Badge>

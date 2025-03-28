@@ -6,7 +6,13 @@ import {EditSectionDetailsModal} from "@/features/study-plan/components/EditSect
 import {useParams} from "@tanstack/react-router";
 import {useDeleteSection} from "@/features/study-plan/hooks/useDeleteSection.ts";
 
-export function SectionOptionsMenu({section}: { section: Section | undefined }) {
+type SectionOptionsMenuProps = {
+    section: Section | undefined;
+    selectedSection: number | null;
+    resetSelectedSection: () => void;
+}
+
+export function SectionOptionsMenu({section, selectedSection, resetSelectedSection}: SectionOptionsMenuProps) {
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
     const deleteSection = useDeleteSection();
 
@@ -69,6 +75,11 @@ export function SectionOptionsMenu({section}: { section: Section | undefined }) 
                                 deleteSection.mutate({
                                     studyPlanId: studyPlanId,
                                     sectionId: section.id
+                                }, {
+                                    onSuccess: () => {
+                                        if (section.id !== selectedSection) return;
+                                        resetSelectedSection();
+                                    }
                                 })
                         });
                     }}
