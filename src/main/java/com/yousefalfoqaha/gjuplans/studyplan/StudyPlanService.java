@@ -8,10 +8,7 @@ import com.yousefalfoqaha.gjuplans.studyplan.domain.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
-import com.yousefalfoqaha.gjuplans.studyplan.exception.CourseExistsException;
-import com.yousefalfoqaha.gjuplans.studyplan.exception.InvalidCoursePlacement;
-import com.yousefalfoqaha.gjuplans.studyplan.exception.SectionNotFoundException;
-import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
+import com.yousefalfoqaha.gjuplans.studyplan.exception.*;
 import com.yousefalfoqaha.gjuplans.studyplan.mapper.StudyPlanResponseMapper;
 import com.yousefalfoqaha.gjuplans.studyplan.mapper.StudyPlanSummaryResponseMapper;
 import com.yousefalfoqaha.gjuplans.studyplan.projection.StudyPlanSummaryProjection;
@@ -139,6 +136,23 @@ public class StudyPlanService {
         newSection.setRequiredCreditHours(request.requiredCreditHours());
         newSection.setName(request.name());
 
+        var sectionSiblings = studyPlan.getSections()
+                .stream()
+                .filter(s -> s.getLevel() == newSection.getLevel() && s.getType() == newSection.getType())
+                .toList();
+
+        if (sectionSiblings.isEmpty()) {
+            // No siblings, position remains 0
+            newSection.setPosition(0);
+        } else if (sectionSiblings.size() == 1 && sectionSiblings.getFirst().getPosition() == 0) {
+            // First sibling, adjust existing section and new section
+            sectionSiblings.getFirst().setPosition(1);
+            newSection.setPosition(2);
+        } else {
+            // Multiple siblings, set to next incremental position
+            newSection.setPosition(sectionSiblings.size() + 1);
+        }
+
         studyPlan.getSections().add(newSection);
 
         var updatedStudyPlan = studyPlanRepository.save(studyPlan);
@@ -179,11 +193,38 @@ public class StudyPlanService {
                 .findFirst()
                 .orElseThrow(() -> new SectionNotFoundException("Section not found"));
 
-        // remove pre/co req relationships
+        var sectionSiblings = studyPlan.getSections()
+                .stream()
+                .filter(s -> s.getLevel() == section.getLevel() && s.getType() == section.getType())
+                .toList();
 
-        section.getCourses()
-                .keySet()
-                .forEach(course -> studyPlan.getCoursePlacements().remove(course));
+        // Shift positions of subsequent sections
+        studyPlan.getSections().stream()
+                .filter(s -> s.getLevel() == section.getLevel() &&
+                        s.getType() == section.getType() &&
+                        s.getPosition() > section.getPosition())
+                .forEach(s -> s.setPosition(s.getPosition() - 1));
+
+        // If after deletion, only one sibling remains, reset its position to 0
+        if (sectionSiblings.size() == 2) {
+            var remainingSection = sectionSiblings.stream()
+                    .filter(s -> s.getId() != sectionId)
+                    .findFirst()
+                    .orElseThrow();
+            remainingSection.setPosition(0);
+        }
+
+        var sectionCourses = section.getCourses().keySet();
+
+        sectionCourses.forEach(course -> studyPlan.getCoursePlacements().remove(course));
+
+        studyPlan.getCoursePrerequisites().removeIf(coursePrerequisite ->
+                sectionCourses.contains(coursePrerequisite.getPrerequisite().getId())
+        );
+
+        studyPlan.getCourseCorequisites().removeIf(courseCorequisite ->
+                sectionCourses.contains(courseCorequisite.getCorequisite().getId())
+        );
 
         studyPlan.getSections().remove(section);
 
@@ -363,6 +404,52 @@ public class StudyPlanService {
         }
 
         targetSection.getCourses().put(courseId, new SectionCourse(AggregateReference.to(courseId)));
+
+        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
+        return studyPlanResponseMapper.apply(updatedStudyPlan);
+    }
+
+    @Transactional
+    public StudyPlanResponse moveSectionPosition(
+            long studyPlanId,
+            long sectionId,
+            MoveDirection direction
+    ) {
+        var studyPlan = findStudyPlan(studyPlanId);
+
+        var targetSection = studyPlan.getSections()
+                .stream()
+                .filter(s -> s.getId() == sectionId)
+                .findFirst()
+                .orElseThrow(() -> new SectionNotFoundException("Section not found."));
+
+        var sectionsList = studyPlan.getSections()
+                .stream()
+                .filter(s -> s.getLevel() == targetSection.getLevel() && s.getType() == targetSection.getType())
+                .toList();
+
+        if (sectionsList.size() <= 1) {
+            throw new NotEnoughSectionsException("More than one section is required to move section positions.");
+        }
+
+        if (targetSection.getPosition() == 1 && direction == MoveDirection.UP) {
+            throw new OutOfBoundsPositionException("Section is already at first position.");
+        }
+
+        if (targetSection.getPosition() == sectionsList.size() && direction == MoveDirection.DOWN) {
+            throw new OutOfBoundsPositionException("Section is already at last position.");
+        }
+
+        int currentPosition = targetSection.getPosition();
+        int newPosition = direction == MoveDirection.UP ? currentPosition - 1 : currentPosition + 1;
+
+        var swappedSection = sectionsList.stream()
+                .filter(s -> s.getPosition() == newPosition)
+                .findFirst()
+                .orElseThrow(() -> new SectionNotFoundException("Cannot move into a section that does not exist."));
+
+        targetSection.setPosition(newPosition);
+        swappedSection.setPosition(currentPosition);
 
         var updatedStudyPlan = studyPlanRepository.save(studyPlan);
         return studyPlanResponseMapper.apply(updatedStudyPlan);

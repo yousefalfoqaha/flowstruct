@@ -29,6 +29,7 @@ public class StudyPlanResponseMapper implements Function<StudyPlan, StudyPlanRes
                                 sec.getType(),
                                 sec.getRequiredCreditHours(),
                                 sec.getName(),
+                                sec.getPosition(),
                                 sec.getCourses().keySet().stream().collect(Collectors.toSet())
                         ))
                         .toList(),

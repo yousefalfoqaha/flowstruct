@@ -11,6 +11,7 @@ public record SectionResponse(
     SectionType type,
     int requiredCreditHours,
     String name,
+    int position,
     Set<Long> courses
 ) {
 }

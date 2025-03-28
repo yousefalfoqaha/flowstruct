@@ -29,6 +29,8 @@ public class Section {
 
     private String name;
 
+    private int position;
+
     @MappedCollection(idColumn = "section", keyColumn = "course")
     Map<Long, SectionCourse> courses = new HashMap<>();
 }

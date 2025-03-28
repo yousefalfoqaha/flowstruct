@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
+import com.yousefalfoqaha.gjuplans.studyplan.domain.MoveDirection;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
@@ -165,6 +166,18 @@ public class StudyPlanController {
     ) {
         return new ResponseEntity<>(
                 studyPlanService.moveCourseSection(studyPlanId, courseId, sectionId),
+                HttpStatus.OK
+        );
+    }
+
+    @PutMapping("/{studyPlanId}/sections/{sectionId}/move")
+    public ResponseEntity<StudyPlanResponse> moveSectionPositionUp(
+            @PathVariable long studyPlanId,
+            @PathVariable long sectionId,
+            @RequestParam(value = "direction", defaultValue = "") MoveDirection direction
+    ) {
+        return new ResponseEntity<>(
+                studyPlanService.moveSectionPosition(studyPlanId, sectionId, direction),
                 HttpStatus.OK
         );
     }

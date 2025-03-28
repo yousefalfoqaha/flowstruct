@@ -3,10 +3,7 @@ package com.yousefalfoqaha.gjuplans.common;
 import com.yousefalfoqaha.gjuplans.program.exception.InvalidDegreeException;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
-import com.yousefalfoqaha.gjuplans.studyplan.exception.CourseExistsException;
-import com.yousefalfoqaha.gjuplans.studyplan.exception.InvalidCoursePlacement;
-import com.yousefalfoqaha.gjuplans.studyplan.exception.SectionNotFoundException;
-import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
+import com.yousefalfoqaha.gjuplans.studyplan.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -118,6 +115,34 @@ public class GlobalExceptionHandler {
                         new Date()
                 ),
                 HttpStatus.CONFLICT
+        );
+    }
+
+    @ExceptionHandler(NotEnoughSectionsException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            NotEnoughSectionsException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.BAD_REQUEST.value(),
+                        exception.getMessage(),
+                        new Date()
+                ),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(OutOfBoundsPositionException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            OutOfBoundsPositionException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.BAD_REQUEST.value(),
+                        exception.getMessage(),
+                        new Date()
+                ),
+                HttpStatus.BAD_REQUEST
         );
     }
 }
