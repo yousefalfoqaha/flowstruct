@@ -44,13 +44,13 @@ export function SectionsTree({selectSection, selectedSection}: {
                     if (sections.length === 1) {
                         const section = sections[0];
                         return {
-                            label: `${getSectionCode(section)} ${type} ${section.name ? `- ${section.name}` : ''}`,
+                            label: `${getSectionCode(section)}. ${type} ${section.name ? `- ${section.name}` : ''}`,
                             value: section.id.toString()
                         };
                     }
 
                     return {
-                        label: `${levelCode}.${typeCode} ${type}`,
+                        label: `${levelCode}.${typeCode}. ${type}`,
                         value: `${level}_${type}`,
                         children: sections
                             .sort((a, b) => {
@@ -59,7 +59,7 @@ export function SectionsTree({selectSection, selectedSection}: {
                                 return codeA.localeCompare(codeB);
                             })
                             .map(section => ({
-                                label: `${getSectionCode(section)} - ${section.name || "General"}`,
+                                label: `${getSectionCode(section)}. ${section.name || "General"}`,
                                 value: section.id.toString(),
                             }))
                     };
