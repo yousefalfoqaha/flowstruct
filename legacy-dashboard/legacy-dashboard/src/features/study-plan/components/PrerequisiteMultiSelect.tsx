@@ -28,8 +28,8 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
         onDropdownOpen: () => combobox.updateSelectedOptionIndex("active")
     });
 
-    const [search, setSearch] = React.useState("");
-    const [debouncedSearch] = useDebouncedValue(search, 400);
+        const [search, setSearch] = React.useState("");
+        const [debouncedSearch] = useDebouncedValue(search, 400);
     const [value, setValue] = React.useState<Set<string>>(new Set());
     const [requisiteType, setRequisiteType] = React.useState<'PRE' | 'CO'>('PRE');
 

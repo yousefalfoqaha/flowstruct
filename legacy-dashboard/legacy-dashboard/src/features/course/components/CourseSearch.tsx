@@ -30,11 +30,11 @@ export function CourseSearch({focusedSection}: { focusedSection: number | null }
     );
     const [selectedCourses, setSelectedCourses] = React.useState<Course[]>([]);
     const [search, setSearch] = React.useState<string>("");
+    const [debouncedSearch] = useDebouncedValue(search, 750);
     const [createModalOpen, setCreateModalOpen] = React.useState(false);
 
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
     const {data: studyPlan} = useStudyPlan(studyPlanId);
-    const [debouncedSearch] = useDebouncedValue(search, 750);
 
     const addCoursesToSection = useAddCoursesToSection();
 
@@ -156,6 +156,7 @@ export function CourseSearch({focusedSection}: { focusedSection: number | null }
 
                         <Select
                             label="Section"
+                            withAsterisk
                             placeholder="Select a section"
                             data={
                                 studyPlan

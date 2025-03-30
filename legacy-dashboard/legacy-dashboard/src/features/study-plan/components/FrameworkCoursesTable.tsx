@@ -10,7 +10,7 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import {Course} from "@/features/course/types.ts";
-import {ArrowDownUp, ChevronsUpDown, Search, Trash} from "lucide-react";
+import {ArrowDownUp, Search, Trash} from "lucide-react";
 import {
     ActionIcon,
     Badge, Button, Checkbox,
@@ -33,6 +33,7 @@ import {getSectionCode} from "@/lib/getSectionCode.ts";
 import {openConfirmModal} from "@mantine/modals";
 import {SectionsTree} from "@/features/study-plan/components/SectionsTree.tsx";
 import {CourseSearch} from "@/features/course/components/CourseSearch.tsx";
+import {useDebouncedValue} from "@mantine/hooks";
 
 type FrameworkCourse = Course & {
     prerequisites: Record<number, CourseRelation>,
@@ -55,6 +56,12 @@ export function FrameworkCoursesTable() {
     const [sorting, setSorting] = React.useState<SortingState>([{id: 'code', desc: false}]);
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
     const [pagination, setPagination] = React.useState({pageIndex: 0, pageSize: 10,});
+    const [globalFilter, setGlobalFilter] = React.useState("");
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+    const [search, setSearch] = React.useState<string>("");
+    const [debouncedSearch] = useDebouncedValue(search, 400);
+
+    React.useEffect(() => setGlobalFilter(debouncedSearch), [debouncedSearch]);
 
     const columns = [
         columnHelper.display({
@@ -158,16 +165,16 @@ export function FrameworkCoursesTable() {
                                     label="CO"
                                 >
                                     <Pill
-                                        fw="normal"
-                                        pl={35}
-                                        disabled={isRemovingCorequisite}
-                                        key={coreqCourse.id}
-                                        withRemoveButton
                                         onRemove={() => removeCorequisite.mutate({
                                             studyPlanId: studyPlanId,
                                             courseId: row.original.id,
                                             corequisiteId: corequisite
                                         })}
+                                        fw="normal"
+                                        pl={35}
+                                        disabled={isRemovingCorequisite}
+                                        key={coreqCourse.id}
+                                        withRemoveButton
                                     >
                                         {coreqCourse.code}
                                     </Pill>
@@ -227,7 +234,6 @@ export function FrameworkCoursesTable() {
         return rows;
     }, [studyPlan, courses]);
 
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 
     const selectSectionHandler = ((sectionId: number | null) => {
         if (sectionId === null) {
@@ -237,7 +243,6 @@ export function FrameworkCoursesTable() {
         setColumnFilters([{id: 'section', value: sectionId}]);
     });
 
-    const [globalFilter, setGlobalFilter] = React.useState("");
 
     const table = useReactTable({
         columns,
@@ -279,8 +284,8 @@ export function FrameworkCoursesTable() {
                         w={450}
                         leftSection={<Search size={18}/>}
                         placeholder="Search"
-                        value={globalFilter}
-                        onChange={(e) => setGlobalFilter(e.target.value)}
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
                     />
 
                     <Group gap="sm">
