@@ -6,8 +6,7 @@ import {
     RenderTreeNodePayload,
     Text,
     Tree,
-    TreeNodeData,
-    useTree
+    TreeNodeData
 } from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useParams} from "@tanstack/react-router";
@@ -26,9 +25,6 @@ export function SectionsTree({selectSection, selectedSection}: {
 }) {
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
     const {data: studyPlan} = useStudyPlan(studyPlanId);
-    const tree = useTree({
-        multiple: false
-    });
 
     const data: TreeNodeData[] = React.useMemo(() => Object.values(SectionLevel)
         .map(level => {
@@ -107,7 +103,6 @@ export function SectionsTree({selectSection, selectedSection}: {
                             <Badge size="xs" variant="default">{section?.requiredCreditHours} Cr. Req</Badge>
                         )}
                     </Indicator>
-
                 </Group>
 
                 {!hasChildren && (
@@ -146,7 +141,6 @@ export function SectionsTree({selectSection, selectedSection}: {
             </Group>
             <Tree
                 levelOffset="xl"
-                tree={tree}
                 classNames={classes}
                 data={data}
                 selectOnClick={false}

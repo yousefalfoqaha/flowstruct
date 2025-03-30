@@ -1,4 +1,4 @@
-import {NumberInput, Select, Stack, TextInput} from "@mantine/core";
+import {Group, NumberInput, Select, Stack, TextInput} from "@mantine/core";
 import {Control, Controller, FieldErrors, UseFormGetValues} from "react-hook-form";
 import {SectionLevel, SectionType} from "@/features/study-plan/types.ts";
 import {GraduationCap, Tag, University} from "lucide-react";
@@ -11,41 +11,42 @@ export function SectionDetailsFormFields({control, errors, getValues}: {
 }) {
     return (
         <Stack gap="md">
-            <Controller
-                name="level"
-                control={control}
-                render={({field}) => (
-                    <Select
-                        label="Level"
-                        placeholder="Select a level"
-                        {...field}
-                        data={Object.entries(SectionLevel).map(([key, value]) => ({
-                            value: key,
-                            label: value
-                        }))}
-                        error={errors.level?.message}
-                        leftSection={<University size={18}/>}
-                        withAsterisk
-                    />
-                )}/>
-
-            <Controller
-                name="type"
-                control={control}
-                render={({field}) => (
-                    <Select
-                        label="Type"
-                        placeholder="Select a type"
-                        {...field}
-                        data={Object.entries(SectionType).map(([key, value]) => ({
-                            value: key,
-                            label: value
-                        }))}
-                        error={errors.type?.message}
-                        withAsterisk
-                        leftSection={<Tag size={18}/>}
-                    />
-                )}/>
+            <Group grow>
+                <Controller
+                    name="level"
+                    control={control}
+                    render={({field}) => (
+                        <Select
+                            label="Level"
+                            placeholder="Select a level"
+                            {...field}
+                            data={Object.entries(SectionLevel).map(([key, value]) => ({
+                                value: key,
+                                label: value
+                            }))}
+                            error={errors.level?.message}
+                            leftSection={<University size={18}/>}
+                            withAsterisk
+                        />
+                    )}/>
+                <Controller
+                    name="type"
+                    control={control}
+                    render={({field}) => (
+                        <Select
+                            label="Type"
+                            placeholder="Select a type"
+                            {...field}
+                            data={Object.entries(SectionType).map(([key, value]) => ({
+                                value: key,
+                                label: value
+                            }))}
+                            error={errors.type?.message}
+                            withAsterisk
+                            leftSection={<Tag size={18}/>}
+                        />
+                    )}/>
+            </Group>
 
             <Controller
                 name="requiredCreditHours"

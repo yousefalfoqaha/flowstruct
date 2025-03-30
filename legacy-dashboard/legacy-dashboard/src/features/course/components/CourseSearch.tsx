@@ -10,7 +10,7 @@ import {
     Pill,
     PillsInput,
     Select,
-    Popover
+    Popover, Badge, Stack, SelectProps
 } from "@mantine/core";
 import React from "react";
 import {Plus} from "lucide-react";
@@ -21,6 +21,7 @@ import {useParams} from "@tanstack/react-router";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {usePaginatedCourses} from "@/features/course/hooks/usePaginatedCourses.ts";
 import {CreateCourseModal} from "@/features/course/components/CreateCourseModal.tsx";
+import {getSectionCode} from "@/lib/getSectionCode.ts";
 
 export function CourseSearch({focusedSection}: { focusedSection: number | null }) {
     const [popoverOpened, setPopoverOpened] = React.useState(false);
@@ -160,7 +161,9 @@ export function CourseSearch({focusedSection}: { focusedSection: number | null }
                                 studyPlan
                                     ? studyPlan.sections.map((section) => ({
                                         value: section.id.toString(),
-                                        label: `${section.level} ${section.type}${section.name ? " - " + section.name : ""}`
+                                        label: `${getSectionCode(section)}: ${section.level} ${section.type} ${section.name
+                                            ? `- ${section.name}`
+                                            : (getSectionCode(section).split('.').length > 2 ? "- General" : "")}`
                                     }))
                                     : []
                             }

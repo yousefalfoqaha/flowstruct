@@ -6,6 +6,8 @@ import {CourseDetailsFormValues, courseDetailsSchema} from "@/features/course/fo
 import {CourseDetailsFormFields} from "@/features/course/components/CourseDetailsFormFields.tsx";
 import {Plus} from "lucide-react";
 import {Course} from "@/features/course/types.ts";
+import React from "react";
+import {getCoursePresetSettings, PresetType} from "@/lib/getCoursePresetSettings.ts";
 
 interface CreateCourseModalProps {
     opened: boolean;
@@ -15,11 +17,45 @@ interface CreateCourseModalProps {
 }
 
 export function CreateCourseModal({opened, setOpened, openCourseSearch, selectCreatedCourse}: CreateCourseModalProps) {
-    const {control, handleSubmit, reset, formState: {errors}} = useForm<CourseDetailsFormValues>({
+    const [preset, setPreset] = React.useState<PresetType>("lecture");
+
+    const {control, handleSubmit, reset, watch, formState: {errors}} = useForm<CourseDetailsFormValues>({
         resolver: zodResolver(courseDetailsSchema),
+        defaultValues: {
+            code: '',
+            name: '',
+            isRemedial: false,
+            ...getCoursePresetSettings(preset)
+        }
     });
 
     const createCourse = useCreateCourse();
+
+    const changePreset = (value: string) => {
+        setPreset(value as PresetType);
+
+        reset((prevValues) => ({
+            ...prevValues,
+            ...getCoursePresetSettings(value as PresetType)
+        }));
+    };
+
+    React.useEffect(() => {
+        const subscription = watch((_, {name, type}) => {
+            if (type !== 'change') return;
+
+            const presetFields: (keyof Pick<Course, "creditHours" | "lectureHours" | "practicalHours" | "type">)[] = [
+                "creditHours",
+                "lectureHours",
+                "practicalHours",
+                "type"
+            ];
+
+            const presetFieldsModified = presetFields.includes(name);
+            if (presetFieldsModified) setPreset("custom");
+        });
+        return () => subscription.unsubscribe();
+    }, [watch]);
 
     const handleClose = () => {
         setOpened(false);
@@ -50,7 +86,12 @@ export function CreateCourseModal({opened, setOpened, openCourseSearch, selectCr
                         zIndex={1000}
                         overlayProps={{radius: "sm", blur: 2}}
                     />
-                    <CourseDetailsFormFields control={control} errors={errors}/>
+                    <CourseDetailsFormFields
+                        control={control}
+                        errors={errors}
+                        preset={preset}
+                        changePreset={changePreset}
+                    />
                     <Button leftSection={<Plus size={14}/>} type="submit" fullWidth mt="md">
                         Create and Select Course
                     </Button>

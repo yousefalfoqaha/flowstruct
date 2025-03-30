@@ -1,8 +1,9 @@
-import {Badge, Combobox, Group, Loader, ScrollArea, Text, useCombobox} from "@mantine/core";
+import {Combobox, Group, InputBase, Loader, ScrollArea, Space, Stack, Text, useCombobox} from "@mantine/core";
 import {useParams} from "@tanstack/react-router";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useMoveCourseSection} from "@/features/study-plan/hooks/useMoveCourseSection.ts";
 import {getSectionCode} from "@/lib/getSectionCode.ts";
+import {Check} from "lucide-react";
 
 type SectionsComboboxProps = {
     courseId: number;
@@ -27,22 +28,17 @@ export function SectionsCombobox({courseId, sectionId, courseSectionCode}: Secti
             return codeA.localeCompare(codeB);
         })
         .map((section) => {
-            return (
-                <Combobox.Option value={section.id.toString()} key={section.id}>
-                    <Group gap="xs">
-                        <Badge variant={section.id === sectionId ? 'filled' : 'outline'}>
-                            {getSectionCode(section)}
-                        </Badge>
+            const sectionCode = getSectionCode(section);
+            const displayName = section.name
+                ? `- ${section.name}`
+                : (sectionCode.split('.').length > 2 ? "- General" : "");
+            const isSelected = section.id === sectionId;
 
-                        <div>
-                            <Text fw={section.id === sectionId ? 500 : 'normal'}>
-                                {section.level} {section.type}{" "}
-                                {section.name ? `- ${section.name}` : ""}
-                            </Text>
-                            <Text c="dimmed" size="xs">
-                                {section.requiredCreditHours} Credit Hours Required
-                            </Text>
-                        </div>
+            return (
+                <Combobox.Option py="xs" pr="md" value={section.id.toString()} key={section.id}>
+                    <Group gap="xs">
+                        {isSelected && <Check color="gray" size={14} />}
+                        <Text size="sm">{getSectionCode(section)}: {section.level} {section.type} {displayName}</Text>
                     </Group>
                 </Combobox.Option>
             );
@@ -66,21 +62,26 @@ export function SectionsCombobox({courseId, sectionId, courseSectionCode}: Secti
     return (
         <Combobox
             store={combobox}
-            position="bottom-end"
-            width={100}
+            width="auto"
+            shadow="lg"
+            position="left-start"
             onOptionSubmit={onSubmit}
         >
             <Combobox.Target withAriaAttributes={false}>
-                <Badge
-                    variant="outline"
+                <InputBase
+                    component="button"
+                    type="button"
+                    pointer
+                    size="xs"
+                    rightSection={moveCourseSection.isPending ? <Loader size="xs" color="gray" /> : <Combobox.Chevron />}
+                    rightSectionPointerEvents="none"
                     onClick={() => combobox.toggleDropdown()}
-                    rightSection={moveCourseSection.isPending ? <Loader size={14}/> : <Combobox.Chevron size="xs"/>}
                 >
-                    {courseSectionCode}
-                </Badge>
+                    <Text size="xs" >{courseSectionCode}</Text>
+                </InputBase>
             </Combobox.Target>
 
-            <Combobox.Dropdown w={600}>
+            <Combobox.Dropdown>
                 <Combobox.Options>
                     <ScrollArea.Autosize mah={300} type="scroll" scrollbarSize={6}>
                         {options}

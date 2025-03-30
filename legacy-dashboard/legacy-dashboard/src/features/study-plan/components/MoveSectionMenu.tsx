@@ -3,9 +3,12 @@ import {ArrowDown, ArrowUp, ChevronsUpDown} from "lucide-react";
 import {MoveDirection, Section} from "@/features/study-plan/types.ts";
 import {useParams} from "@tanstack/react-router";
 import {useMoveSection} from "@/features/study-plan/hooks/useMoveSection.ts";
+import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 
 export function MoveSectionMenu({section}: { section: Section | undefined }) {
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
+    const {data: {sections}} = useStudyPlan(studyPlanId);
+    const siblingSections = sections.filter(s => s.level === section?.level && s.type === section?.type);
 
     const { mutate, isPending } = useMoveSection();
 
@@ -18,18 +21,12 @@ export function MoveSectionMenu({section}: { section: Section | undefined }) {
     });
 
     return (
-        <Menu shadow="md">
+        <Menu shadow="md" withArrow position="left">
             <Menu.Target>
                 <ActionIcon
                     loading={isPending}
-                    variant="default"
-                    onClick={(e) => e.stopPropagation()}
-                    styles={{
-                        root: {
-                            border: 'none',
-                            backgroundColor: 'transparent',
-                        }
-                    }}
+                    variant="white"
+                    color="black"
                 >
                     <ChevronsUpDown size={14}/>
                 </ActionIcon>
@@ -37,6 +34,7 @@ export function MoveSectionMenu({section}: { section: Section | undefined }) {
 
             <Menu.Dropdown>
                 <Menu.Item
+                    disabled={section.position <= 1}
                     onClick={() => handleClick(MoveDirection.UP)}
                     leftSection={<ArrowUp size={14}/>}
                 >
@@ -44,6 +42,7 @@ export function MoveSectionMenu({section}: { section: Section | undefined }) {
                 </Menu.Item>
 
                 <Menu.Item
+                    disabled={section.position === siblingSections.length}
                     onClick={() => handleClick(MoveDirection.DOWN)}
                     leftSection={<ArrowDown size={14}/>}
                 >

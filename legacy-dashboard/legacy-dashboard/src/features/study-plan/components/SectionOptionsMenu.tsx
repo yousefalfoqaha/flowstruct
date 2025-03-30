@@ -22,14 +22,9 @@ export function SectionOptionsMenu({section, selectedSection, resetSelectedSecti
         <Menu shadow="md">
             <Menu.Target>
                 <ActionIcon
-                    variant="default"
-                    onClick={(e) => e.stopPropagation()}
-                    styles={{
-                        root: {
-                            border: 'none',
-                            backgroundColor: 'transparent',
-                        }
-                    }}
+                    loading={deleteSection.isPending}
+                    variant="white"
+                    color="black"
                 >
                     <EllipsisVertical size={14}/>
                 </ActionIcon>
@@ -38,7 +33,6 @@ export function SectionOptionsMenu({section, selectedSection, resetSelectedSecti
             <Menu.Dropdown>
                 <Menu.Item
                     onClick={e => {
-                        e.stopPropagation();
                         modals.open({
                             title: `Edit ${section.level} ${section.type} ${
                                 section.name ? `- ${section.name}` : ""

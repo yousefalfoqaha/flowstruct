@@ -9,7 +9,7 @@ export const searchCourseFormSchema = z.object({
 });
 
 export const courseDetailsSchema = z.object({
-    code: z.string(),
+    code: z.string().transform(val => val.toLocaleUpperCase()),
     name: z.string(),
     creditHours: z.number().min(0, {message: "Must be positive"}),
     ects: z.number()
@@ -20,7 +20,7 @@ export const courseDetailsSchema = z.object({
     practicalHours: z.number().min(0, {message: "Must be positive"}),
     type: z.enum(
         Object.keys(CourseType) as [string, ...string[]],
-        {errorMap: () => ({message: "Degree is required"})}
+        {errorMap: () => ({message: "A type is required"})}
     ),
     isRemedial: z.boolean().default(false)
 });
