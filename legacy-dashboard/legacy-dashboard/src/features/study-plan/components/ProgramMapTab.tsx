@@ -2,54 +2,53 @@ import {CourseCard} from "@/features/course/components/CourseCard.tsx";
 import {Plus} from "lucide-react";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {useParams} from "@tanstack/react-router";
-import {Button} from "@mantine/core";
+import {Button, Center, Group, ScrollArea, Stack, Text} from "@mantine/core";
+import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 
-type ProgramMapTabProps = {
-    duration: number;
-    coursePlacements: Record<number, number>
-}
-
-export function ProgramMapTab({duration, coursePlacements}: ProgramMapTabProps) {
+export function ProgramMapTab() {
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
 
     const {data: courses} = useCourseList(studyPlanId);
+    const {data: studyPlan} = useStudyPlan(studyPlanId);
 
-    const academicYears = Array.from({length: duration}, (_, i) => i + 1);
+    const academicYears = Array.from({length: studyPlan.duration}, (_, i) => i + 1);
     const SEMESTERS_PER_YEAR = 3;
     const semesterTypes = ["First", "Second", "Summer"] as const;
 
     const coursesBySemester = new Map<number, number[]>(
-        Array.from({length: duration * SEMESTERS_PER_YEAR}, (_, i) => [i + 1, []])
+        Array.from({length: studyPlan.duration * SEMESTERS_PER_YEAR}, (_, i) => [i + 1, []])
     );
 
-    Object.entries(coursePlacements ?? {}).forEach(([courseId, semesterNum]) => {
+    Object.entries(studyPlan.coursePlacements ?? {}).forEach(([courseId, semesterNum]) => {
         coursesBySemester.get(Number(semesterNum))?.push(Number(courseId));
     });
 
     if (!courses) return;
 
     return (
-        <>
-            <div className="overflow-auto flex gap-1">
+        <ScrollArea offsetScrollbars type="never">
+            <Group wrap="nowrap">
                 {academicYears.map((year) => {
                     const yearSemesters = semesterTypes.map((_, i) =>
                         year * SEMESTERS_PER_YEAR - (SEMESTERS_PER_YEAR - i) + 1
                     );
 
                     return (
-                        <div key={year} className="space-y-1">
-                            <h1 className="text-center bg-gray-500 p-1 text-white">Year {year}</h1>
-                            <div className="flex gap-1">
+                        <div key={year}>
+                            <Text ta="center">Year {year}</Text>
+                            <Group wrap="nowrap">
                                 {yearSemesters.map((semesterNumber, index) => {
                                     const semesterCourses = coursesBySemester.get(semesterNumber);
 
                                     return (
-                                        <div key={semesterNumber} className="space-y-1 w-28">
-                                            <h3 className="bg-gray-500 p-1 text-white text-center">
-                                                <p>{semesterTypes[index]}</p>
-                                                <p>{semesterCourses?.reduce((sum, courseId) => sum + (courses[courseId]?.creditHours || 0), 0)} Cr.
-                                                    Hrs</p>
-                                            </h3>
+                                        <div key={semesterNumber}>
+                                            <Stack align="center">
+                                                <Text>{semesterTypes[index]}</Text>
+                                                <Text>{semesterCourses?.reduce((sum, courseId) => sum + (courses[courseId]?.creditHours || 0), 0)} Cr.
+                                                    Hrs
+                                                </Text>
+                                            </Stack>
+
                                             {semesterCourses?.map((courseId) => {
                                                 const course = courses[courseId];
                                                 if (!course) return;
@@ -58,18 +57,20 @@ export function ProgramMapTab({duration, coursePlacements}: ProgramMapTabProps) 
                                                     <CourseCard key={courseId} course={course}/>
                                                 );
                                             })}
-                                            <Button variant="outline"
-                                                    className="rounded-none h-7 shadow-none w-full">
-                                                <Plus/>
+                                            <Button
+                                                variant="subtle"
+                                                leftSection={<Plus size={14}/>}
+                                            >
+                                                Add Courses
                                             </Button>
                                         </div>
                                     );
                                 })}
-                            </div>
+                            </Group>
                         </div>
                     );
                 })}
-            </div>
-        </>
+            </Group>
+        </ScrollArea>
     );
 }
