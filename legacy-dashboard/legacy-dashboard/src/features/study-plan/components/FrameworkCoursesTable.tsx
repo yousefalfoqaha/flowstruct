@@ -10,7 +10,7 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import {Course} from "@/features/course/types.ts";
-import {ArrowDownUp, Search, Trash} from "lucide-react";
+import {ArrowDownUp, Search, Trash, X} from "lucide-react";
 import {
     ActionIcon,
     Badge, Button, Checkbox,
@@ -285,6 +285,19 @@ export function FrameworkCoursesTable() {
                         leftSection={<Search size={18}/>}
                         placeholder="Search"
                         value={search}
+                        rightSectionPointerEvents="all"
+                        rightSection={
+                            search !== "" && (
+                                <ActionIcon
+                                    radius="xl"
+                                    variant="white"
+                                    color="gray"
+                                    onClick={() => setSearch("")}
+                                >
+                                    <X size={18}/>
+                                </ActionIcon>
+                            )
+                        }
                         onChange={(e) => setSearch(e.target.value)}
                     />
 

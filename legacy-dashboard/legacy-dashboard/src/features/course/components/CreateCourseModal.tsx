@@ -92,7 +92,7 @@ export function CreateCourseModal({opened, setOpened, openCourseSearch, selectCr
                         preset={preset}
                         changePreset={changePreset}
                     />
-                    <Button leftSection={<Plus size={14}/>} type="submit" fullWidth mt="md">
+                    <Button leftSection={<Plus size={18}/>} type="submit" fullWidth mt="md">
                         Create and Select Course
                     </Button>
                 </Flex>
