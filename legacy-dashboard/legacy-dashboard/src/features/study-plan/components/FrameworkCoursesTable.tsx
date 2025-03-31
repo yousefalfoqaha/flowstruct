@@ -10,7 +10,7 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import {Course} from "@/features/course/types.ts";
-import {ArrowDownUp, Search, Trash, X} from "lucide-react";
+import {ArrowDownUp, Eye, Filter, Search, Trash, X} from "lucide-react";
 import {
     ActionIcon,
     Badge, Button, Checkbox,
@@ -269,12 +269,21 @@ export function FrameworkCoursesTable() {
     const paginationMessage = `Showing ${pagination.pageSize * (pagination.pageIndex) + 1} – ${Math.min(table.getFilteredRowModel().rows.length, pagination.pageSize * (pagination.pageIndex + 1))} of ${table.getFilteredRowModel().rows.length}`;
     const selectedRows = table.getSelectedRowModel().rows;
     const sectionFilter = columnFilters.find(filter => filter.id === 'section');
-    const selectedSection = sectionFilter?.value as number;
+    const selectedSectionId = sectionFilter?.value as number;
+    const selectedSection = studyPlan.sections.find(s => s.id === selectedSectionId);
+    let filteredSectionFooter: string = "All Courses";
+
+    if (selectedSection) {
+        filteredSectionFooter = `${getSectionCode(selectedSection)}: ${selectedSection.level} ${selectedSection.type} ${selectedSection.name
+            ? `- ${selectedSection.name}`
+            : (getSectionCode(selectedSection).split('.').length > 2 ? "- General" : "")}`;
+    }
+
 
     return (
         <Flex gap="xl">
             <SectionsTree
-                selectedSection={selectedSection}
+                selectedSection={selectedSectionId}
                 selectSection={selectSectionHandler}
             />
 
@@ -327,19 +336,29 @@ export function FrameworkCoursesTable() {
                             </Button>
                         }
 
-                        <CourseSearch focusedSection={selectedSection}/>
+                        <CourseSearch focusedSection={selectedSectionId}/>
                     </Group>
                 </Group>
 
                 <DataTable table={table}/>
 
-                <Group justify="flex-end">
-                    <Text size="sm">{paginationMessage}</Text>
-                    <Pagination total={table.getPageCount()}
-                                onChange={(page) => setPagination({pageIndex: page - 1, pageSize: pagination.pageSize})}
-                                value={pagination.pageIndex + 1}
-                                withPages={false}
-                    />
+                <Group justify="space-between">
+                    <Group gap="sm">
+                        <Eye size={14} color="gray"/>
+                        <Text c="dimmed" size="sm">{filteredSectionFooter}</Text>
+                    </Group>
+
+                    <Group>
+                        <Text size="sm">{paginationMessage}</Text>
+                        <Pagination total={table.getPageCount()}
+                                    onChange={(page) => setPagination({
+                                        pageIndex: page - 1,
+                                        pageSize: pagination.pageSize
+                                    })}
+                                    value={pagination.pageIndex + 1}
+                                    withPages={false}
+                        />
+                    </Group>
                 </Group>
             </Flex>
         </Flex>

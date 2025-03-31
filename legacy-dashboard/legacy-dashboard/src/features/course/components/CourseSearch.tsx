@@ -116,6 +116,8 @@ export function CourseSearch({focusedSection}: { focusedSection: number | null }
             })
         ) ?? [];
 
+    const canAddCourses = selectedCourses.length > 0 && selectedSection !== null;
+
     return (
         <>
             <CreateCourseModal
@@ -147,12 +149,14 @@ export function CourseSearch({focusedSection}: { focusedSection: number | null }
 
                 <Popover.Dropdown>
                     <Flex direction="column" gap="sm">
-                        {selectedCourses.length > 0 && selectedSection && (
-                            <Button leftSection={<Plus size={14}/>} onClick={handleAddCourses}
-                                    loading={addCoursesToSection.isPending}>
-                                Add To Study Plan
-                            </Button>
-                        )}
+                        <Button
+                            leftSection={<Plus size={14}/>}
+                            onClick={handleAddCourses}
+                            loading={addCoursesToSection.isPending}
+                            disabled={!canAddCourses}
+                        >
+                            Add To Study Plan
+                        </Button>
 
                         <Select
                             label="Section"
@@ -184,7 +188,7 @@ export function CourseSearch({focusedSection}: { focusedSection: number | null }
                                         {selectedOptions}
                                         <PillsInput.Field
                                             value={search}
-                                            placeholder="Search university courses"
+                                            placeholder="Search any course"
                                             onChange={(event) => {
                                                 combobox.updateSelectedOptionIndex();
                                                 setSearch(event.currentTarget.value);

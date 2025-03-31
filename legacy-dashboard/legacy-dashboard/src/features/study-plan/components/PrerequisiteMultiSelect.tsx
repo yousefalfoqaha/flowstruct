@@ -136,6 +136,8 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
         ) : null;
     }).filter(Boolean);
 
+    const canAddRequisites = value.size > 0;
+
     return (
         <Popover position="left-start" shadow="md" width={360} trapFocus>
             <Popover.Target>
@@ -146,10 +148,8 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
 
             <Popover.Dropdown>
                 <Flex direction="column" gap="sm">
-                    {value.size > 0 && (
                         <Group grow preventGrowOverflow={false} gap="xs" wrap="nowrap">
                             <SegmentedControl
-                                color="blue"
                                 value={requisiteType}
                                 onChange={setRequisiteType}
                                 size="xs"
@@ -160,6 +160,7 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
                             />
 
                             <Button
+                                disabled={!canAddRequisites}
                                 leftSection={<Link size={14}/>}
                                 loading={assignPrerequisites.isPending}
                                 onClick={handleAssignCourses}
@@ -167,7 +168,6 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
                                 Assign {requisiteType === 'PRE' ? 'Prerequisites' : 'Corequisites'}
                             </Button>
                         </Group>
-                    )}
 
                     <Combobox store={combobox} onOptionSubmit={handleValueSelect} withinPortal={false}>
                         <Combobox.DropdownTarget>
@@ -177,7 +177,7 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
                                     <Combobox.EventsTarget>
                                         <PillsInput.Field
                                             value={search}
-                                            placeholder="Search study plan courses"
+                                            placeholder="Search framework courses"
                                             onChange={(event) => {
                                                 const newVal = event.currentTarget.value;
                                                 setSearch(newVal);

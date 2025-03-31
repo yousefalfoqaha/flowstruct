@@ -3,7 +3,7 @@ import {useParams} from "@tanstack/react-router";
 import {useForm} from "react-hook-form";
 import {SectionDetailsFormValues, sectionDetailsSchema} from "@/features/study-plan/form-schemas.ts";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Flex, LoadingOverlay, Modal, Button, ActionIcon} from "@mantine/core";
+import {Flex, LoadingOverlay, Modal, Button} from "@mantine/core";
 import {SectionDetailsFormFields} from "@/features/study-plan/components/SectionDetailsFormFields.tsx";
 import {useDisclosure} from "@mantine/hooks";
 import {Plus} from "lucide-react";
@@ -55,14 +55,23 @@ export function CreateSectionModal() {
                             overlayProps={{radius: "sm", blur: 2}}
                         />
                         <SectionDetailsFormFields control={control} errors={errors} getValues={getValues}/>
-                        <Button type="submit" fullWidth mt="md">
+                        <Button leftSection={<Plus size={18} />} type="submit" fullWidth mt="md">
                             Create Section
                         </Button>
                     </Flex>
                 </form>
             </Modal>
 
-            <Button size="compact-sm" pr={0} p={0} onClick={open} leftSection={<Plus size={14}/>} variant="transparent">Create</Button>
+            <Button
+                size="compact-sm"
+                pr={0}
+                p={0}
+                onClick={open}
+                leftSection={<Plus size={14}/>}
+                variant="transparent"
+            >
+                Create
+            </Button>
         </>
     );
 }

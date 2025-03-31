@@ -269,3 +269,22 @@ export const moveSectionRequest = async ({studyPlanId, sectionId, direction}: {
 
     return await res.json() as StudyPlan;
 }
+
+export const addCoursesToSemesterRequest = async ({studyPlanId, semester, courseIds}: {
+    studyPlanId: number,
+    semester: number,
+    courseIds: number[]
+}) => {
+    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/course-placements`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({semester: semester, courseIds: courseIds})
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'An unknown error occurred');
+    }
+
+    return await res.json() as StudyPlan;
+}
