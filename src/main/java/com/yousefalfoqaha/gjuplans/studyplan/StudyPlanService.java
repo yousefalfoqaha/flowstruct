@@ -1,9 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
 import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
-import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
-import com.yousefalfoqaha.gjuplans.course.service.CourseService;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
@@ -24,7 +22,6 @@ import java.util.stream.Collectors;
 @Service
 public class StudyPlanService {
     private final StudyPlanRepository studyPlanRepository;
-    private final CourseService courseService;
     private final ObjectValidator<EditStudyPlanDetailsRequest> editStudyPlanDetailsValidator;
     private final ObjectValidator<AddCoursesToSemesterRequest> addCoursesToSemesterValidator;
     private final ObjectValidator<EditSectionRequest> editSectionRequestValidator;
@@ -57,33 +54,32 @@ public class StudyPlanService {
         addCoursesToSemesterValidator.validate(request);
 
         var studyPlan = findStudyPlan(studyPlanId);
-        var courses = courseService.getCourses(request.courseIds());
         var coursePrerequisitesMap = studyPlan.getCoursePrerequisitesMap();
 
-        for (Map.Entry<Long, CourseResponse> entry : courses.entrySet()) {
-            var prerequisites = coursePrerequisitesMap.get(entry.getKey());
+        for (var courseId : request.courseIds()) {
+            var prerequisites = coursePrerequisitesMap.get(courseId);
 
-            prerequisites.forEach(prerequisite -> {
-                var prerequisitePlacement = studyPlan.getCoursePlacements().get(prerequisite.getPrerequisite().getId());
+            if (prerequisites != null) {
+                prerequisites.forEach(prerequisite -> {
 
-                if (prerequisitePlacement == null || prerequisitePlacement.getSemester() >= request.semester()) {
-                    throw new InvalidCoursePlacement(
-                            entry.getValue().name() + " has missing prerequisites or has prerequisites in later semesters."
-                    );
-                }
-            });
+                    var prerequisitePlacement = studyPlan.getCoursePlacements().get(prerequisite.getPrerequisite().getId());
+
+                    if (prerequisitePlacement == null || prerequisitePlacement.getSemester() >= request.semester()) {
+                        throw new InvalidCoursePlacement("A course has missing prerequisites or has prerequisites in later semesters.");
+                    }
+                });
+            }
 
             studyPlan.getCoursePlacements().put(
-                    entry.getKey(),
+                    courseId,
                     new CoursePlacement(
-                            AggregateReference.to(entry.getKey()),
+                            AggregateReference.to(courseId),
                             request.semester()
                     )
             );
         }
 
         var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-
         return studyPlanResponseMapper.apply(updatedStudyPlan);
     }
 
@@ -100,7 +96,6 @@ public class StudyPlanService {
         studyPlanRepository.save(studyPlan);
 
         var studyPlanSummary = findStudyPlanSummaryOrThrow(studyPlanId);
-
         return studyPlanSummaryResponseMapper.apply(studyPlanSummary);
     }
 
@@ -117,7 +112,6 @@ public class StudyPlanService {
         var newStudyPlan = studyPlanRepository.save(studyPlan);
 
         var studyPlanSummary = findStudyPlanSummaryOrThrow(newStudyPlan.getId());
-
         return studyPlanSummaryResponseMapper.apply(studyPlanSummary);
     }
 
@@ -142,21 +136,17 @@ public class StudyPlanService {
                 .toList();
 
         if (sectionSiblings.isEmpty()) {
-            // No siblings, position remains 0
             newSection.setPosition(0);
         } else if (sectionSiblings.size() == 1 && sectionSiblings.getFirst().getPosition() == 0) {
-            // First sibling, adjust existing section and new section
             sectionSiblings.getFirst().setPosition(1);
             newSection.setPosition(2);
         } else {
-            // Multiple siblings, set to next incremental position
             newSection.setPosition(sectionSiblings.size() + 1);
         }
 
         studyPlan.getSections().add(newSection);
 
         var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-
         return studyPlanResponseMapper.apply(updatedStudyPlan);
     }
 
@@ -180,7 +170,6 @@ public class StudyPlanService {
                 );
 
         var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-
         return studyPlanResponseMapper.apply(updatedStudyPlan);
     }
 
@@ -198,14 +187,12 @@ public class StudyPlanService {
                 .filter(s -> s.getLevel() == section.getLevel() && s.getType() == section.getType())
                 .toList();
 
-        // Shift positions of subsequent sections
         studyPlan.getSections().stream()
                 .filter(s -> s.getLevel() == section.getLevel() &&
                         s.getType() == section.getType() &&
                         s.getPosition() > section.getPosition())
                 .forEach(s -> s.setPosition(s.getPosition() - 1));
 
-        // If after deletion, only one sibling remains, reset its position to 0
         if (sectionSiblings.size() == 2) {
             var remainingSection = sectionSiblings.stream()
                     .filter(s -> s.getId() != sectionId)
@@ -229,7 +216,6 @@ public class StudyPlanService {
         studyPlan.getSections().remove(section);
 
         var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-
         return studyPlanResponseMapper.apply(updatedStudyPlan);
     }
 
@@ -446,7 +432,7 @@ public class StudyPlanService {
         var swappedSection = sectionsList.stream()
                 .filter(s -> s.getPosition() == newPosition)
                 .findFirst()
-                .orElseThrow(() -> new SectionNotFoundException("Cannot move into a section that does not exist."));
+                .orElseThrow(() -> new SectionNotFoundException("Cannot move into an unknown section."));
 
         targetSection.setPosition(newPosition);
         swappedSection.setPosition(currentPosition);
@@ -488,4 +474,3 @@ public class StudyPlanService {
                 .orElseThrow(() -> new StudyPlanNotFoundException("Study plan was not found."));
     }
 }
-

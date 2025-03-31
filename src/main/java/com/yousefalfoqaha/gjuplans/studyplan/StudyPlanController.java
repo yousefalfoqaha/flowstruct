@@ -54,7 +54,7 @@ public class StudyPlanController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{studyPlanId}/add-courses")
+    @PostMapping("/{studyPlanId}/course-placements")
     public ResponseEntity<StudyPlanResponse> addCoursesToSemester(
             @PathVariable long studyPlanId,
             @RequestBody AddCoursesToSemesterRequest request
