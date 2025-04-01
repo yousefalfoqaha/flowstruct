@@ -11,7 +11,6 @@ type SemesterCoursesMultiSelectProps = {
     semester: number;
 }
 
-// Define our course option type explicitly
 interface CourseOption {
     label: string;
     value: string;
@@ -33,7 +32,6 @@ export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelec
     if (!semester) return null;
     if (!courses || !studyPlan) return null;
 
-    // Transform the data with proper null checking
     const data = studyPlan.sections
         .flatMap((s) => s.courses)
         .map((courseId) => {
@@ -47,31 +45,28 @@ export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelec
                     return placement === undefined || placement >= semester;
                 });
 
-            const alreadyAdded = studyPlan.coursePlacements[courseId] !== undefined;
+            if (studyPlan.coursePlacements[courseId] !== undefined) return null;
 
             return {
                 label: `${course.code}: ${course.name}`,
                 value: courseId.toString(),
-                disabled: unmetPrerequisites.length > 0 || alreadyAdded,
-                alreadyAdded: alreadyAdded,
+                disabled: unmetPrerequisites.length > 0,
                 unmetPrerequisites,
             } as CourseOption;
         }).filter((item): item is CourseOption => item !== null);
 
     const renderOption: MultiSelectProps['renderOption'] = ({option}) => {
-        // Cast option to our CourseOption type to access our custom properties
         const courseOption = option as unknown as CourseOption;
 
         return (
             <div>
                 <Group gap="xs" wrap="nowrap" className={classes.label}>
-                    {courseOption.alreadyAdded ? <Check size={14}/> : null}
                     <div>{option.label}</div>
                 </Group>
 
                 {courseOption.disabled && courseOption.unmetPrerequisites.length > 0 && (
                     <Text className={classes.prerequisitesWarning}>
-                        Unmet Prerequisites: {courseOption.unmetPrerequisites.map(prereqId => {
+                        Prerequisites: {courseOption.unmetPrerequisites.map(prereqId => {
                         const prereqCourse = courses[Number(prereqId)];
                         return prereqCourse?.code || prereqId;
                     }).join(', ')}
