@@ -13,6 +13,7 @@ type SemesterCoursesMultiSelectProps = {
 export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelectProps) {
     const [opened, setOpened] = React.useState(false);
     const [selectedCourses, setSelectedCourses] = React.useState<string[]>([]);
+
     const addCoursesToSemester = useAddCoursesToSemester();
 
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");

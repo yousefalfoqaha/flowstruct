@@ -4,12 +4,11 @@
     height: 8rem;
     border-radius: var(--mantine-radius-md);
     border: 1px solid var(--mantine-color-gray-3);
-    padding: 1rem;
+    padding: var(--mantine-spacing-md);
     display: flex;
     flex-direction: column;
     position: relative;
     overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 
@@ -29,6 +28,19 @@
     margin-top: 0;
 }
 
+.removeButton {
+    position: absolute;
+    right: 0.25rem;
+    top: 0.25rem;
+    border-radius: var(--mantine-radius-lg);
+    transform: translateX(100%);
+    transition: transform 0.2s ease;
+}
+
+.container:hover .removeButton {
+    transform: translateX(0);
+}
+
 .footer {
     font-size: var(--mantine-font-size-xs);
     color: var(--mantine-color-dimmed);
@@ -38,8 +50,8 @@
     bottom: 0;
     left: 0;
     right: 0;
-    padding-right: 1rem;
-    padding-left: 1rem;
+    padding-right: var(--mantine-spacing-md);
+    padding-left: var(--mantine-spacing-md);
     height: 2.5rem;
     transform: translateY(100%);
     transition: transform 0.2s ease;

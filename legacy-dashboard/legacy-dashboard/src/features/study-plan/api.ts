@@ -288,3 +288,19 @@ export const addCoursesToSemesterRequest = async ({studyPlanId, semester, course
 
     return await res.json() as StudyPlan;
 }
+
+export const removeCoursePlacementRequest = async ({studyPlanId, courseId}: {
+    studyPlanId: number,
+    courseId: number
+}) => {
+    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/course-placements/${courseId}`, {
+        method: 'DELETE'
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'An unknown error occurred');
+    }
+
+    return await res.json() as StudyPlan;
+}
