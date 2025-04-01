@@ -1,13 +1,23 @@
-import {ActionIcon, Button, MultiSelect, Popover, Stack} from "@mantine/core";
-import {Plus} from "lucide-react";
+import {ActionIcon, Button, Group, MultiSelect, MultiSelectProps, Popover, Stack, Text} from "@mantine/core";
+import {Check, Plus} from "lucide-react";
 import React from "react";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {useParams} from "@tanstack/react-router";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useAddCoursesToSemester} from "@/features/study-plan/hooks/useAddCoursesToSemester.ts";
+import classes from './SemesterCoursesMultiSelect.module.css';
 
 type SemesterCoursesMultiSelectProps = {
     semester: number;
+}
+
+// Define our course option type explicitly
+interface CourseOption {
+    label: string;
+    value: string;
+    disabled: boolean;
+    alreadyAdded: boolean;
+    unmetPrerequisites: string[];
 }
 
 export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelectProps) {
@@ -20,23 +30,60 @@ export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelec
     const {data: courses} = useCourseList(studyPlanId);
     const {data: studyPlan} = useStudyPlan(studyPlanId);
 
-    if (!semester) return;
+    if (!semester) return null;
+    if (!courses || !studyPlan) return null;
 
+    // Transform the data with proper null checking
     const data = studyPlan.sections
-        .flatMap(s => s.courses)
-        .map(courseId => {
+        .flatMap((s) => s.courses)
+        .map((courseId) => {
             const course = courses[courseId];
-            if (!course) return;
+            if (!course) return null;
+
+            const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
+            const unmetPrerequisites = Object.keys(prerequisites)
+                .filter((prereqId) => {
+                    const placement = studyPlan.coursePlacements[Number(prereqId)];
+                    return placement === undefined || placement >= semester;
+                });
+
+            const alreadyAdded = studyPlan.coursePlacements[courseId] !== undefined;
 
             return {
                 label: `${course.code}: ${course.name}`,
-                value: courseId.toString()
-            }
-        })
-        .filter(Boolean);
+                value: courseId.toString(),
+                disabled: unmetPrerequisites.length > 0 || alreadyAdded,
+                alreadyAdded: alreadyAdded,
+                unmetPrerequisites,
+            } as CourseOption;
+        }).filter((item): item is CourseOption => item !== null);
+
+    const renderOption: MultiSelectProps['renderOption'] = ({option}) => {
+        // Cast option to our CourseOption type to access our custom properties
+        const courseOption = option as unknown as CourseOption;
+
+        return (
+            <div>
+                <Group gap="xs" wrap="nowrap" className={classes.label}>
+                    {courseOption.alreadyAdded ? <Check size={14}/> : null}
+                    <div>{option.label}</div>
+                </Group>
+
+                {courseOption.disabled && courseOption.unmetPrerequisites.length > 0 && (
+                    <Text className={classes.prerequisitesWarning}>
+                        Unmet Prerequisites: {courseOption.unmetPrerequisites.map(prereqId => {
+                        const prereqCourse = courses[Number(prereqId)];
+                        return prereqCourse?.code || prereqId;
+                    }).join(', ')}
+                    </Text>
+                )}
+            </div>
+        );
+    };
 
     return (
         <Popover
+            trapFocus
             opened={opened}
             onChange={setOpened}
             withArrow
@@ -74,14 +121,21 @@ export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelec
                     </Button>
 
                     <MultiSelect
-                        comboboxProps={{withinPortal: false}}
+                        comboboxProps={{
+                            withinPortal: false,
+                            classNames: {
+                                option: classes.option
+                            }
+                        }}
                         withCheckIcon
+                        renderOption={renderOption}
                         data={data}
                         value={selectedCourses}
                         onChange={setSelectedCourses}
                         label={`Add courses to semester ${semester}`}
                         placeholder="Search framework courses"
                         searchable
+                        hidePickedOptions
                     />
                 </Stack>
             </Popover.Dropdown>
