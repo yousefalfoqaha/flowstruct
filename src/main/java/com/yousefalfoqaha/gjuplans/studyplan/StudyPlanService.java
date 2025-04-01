@@ -57,6 +57,10 @@ public class StudyPlanService {
         var coursePrerequisitesMap = studyPlan.getCoursePrerequisitesMap();
 
         for (var courseId : request.courseIds()) {
+            if (studyPlan.getCoursePlacements().containsKey(courseId)) {
+                throw new CourseAlreadyAddedException("A course already exists in the program map.");
+            }
+
             var prerequisites = coursePrerequisitesMap.get(courseId);
 
             if (prerequisites != null) {

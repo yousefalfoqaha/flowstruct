@@ -145,4 +145,18 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST
         );
     }
+
+    @ExceptionHandler(CourseAlreadyAddedException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            CourseAlreadyAddedException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.BAD_REQUEST.value(),
+                        exception.getMessage(),
+                        new Date()
+                ),
+                HttpStatus.BAD_REQUEST
+        );
+    }
 }
