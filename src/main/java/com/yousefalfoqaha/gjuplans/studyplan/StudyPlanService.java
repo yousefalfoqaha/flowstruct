@@ -445,6 +445,15 @@ public class StudyPlanService {
         return studyPlanResponseMapper.apply(updatedStudyPlan);
     }
 
+    public StudyPlanResponse removeCoursePlacement(long studyPlanId, long courseId) {
+        var studyPlan = findStudyPlan(studyPlanId);
+
+        studyPlan.getCoursePlacements().remove(courseId);
+
+        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
+        return studyPlanResponseMapper.apply(updatedStudyPlan);
+    }
+
     private void detectCycle(
             long originalCourseId,
             long prerequisiteId,

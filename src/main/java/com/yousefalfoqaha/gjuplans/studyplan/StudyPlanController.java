@@ -1,6 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
 import com.yousefalfoqaha.gjuplans.studyplan.domain.MoveDirection;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
@@ -178,6 +179,17 @@ public class StudyPlanController {
     ) {
         return new ResponseEntity<>(
                 studyPlanService.moveSectionPosition(studyPlanId, sectionId, direction),
+                HttpStatus.OK
+        );
+    }
+
+    @DeleteMapping("/{studyPlanId}/course-placements/{courseId}")
+    public ResponseEntity<StudyPlanResponse> removeCoursePlacement(
+            @PathVariable long studyPlanId,
+            @PathVariable long courseId
+    ) {
+        return new ResponseEntity<>(
+                studyPlanService.removeCoursePlacement(studyPlanId, courseId),
                 HttpStatus.OK
         );
     }
