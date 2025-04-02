@@ -1,9 +1,8 @@
 import {CourseCard} from "@/features/course/components/CourseCard.tsx";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {useParams} from "@tanstack/react-router";
-import {Badge, Flex, Group, ScrollArea, Stack, Text} from "@mantine/core";
+import {Badge, Flex, ScrollArea, Stack, Text} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
-import React from "react";
 import {SemesterCoursesMultiSelect} from "@/features/study-plan/components/SemesterCoursesMultiSelect.tsx";
 
 export function ProgramMap() {
@@ -55,10 +54,26 @@ export function ProgramMap() {
                                                 </Text>
 
                                                 {semesterCourses?.map((courseId) => {
-                                                    const course = courses[courseId]
+                                                    const course = courses[courseId];
+                                                    const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
+
+                                                    const missingPrerequisites = Object.keys(prerequisites)
+                                                        .filter(prereqId => {
+                                                            const placement = studyPlan.coursePlacements[Number(prereqId)];
+                                                            return placement === undefined || placement >= semesterNumber;
+                                                        })
+                                                        .map(prereqId => ({
+                                                            id: Number(prereqId),
+                                                            code: courses[Number(prereqId)].code
+                                                        }));
+
                                                     if (!course) return;
 
-                                                    return <CourseCard key={courseId} course={course}/>
+                                                    return <CourseCard
+                                                        key={courseId}
+                                                        missingPrerequisites={missingPrerequisites}
+                                                        course={course}
+                                                    />
                                                 })}
 
                                                 <SemesterCoursesMultiSelect semester={semesterNumber}/>
