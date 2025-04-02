@@ -92,7 +92,7 @@ export function FrameworkCoursesTable() {
             ),
             sortingFn: 'alphanumeric',
             cell: ({row}) => (
-                <Badge variant="light">{row.original.code}</Badge>
+                <Text fw={700} size="sm">{row.original.code}</Text>
             ),
         }),
         columnHelper.accessor("name", {
@@ -104,11 +104,15 @@ export function FrameworkCoursesTable() {
                     Name
                 </Group>
             ),
+            cell: ({row}) => <Text size="sm">{row.original.name}</Text>,
             sortingFn: 'alphanumeric'
         }),
         columnHelper.accessor("creditHours", {
             header: 'Credits',
             sortingFn: 'alphanumeric',
+            cell: ({row}) => (
+                <Text size="sm">{row.original.creditHours} Cr.</Text>
+            )
         }),
         columnHelper.display({
             id: "prerequisites",
