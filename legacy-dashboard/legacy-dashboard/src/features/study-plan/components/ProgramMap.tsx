@@ -1,8 +1,7 @@
 import {CourseCard} from "@/features/course/components/CourseCard.tsx";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {useParams} from "@tanstack/react-router";
-import {Box, Flex, Group, ScrollArea, Stack, Text} from "@mantine/core";
-import classes from "./ProgramMap.module.css";
+import {Divider, Flex, ScrollArea, Stack, Text} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {SemesterCoursesMultiSelect} from "@/features/study-plan/components/SemesterCoursesMultiSelect.tsx";
 
@@ -36,17 +35,16 @@ export function ProgramMap() {
 
                         return (
                             <Stack align="center" gap="xs" key={year}>
-                                <Box className={classes.yearLabel}>
-                                    <Group justify="space-between">
-                                        <Text size="lg" fw={600}>
-                                            Yr.
-                                        </Text>
-                                        <Text fw={600}>
-                                            {year}
-                                        </Text>
-                                    </Group>
-
-                                </Box>
+                                <Divider
+                                    w="100%"
+                                    labelPosition="center"
+                                    variant="dashed"
+                                    label={
+                                        <>
+                                            <Text size="xs">Year {year}</Text>
+                                        </>
+                                    }
+                                />
 
                                 <Flex gap="xs" wrap="nowrap">
                                     {yearSemesters.map((semesterNumber, index) => {
@@ -54,40 +52,41 @@ export function ProgramMap() {
                                         const semesterTotalCreditHours = semesterCourses?.reduce((sum, courseId) => sum + (courses[courseId]?.creditHours || 0), 0);
 
                                         return (
-                                            <Stack miw={100} gap="xs" key={semesterNumber}>
+                                            <Stack miw={100} gap="sm" key={semesterNumber}>
                                                 <Text
-                                                    size="sm"
-                                                    fw={600}
+                                                    size="xs"
                                                     ta="center"
                                                     c="dimmed"
                                                 >
                                                     {semesterTypes[index]} - {semesterTotalCreditHours} Cr.
                                                 </Text>
 
-                                                {semesterCourses?.map((courseId) => {
-                                                    const course = courses[courseId];
-                                                    const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
+                                                <Flex direction="column" gap="xs">
+                                                    {semesterCourses?.map((courseId) => {
+                                                        const course = courses[courseId];
+                                                        const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
 
-                                                    const missingPrerequisites = Object.keys(prerequisites)
-                                                        .filter(prereqId => {
-                                                            const placement = studyPlan.coursePlacements[Number(prereqId)];
-                                                            return placement === undefined || placement >= semesterNumber;
-                                                        })
-                                                        .map(prereqId => ({
-                                                            id: Number(prereqId),
-                                                            code: courses[Number(prereqId)].code
-                                                        }));
+                                                        const missingPrerequisites = Object.keys(prerequisites)
+                                                            .filter(prereqId => {
+                                                                const placement = studyPlan.coursePlacements[Number(prereqId)];
+                                                                return placement === undefined || placement >= semesterNumber;
+                                                            })
+                                                            .map(prereqId => ({
+                                                                id: Number(prereqId),
+                                                                code: courses[Number(prereqId)].code
+                                                            }));
 
-                                                    if (!course) return;
+                                                        if (!course) return;
 
-                                                    return <CourseCard
-                                                        key={courseId}
-                                                        missingPrerequisites={missingPrerequisites}
-                                                        course={course}
-                                                    />
-                                                })}
+                                                        return <CourseCard
+                                                            key={courseId}
+                                                            missingPrerequisites={missingPrerequisites}
+                                                            course={course}
+                                                        />
+                                                    })}
 
-                                                <SemesterCoursesMultiSelect semester={semesterNumber}/>
+                                                    <SemesterCoursesMultiSelect semester={semesterNumber}/>
+                                                </Flex>
                                             </Stack>
                                         );
                                     })}

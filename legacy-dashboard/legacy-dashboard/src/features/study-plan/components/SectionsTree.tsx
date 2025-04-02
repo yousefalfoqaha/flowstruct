@@ -11,7 +11,7 @@ import {
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useParams} from "@tanstack/react-router";
 import {SectionLevel, SectionType} from "@/features/study-plan/types.ts";
-import {ChevronDown, Filter} from "lucide-react";
+import {ChevronDown, Filter, List, ListOrdered, ListTree} from "lucide-react";
 import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
 import {SectionOptionsMenu} from "@/features/study-plan/components/SectionOptionsMenu.tsx";
 import classes from './SectionsTabs.module.css';
@@ -127,7 +127,10 @@ export function SectionsTree({selectSection, selectedSection}: {
     return (
         <Flex direction="column" gap={8}>
             <Group style={{borderBottom: "1px solid #dee2e6"}} pb={10} justify="space-between">
-                <Text fw={500}>Sections</Text>
+                <Group gap="sm">
+                    <List size={18} />
+                    <Text fw={500}>Sections</Text>
+                </Group>
 
                 <Group>
                     {selectedSection && (

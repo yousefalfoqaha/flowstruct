@@ -24,9 +24,8 @@ export function CourseCard({course, missingPrerequisites}: CourseCardProps) {
             label="!"
             color="red"
             radius="lg"
-            size={22}
+            size={18}
             disabled={missingPrerequisites.length === 0}
-            withBorder
             offset={3}
         >
             <Popover
@@ -36,7 +35,7 @@ export function CourseCard({course, missingPrerequisites}: CourseCardProps) {
                 arrowPosition="side"
                 withArrow
                 opened={opened}
-
+                shadow="md"
             >
                 <Popover.Target>
                     <div onMouseEnter={open} onMouseLeave={close} className={classes.container}>

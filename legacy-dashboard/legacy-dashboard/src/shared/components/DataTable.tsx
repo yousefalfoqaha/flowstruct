@@ -8,7 +8,7 @@ type DataTableProps<TData> = {
 
 export function DataTable<TData>({table}: DataTableProps<TData>) {
     return (
-        <div style={{ borderRadius: 4, border: "1px solid #dee2e6" }}>
+        <div>
             <Table horizontalSpacing="sm" verticalSpacing="sm">
                 <Table.Thead>
                     {table.getHeaderGroups().map((headerGroup) => (

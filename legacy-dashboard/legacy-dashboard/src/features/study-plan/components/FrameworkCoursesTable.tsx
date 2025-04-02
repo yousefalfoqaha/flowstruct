@@ -10,7 +10,7 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import {Course} from "@/features/course/types.ts";
-import {ArrowDownUp, Eye, Filter, Search, Trash, X} from "lucide-react";
+import {ArrowDownUp, Eye, ListEnd, Search, Trash, X} from "lucide-react";
 import {
     ActionIcon,
     Badge, Button, Checkbox,
@@ -18,7 +18,7 @@ import {
     Group, Indicator, Input,
     Loader,
     Pagination,
-    Pill,
+    Pill, Select,
     Text
 } from "@mantine/core";
 import React from "react";
@@ -55,7 +55,7 @@ export function FrameworkCoursesTable() {
 
     const [sorting, setSorting] = React.useState<SortingState>([{id: 'code', desc: false}]);
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
-    const [pagination, setPagination] = React.useState({pageIndex: 0, pageSize: 10,});
+    const [pagination, setPagination] = React.useState({pageIndex: 0, pageSize: 7,});
     const [globalFilter, setGlobalFilter] = React.useState("");
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [search, setSearch] = React.useState<string>("");
@@ -349,6 +349,23 @@ export function FrameworkCoursesTable() {
                     </Group>
 
                     <Group>
+                        <Group gap="sm">
+                            <Group gap="xs">
+                                <ListEnd size={18}/>
+                                <Text size="sm">
+                                    Page Size
+                                </Text>
+                            </Group>
+                            <Select
+                                data={["5", "7", "10", "20", "50"]}
+                                value={pagination.pageSize.toString()}
+                                onChange={(value) => setPagination({
+                                    pageIndex: 0,
+                                    pageSize: parseInt(value || "7")
+                                })}
+                                w={70}
+                            />
+                        </Group>
                         <Text size="sm">{paginationMessage}</Text>
                         <Pagination total={table.getPageCount()}
                                     onChange={(page) => setPagination({

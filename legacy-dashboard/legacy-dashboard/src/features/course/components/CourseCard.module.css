@@ -1,6 +1,7 @@
 .container {
+    background-color: var(--mantine-color-gray-0);
     user-select: none;
-    width: 8rem;
+    width: 9rem;
     height: 8rem;
     border-radius: var(--mantine-radius-md);
     border: 1px solid var(--mantine-color-gray-3);
@@ -31,6 +32,7 @@
 .removeButton {
     position: absolute;
     right: 0.25rem;
+    background: transparent;
     top: 0.25rem;
     border-radius: var(--mantine-radius-lg);
     transform: translateX(100%);
@@ -50,8 +52,8 @@
     bottom: 0;
     left: 0;
     right: 0;
-    padding-right: var(--mantine-spacing-md);
-    padding-left: var(--mantine-spacing-md);
+    padding-right: var(--mantine-spacing-sm);
+    padding-left: var(--mantine-spacing-sm);
     height: 2.5rem;
     transform: translateY(100%);
     transition: transform 0.2s ease;
