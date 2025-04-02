@@ -1,16 +1,17 @@
 import {
-    Combobox,
-    useCombobox,
     Button,
-    Loader,
-    Flex,
-    Text,
-    ScrollArea,
     Checkbox,
+    Combobox,
+    Flex,
+    FocusTrap,
+    Loader,
     Pill,
     PillsInput,
+    Popover,
+    ScrollArea,
     Select,
-    Popover, Badge, Stack, SelectProps
+    Text,
+    useCombobox
 } from "@mantine/core";
 import React from "react";
 import {Plus} from "lucide-react";
@@ -139,7 +140,6 @@ export function CourseSearch({focusedSection}: { focusedSection: number | null }
                 opened={popoverOpened}
                 onChange={setPopoverOpened}
                 width={360}
-                trapFocus
             >
                 <Popover.Target>
                     <Button onClick={() => setPopoverOpened((o) => !o)} leftSection={<Plus size={18}/>}>
@@ -178,29 +178,31 @@ export function CourseSearch({focusedSection}: { focusedSection: number | null }
                         />
 
                         <Combobox store={combobox} onOptionSubmit={handleCourseSelect} withinPortal={false}>
-                            <Combobox.Target>
-                                <PillsInput
-                                    label="Selected Courses"
-                                    rightSection={isFetching ? <Loader size={14}/> : null}
-                                    onClick={() => combobox.openDropdown()}
-                                >
-                                    <Pill.Group>
-                                        {selectedOptions}
-                                        <PillsInput.Field
-                                            value={search}
-                                            placeholder="Search any course"
-                                            onChange={(event) => {
-                                                combobox.updateSelectedOptionIndex();
-                                                setSearch(event.currentTarget.value);
-                                                if (!combobox.dropdownOpened) {
-                                                    combobox.openDropdown();
-                                                }
-                                            }}
-                                            autoComplete="off"
-                                        />
-                                    </Pill.Group>
-                                </PillsInput>
-                            </Combobox.Target>
+                            <FocusTrap active={popoverOpened}>
+                                <Combobox.Target>
+                                    <PillsInput
+                                        label="Selected Courses"
+                                        rightSection={isFetching ? <Loader size={14}/> : null}
+                                        onClick={() => combobox.openDropdown()}
+                                    >
+                                        <Pill.Group>
+                                            {selectedOptions}
+                                            <PillsInput.Field
+                                                value={search}
+                                                placeholder="Search any course"
+                                                onChange={(event) => {
+                                                    combobox.updateSelectedOptionIndex();
+                                                    setSearch(event.currentTarget.value);
+                                                    if (!combobox.dropdownOpened) {
+                                                        combobox.openDropdown();
+                                                    }
+                                                }}
+                                                autoComplete="off"
+                                            />
+                                        </Pill.Group>
+                                    </PillsInput>
+                                </Combobox.Target>
+                            </FocusTrap>
 
                             {debouncedSearch !== "" && isFetched && (
                                 <Combobox.Dropdown>

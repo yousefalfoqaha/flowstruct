@@ -1,11 +1,11 @@
 import {ActionIcon, Button, Group, MultiSelect, MultiSelectProps, Popover, Stack, Text} from "@mantine/core";
-import {Check, Plus} from "lucide-react";
+import {BetweenHorizontalStart, CircleAlert, Plus} from "lucide-react";
 import React from "react";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {useParams} from "@tanstack/react-router";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useAddCoursesToSemester} from "@/features/study-plan/hooks/useAddCoursesToSemester.ts";
-import classes from './SemesterCoursesMultiSelect.module.css';
+import classes from './CoursesMultiSelect.module.css';
 
 type SemesterCoursesMultiSelectProps = {
     semester: number;
@@ -60,16 +60,18 @@ export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelec
 
         return (
             <div>
-                <Group gap="xs" wrap="nowrap" className={classes.label}>
-                    <div>{option.label}</div>
-                </Group>
+                <div className={classes.label}>{option.label}</div>
 
                 {courseOption.disabled && courseOption.unmetPrerequisites.length > 0 && (
-                    <Text className={classes.prerequisitesWarning}>
-                        Prerequisites: {courseOption.unmetPrerequisites.map(prereqId => {
-                        const prereqCourse = courses[Number(prereqId)];
-                        return prereqCourse?.code || prereqId;
-                    }).join(', ')}
+                    <Text className={classes.warning}>
+                        <Group gap={6}>
+                            <CircleAlert size={14}/>
+
+                            Prerequisites: {courseOption.unmetPrerequisites.map(prereqId => {
+                                const prereqCourse = courses[Number(prereqId)];
+                                return prereqCourse?.code || prereqId;
+                            }).join(', ')}
+                        </Group>
                     </Text>
                 )}
             </div>
@@ -100,7 +102,7 @@ export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelec
                     <Button
                         disabled={selectedCourses.length === 0}
                         loading={addCoursesToSemester.isPending}
-                        leftSection={<Plus size={18}/>}
+                        leftSection={<BetweenHorizontalStart size={18}/>}
                         onClick={() => addCoursesToSemester.mutate({
                             studyPlanId: studyPlanId,
                             semester: semester,
@@ -112,7 +114,7 @@ export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelec
                             }
                         })}
                     >
-                        Add Courses
+                        Place Courses
                     </Button>
 
                     <MultiSelect

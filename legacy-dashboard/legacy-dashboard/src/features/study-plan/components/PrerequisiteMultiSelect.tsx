@@ -1,36 +1,31 @@
 import {
     Button,
-    Checkbox,
-    Combobox,
-    Flex,
-    Group,
-    Pill,
-    PillsInput,
+    Flex, FocusTrap,
+    Group, MultiSelect, MultiSelectProps,
     Popover,
-    ScrollArea,
-    SegmentedControl,
-    useCombobox
+    SegmentedControl, Text,
 } from "@mantine/core";
 import React from "react";
-import {Link, Plus} from "lucide-react";
+import {CircleAlert, Link, Plus} from "lucide-react";
 import {useCoursesGraph} from "@/contexts/CoursesGraphContext.tsx";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {useParams} from "@tanstack/react-router";
-import {useDebouncedValue} from "@mantine/hooks";
 import {useAssignCoursePrerequisites} from "@/features/study-plan/hooks/useAssignCoursePrerequisites.ts";
 import {CourseRelation} from "@/features/study-plan/types.ts";
 import {useAssignCourseCorequisites} from "@/features/study-plan/hooks/useAssignCourseCorequisites.ts";
 import {useStudyPlan} from "../hooks/useStudyPlan";
+import classes from "@/features/study-plan/components/CoursesMultiSelect.module.css";
 
-export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }) {
-    const combobox = useCombobox({
-        onDropdownClose: () => combobox.resetSelectedOption(),
-        onDropdownOpen: () => combobox.updateSelectedOptionIndex("active")
-    });
+type CourseOption = {
+    value: string;
+    label: string;
+    disabled: boolean;
+    createsCycle: boolean;
+}
 
-        const [search, setSearch] = React.useState("");
-        const [debouncedSearch] = useDebouncedValue(search, 400);
-    const [value, setValue] = React.useState<Set<string>>(new Set());
+export function PrerequisiteMultiSelect({parentCourseId}: { parentCourseId: number }) {
+    const [opened, setOpened] = React.useState(false);
+    const [selectedCourses, setSelectedCourses] = React.useState<string[]>([]);
     const [requisiteType, setRequisiteType] = React.useState<'PRE' | 'CO'>('PRE');
 
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
@@ -42,36 +37,21 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
     const assignPrerequisites = useAssignCoursePrerequisites();
     const assignCorequisites = useAssignCourseCorequisites();
 
-    const handleValueSelect = (val: string) => {
-        setValue((current) =>
-            new Set(current.has(val) ? [...current].filter((v) => v !== val) : [...current, val])
-        );
-    };
-
-    const handleValueRemove = (val: string) => {
-        setValue((current) => {
-            const newSet = new Set(current);
-            newSet.delete(val);
-            return newSet;
-        });
-    };
-
     const handleAssignCourses = () => {
         if (requisiteType === "PRE") {
             assignPrerequisites.mutate(
                 {
-                    courseId: parentCourse,
+                    courseId: parentCourseId,
                     studyPlanId: studyPlanId,
-                    prerequisites: Array.from(value).map(id => ({
-                        prerequisite: parseInt(id),
+                    prerequisites: selectedCourses.map(id => ({
+                        prerequisite: Number(id),
                         relation: CourseRelation.AND
                     }))
                 },
                 {
                     onSuccess: () => {
-                        combobox.closeDropdown();
-                        setValue(new Set());
-                        setSearch("");
+                        setOpened(false)
+                        setSelectedCourses([]);
                     }
                 }
             )
@@ -80,134 +60,121 @@ export function PrerequisiteMultiSelect({parentCourse}: { parentCourse: number }
 
         assignCorequisites.mutate(
             {
-                courseId: parentCourse,
+                courseId: parentCourseId,
                 studyPlanId: studyPlanId,
-                corequisites: Array.from(value).map(id => parseInt(id))
+                corequisites: selectedCourses.map(id => parseInt(id))
             },
             {
                 onSuccess: () => {
-                    combobox.closeDropdown();
-                    setValue(new Set());
-                    setSearch("");
+                    setOpened(false)
+                    setSelectedCourses([]);
                     setRequisiteType("PRE");
                 }
             }
         );
     }
 
-    const values = Array.from(value).map((id) => {
-        const course = courses[Number(id)];
+    const data = Array.from(studyPlan.sections
+        .flatMap(s => s.courses))
+        .map(id => {
+            const course = courses[id];
+            if (!course) return null;
+
+            if (parentCourseId === id) return null;
+
+            const createsCycle = coursesGraph.get(parentCourseId)?.postrequisiteSequence.has(id);
+
+            return {
+                value: id.toString(),
+                label: `${course.code}: ${course.name}`,
+                disabled: createsCycle,
+                createsCycle: createsCycle
+            } as CourseOption;
+        }).filter((item): item is CourseOption => item !== null);
+
+    const renderOption: MultiSelectProps['renderOption'] = ({option}) => {
+        const courseOption = option as unknown as CourseOption;
         return (
-            <Pill key={id} withRemoveButton onRemove={() => handleValueRemove(id)}>
-                {course.code}: {course.name}
-            </Pill>
+            <div>
+                <div className={classes.label}>{option.label}</div>
+
+                {courseOption.createsCycle && (
+                    <Text className={classes.warning}>
+                        <Group gap={6}>
+                            <CircleAlert size={14}/>
+                            Creates cycle
+                        </Group>
+                    </Text>
+                )}
+            </div>
         );
-    });
+    }
 
-    const options = Array.from(studyPlan.sections.flatMap(s => s.courses)).map(id => {
-        const course = courses[id];
-        if (!course) return null;
-
-        const codeAndName = course.code + " " + course.name;
-        const isSelected = value.has(id.toString());
-        const createsCycle = coursesGraph.get(parentCourse)?.postrequisiteSequence.has(id);
-        const alreadyAdded = studyPlan.coursePrerequisites[parentCourse]?.[id] !== undefined ||
-            studyPlan.courseCorequisites[parentCourse]?.includes(id);
-
-        return codeAndName.toLowerCase().includes(debouncedSearch.trim().toLowerCase()) ? (
-            <Combobox.Option
-                disabled={createsCycle || parentCourse === id || alreadyAdded}
-                value={id.toString()}
-                key={id}
-                active={isSelected}
-            >
-                <Flex align="center" gap="sm">
-                    <Checkbox
-                        checked={isSelected || alreadyAdded}
-                        onChange={() => {
-                        }}
-                        aria-hidden
-                        tabIndex={-1}
-                        style={{pointerEvents: "none"}}
-                    />
-                    {course.code}: {course.name}
-                </Flex>
-            </Combobox.Option>
-        ) : null;
-    }).filter(Boolean);
-
-    const canAddRequisites = value.size > 0;
+    const canAddRequisites = selectedCourses.length > 0;
 
     return (
-        <Popover position="left-start" shadow="md" width={360} trapFocus>
+        <Popover
+            position="left-start"
+            shadow="md"
+            width={360}
+            opened={opened}
+            onChange={setOpened}
+            withArrow
+        >
             <Popover.Target>
-                <Button radius="xl" variant="subtle" size="compact-xs" leftSection={<Plus size={14}/>}>
+                <Button
+                    onClick={() => setOpened((o) => !o)}
+                    radius="xl"
+                    variant="subtle"
+                    size="compact-xs"
+                    leftSection={<Plus size={14}/>}
+                >
                     Add
                 </Button>
             </Popover.Target>
 
             <Popover.Dropdown>
                 <Flex direction="column" gap="sm">
-                        <Group grow preventGrowOverflow={false} gap="xs" wrap="nowrap">
-                            <SegmentedControl
-                                value={requisiteType}
-                                onChange={setRequisiteType}
-                                size="xs"
-                                data={[
-                                    {label: 'PRE', value: 'PRE'},
-                                    {label: 'CO', value: 'CO'},
-                                ]}
-                            />
+                    <Group grow preventGrowOverflow={false} gap="xs" wrap="nowrap">
+                        <SegmentedControl
+                            value={requisiteType}
+                            onChange={(val) => setRequisiteType(val as "PRE" | "CO")}
+                            size="xs"
+                            data={[
+                                {label: 'PRE', value: 'PRE'},
+                                {label: 'CO', value: 'CO'},
+                            ]}
+                        />
 
-                            <Button
-                                disabled={!canAddRequisites}
-                                leftSection={<Link size={14}/>}
-                                loading={assignPrerequisites.isPending}
-                                onClick={handleAssignCourses}
-                            >
-                                Assign {requisiteType === 'PRE' ? 'Prerequisites' : 'Corequisites'}
-                            </Button>
-                        </Group>
+                        <Button
+                            disabled={!canAddRequisites}
+                            leftSection={<Link size={14}/>}
+                            loading={assignPrerequisites.isPending}
+                            onClick={handleAssignCourses}
+                        >
+                            Assign {requisiteType === 'PRE' ? 'Prerequisites' : 'Corequisites'}
+                        </Button>
+                    </Group>
 
-                    <Combobox store={combobox} onOptionSubmit={handleValueSelect} withinPortal={false}>
-                        <Combobox.DropdownTarget>
-                            <PillsInput label="Selected Courses">
-                                <Pill.Group>
-                                    {values}
-                                    <Combobox.EventsTarget>
-                                        <PillsInput.Field
-                                            value={search}
-                                            placeholder="Search framework courses"
-                                            onChange={(event) => {
-                                                const newVal = event.currentTarget.value;
-                                                setSearch(newVal);
-                                                if (newVal.trim() !== "") {
-                                                    combobox.openDropdown();
-                                                } else {
-                                                    combobox.closeDropdown();
-                                                }
-                                            }}
-                                            onFocus={() => {
-                                                if (search.trim() !== "") {
-                                                    combobox.openDropdown();
-                                                }
-                                            }}
-                                            onBlur={() => combobox.closeDropdown()}
-                                            autoComplete="off"
-                                        />
-                                    </Combobox.EventsTarget>
-                                </Pill.Group>
-                            </PillsInput>
-                        </Combobox.DropdownTarget>
-
-                        <Combobox.Dropdown>
-                            <Combobox.Options>
-                                <ScrollArea.Autosize mah={300} type="scroll" scrollbarSize={6}>
-                                    {options.length > 0 ? options : <Combobox.Empty>Nothing found...</Combobox.Empty>}
-                                </ScrollArea.Autosize>
-                            </Combobox.Options>
-                        </Combobox.Dropdown>
-                    </Combobox>
+                    <FocusTrap active={opened}>
+                    <MultiSelect
+                        comboboxProps={{
+                            withinPortal: false,
+                            classNames: {
+                                option: classes.option
+                            }
+                        }}
+                        withCheckIcon
+                        renderOption={renderOption}
+                        data={data}
+                        value={selectedCourses}
+                        onChange={setSelectedCourses}
+                        label={`Assign ${requisiteType === "PRE" ? 'prerequisites' : 'corequisites'} to ${courses[parentCourseId]?.code}`}
+                        placeholder="Search framework courses"
+                        searchable
+                        hidePickedOptions
+                    />
+                    </FocusTrap>
                 </Flex>
             </Popover.Dropdown>
         </Popover>

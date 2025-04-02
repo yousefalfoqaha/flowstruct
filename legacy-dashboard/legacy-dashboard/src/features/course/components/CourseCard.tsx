@@ -27,7 +27,7 @@ export function CourseCard({course, missingPrerequisites}: CourseCardProps) {
             size={22}
             disabled={missingPrerequisites.length === 0}
             withBorder
-            offset={4}
+            offset={3}
         >
             <Popover
                 disabled={missingPrerequisites.length === 0}

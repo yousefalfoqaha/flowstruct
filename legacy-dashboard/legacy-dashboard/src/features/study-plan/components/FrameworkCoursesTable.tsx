@@ -182,7 +182,7 @@ export function FrameworkCoursesTable() {
                             )
                         })}
 
-                        <PrerequisiteMultiSelect parentCourse={row.original.id}/>
+                        <PrerequisiteMultiSelect parentCourseId={row.original.id}/>
                         {
                             removePrerequisite.isPending && removePrerequisite.variables.courseId === row.original.id ||
                             removeCorequisite.isPending && removeCorequisite.variables.courseId === row.original.id
