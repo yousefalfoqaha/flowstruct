@@ -86,7 +86,7 @@ export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelec
                 )}
             </div>
         );
-    };
+    }
 
     return (
         <Popover

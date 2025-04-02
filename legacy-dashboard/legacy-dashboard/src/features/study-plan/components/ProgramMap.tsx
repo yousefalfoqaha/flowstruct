@@ -1,7 +1,8 @@
 import {CourseCard} from "@/features/course/components/CourseCard.tsx";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {useParams} from "@tanstack/react-router";
-import {Badge, Flex, ScrollArea, Stack, Text} from "@mantine/core";
+import {Box, Flex, Group, ScrollArea, Stack, Text} from "@mantine/core";
+import classes from "./ProgramMap.module.css";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {SemesterCoursesMultiSelect} from "@/features/study-plan/components/SemesterCoursesMultiSelect.tsx";
 
@@ -34,8 +35,18 @@ export function ProgramMap() {
                         );
 
                         return (
-                            <Stack align="center" gap="md" key={year}>
-                                <Badge size="lg" variant="filled" px="xl">Year {year}</Badge>
+                            <Stack align="center" gap="xs" key={year}>
+                                <Box className={classes.yearLabel}>
+                                    <Group justify="space-between">
+                                        <Text size="lg" fw={600}>
+                                            Yr.
+                                        </Text>
+                                        <Text fw={600}>
+                                            {year}
+                                        </Text>
+                                    </Group>
+
+                                </Box>
 
                                 <Flex gap="xs" wrap="nowrap">
                                     {yearSemesters.map((semesterNumber, index) => {

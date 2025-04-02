@@ -1,0 +1,7 @@
+.yearLabel {
+    background-color: var(--mantine-color-blue-0);
+    width: 100%;
+    border-radius: var(--mantine-radius-default);
+    padding: 0.5rem 1rem;
+    color: var(--mantine-color-blue-6);
+}
