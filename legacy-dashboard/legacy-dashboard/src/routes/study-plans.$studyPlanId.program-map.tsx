@@ -1,7 +1,6 @@
 import {createFileRoute} from '@tanstack/react-router'
-import {StudyPlanHeader} from "@/features/study-plan/components/StudyPlanHeader.tsx";
-import {Flex} from "@mantine/core";
 import {ProgramMap} from "@/features/study-plan/components/ProgramMap.tsx";
+import {Stack, Title} from "@mantine/core";
 
 export const Route = createFileRoute('/study-plans/$studyPlanId/program-map')({
     component: RouteComponent,
@@ -9,10 +8,9 @@ export const Route = createFileRoute('/study-plans/$studyPlanId/program-map')({
 
 function RouteComponent() {
     return (
-        <Flex direction="column" gap="xl">
-            <StudyPlanHeader title={'Program Map'}/>
-
+        <Stack gap="lg">
+            <Title fw={600}>Program Map</Title>
             <ProgramMap />
-        </Flex>
-    )
+        </Stack>
+    );
 }

@@ -1,7 +1,7 @@
 import classes from './StudyPlanSidebar.module.css';
-import {ArrowRightLeft, Folder, ScrollText, Map, Settings} from "lucide-react";
+import {ArrowRightLeft, Folder, ScrollText, Map, Settings, X} from "lucide-react";
 import {Link, useRouterState} from "@tanstack/react-router";
-import {Badge, Stack, Text, Title} from "@mantine/core";
+import {ActionIcon, Stack, Text, Title} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useProgram} from "@/features/program/hooks/useProgram.ts";
 
@@ -11,7 +11,7 @@ const data = [
     {label: 'Program Map', icon: Map, page: 'program-map' as const}
 ];
 
-export function StudyPlanSidebar({studyPlanId}: { studyPlanId: number }) {
+export function StudyPlanSidebar({studyPlanId, closeSidebar}: { studyPlanId: number, closeSidebar: () => void }) {
     const {location} = useRouterState();
     const segments = location.pathname.split('/');
     const activePage = segments.pop();
@@ -38,11 +38,21 @@ export function StudyPlanSidebar({studyPlanId}: { studyPlanId: number }) {
 
     return (
         <nav className={classes.navbar}>
+            <ActionIcon
+                hiddenFrom="xl"
+                onClick={closeSidebar}
+                variant="white"
+                color="black"
+                className={classes.close}
+            >
+                <X strokeWidth={1.5} />
+            </ActionIcon>
             <Stack className={classes.header} gap={0}>
                 <Title order={3} fw={600} pb={8}>
-                    {program.degree} {program.name} <Badge variant="gradient">{program.code}</Badge>
+                    {program.degree} {program.name}
                 </Title>
-                <Text size="sm" c="dimmed">{studyPlan.year}/{studyPlan.year + 1} {studyPlan.track && `- ${studyPlan.track}`}</Text>
+                <Text size="sm"
+                      c="dimmed">{studyPlan.year}/{studyPlan.year + 1} {studyPlan.track && `- ${studyPlan.track}`}</Text>
             </Stack>
 
             <div className={classes.navbarMain}>

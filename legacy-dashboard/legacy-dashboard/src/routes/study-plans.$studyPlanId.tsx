@@ -2,9 +2,12 @@ import {createFileRoute, Outlet} from '@tanstack/react-router'
 import {getStudyPlanQuery} from '@/features/study-plan/queries.ts'
 import {getProgramQuery} from '@/features/program/queries.ts'
 import {getCourseListQuery} from '@/features/course/queries.ts'
-import {AppShell} from '@mantine/core'
+import {ActionIcon, AppShell, Avatar, Badge, Burger, Flex, Group, Stack} from '@mantine/core'
 import {StudyPlanSidebar} from '@/features/study-plan/components/StudyPlanSidebar.tsx'
 import {useDisclosure} from '@mantine/hooks'
+import {StudyPlanHeader} from "@/features/study-plan/components/StudyPlanHeader.tsx";
+import {StudyPlanBreadcrumbs} from "@/features/study-plan/components/StudyPlanBreadcrumbs.tsx";
+import {LogOut} from "lucide-react";
 
 export const Route = createFileRoute('/study-plans/$studyPlanId')({
     component: RouteComponent,
@@ -22,8 +25,8 @@ export const Route = createFileRoute('/study-plans/$studyPlanId')({
 });
 
 function RouteComponent() {
-    const [opened] = useDisclosure()
-    const {studyPlanId} = Route.useParams()
+    const [opened, {toggle}] = useDisclosure();
+    const {studyPlanId} = Route.useParams();
 
     return (
         <AppShell
@@ -32,14 +35,49 @@ function RouteComponent() {
                 breakpoint: 'xl',
                 collapsed: {mobile: !opened},
             }}
-            padding="xl"
+            padding="lg"
         >
-            <AppShell.Navbar p="md">
-                <StudyPlanSidebar studyPlanId={Number(studyPlanId)}/>
+            <AppShell.Navbar style={{maxWidth: 250}} p="lg">
+                <StudyPlanSidebar
+                    closeSidebar={toggle}
+                    studyPlanId={Number(studyPlanId)}
+                />
             </AppShell.Navbar>
 
             <AppShell.Main>
-                <Outlet/>
+                <Stack px="xs">
+                    <Group justify="space-between">
+                        <Group gap="lg">
+                            <Burger
+                                opened={opened}
+                                onClick={toggle}
+                                hiddenFrom="xl"
+                                size="sm"
+                            />
+
+                            <StudyPlanBreadcrumbs/>
+                        </Group>
+
+                        <Group gap="lg">
+                            <Badge variant="dot">Last update: 3 weeks ago</Badge>
+
+                            <Avatar
+                                color="blue"
+                                variant="transparent"
+                                radius="xl"
+                            />
+
+                            <ActionIcon
+                                size="sm"
+                                variant="transparent"
+                            >
+                                <LogOut/>
+                            </ActionIcon>
+                        </Group>
+                    </Group>
+
+                    <Outlet/>
+                </Stack>
             </AppShell.Main>
         </AppShell>
     )

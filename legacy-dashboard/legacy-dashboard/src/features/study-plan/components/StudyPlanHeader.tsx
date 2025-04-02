@@ -2,16 +2,13 @@ import {ActionIcon, Avatar, Badge, Flex, Group, Title} from "@mantine/core";
 import {StudyPlanBreadcrumbs} from "@/features/study-plan/components/StudyPlanBreadcrumbs.tsx";
 import {LogOut} from "lucide-react";
 
-export function StudyPlanHeader({title}: { title: string }) {
+export function StudyPlanHeader() {
     return (
-        <Flex direction="column" gap="lg">
             <Group justify="space-between">
                 <StudyPlanBreadcrumbs/>
 
                 <Group gap="lg">
-                    <Group gap="sm">
-                        <Badge variant="dot">Last update: 3 weeks ago</Badge>
-                    </Group>
+                    <Badge variant="dot">Last update: 3 weeks ago</Badge>
 
                     <Avatar color="blue" variant="transparent" radius="xl"/>
 
@@ -20,10 +17,5 @@ export function StudyPlanHeader({title}: { title: string }) {
                     </ActionIcon>
                 </Group>
             </Group>
-
-            <Group justify="space-between">
-                <Title fw={600}>{title}</Title>
-            </Group>
-        </Flex>
     );
 }
