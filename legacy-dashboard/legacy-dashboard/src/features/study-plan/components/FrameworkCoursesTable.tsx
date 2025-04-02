@@ -13,7 +13,7 @@ import {Course} from "@/features/course/types.ts";
 import {ArrowDownUp, Eye, ListEnd, Search, Trash, X} from "lucide-react";
 import {
     ActionIcon,
-    Badge, Button, Checkbox,
+    Badge, Button, Checkbox, Divider,
     Flex,
     Group, Indicator, Input,
     Loader,
@@ -366,6 +366,9 @@ export function FrameworkCoursesTable() {
                                 w={70}
                             />
                         </Group>
+
+                        <Divider orientation="vertical" />
+
                         <Text size="sm">{paginationMessage}</Text>
                         <Pagination total={table.getPageCount()}
                                     onChange={(page) => setPagination({
