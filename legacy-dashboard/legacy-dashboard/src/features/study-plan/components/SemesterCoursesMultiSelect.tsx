@@ -6,6 +6,7 @@ import {useParams} from "@tanstack/react-router";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useAddCoursesToSemester} from "@/features/study-plan/hooks/useAddCoursesToSemester.ts";
 import classes from './CoursesMultiSelect.module.css';
+import {getSectionCode} from "@/lib/getSectionCode.ts";
 
 type SemesterCoursesMultiSelectProps = {
     semester: number;
@@ -33,27 +34,36 @@ export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelec
     if (!courses || !studyPlan) return null;
 
     const data = studyPlan.sections
-        .flatMap((s) => s.courses)
-        .map((courseId) => {
-            const course = courses[courseId];
-            if (!course) return null;
-
-            const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
-            const unmetPrerequisites = Object.keys(prerequisites)
-                .filter((prereqId) => {
-                    const placement = studyPlan.coursePlacements[Number(prereqId)];
-                    return placement === undefined || placement >= semester;
-                });
-
-            if (studyPlan.coursePlacements[courseId] !== undefined) return null;
+        .map(section => {
+            const sectionCode = getSectionCode(section);
+            const displayName = section.name
+                ? `- ${section.name}`
+                : (sectionCode.split('.').length > 2 ? "- General" : "");
 
             return {
-                label: `${course.code}: ${course.name}`,
-                value: courseId.toString(),
-                disabled: unmetPrerequisites.length > 0,
-                unmetPrerequisites,
-            } as CourseOption;
-        }).filter((item): item is CourseOption => item !== null);
+                group: `${sectionCode}: ${section.level} ${section.type} ${displayName}`,
+                items: section.courses.map(courseId => {
+                    const course = courses[courseId];
+                    if (!course) return null;
+
+                    const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
+                    const unmetPrerequisites = Object.keys(prerequisites)
+                        .filter((prereqId) => {
+                            const placement = studyPlan.coursePlacements[Number(prereqId)];
+                            return placement === undefined || placement >= semester;
+                        });
+
+                    if (studyPlan.coursePlacements[courseId] !== undefined) return null;
+
+                    return {
+                        label: `${course.code}: ${course.name}`,
+                        value: courseId.toString(),
+                        disabled: unmetPrerequisites.length > 0,
+                        unmetPrerequisites,
+                    } as CourseOption;
+                }).filter((item): item is CourseOption => item !== null)
+            }
+        });
 
     const renderOption: MultiSelectProps['renderOption'] = ({option}) => {
         const courseOption = option as unknown as CourseOption;
@@ -68,9 +78,9 @@ export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelec
                             <CircleAlert size={14}/>
 
                             Prerequisites: {courseOption.unmetPrerequisites.map(prereqId => {
-                                const prereqCourse = courses[Number(prereqId)];
-                                return prereqCourse?.code || prereqId;
-                            }).join(', ')}
+                            const prereqCourse = courses[Number(prereqId)];
+                            return prereqCourse?.code || prereqId;
+                        }).join(', ')}
                         </Group>
                     </Text>
                 )}
@@ -85,7 +95,7 @@ export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelec
             onChange={setOpened}
             withArrow
             shadow="md"
-            width={300}
+            width={360}
         >
             <Popover.Target>
                 <ActionIcon

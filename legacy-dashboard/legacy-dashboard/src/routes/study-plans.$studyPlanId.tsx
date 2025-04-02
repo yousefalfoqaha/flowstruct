@@ -35,7 +35,7 @@ function RouteComponent() {
                 breakpoint: 'xl',
                 collapsed: {mobile: !opened},
             }}
-            padding="lg"
+            padding="xl"
         >
             <AppShell.Navbar style={{maxWidth: 250}} p="lg">
                 <StudyPlanSidebar
@@ -45,9 +45,9 @@ function RouteComponent() {
             </AppShell.Navbar>
 
             <AppShell.Main>
-                <Stack px="xs">
+                <Stack gap="md">
                     <Group justify="space-between">
-                        <Group gap="lg">
+                        <Group gap="xl">
                             <Burger
                                 opened={opened}
                                 onClick={toggle}

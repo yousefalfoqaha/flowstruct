@@ -38,7 +38,7 @@ export function SectionsCombobox({courseId, sectionId, courseSectionCode}: Secti
                 <Combobox.Option py="xs" pr="md" value={section.id.toString()} key={section.id}>
                     <Group gap="xs">
                         {isSelected && <Check color="gray" size={14} />}
-                        <Text size="sm">{getSectionCode(section)}: {section.level} {section.type} {displayName}</Text>
+                        <Text size="sm">{sectionCode}: {section.level} {section.type} {displayName}</Text>
                     </Group>
                 </Combobox.Option>
             );

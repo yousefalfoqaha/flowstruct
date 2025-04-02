@@ -15,6 +15,7 @@ import {CourseRelation} from "@/features/study-plan/types.ts";
 import {useAssignCourseCorequisites} from "@/features/study-plan/hooks/useAssignCourseCorequisites.ts";
 import {useStudyPlan} from "../hooks/useStudyPlan";
 import classes from "@/features/study-plan/components/CoursesMultiSelect.module.css";
+import {getSectionCode} from "@/lib/getSectionCode.ts";
 
 type CourseOption = {
     value: string;
@@ -74,23 +75,31 @@ export function PrerequisiteMultiSelect({parentCourseId}: { parentCourseId: numb
         );
     }
 
-    const data = Array.from(studyPlan.sections
-        .flatMap(s => s.courses))
-        .map(id => {
-            const course = courses[id];
-            if (!course) return null;
+    const data = studyPlan.sections.map(section => {
+        const sectionCode = getSectionCode(section);
+        const displayName = section.name
+            ? `- ${section.name}`
+            : (sectionCode.split('.').length > 2 ? "- General" : "");
 
-            if (parentCourseId === id) return null;
+        return {
+            group: `${sectionCode}: ${section.level} ${section.type} ${displayName}`,
+            items: section.courses.map(id => {
+                const course = courses[id];
+                if (!course) return null;
 
-            const createsCycle = coursesGraph.get(parentCourseId)?.postrequisiteSequence.has(id);
+                if (parentCourseId === id) return null;
 
-            return {
-                value: id.toString(),
-                label: `${course.code}: ${course.name}`,
-                disabled: createsCycle,
-                createsCycle: createsCycle
-            } as CourseOption;
-        }).filter((item): item is CourseOption => item !== null);
+                const createsCycle = coursesGraph.get(parentCourseId)?.postrequisiteSequence.has(id);
+
+                return {
+                    value: id.toString(),
+                    label: `${course.code}: ${course.name}`,
+                    disabled: createsCycle,
+                    createsCycle: createsCycle
+                } as CourseOption;
+            }).filter((item): item is CourseOption => item !== null)
+        }
+    });
 
     const renderOption: MultiSelectProps['renderOption'] = ({option}) => {
         const courseOption = option as unknown as CourseOption;
@@ -157,23 +166,22 @@ export function PrerequisiteMultiSelect({parentCourseId}: { parentCourseId: numb
                     </Group>
 
                     <FocusTrap active={opened}>
-                    <MultiSelect
-                        comboboxProps={{
-                            withinPortal: false,
-                            classNames: {
-                                option: classes.option
-                            }
-                        }}
-                        withCheckIcon
-                        renderOption={renderOption}
-                        data={data}
-                        value={selectedCourses}
-                        onChange={setSelectedCourses}
-                        label={`Assign ${requisiteType === "PRE" ? 'prerequisites' : 'corequisites'} to ${courses[parentCourseId]?.code}`}
-                        placeholder="Search framework courses"
-                        searchable
-                        hidePickedOptions
-                    />
+                        <MultiSelect
+                            comboboxProps={{
+                                withinPortal: false,
+                                classNames: {
+                                    option: classes.option
+                                }
+                            }}
+                            renderOption={renderOption}
+                            data={data}
+                            value={selectedCourses}
+                            onChange={setSelectedCourses}
+                            label={`Assign ${requisiteType === "PRE" ? 'prerequisites' : 'corequisites'} to ${courses[parentCourseId]?.code}`}
+                            placeholder="Search framework courses"
+                            searchable
+                            hidePickedOptions
+                        />
                     </FocusTrap>
                 </Flex>
             </Popover.Dropdown>

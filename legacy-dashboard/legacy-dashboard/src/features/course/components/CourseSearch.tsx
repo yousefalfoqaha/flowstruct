@@ -177,7 +177,11 @@ export function CourseSearch({focusedSection}: { focusedSection: number | null }
                             onChange={setSelectedSection}
                         />
 
-                        <Combobox store={combobox} onOptionSubmit={handleCourseSelect} withinPortal={false}>
+                        <Combobox
+                            store={combobox}
+                            onOptionSubmit={handleCourseSelect}
+                            withinPortal={false}
+                        >
                             <FocusTrap active={popoverOpened}>
                                 <Combobox.Target>
                                     <PillsInput
