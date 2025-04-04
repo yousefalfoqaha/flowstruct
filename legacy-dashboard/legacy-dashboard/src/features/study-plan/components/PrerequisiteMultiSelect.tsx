@@ -87,6 +87,10 @@ export function PrerequisiteMultiSelect({parentCourseId}: { parentCourseId: numb
                 const course = courses[id];
                 if (!course) return null;
 
+                const prerequisites = studyPlan.coursePrerequisites[parentCourseId] ?? {};
+
+                if (prerequisites[id] !== undefined) return null;
+
                 if (parentCourseId === id) return null;
 
                 const createsCycle = coursesGraph.get(parentCourseId)?.postrequisiteSequence.has(id);

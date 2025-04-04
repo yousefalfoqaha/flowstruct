@@ -109,8 +109,8 @@ export function CourseSearch({focusedSection}: { focusedSection: number | null }
                                 style={{pointerEvents: "none"}}
                             />
                             <span>
-                {course.code}: {course.name}
-              </span>
+                                {course.code}: {course.name}
+                            </span>
                         </Flex>
                     </Combobox.Option>
                 );

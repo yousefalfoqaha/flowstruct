@@ -1,25 +1,20 @@
-import {Combobox, Group, InputBase, Loader, ScrollArea, Space, Stack, Text, useCombobox} from "@mantine/core";
-import {useParams} from "@tanstack/react-router";
-import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
+import {Combobox, Group, InputBase, Loader, ScrollArea, Text, useCombobox} from "@mantine/core";
 import {useMoveCourseSection} from "@/features/study-plan/hooks/useMoveCourseSection.ts";
 import {getSectionCode} from "@/lib/getSectionCode.ts";
 import {Check} from "lucide-react";
+import {Section} from "@/features/study-plan/types.ts";
 
 type SectionsComboboxProps = {
     courseId: number;
     sectionId: number;
+    studyPlanId: number;
+    sections: Section[];
     courseSectionCode: string;
 }
 
-export function SectionsCombobox({courseId, sectionId, courseSectionCode}: SectionsComboboxProps) {
+export function SectionsCombobox({courseId, sections, studyPlanId, sectionId, courseSectionCode}: SectionsComboboxProps) {
     const combobox = useCombobox();
-
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
-    const {data: {sections}} = useStudyPlan(studyPlanId);
     const moveCourseSection = useMoveCourseSection();
-
-    const courseSection = sections.find(section => section.id === sectionId);
-    if (!courseSection) return;
 
     const options = sections
         .sort((a, b) => {

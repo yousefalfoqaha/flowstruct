@@ -1,9 +1,11 @@
 import classes from './StudyPlanSidebar.module.css';
-import {ArrowRightLeft, Folder, ScrollText, Map, Settings, X} from "lucide-react";
+import {ArrowRightLeft, Folder, ScrollText, Map, Settings, X, Pencil} from "lucide-react";
 import {Link, useRouterState} from "@tanstack/react-router";
-import {ActionIcon, Stack, Text, Title} from "@mantine/core";
+import {ActionIcon, Button, Stack, Text, Title} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useProgram} from "@/features/program/hooks/useProgram.ts";
+import {openModal} from "@mantine/modals";
+import {EditStudyPlanDetailsModal} from "@/features/study-plan/components/EditStudyPlanDetailsModal.tsx";
 
 const data = [
     {label: 'Overview', icon: ScrollText, page: 'overview' as const},
@@ -17,6 +19,8 @@ export function StudyPlanSidebar({studyPlanId, closeSidebar}: { studyPlanId: num
     const activePage = segments.pop();
     const {data: studyPlan} = useStudyPlan(studyPlanId);
     const {data: program} = useProgram(studyPlan.program);
+
+    const studyPlanDisplayName = `${studyPlan.year}-${studyPlan.year + 1} ${studyPlan.track ?? ''}`;
 
     const links = data.map((item) => {
         const Icon = item.icon;
@@ -48,11 +52,24 @@ export function StudyPlanSidebar({studyPlanId, closeSidebar}: { studyPlanId: num
                 <X strokeWidth={1.5} />
             </ActionIcon>
             <Stack className={classes.header} gap={0}>
-                <Title order={3} fw={600} pb={8}>
-                    {program.degree} {program.name}
-                </Title>
-                <Text size="sm"
-                      c="dimmed">{studyPlan.year}/{studyPlan.year + 1} {studyPlan.track && `- ${studyPlan.track}`}</Text>
+                <Title order={3} fw={600} pb={8}>{program.degree} {program.name}</Title>
+
+                <Text size="sm" c="dimmed">{studyPlanDisplayName}</Text>
+
+                <Button
+                    size="sm"
+                    mt="md"
+                    leftSection={<Pencil size={14}/>}
+                    variant="default"
+                    onClick={() =>
+                        openModal({
+                            title: `Edit Study Plan Details`,
+                            centered: true,
+                            children: <EditStudyPlanDetailsModal studyPlan={studyPlan}/>
+                        })}
+                >
+                    Edit Details
+                </Button>
             </Stack>
 
             <div className={classes.navbarMain}>

@@ -53,15 +53,22 @@ export function FrameworkCoursesTable() {
     const {data: courses} = useCourseList(studyPlanId);
     const {data: studyPlan} = useStudyPlan(studyPlanId);
 
+    const sections = studyPlan.sections
+        .sort((a, b) => {
+            const codeA = getSectionCode(a);
+            const codeB = getSectionCode(b);
+            return codeA.localeCompare(codeB);
+        });
+
     const [sorting, setSorting] = React.useState<SortingState>([{id: 'code', desc: false}]);
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
     const [pagination, setPagination] = React.useState({pageIndex: 0, pageSize: 7,});
     const [globalFilter, setGlobalFilter] = React.useState("");
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [search, setSearch] = React.useState<string>("");
-    const [debouncedSearch] = useDebouncedValue(search, 400);
 
-    React.useEffect(() => setGlobalFilter(debouncedSearch), [debouncedSearch]);
+    React.useEffect(() => setGlobalFilter(search), [search]);
+
 
     const columns = [
         columnHelper.display({
@@ -92,7 +99,7 @@ export function FrameworkCoursesTable() {
             ),
             sortingFn: 'alphanumeric',
             cell: ({row}) => (
-                <Text fw={700} size="sm">{row.original.code}</Text>
+                <p>{row.original.code}</p>
             ),
         }),
         columnHelper.accessor("name", {
@@ -104,14 +111,14 @@ export function FrameworkCoursesTable() {
                     Name
                 </Group>
             ),
-            cell: ({row}) => <Text size="sm">{row.original.name}</Text>,
+            cell: ({row}) => <p>{row.original.name}</p>,
             sortingFn: 'alphanumeric'
         }),
         columnHelper.accessor("creditHours", {
             header: 'Credits',
             sortingFn: 'alphanumeric',
             cell: ({row}) => (
-                <Text size="sm">{row.original.creditHours} Cr.</Text>
+                <p>{row.original.creditHours} Cr.</p>
             )
         }),
         columnHelper.display({
@@ -187,6 +194,7 @@ export function FrameworkCoursesTable() {
                         })}
 
                         <PrerequisiteMultiSelect parentCourseId={row.original.id}/>
+
                         {
                             removePrerequisite.isPending && removePrerequisite.variables.courseId === row.original.id ||
                             removeCorequisite.isPending && removeCorequisite.variables.courseId === row.original.id
@@ -204,6 +212,8 @@ export function FrameworkCoursesTable() {
             cell: ({row}) => {
                 return (
                     <SectionsCombobox
+                        sections={sections}
+                        studyPlanId={studyPlanId}
                         courseId={row.original.id}
                         sectionId={row.original.section}
                         courseSectionCode={row.original.sectionCode}
@@ -371,7 +381,7 @@ export function FrameworkCoursesTable() {
                             />
                         </Group>
 
-                        <Divider orientation="vertical" />
+                        <Divider orientation="vertical"/>
 
                         <Text size="sm">{paginationMessage}</Text>
                         <Pagination total={table.getPageCount()}
