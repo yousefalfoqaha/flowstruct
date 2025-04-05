@@ -1,10 +1,14 @@
 package com.yousefalfoqaha.gjuplans.studyplan.mapper;
 
+import com.yousefalfoqaha.gjuplans.studyplan.domain.Section;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionLevel;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionType;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.SectionResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -23,6 +27,7 @@ public class StudyPlanResponseMapper implements Function<StudyPlan, StudyPlanRes
                 studyPlan.getProgram().getId(),
                 studyPlan.getSections()
                         .stream()
+                        .sorted(Comparator.comparing(this::getSectionCode))
                         .map(sec -> new SectionResponse(
                                 sec.getId(),
                                 sec.getLevel(),
@@ -58,5 +63,27 @@ public class StudyPlanResponseMapper implements Function<StudyPlan, StudyPlanRes
                                         .collect(Collectors.toSet())
                         ))
         );
+    }
+
+    private String getSectionCode(Section section) {
+        return getSectionLevelCode(section.getLevel())
+                + "." + getSectionTypeCode(section.getType())
+                + (section.getPosition() > 0 ? "." + section.getPosition() : "");
+    }
+
+    private String getSectionLevelCode(SectionLevel level) {
+        return switch (level) {
+            case SectionLevel.University -> "1";
+            case SectionLevel.School -> "2";
+            case SectionLevel.Program -> "3";
+        };
+    }
+
+    private String getSectionTypeCode(SectionType type) {
+        return switch (type) {
+            case SectionType.Requirement -> "1";
+            case SectionType.Elective -> "2";
+            case SectionType.Remedial -> "3";
+        };
     }
 }

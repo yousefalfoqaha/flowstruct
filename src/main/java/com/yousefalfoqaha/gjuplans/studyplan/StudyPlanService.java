@@ -45,8 +45,11 @@ public class StudyPlanService {
         return studyPlanResponseMapper.apply(studyPlan);
     }
 
-    public void toggleVisibility(long studyPlanId) {
+    public StudyPlanSummaryResponse toggleVisibility(long studyPlanId) {
         studyPlanRepository.toggleStudyPlanVisibility(studyPlanId);
+
+        var updatedStudyPlan = findStudyPlanSummary(studyPlanId);
+        return studyPlanSummaryResponseMapper.apply(updatedStudyPlan);
     }
 
     @Transactional
@@ -99,7 +102,7 @@ public class StudyPlanService {
 
         studyPlanRepository.save(studyPlan);
 
-        var studyPlanSummary = findStudyPlanSummaryOrThrow(studyPlanId);
+        var studyPlanSummary = findStudyPlanSummary(studyPlanId);
         return studyPlanSummaryResponseMapper.apply(studyPlanSummary);
     }
 
@@ -115,7 +118,7 @@ public class StudyPlanService {
 
         var newStudyPlan = studyPlanRepository.save(studyPlan);
 
-        var studyPlanSummary = findStudyPlanSummaryOrThrow(newStudyPlan.getId());
+        var studyPlanSummary = findStudyPlanSummary(newStudyPlan.getId());
         return studyPlanSummaryResponseMapper.apply(studyPlanSummary);
     }
 
@@ -482,7 +485,7 @@ public class StudyPlanService {
                 .orElseThrow(() -> new StudyPlanNotFoundException("Study plan with id " + studyPlanId + " was not found."));
     }
 
-    private StudyPlanSummaryProjection findStudyPlanSummaryOrThrow(long studyPlanId) {
+    private StudyPlanSummaryProjection findStudyPlanSummary(long studyPlanId) {
         return studyPlanRepository.findStudyPlanSummary(studyPlanId)
                 .orElseThrow(() -> new StudyPlanNotFoundException("Study plan was not found."));
     }

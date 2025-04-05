@@ -31,9 +31,8 @@ public class StudyPlanController {
     }
 
     @PutMapping("/{studyPlanId}/toggle-visibility")
-    public ResponseEntity<Void> toggleVisibility(@PathVariable long studyPlanId) {
-        studyPlanService.toggleVisibility(studyPlanId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<StudyPlanSummaryResponse> toggleVisibility(@PathVariable long studyPlanId) {
+        return new ResponseEntity<>(studyPlanService.toggleVisibility(studyPlanId), HttpStatus.OK);
     }
 
     @PutMapping("/{studyPlanId}")
