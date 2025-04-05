@@ -23,10 +23,9 @@ export function StudyPlansTable({studyPlanList}: StudyPlansTableProps) {
         display({
             id: 'open',
             cell: ({row}) => (
-                <Link to="/study-plans/$studyPlanId/$page"
+                <Link to="/study-plans/$studyPlanId/overview"
                       params={{
-                          studyPlanId: String(row.original.id),
-                          page: 'overview'
+                          studyPlanId: String(row.original.id)
                       }}>
                     <Button variant="outline" rightSection={<ArrowRightFromLine size={14}/>}>
                         View
@@ -57,9 +56,9 @@ export function StudyPlansTable({studyPlanList}: StudyPlansTableProps) {
         }),
         display({
             id: 'actions',
-            header: () => <div className="flex justify-end pr-14">Actions</div>,
+            header: 'Actions',
             cell: ({row}) => (
-                <div className="flex gap-2 justify-end items-center">
+                <div>
                     <ActionIcon
                         variant="light"
                         size="md"
@@ -77,7 +76,7 @@ export function StudyPlansTable({studyPlanList}: StudyPlansTableProps) {
                     <ActionIcon
                         variant="light"
                         size="md"
-                        onClick={() => toggleVisibility.mutate(row.original)}
+                        onClick={() => toggleVisibility.mutate(row.original.id)}
                     >
                         {row.getValue('isPrivate')
                             ? <Eye size={18}/>

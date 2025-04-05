@@ -30,6 +30,7 @@ export function StudyPlanHeader({studyPlan, toggleSidebar, mobileBreakpoint}: St
                     radius="xl"
                     variant="default"
                     leftSection={studyPlan.isPrivate ? <Eye size={18}/> : <EyeOff size={18}/>}
+                    loading={toggleVisibility.isPending}
                     size="xs"
                     onClick={() => toggleVisibility.mutate(studyPlan.id)}
                 >

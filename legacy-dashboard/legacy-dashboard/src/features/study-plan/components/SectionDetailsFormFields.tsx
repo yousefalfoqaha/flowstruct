@@ -72,6 +72,7 @@ export function SectionDetailsFormFields({control, errors, getValues}: {
                         label="Name"
                         description="An optional name for clarity"
                         {...field}
+                        value={field.value ?? ""}
                         autoComplete="off"
                         prefix={getValues('level')}
                         error={errors.name?.message}
