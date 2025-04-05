@@ -83,26 +83,27 @@ export function PrerequisiteMultiSelect({parentCourseId, courses, studyPlan}: Pr
 
         return {
             group: `${sectionCode}: ${section.level} ${section.type} ${displayName}`,
-            items: section.courses.map(id => {
-                const course = courses[id];
-                if (!course) return null;
+            items: section.courses
+                .map(id => {
+                    const course = courses[id];
+                    if (!course) return null;
 
-                const prerequisites = studyPlan.coursePrerequisites[parentCourseId] ?? {};
+                    const prerequisites = studyPlan.coursePrerequisites[parentCourseId] ?? {};
 
-                if (prerequisites[id] !== undefined) return null;
+                    if (prerequisites[id] !== undefined) return null;
+                    if (parentCourseId === id) return null;
 
-                if (parentCourseId === id) return null;
+                    const createsCycle = coursesGraph.get(parentCourseId)?.postrequisiteSequence.has(id);
 
-                const createsCycle = coursesGraph.get(parentCourseId)?.postrequisiteSequence.has(id);
-
-                return {
-                    value: id.toString(),
-                    label: `${course.code}: ${course.name}`,
-                    disabled: createsCycle,
-                    createsCycle: createsCycle
-                } as CourseOption;
-            }).filter((item): item is CourseOption => item !== null)
-        }
+                    return {
+                        value: id.toString(),
+                        label: `${course.code}: ${course.name}`,
+                        disabled: createsCycle,
+                        createsCycle: createsCycle
+                    } as CourseOption;
+                })
+                .filter((option): option is CourseOption => option !== null)
+        };
     });
 
     const renderOption: MultiSelectProps['renderOption'] = ({option}) => {

@@ -26,7 +26,7 @@ export function FrameworkCoursesTable() {
     return (
         <Flex gap="xl">
             <SectionsTree
-                sections={studyPlan.sections}
+                studyPlan={studyPlan}
                 table={table}
                 selectedSection={selectedSection}
             />

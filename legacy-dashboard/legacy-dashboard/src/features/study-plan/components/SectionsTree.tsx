@@ -8,7 +8,7 @@ import {
     Tree,
     TreeNodeData
 } from "@mantine/core";
-import {Section, SectionLevel, SectionType} from "@/features/study-plan/types.ts";
+import {Section, SectionLevel, SectionType, StudyPlan} from "@/features/study-plan/types.ts";
 import {ChevronDown, Filter, List} from "lucide-react";
 import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
 import {SectionOptionsMenu} from "@/features/study-plan/components/SectionOptionsMenu.tsx";
@@ -22,16 +22,16 @@ import {FrameworkCourse} from "@/features/study-plan/hooks/useFrameworkCoursesTa
 type SectionsTreeProps = {
     table: Table<FrameworkCourse>;
     selectedSection: Section | null;
-    sections: Section[];
+    studyPlan: StudyPlan;
 }
 
-export function SectionsTree({table, selectedSection, sections}: SectionsTreeProps) {
+export function SectionsTree({table, selectedSection, studyPlan}: SectionsTreeProps) {
     const data: TreeNodeData[] = React.useMemo(() => {
         return Object.values(SectionLevel).flatMap(level => {
             const levelCode = getSectionLevelCode(level);
 
             const children = Object.values(SectionType).flatMap(type => {
-                const siblingSections = sections.filter(s => s.level === level && s.type === type);
+                const siblingSections = studyPlan.sections.filter(s => s.level === level && s.type === type);
                 const typeCode = getSectionTypeCode(type);
 
                 if (siblingSections.length === 0) return [];
@@ -62,12 +62,10 @@ export function SectionsTree({table, selectedSection, sections}: SectionsTreePro
                 children,
             }];
         });
-    }, [sections]);
-
-
+    }, [studyPlan.sections]);
 
     const Leaf = ({node, level, expanded, hasChildren, elementProps}: RenderTreeNodePayload) => {
-        const section = sections.find(s => s.id.toString() === node.value);
+        const section = studyPlan.sections.find(s => s.id.toString() === node.value);
 
         const isSelected = Number(node.value) === selectedSection?.id;
 
@@ -105,7 +103,7 @@ export function SectionsTree({table, selectedSection, sections}: SectionsTreePro
 
                 {section && (
                     <Group gap={5}>
-                        {level > 2 && <MoveSectionMenu section={section}/>}
+                        {level > 2 && <MoveSectionMenu studyPlan={studyPlan} section={section}/>}
 
                         <ActionIcon onClick={handleFilter} variant="transparent">
                             <Filter size={14}/>
@@ -115,6 +113,7 @@ export function SectionsTree({table, selectedSection, sections}: SectionsTreePro
                             selectedSection={selectedSection}
                             resetSelectedSection={() => selectSection(null)}
                             section={section}
+                            studyPlanId={studyPlan.id}
                         />
                     </Group>
                 )}
@@ -146,7 +145,7 @@ export function SectionsTree({table, selectedSection, sections}: SectionsTreePro
                         </Button>
                     )}
 
-                    <CreateSectionModal/>
+                    <CreateSectionModal studyPlanId={studyPlan.id} />
                 </Group>
             </Group>
 

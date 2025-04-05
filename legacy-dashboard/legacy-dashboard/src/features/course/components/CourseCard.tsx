@@ -3,18 +3,16 @@ import classes from "./CourseCard.module.css";
 import {ActionIcon, Indicator, Popover, Text} from "@mantine/core";
 import {CircleMinus} from "lucide-react";
 import {useRemoveCoursePlacement} from "@/features/study-plan/hooks/useRemoveCoursePlacement.ts";
-import {useParams} from "@tanstack/react-router";
 import {useDisclosure} from "@mantine/hooks";
 
 type CourseCardProps = {
     course: Course;
     missingPrerequisites: Partial<Course>[];
+    studyPlanId: number;
 }
 
-export function CourseCard({course, missingPrerequisites}: CourseCardProps) {
+export function CourseCard({course, missingPrerequisites, studyPlanId}: CourseCardProps) {
     const removeCoursePlacement = useRemoveCoursePlacement();
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
-
 
     const [opened, {close, open}] = useDisclosure(false);
 

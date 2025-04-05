@@ -3,17 +3,21 @@ import {EllipsisVertical, Pencil, Trash} from "lucide-react";
 import {Section} from "@/features/study-plan/types.ts";
 import {modals} from "@mantine/modals";
 import {EditSectionDetailsModal} from "@/features/study-plan/components/EditSectionDetailsModal.tsx";
-import {useParams} from "@tanstack/react-router";
 import {useDeleteSection} from "@/features/study-plan/hooks/useDeleteSection.ts";
 
 type SectionOptionsMenuProps = {
+    studyPlanId: number;
     section: Section;
     selectedSection: Section | null;
     resetSelectedSection: () => void;
 }
 
-export function SectionOptionsMenu({section, selectedSection, resetSelectedSection}: SectionOptionsMenuProps) {
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
+export function SectionOptionsMenu({
+                                       section,
+                                       selectedSection,
+                                       resetSelectedSection,
+                                       studyPlanId
+                                   }: SectionOptionsMenuProps) {
     const deleteSection = useDeleteSection();
 
     if (!section) return;

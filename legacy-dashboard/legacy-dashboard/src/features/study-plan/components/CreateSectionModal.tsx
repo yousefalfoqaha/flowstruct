@@ -1,5 +1,4 @@
 import {useCreateSection} from "@/features/study-plan/hooks/useCreateSection.ts";
-import {useParams} from "@tanstack/react-router";
 import {useForm} from "react-hook-form";
 import {SectionDetailsFormValues, sectionDetailsSchema} from "@/features/study-plan/form-schemas.ts";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -8,7 +7,11 @@ import {SectionDetailsFormFields} from "@/features/study-plan/components/Section
 import {useDisclosure} from "@mantine/hooks";
 import {Plus} from "lucide-react";
 
-export function CreateSectionModal() {
+type CreateSectionModalProps = {
+    studyPlanId: number;
+}
+
+export function CreateSectionModal({studyPlanId}: CreateSectionModalProps) {
     const {
         handleSubmit,
         control,
@@ -20,9 +23,8 @@ export function CreateSectionModal() {
     });
 
     const createSection = useCreateSection();
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
 
-    const [opened, { open, close }] = useDisclosure(false);
+    const [opened, {open, close}] = useDisclosure(false);
 
     const handleClose = () => {
         reset();
@@ -55,7 +57,7 @@ export function CreateSectionModal() {
                             overlayProps={{radius: "sm", blur: 2}}
                         />
                         <SectionDetailsFormFields control={control} errors={errors} getValues={getValues}/>
-                        <Button leftSection={<Plus size={18} />} type="submit" fullWidth mt="md">
+                        <Button leftSection={<Plus size={18}/>} type="submit" fullWidth mt="md">
                             Create Section
                         </Button>
                     </Flex>

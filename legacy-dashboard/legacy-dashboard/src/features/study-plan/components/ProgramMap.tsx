@@ -78,6 +78,7 @@ export function ProgramMap() {
 
                                                         return <CourseCard
                                                             key={courseId}
+                                                            studyPlanId={studyPlan.id}
                                                             missingPrerequisites={missingPrerequisites}
                                                             course={course}
                                                         />
