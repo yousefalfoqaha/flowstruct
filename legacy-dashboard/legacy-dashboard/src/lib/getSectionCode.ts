@@ -6,7 +6,7 @@ export const getSectionCode = (section: Section) => {
     code += getSectionLevelCode(section.level);
     code += '.' + getSectionTypeCode(section.type);
 
-    return code += section.position !== 0 ? '.' + section.position : '';
+    return code += section.position > 0 ? '.' + section.position : '';
 }
 
 export const getSectionLevelCode = (level: SectionLevel) => {

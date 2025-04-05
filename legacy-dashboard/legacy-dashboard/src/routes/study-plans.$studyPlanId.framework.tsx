@@ -4,13 +4,14 @@ import {CoursesGraphProvider} from "@/contexts/CoursesGraphContext.tsx";
 import {Stack, Title} from "@mantine/core";
 
 export const Route = createFileRoute('/study-plans/$studyPlanId/framework')({
-    component: RouteComponent,
-})
+    component: StudyPlanFramework,
+});
 
-function RouteComponent() {
+function StudyPlanFramework() {
     return (
         <Stack gap="lg">
             <Title fw={600}>Framework</Title>
+
             <CoursesGraphProvider>
                 <FrameworkCoursesTable/>
             </CoursesGraphProvider>

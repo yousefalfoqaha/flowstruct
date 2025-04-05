@@ -8,70 +8,68 @@ import {
     Tree,
     TreeNodeData
 } from "@mantine/core";
-import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
-import {useParams} from "@tanstack/react-router";
-import {SectionLevel, SectionType} from "@/features/study-plan/types.ts";
-import {ChevronDown, Filter, List, ListOrdered, ListTree} from "lucide-react";
+import {Section, SectionLevel, SectionType} from "@/features/study-plan/types.ts";
+import {ChevronDown, Filter, List} from "lucide-react";
 import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
 import {SectionOptionsMenu} from "@/features/study-plan/components/SectionOptionsMenu.tsx";
 import classes from './SectionsTabs.module.css';
 import React from "react";
 import {MoveSectionMenu} from "@/features/study-plan/components/MoveSectionMenu.tsx";
 import {getSectionCode, getSectionLevelCode, getSectionTypeCode} from "@/lib/getSectionCode.ts";
+import {Table} from "@tanstack/react-table";
+import {FrameworkCourse} from "@/features/study-plan/hooks/useFrameworkCoursesTable.ts";
 
-export function SectionsTree({selectSection, selectedSection}: {
-    selectSection: (sectionId: number | null) => void,
-    selectedSection: number | null
-}) {
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
-    const {data: studyPlan} = useStudyPlan(studyPlanId);
+type SectionsTreeProps = {
+    table: Table<FrameworkCourse>;
+    selectedSection: Section | null;
+    sections: Section[];
+}
 
-    const data: TreeNodeData[] = React.useMemo(() => Object.values(SectionLevel)
-        .map(level => {
+export function SectionsTree({table, selectedSection, sections}: SectionsTreeProps) {
+    const data: TreeNodeData[] = React.useMemo(() => {
+        return Object.values(SectionLevel).flatMap(level => {
             const levelCode = getSectionLevelCode(level);
 
-            const children = Object.values(SectionType)
-                .map(type => {
-                    const sections = studyPlan.sections.filter(s => s.level === level && s.type === type);
-                    const typeCode = getSectionTypeCode(type);
+            const children = Object.values(SectionType).flatMap(type => {
+                const siblingSections = sections.filter(s => s.level === level && s.type === type);
+                const typeCode = getSectionTypeCode(type);
 
-                    if (sections.length === 0) return null;
+                if (siblingSections.length === 0) return [];
 
-                    if (sections.length === 1) {
-                        const section = sections[0];
-                        return {
-                            label: `${getSectionCode(section)}. ${type} ${section.name ? `- ${section.name}` : ''}`,
-                            value: section.id.toString()
-                        };
-                    }
+                if (siblingSections.length === 1) {
+                    const section = siblingSections[0];
+                    return [{
+                        label: `${getSectionCode(section)}. ${type} ${section.name ? `- ${section.name}` : ''}`,
+                        value: section.id.toString(),
+                    }];
+                }
 
-                    return {
-                        label: `${levelCode}.${typeCode}. ${type}`,
-                        value: `${level}_${type}`,
-                        children: sections
-                            .sort((a, b) => {
-                                const codeA = getSectionCode(a);
-                                const codeB = getSectionCode(b);
-                                return codeA.localeCompare(codeB);
-                            })
-                            .map(section => ({
-                                label: `${getSectionCode(section)}. ${section.name || "General"}`,
-                                value: section.id.toString(),
-                            }))
-                    };
-                })
-                .filter(Boolean);
+                return [{
+                    label: `${levelCode}.${typeCode}. ${type}`,
+                    value: `${level}_${type}`,
+                    children: siblingSections.map(section => ({
+                        label: `${getSectionCode(section)}. ${section.name || "General"}`,
+                        value: section.id.toString(),
+                    })),
+                }];
+            });
 
-            return children.length > 0
-                ? {label: `${levelCode}. ${level}`, value: level.toString(), children}
-                : null;
-        })
-        .filter(Boolean), [studyPlan]);
+            if (children.length === 0) return [];
+
+            return [{
+                label: `${levelCode}. ${level}`,
+                value: level.toString(),
+                children,
+            }];
+        });
+    }, [sections]);
+
+
 
     const Leaf = ({node, level, expanded, hasChildren, elementProps}: RenderTreeNodePayload) => {
-        const section = studyPlan.sections.find(s => s.id.toString() === node.value);
+        const section = sections.find(s => s.id.toString() === node.value);
 
-        const isSelected = parseInt(node.value) === selectedSection;
+        const isSelected = Number(node.value) === selectedSection?.id;
 
         const handleFilter = () => {
             if (!isSelected) {
@@ -99,13 +97,13 @@ export function SectionsTree({selectSection, selectedSection}: {
                             {node.label}
                         </span>
 
-                        {!hasChildren && (
-                            <Badge size="xs" variant="default">{section?.requiredCreditHours} Cr. Req</Badge>
+                        {section && (
+                            <Badge size="xs" variant="default">{section.requiredCreditHours} Cr. Req</Badge>
                         )}
                     </Indicator>
                 </Group>
 
-                {!hasChildren && (
+                {section && (
                     <Group gap={5}>
                         {level > 2 && <MoveSectionMenu section={section}/>}
 
@@ -124,11 +122,19 @@ export function SectionsTree({selectSection, selectedSection}: {
         );
     };
 
+    const selectSection = ((sectionId: number | null) => {
+        if (sectionId === null) {
+            table.setColumnFilters([]);
+            return;
+        }
+        table.setColumnFilters([{id: 'section', value: sectionId}]);
+    });
+
     return (
         <Flex direction="column" gap={8}>
             <Group style={{borderBottom: "1px solid #dee2e6"}} pb={10} justify="space-between">
                 <Group gap="sm">
-                    <List size={18} />
+                    <List size={18}/>
                     <Text fw={500}>Sections</Text>
                 </Group>
 
@@ -139,9 +145,11 @@ export function SectionsTree({selectSection, selectedSection}: {
                             Clear
                         </Button>
                     )}
+
                     <CreateSectionModal/>
                 </Group>
             </Group>
+
             <Tree
                 levelOffset="xl"
                 classNames={classes}

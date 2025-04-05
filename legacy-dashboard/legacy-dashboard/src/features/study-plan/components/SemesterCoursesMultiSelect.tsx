@@ -2,7 +2,6 @@ import {ActionIcon, Button, Group, MultiSelect, MultiSelectProps, Popover, Stack
 import {BetweenHorizontalStart, CircleAlert, Plus} from "lucide-react";
 import React from "react";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
-import {useParams} from "@tanstack/react-router";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useAddCoursesToSemester} from "@/features/study-plan/hooks/useAddCoursesToSemester.ts";
 import classes from './CoursesMultiSelect.module.css';
@@ -26,9 +25,8 @@ export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelec
 
     const addCoursesToSemester = useAddCoursesToSemester();
 
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
-    const {data: courses} = useCourseList(studyPlanId);
-    const {data: studyPlan} = useStudyPlan(studyPlanId);
+    const {data: courses} = useCourseList();
+    const {data: studyPlan} = useStudyPlan();
 
     if (!semester) return null;
     if (!courses || !studyPlan) return null;
@@ -114,7 +112,7 @@ export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelec
                         loading={addCoursesToSemester.isPending}
                         leftSection={<BetweenHorizontalStart size={18}/>}
                         onClick={() => addCoursesToSemester.mutate({
-                            studyPlanId: studyPlanId,
+                            studyPlanId: studyPlan.id,
                             semester: semester,
                             courseIds: selectedCourses.map(id => Number(id))
                         }, {

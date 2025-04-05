@@ -7,8 +7,8 @@ import {useParams} from "@tanstack/react-router";
 import {useDeleteSection} from "@/features/study-plan/hooks/useDeleteSection.ts";
 
 type SectionOptionsMenuProps = {
-    section: Section | undefined;
-    selectedSection: number | null;
+    section: Section;
+    selectedSection: Section | null;
     resetSelectedSection: () => void;
 }
 
@@ -71,7 +71,7 @@ export function SectionOptionsMenu({section, selectedSection, resetSelectedSecti
                                     sectionId: section.id
                                 }, {
                                     onSuccess: () => {
-                                        if (section.id !== selectedSection) return;
+                                        if (section.id !== selectedSection?.id) return;
                                         resetSelectedSection();
                                     }
                                 })

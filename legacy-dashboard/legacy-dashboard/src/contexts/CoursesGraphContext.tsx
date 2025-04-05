@@ -1,5 +1,4 @@
 import React, {ReactNode} from "react";
-import {useParams} from "@tanstack/react-router";
 import {CourseRelation} from "@/features/study-plan/types.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 
@@ -17,9 +16,7 @@ const CoursesGraphContext = React.createContext<CoursesGraphContextType | undefi
 function CoursesGraphProvider({children}: { children: ReactNode }) {
     const [coursesGraph, setCoursesGraph] = React.useState<Map<number, CourseRequisites>>(new Map());
 
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
-
-    const {data: studyPlan} = useStudyPlan(studyPlanId);
+    const {data: studyPlan} = useStudyPlan();
 
     React.useEffect(() => {
         if (!studyPlan) return;

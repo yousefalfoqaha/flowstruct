@@ -1,11 +1,11 @@
 import classes from './StudyPlanSidebar.module.css';
-import {ArrowRightLeft, Folder, ScrollText, Map, Settings, X, Pencil} from "lucide-react";
+import {Folder, ScrollText, Map, Settings, X, Pencil} from "lucide-react";
 import {Link, useRouterState} from "@tanstack/react-router";
 import {ActionIcon, Button, Stack, Text, Title} from "@mantine/core";
-import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useProgram} from "@/features/program/hooks/useProgram.ts";
 import {openModal} from "@mantine/modals";
 import {EditStudyPlanDetailsModal} from "@/features/study-plan/components/EditStudyPlanDetailsModal.tsx";
+import {StudyPlan} from "@/features/study-plan/types.ts";
 
 const data = [
     {label: 'Overview', icon: ScrollText, page: 'overview' as const},
@@ -13,12 +13,17 @@ const data = [
     {label: 'Program Map', icon: Map, page: 'program-map' as const}
 ];
 
-export function StudyPlanSidebar({studyPlanId, closeSidebar}: { studyPlanId: number, closeSidebar: () => void }) {
+type StudyPlanSidebarProps = {
+    studyPlan: StudyPlan;
+    closeSidebar: () => void;
+}
+
+export function StudyPlanSidebar({studyPlan, closeSidebar}: StudyPlanSidebarProps) {
     const {location} = useRouterState();
     const segments = location.pathname.split('/');
     const activePage = segments.pop();
-    const {data: studyPlan} = useStudyPlan(studyPlanId);
-    const {data: program} = useProgram(studyPlan.program);
+
+    const {data: program} = useProgram();
 
     const studyPlanDisplayName = `${studyPlan.year}-${studyPlan.year + 1} ${studyPlan.track ?? ''}`;
 
@@ -28,7 +33,7 @@ export function StudyPlanSidebar({studyPlanId, closeSidebar}: { studyPlanId: num
             <Link
                 to={`/study-plans/$studyPlanId/${item.page}`}
                 params={{
-                    studyPlanId: String(studyPlanId)
+                    studyPlanId: String(studyPlan.id)
                 }}
                 className={classes.link}
                 data-active={item.page === activePage || undefined}
@@ -49,7 +54,7 @@ export function StudyPlanSidebar({studyPlanId, closeSidebar}: { studyPlanId: num
                 color="black"
                 className={classes.close}
             >
-                <X strokeWidth={1.5} />
+                <X strokeWidth={1.5}/>
             </ActionIcon>
             <Stack className={classes.header} gap={0}>
                 <Title order={3} fw={600} pb={8}>{program.degree} {program.name}</Title>
@@ -81,11 +86,6 @@ export function StudyPlanSidebar({studyPlanId, closeSidebar}: { studyPlanId: num
                     <Settings className={classes.linkIcon} strokeWidth="1.5"/>
                     <span>Settings</span>
                 </a>
-                <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
-                    <ArrowRightLeft className={classes.linkIcon} strokeWidth="1.5"/>
-                    <span>Change account</span>
-                </a>
-
             </div>
         </nav>
     );

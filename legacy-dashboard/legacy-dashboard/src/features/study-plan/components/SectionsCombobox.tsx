@@ -23,11 +23,6 @@ export function SectionsCombobox({
     const moveCourseSection = useMoveCourseSection();
 
     const options = sections
-        .sort((a, b) => {
-            const codeA = getSectionCode(a);
-            const codeB = getSectionCode(b);
-            return codeA.localeCompare(codeB);
-        })
         .map((section) => {
             const sectionCode = getSectionCode(section);
             const displayName = section.name
@@ -45,7 +40,7 @@ export function SectionsCombobox({
             );
         });
 
-    const onSubmit = (sectionId: string) => {
+    const handleChangeCourseSection = (sectionId: string) => {
         moveCourseSection.mutate(
             {
                 studyPlanId: studyPlanId,
@@ -60,15 +55,13 @@ export function SectionsCombobox({
         );
     }
 
-    console.log('as')
-
     return (
         <Combobox
             store={combobox}
             width="auto"
             shadow="lg"
             position="left-start"
-            onOptionSubmit={onSubmit}
+            onOptionSubmit={handleChangeCourseSection}
         >
             <Combobox.Target withAriaAttributes={false}>
                 <InputBase

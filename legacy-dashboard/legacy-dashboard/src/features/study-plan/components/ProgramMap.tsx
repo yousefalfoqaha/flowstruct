@@ -1,14 +1,12 @@
 import {CourseCard} from "@/features/course/components/CourseCard.tsx";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
-import {useParams} from "@tanstack/react-router";
 import {Divider, Flex, ScrollArea, Stack, Text} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {SemesterCoursesMultiSelect} from "@/features/study-plan/components/SemesterCoursesMultiSelect.tsx";
 
 export function ProgramMap() {
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
-    const {data: studyPlan} = useStudyPlan(studyPlanId);
-    const {data: courses} = useCourseList(studyPlanId);
+    const {data: studyPlan} = useStudyPlan();
+    const {data: courses} = useCourseList();
 
     const academicYears = Array.from({length: studyPlan.duration}, (_, i) => i + 1);
     const SEMESTERS_PER_YEAR = 3;

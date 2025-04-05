@@ -18,24 +18,25 @@ import {Plus} from "lucide-react";
 import {useDebouncedValue} from "@mantine/hooks";
 import {Course} from "@/features/course/types.ts";
 import {useAddCoursesToSection} from "@/features/study-plan/hooks/useAddCoursesToSection.ts";
-import {useParams} from "@tanstack/react-router";
-import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {usePaginatedCourses} from "@/features/course/hooks/usePaginatedCourses.ts";
 import {CreateCourseModal} from "@/features/course/components/CreateCourseModal.tsx";
 import {getSectionCode} from "@/lib/getSectionCode.ts";
+import {Section, StudyPlan} from "@/features/study-plan/types.ts";
 
-export function CourseSearch({focusedSection}: { focusedSection: number | null }) {
+type CourseSearchProps = {
+    focusedSection: Section | null;
+    studyPlan: StudyPlan;
+}
+
+export function CourseSearch({focusedSection, studyPlan}: CourseSearchProps) {
     const [popoverOpened, setPopoverOpened] = React.useState(false);
     const [selectedSection, setSelectedSection] = React.useState<string | null>(
-        focusedSection ? String(focusedSection) : null
+        focusedSection ? String(focusedSection.id) : null
     );
     const [selectedCourses, setSelectedCourses] = React.useState<Course[]>([]);
     const [search, setSearch] = React.useState<string>("");
     const [debouncedSearch] = useDebouncedValue(search, 750);
     const [createModalOpen, setCreateModalOpen] = React.useState(false);
-
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
-    const {data: studyPlan} = useStudyPlan(studyPlanId);
 
     const addCoursesToSection = useAddCoursesToSection();
 
@@ -73,7 +74,7 @@ export function CourseSearch({focusedSection}: { focusedSection: number | null }
             {
                 addedCourses: selectedCourses,
                 sectionId: sectionId,
-                studyPlanId: studyPlanId
+                studyPlanId: studyPlan.id
             },
             {
                 onSuccess: () => {

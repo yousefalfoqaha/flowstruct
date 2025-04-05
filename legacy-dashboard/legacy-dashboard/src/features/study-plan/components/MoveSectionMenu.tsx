@@ -1,21 +1,18 @@
 import {ActionIcon, Menu} from "@mantine/core";
 import {ArrowDown, ArrowUp, ChevronsUpDown} from "lucide-react";
 import {MoveDirection, Section} from "@/features/study-plan/types.ts";
-import {useParams} from "@tanstack/react-router";
 import {useMoveSection} from "@/features/study-plan/hooks/useMoveSection.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 
 export function MoveSectionMenu({section}: { section: Section | undefined }) {
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
-    const {data: {sections}} = useStudyPlan(studyPlanId);
-    const siblingSections = sections.filter(s => s.level === section?.level && s.type === section?.type);
+    const {data: studyPlan} = useStudyPlan();
+    const {mutate, isPending} = useMoveSection();
 
-    const { mutate, isPending } = useMoveSection();
-
+    const siblingSections = studyPlan.sections.filter(s => s.level === section?.level && s.type === section?.type);
     if (!section) return;
 
     const handleClick = (direction: MoveDirection) => mutate({
-        studyPlanId: studyPlanId,
+        studyPlanId: studyPlan.id,
         sectionId: section.id,
         direction: direction
     });

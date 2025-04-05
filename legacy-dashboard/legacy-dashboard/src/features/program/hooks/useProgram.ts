@@ -1,6 +1,9 @@
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getProgramQuery} from "@/features/program/queries.ts";
+import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 
-export const useProgram = (programId: number) => {
-    return useSuspenseQuery(getProgramQuery(programId));
+export const useProgram = () => {
+    const {data: {program}} = useStudyPlan();
+
+    return useSuspenseQuery(getProgramQuery(program));
 }

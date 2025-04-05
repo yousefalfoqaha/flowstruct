@@ -8,14 +8,12 @@ import {
 import React from "react";
 import {CircleAlert, Link, Plus} from "lucide-react";
 import {useCoursesGraph} from "@/contexts/CoursesGraphContext.tsx";
-import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
-import {useParams} from "@tanstack/react-router";
 import {useAssignCoursePrerequisites} from "@/features/study-plan/hooks/useAssignCoursePrerequisites.ts";
-import {CourseRelation} from "@/features/study-plan/types.ts";
+import {CourseRelation, StudyPlan} from "@/features/study-plan/types.ts";
 import {useAssignCourseCorequisites} from "@/features/study-plan/hooks/useAssignCourseCorequisites.ts";
-import {useStudyPlan} from "../hooks/useStudyPlan";
 import classes from "@/features/study-plan/components/CoursesMultiSelect.module.css";
 import {getSectionCode} from "@/lib/getSectionCode.ts";
+import {Course} from "@/features/course/types.ts";
 
 type CourseOption = {
     value: string;
@@ -24,14 +22,16 @@ type CourseOption = {
     createsCycle: boolean;
 }
 
-export function PrerequisiteMultiSelect({parentCourseId}: { parentCourseId: number }) {
+type PrerequisiteMultiSelectProps = {
+    courses: Record<number, Course>;
+    parentCourseId: number;
+    studyPlan: StudyPlan;
+}
+
+export function PrerequisiteMultiSelect({parentCourseId, courses, studyPlan}: PrerequisiteMultiSelectProps) {
     const [opened, setOpened] = React.useState(false);
     const [selectedCourses, setSelectedCourses] = React.useState<string[]>([]);
     const [requisiteType, setRequisiteType] = React.useState<'PRE' | 'CO'>('PRE');
-
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
-    const {data: studyPlan} = useStudyPlan(studyPlanId);
-    const {data: courses} = useCourseList(studyPlanId);
 
     const {coursesGraph} = useCoursesGraph();
 
@@ -43,7 +43,7 @@ export function PrerequisiteMultiSelect({parentCourseId}: { parentCourseId: numb
             assignPrerequisites.mutate(
                 {
                     courseId: parentCourseId,
-                    studyPlanId: studyPlanId,
+                    studyPlanId: studyPlan.id,
                     prerequisites: selectedCourses.map(id => ({
                         prerequisite: Number(id),
                         relation: CourseRelation.AND
@@ -62,7 +62,7 @@ export function PrerequisiteMultiSelect({parentCourseId}: { parentCourseId: numb
         assignCorequisites.mutate(
             {
                 courseId: parentCourseId,
-                studyPlanId: studyPlanId,
+                studyPlanId: studyPlan.id,
                 corequisites: selectedCourses.map(id => parseInt(id))
             },
             {
@@ -162,7 +162,7 @@ export function PrerequisiteMultiSelect({parentCourseId}: { parentCourseId: numb
                         <Button
                             disabled={!canAddRequisites}
                             leftSection={<Link size={14}/>}
-                            loading={assignPrerequisites.isPending}
+                            loading={assignPrerequisites.isPending || assignCorequisites.isPending}
                             onClick={handleAssignCourses}
                         >
                             Assign {requisiteType === 'PRE' ? 'Prerequisites' : 'Corequisites'}
