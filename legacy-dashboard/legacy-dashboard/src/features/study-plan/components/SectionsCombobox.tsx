@@ -1,48 +1,17 @@
-import {Combobox, Group, InputBase, Loader, ScrollArea, Space, Stack, Text, useCombobox} from "@mantine/core";
-import {useParams} from "@tanstack/react-router";
-import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
+import {Combobox, InputBase, Loader, ScrollArea, Text, useCombobox} from "@mantine/core";
 import {useMoveCourseSection} from "@/features/study-plan/hooks/useMoveCourseSection.ts";
-import {getSectionCode} from "@/lib/getSectionCode.ts";
-import {Check} from "lucide-react";
+import {ReactElement} from "react";
 
 type SectionsComboboxProps = {
     courseId: number;
-    sectionId: number;
+    sectionOptions: ReactElement;
+    studyPlanId: number;
     courseSectionCode: string;
 }
 
-export function SectionsCombobox({courseId, sectionId, courseSectionCode}: SectionsComboboxProps) {
+export function SectionsCombobox({courseId, studyPlanId, sectionOptions, courseSectionCode}: SectionsComboboxProps) {
     const combobox = useCombobox();
-
-    const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
-    const {data: {sections}} = useStudyPlan(studyPlanId);
     const moveCourseSection = useMoveCourseSection();
-
-    const courseSection = sections.find(section => section.id === sectionId);
-    if (!courseSection) return;
-
-    const options = sections
-        .sort((a, b) => {
-            const codeA = getSectionCode(a);
-            const codeB = getSectionCode(b);
-            return codeA.localeCompare(codeB);
-        })
-        .map((section) => {
-            const sectionCode = getSectionCode(section);
-            const displayName = section.name
-                ? `- ${section.name}`
-                : (sectionCode.split('.').length > 2 ? "- General" : "");
-            const isSelected = section.id === sectionId;
-
-            return (
-                <Combobox.Option py="xs" pr="md" value={section.id.toString()} key={section.id}>
-                    <Group gap="xs">
-                        {isSelected && <Check color="gray" size={14} />}
-                        <Text size="sm">{sectionCode}: {section.level} {section.type} {displayName}</Text>
-                    </Group>
-                </Combobox.Option>
-            );
-        });
 
     const onSubmit = (sectionId: string) => {
         moveCourseSection.mutate(
@@ -59,6 +28,8 @@ export function SectionsCombobox({courseId, sectionId, courseSectionCode}: Secti
         );
     }
 
+    console.log('as')
+
     return (
         <Combobox
             store={combobox}
@@ -73,18 +44,18 @@ export function SectionsCombobox({courseId, sectionId, courseSectionCode}: Secti
                     type="button"
                     pointer
                     size="xs"
-                    rightSection={moveCourseSection.isPending ? <Loader size="xs" color="gray" /> : <Combobox.Chevron />}
+                    rightSection={moveCourseSection.isPending ? <Loader size="xs" color="gray"/> : <Combobox.Chevron/>}
                     rightSectionPointerEvents="none"
                     onClick={() => combobox.toggleDropdown()}
                 >
-                    <Text size="xs" >{courseSectionCode}</Text>
+                    <Text size="xs">{courseSectionCode}</Text>
                 </InputBase>
             </Combobox.Target>
 
             <Combobox.Dropdown>
                 <Combobox.Options>
                     <ScrollArea.Autosize mah={300} type="scroll" scrollbarSize={6}>
-                        {options}
+                        {sectionOptions}
                     </ScrollArea.Autosize>
                 </Combobox.Options>
             </Combobox.Dropdown>

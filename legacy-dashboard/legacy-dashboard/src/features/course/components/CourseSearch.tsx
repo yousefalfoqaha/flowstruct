@@ -52,11 +52,14 @@ export function CourseSearch({focusedSection}: { focusedSection: number | null }
 
     const handleCourseSelect = (courseString: string) => {
         const course: Course = JSON.parse(courseString);
+
         setSelectedCourses((current) =>
             current.some(c => c.id === course.id)
                 ? current.filter(c => c.id !== course.id)
                 : [...current, course]
         );
+        setSearch("");
+        combobox.closeDropdown();
     };
 
     const handleCourseRemove = (courseId: number) =>

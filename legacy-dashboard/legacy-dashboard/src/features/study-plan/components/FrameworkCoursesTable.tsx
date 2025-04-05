@@ -10,10 +10,10 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import {Course} from "@/features/course/types.ts";
-import {ArrowDownUp, Eye, ListEnd, Search, Trash, X} from "lucide-react";
+import {ArrowDownUp, Check, Eye, ListEnd, Search, Trash, X} from "lucide-react";
 import {
     ActionIcon,
-    Badge, Button, Checkbox, Divider,
+    Badge, Button, Checkbox, Combobox, Divider,
     Flex,
     Group, Indicator, Input,
     Loader,
@@ -48,20 +48,42 @@ export function FrameworkCoursesTable() {
     const removeCoursesFromSection = useRemoveCoursesFromSection();
     const removePrerequisite = useRemoveCoursePrerequisite();
     const removeCorequisite = useRemoveCourseCorequisite();
-
+    
     const studyPlanId = parseInt(useParams({strict: false}).studyPlanId ?? "");
     const {data: courses} = useCourseList(studyPlanId);
     const {data: studyPlan} = useStudyPlan(studyPlanId);
+    
+    const sections = React.useMemo(() => {
+        return studyPlan?.sections.sort((a, b) => {
+            const codeA = getSectionCode(a);
+            const codeB = getSectionCode(b);
+            return codeA.localeCompare(codeB);
+        }) || [];
+    }, [studyPlan?.sections]);
+
+    const sectionOptions = sections.map((section) => {
+        const sectionCode = getSectionCode(section);
+        const displayName = section.name
+            ? `- ${section.name}`
+            : (sectionCode.split('.').length > 2 ? "- General" : "");
+
+        return (
+            <Combobox.Option py="xs" pr="md" value={section.id.toString()} key={section.id}>
+                <Group gap="xs">
+                    <Text size="sm">{sectionCode}: {section.level} {section.type} {displayName}</Text>
+                </Group>
+            </Combobox.Option>
+        );
+    });
 
     const [sorting, setSorting] = React.useState<SortingState>([{id: 'code', desc: false}]);
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
-    const [pagination, setPagination] = React.useState({pageIndex: 0, pageSize: 7,});
+    const [pagination, setPagination] = React.useState({pageIndex: 0, pageSize: 10,});
     const [globalFilter, setGlobalFilter] = React.useState("");
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [search, setSearch] = React.useState<string>("");
-    const [debouncedSearch] = useDebouncedValue(search, 400);
 
-    React.useEffect(() => setGlobalFilter(debouncedSearch), [debouncedSearch]);
+    React.useEffect(() => setGlobalFilter(search), [search]);
 
     const columns = [
         columnHelper.display({
@@ -92,7 +114,7 @@ export function FrameworkCoursesTable() {
             ),
             sortingFn: 'alphanumeric',
             cell: ({row}) => (
-                <Text fw={700} size="sm">{row.original.code}</Text>
+                <p>{row.original.code}</p>
             ),
         }),
         columnHelper.accessor("name", {
@@ -104,99 +126,99 @@ export function FrameworkCoursesTable() {
                     Name
                 </Group>
             ),
-            cell: ({row}) => <Text size="sm">{row.original.name}</Text>,
+            cell: ({row}) => <p>{row.original.name}</p>,
             sortingFn: 'alphanumeric'
         }),
         columnHelper.accessor("creditHours", {
             header: 'Credits',
             sortingFn: 'alphanumeric',
             cell: ({row}) => (
-                <Text size="sm">{row.original.creditHours} Cr.</Text>
+                <p>{row.original.creditHours} Cr.</p>
             )
         }),
-        columnHelper.display({
-            id: "prerequisites",
-            header: "Prerequisites / Corequisites",
-            cell: ({row}) => {
-                const prerequisites = row.original.prerequisites || [];
-                const corequisites = row.original.corequisites || [];
-
-                return (
-                    <Flex align="center" w={250} wrap="wrap" gap={7}>
-                        {Object.keys(prerequisites).map((prerequisite) => {
-                            const prereqCourse = courses[parseInt(prerequisite)];
-                            if (!prereqCourse) return null;
-
-                            const isRemovingPrerequisite =
-                                removePrerequisite.isPending &&
-                                removePrerequisite.variables.prerequisiteId === prereqCourse.id &&
-                                removePrerequisite.variables.courseId === row.original.id;
-
-                            return (
-                                <Pill
-                                    key={prereqCourse.id}
-                                    withRemoveButton
-                                    disabled={isRemovingPrerequisite}
-                                    onRemove={() => removePrerequisite.mutate({
-                                        studyPlanId: studyPlanId,
-                                        courseId: row.original.id,
-                                        prerequisiteId: prereqCourse.id
-                                    })}
-                                >
-                                    {prereqCourse.code}
-                                </Pill>
-                            );
-                        })}
-
-                        {corequisites.map(corequisite => {
-                            const coreqCourse = courses[corequisite];
-                            if (!coreqCourse) return null;
-
-                            const isRemovingCorequisite =
-                                removeCorequisite.isPending &&
-                                removeCorequisite.variables.corequisiteId === coreqCourse.id &&
-                                removeCorequisite.variables.courseId === row.original.id;
-
-                            return (
-                                <Indicator
-                                    key={coreqCourse.id}
-                                    size={14}
-                                    color="gray"
-                                    position="middle-start"
-                                    offset={18}
-                                    fw="bold"
-                                    inline
-                                    label="CO"
-                                >
-                                    <Pill
-                                        onRemove={() => removeCorequisite.mutate({
-                                            studyPlanId: studyPlanId,
-                                            courseId: row.original.id,
-                                            corequisiteId: corequisite
-                                        })}
-                                        fw="normal"
-                                        pl={35}
-                                        disabled={isRemovingCorequisite}
-                                        key={coreqCourse.id}
-                                        withRemoveButton
-                                    >
-                                        {coreqCourse.code}
-                                    </Pill>
-                                </Indicator>
-                            )
-                        })}
-
-                        <PrerequisiteMultiSelect parentCourseId={row.original.id}/>
-                        {
-                            removePrerequisite.isPending && removePrerequisite.variables.courseId === row.original.id ||
-                            removeCorequisite.isPending && removeCorequisite.variables.courseId === row.original.id
-                                ? <Loader size={14}/>
-                                : null
-                        }
-                    </Flex>
-                );
-            },
-        }),
+        // columnHelper.display({
+        //     id: "prerequisites",
+        //     header: "Prerequisites / Corequisites",
+        //     cell: ({row}) => {
+        //         const prerequisites = row.original.prerequisites || [];
+        //         const corequisites = row.original.corequisites || [];
+        //
+        //         return (
+        //             <Flex align="center" w={250} wrap="wrap" gap={7}>
+        //                 {Object.keys(prerequisites).map((prerequisite) => {
+        //                     const prereqCourse = courses[parseInt(prerequisite)];
+        //                     if (!prereqCourse) return null;
+        //
+        //                     const isRemovingPrerequisite =
+        //                         removePrerequisite.isPending &&
+        //                         removePrerequisite.variables.prerequisiteId === prereqCourse.id &&
+        //                         removePrerequisite.variables.courseId === row.original.id;
+        //
+        //                     return (
+        //                         <Pill
+        //                             key={prereqCourse.id}
+        //                             withRemoveButton
+        //                             disabled={isRemovingPrerequisite}
+        //                             onRemove={() => removePrerequisite.mutate({
+        //                                 studyPlanId: studyPlanId,
+        //                                 courseId: row.original.id,
+        //                                 prerequisiteId: prereqCourse.id
+        //                             })}
+        //                         >
+        //                             {prereqCourse.code}
+        //                         </Pill>
+        //                     );
+        //                 })}
+        //
+        //                 {corequisites.map(corequisite => {
+        //                     const coreqCourse = courses[corequisite];
+        //                     if (!coreqCourse) return null;
+        //
+        //                     const isRemovingCorequisite =
+        //                         removeCorequisite.isPending &&
+        //                         removeCorequisite.variables.corequisiteId === coreqCourse.id &&
+        //                         removeCorequisite.variables.courseId === row.original.id;
+        //
+        //                     return (
+        //                         <Indicator
+        //                             key={coreqCourse.id}
+        //                             size={14}
+        //                             color="gray"
+        //                             position="middle-start"
+        //                             offset={18}
+        //                             fw="bold"
+        //                             zIndex={0}
+        //                             label="CO"
+        //                         >
+        //                             <Pill
+        //                                 onRemove={() => removeCorequisite.mutate({
+        //                                     studyPlanId: studyPlanId,
+        //                                     courseId: row.original.id,
+        //                                     corequisiteId: corequisite
+        //                                 })}
+        //                                 fw="normal"
+        //                                 pl={35}
+        //                                 disabled={isRemovingCorequisite}
+        //                                 key={coreqCourse.id}
+        //                                 withRemoveButton
+        //                             >
+        //                                 {coreqCourse.code}
+        //                             </Pill>
+        //                         </Indicator>
+        //                     )
+        //                 })}
+        //
+        //                 <PrerequisiteMultiSelect parentCourseId={row.original.id}/>
+        //                 {
+        //                     removePrerequisite.isPending && removePrerequisite.variables.courseId === row.original.id ||
+        //                     removeCorequisite.isPending && removeCorequisite.variables.courseId === row.original.id
+        //                         ? <Loader size={14}/>
+        //                         : null
+        //                 }
+        //             </Flex>
+        //         );
+        //     },
+        // }),
         columnHelper.display({
             id: "section",
             header: "Section",
@@ -205,7 +227,8 @@ export function FrameworkCoursesTable() {
                 return (
                     <SectionsCombobox
                         courseId={row.original.id}
-                        sectionId={row.original.section}
+                        studyPlanId={studyPlanId}
+                        sectionOptions={sectionOptions}
                         courseSectionCode={row.original.sectionCode}
                     />
                 );
@@ -221,7 +244,7 @@ export function FrameworkCoursesTable() {
 
         const rows: FrameworkCourse[] = [];
 
-        studyPlan.sections.forEach((section) => {
+        sections.forEach((section) => {
             const sectionCode = getSectionCode(section);
 
             section.courses.forEach(courseId => {
@@ -236,8 +259,7 @@ export function FrameworkCoursesTable() {
         });
 
         return rows;
-    }, [studyPlan, courses]);
-
+    }, [studyPlan, courses, sections]);
 
     const selectSectionHandler = ((sectionId: number | null) => {
         if (sectionId === null) {
@@ -246,7 +268,6 @@ export function FrameworkCoursesTable() {
         }
         setColumnFilters([{id: 'section', value: sectionId}]);
     });
-
 
     const table = useReactTable({
         columns,

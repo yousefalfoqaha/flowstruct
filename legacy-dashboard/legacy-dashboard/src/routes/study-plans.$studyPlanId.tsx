@@ -37,7 +37,7 @@ function RouteComponent() {
             }}
             padding="xl"
         >
-            <AppShell.Navbar style={{maxWidth: 250}} p="lg">
+            <AppShell.Navbar  p="lg">
                 <StudyPlanSidebar
                     closeSidebar={toggle}
                     studyPlanId={Number(studyPlanId)}
