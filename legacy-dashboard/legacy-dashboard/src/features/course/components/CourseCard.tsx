@@ -63,7 +63,7 @@ export function CourseCard({course, missingPrerequisites, studyPlanId}: CourseCa
                 </Popover.Target>
                 <Popover.Dropdown style={{pointerEvents: 'none'}}>
                     <Text fw={600} size="sm" c="red">
-                        Prerequisites: {missingPrerequisites.map(prereq => prereq.code).join(', ')}
+                        Prerequisites: {missingPrerequisites.map(prerequisite => prerequisite.code).join(', ')}
                     </Text>
                 </Popover.Dropdown>
             </Popover>

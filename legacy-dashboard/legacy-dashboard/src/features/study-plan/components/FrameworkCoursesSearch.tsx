@@ -16,7 +16,7 @@ export function FrameworkCoursesSearch({table}: FrameworkCoursesSearchProps) {
         <Input
             w={450}
             leftSection={<Search size={18}/>}
-            placeholder="Search"
+            placeholder="Search courses..."
             value={search}
             rightSectionPointerEvents="all"
             rightSection={

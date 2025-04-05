@@ -1,14 +1,16 @@
 import {ActionIcon, Button, Group, MultiSelect, MultiSelectProps, Popover, Stack, Text} from "@mantine/core";
 import {BetweenHorizontalStart, CircleAlert, Plus} from "lucide-react";
 import React from "react";
-import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
-import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useAddCoursesToSemester} from "@/features/study-plan/hooks/useAddCoursesToSemester.ts";
 import classes from './CoursesMultiSelect.module.css';
 import {getSectionCode} from "@/lib/getSectionCode.ts";
+import {StudyPlan} from "@/features/study-plan/types.ts";
+import {Course} from "@/features/course/types.ts";
 
 type SemesterCoursesMultiSelectProps = {
     semester: number;
+    studyPlan: StudyPlan;
+    courses: Record<number, Course>;
 }
 
 interface CourseOption {
@@ -19,17 +21,13 @@ interface CourseOption {
     unmetPrerequisites: string[];
 }
 
-export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelectProps) {
+export function SemesterCoursesMultiSelect({semester, studyPlan, courses}: SemesterCoursesMultiSelectProps) {
     const [opened, setOpened] = React.useState(false);
     const [selectedCourses, setSelectedCourses] = React.useState<string[]>([]);
 
     const addCoursesToSemester = useAddCoursesToSemester();
 
-    const {data: courses} = useCourseList();
-    const {data: studyPlan} = useStudyPlan();
-
     if (!semester) return null;
-    if (!courses || !studyPlan) return null;
 
     const data = studyPlan.sections
         .map(section => {
@@ -46,8 +44,8 @@ export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelec
 
                     const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
                     const unmetPrerequisites = Object.keys(prerequisites)
-                        .filter((prereqId) => {
-                            const placement = studyPlan.coursePlacements[Number(prereqId)];
+                        .filter((prerequisiteId) => {
+                            const placement = studyPlan.coursePlacements[Number(prerequisiteId)];
                             return placement === undefined || placement >= semester;
                         });
 
@@ -75,9 +73,9 @@ export function SemesterCoursesMultiSelect({semester}: SemesterCoursesMultiSelec
                         <Group gap={6}>
                             <CircleAlert size={14}/>
 
-                            Prerequisites: {courseOption.unmetPrerequisites.map(prereqId => {
-                            const prereqCourse = courses[Number(prereqId)];
-                            return prereqCourse?.code || prereqId;
+                            Prerequisites: {courseOption.unmetPrerequisites.map(prerequisiteId => {
+                            const prerequisite = courses[Number(prerequisiteId)];
+                            return prerequisite?.code || prerequisiteId;
                         }).join(', ')}
                         </Group>
                     </Text>

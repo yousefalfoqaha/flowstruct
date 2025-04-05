@@ -4,7 +4,6 @@ import {Table} from "@tanstack/react-table";
 import {Trash} from "lucide-react";
 import {FrameworkCourse} from "@/features/study-plan/hooks/useFrameworkCoursesTable.ts";
 import {useRemoveCoursesFromSection} from "@/features/study-plan/hooks/useRemoveCourseFromSection.ts";
-import React from "react";
 import {StudyPlan} from "@/features/study-plan/types.ts";
 
 type RemoveStudyPlanCoursesButtonProps = {
@@ -17,7 +16,7 @@ export function RemoveStudyPlanCoursesButton({table, studyPlan}: RemoveStudyPlan
     const selectedRows = table.getSelectedRowModel().rows;
 
     return (
-        <React.Fragment>
+        <>
             {selectedRows.length ? (
                 <Button
                     onClick={() => openConfirmModal({
@@ -42,6 +41,6 @@ export function RemoveStudyPlanCoursesButton({table, studyPlan}: RemoveStudyPlan
                     Remove ({selectedRows.length})
                 </Button>
             ) : null}
-        </React.Fragment>
+        </>
     );
 }
