@@ -2,7 +2,7 @@ import {ActionIcon, Checkbox, Group} from "@mantine/core";
 import {ArrowDownUp} from "lucide-react";
 import {SectionsCombobox} from "@/features/study-plan/components/SectionsCombobox.tsx";
 import {createColumnHelper} from "@tanstack/react-table";
-import {Section, StudyPlan} from "@/features/study-plan/types.ts";
+import {StudyPlan} from "@/features/study-plan/types.ts";
 import {Course} from "@/features/course/types.ts";
 import {PrerequisitePillGroup} from "@/features/study-plan/components/PrerequisitePillGroup.tsx";
 import {FrameworkCourse} from "@/features/study-plan/hooks/useFrameworkCoursesTable.ts";

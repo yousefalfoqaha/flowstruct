@@ -32,7 +32,7 @@ export function SectionOptionsMenu({section, selectedSection, resetSelectedSecti
 
             <Menu.Dropdown>
                 <Menu.Item
-                    onClick={e => {
+                    onClick={() => {
                         modals.open({
                             title: `Edit ${section.level} ${section.type} ${
                                 section.name ? `- ${section.name}` : ""
