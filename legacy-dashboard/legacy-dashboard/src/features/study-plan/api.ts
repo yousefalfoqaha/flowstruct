@@ -36,15 +36,17 @@ export const createStudyPlanRequest = async (
     return await res.json() as StudyPlanListItem;
 };
 
-export const toggleStudyPlanVisibilityRequest = async (toggledStudyPlan: Partial<StudyPlan>) => {
-    const response = await fetch(`http://localhost:8080/api/v1/study-plans/${toggledStudyPlan?.id}/toggle-visibility`, {
+export const toggleStudyPlanVisibilityRequest = async (studyPlanId: number) => {
+    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/toggle-visibility`, {
         method: 'PUT'
     });
 
-    if (!response.ok) {
-        const errorData = await response.json();
+    if (!res.ok) {
+        const errorData = await res.json();
         throw new Error(errorData.message || 'An error occurred.');
     }
+
+    return await res.json() as Partial<StudyPlan>;
 };
 
 export const deleteStudyPlanRequest = async (deletedStudyPlan: Partial<StudyPlan>) => {
