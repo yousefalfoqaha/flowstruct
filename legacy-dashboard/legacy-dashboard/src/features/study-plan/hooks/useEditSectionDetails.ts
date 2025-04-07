@@ -7,7 +7,7 @@ export const useEditSectionDetails = () => {
 
     return useMutation({
         mutationFn: editSectionDetailsRequest,
-        onSuccess: ((updatedStudyPlan) => {
+        onSuccess: (updatedStudyPlan => {
             queryClient.setQueryData(["study-plan", "detail", updatedStudyPlan.id], updatedStudyPlan);
 
             notifications.show({

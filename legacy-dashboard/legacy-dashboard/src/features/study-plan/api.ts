@@ -1,63 +1,30 @@
 import {CoursePrerequisite, MoveDirection, Section, StudyPlan, StudyPlanListItem} from "@/features/study-plan/types.ts";
 import {Course} from "@/features/course/types.ts";
+import {api} from "@/shared/api.ts";
 
-export const getStudyPlanListRequest = async (programId: number) => {
-    const res = await fetch(`http://localhost:8080/api/v1/study-plans?program=${programId}`);
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'An unknown error occurred');
-    }
+const ENDPOINT = '/study-plans';
 
-    return await res.json() as StudyPlanListItem[];
+export const getStudyPlanListRequest = (programId: number) => {
+    return api.get<StudyPlanListItem[]>(ENDPOINT, {"program": programId});
 }
 
-export const getStudyPlanRequest = async (studyPlanId: number) => {
-    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}`);
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'An unknown error occurred');
-    }
-    return await res.json() as StudyPlan;
+export const getStudyPlanRequest = (studyPlanId: number) => {
+    return api.get<StudyPlan>(`${ENDPOINT}/${studyPlanId}`);
 };
 
-export const createStudyPlanRequest = async (
-    {createdStudyPlanDetails, programId}: { createdStudyPlanDetails: Partial<StudyPlan>, programId: number }) => {
-    const res = await fetch('http://localhost:8080/api/v1/study-plans', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({...createdStudyPlanDetails, program: programId})
-    });
-
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'An unknown error occurred');
-    }
-
-    return await res.json() as StudyPlanListItem;
+export const createStudyPlanRequest = ({createdStudyPlanDetails, programId}: {
+    createdStudyPlanDetails: Partial<StudyPlan>,
+    programId: number
+}) => {
+    return api.post<StudyPlanListItem>(ENDPOINT, {...createdStudyPlanDetails, program: programId});
 };
 
 export const toggleStudyPlanVisibilityRequest = async (studyPlanId: number) => {
-    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/toggle-visibility`, {
-        method: 'PUT'
-    });
-
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'An error occurred.');
-    }
-
-    return await res.json() as Partial<StudyPlan>;
+    return api.put<Partial<StudyPlan>>(`${ENDPOINT}/${studyPlanId}/toggle-visibility`);
 };
 
 export const deleteStudyPlanRequest = async (deletedStudyPlan: Partial<StudyPlan>) => {
-    const response = await fetch(`http://localhost:8080/api/v1/study-plans/${deletedStudyPlan.id}`, {
-        method: "DELETE",
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to delete study plan");
-    }
+    return api.put(`${ENDPOINT}/${deletedStudyPlan.id}`);
 };
 
 export const updateStudyPlanDetailsRequest = async (

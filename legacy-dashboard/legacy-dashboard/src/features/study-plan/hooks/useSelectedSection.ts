@@ -1,7 +1,7 @@
-import {FrameworkCourse} from "@/features/study-plan/hooks/useFrameworkCoursesTable.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import React from "react";
 import {Table} from "@tanstack/react-table";
+import {FrameworkCourse} from "@/features/study-plan/types.ts";
 
 export const useSelectedSection = (table: Table<FrameworkCourse>) => {
     const {data: studyPlan} = useStudyPlan();
