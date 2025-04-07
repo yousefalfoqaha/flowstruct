@@ -1,3 +1,5 @@
+import {Course} from "@/features/course/types.ts";
+
 export enum SectionLevel {
     University = "University",
     School = "School",
@@ -46,6 +48,13 @@ export type StudyPlan = {
     coursePlacements: Record<number, number>;
     coursePrerequisites: Record<number, Record<number, CourseRelation>>;
     courseCorequisites: Record<number, number[]>;
+}
+
+export type FrameworkCourse = Course & {
+    prerequisites: Record<number, CourseRelation>,
+    corequisites: number[],
+    section: number,
+    sectionCode: string
 }
 
 export type StudyPlanListItem = Pick<StudyPlan, "id" | "year" | "duration" | "track" | "isPrivate" | "program">;

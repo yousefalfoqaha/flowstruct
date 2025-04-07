@@ -1,7 +1,7 @@
 import {Divider, Group, Pagination, Select, Text} from "@mantine/core";
 import {ListEnd} from "lucide-react";
 import {Table} from "@tanstack/react-table";
-import {FrameworkCourse} from "@/features/study-plan/hooks/useFrameworkCoursesTable.ts";
+import {FrameworkCourse} from "@/features/study-plan/components/FrameworkCoursesTable.tsx";
 
 type FrameworkCoursesTablePaginationProps = {
     table: Table<FrameworkCourse>;

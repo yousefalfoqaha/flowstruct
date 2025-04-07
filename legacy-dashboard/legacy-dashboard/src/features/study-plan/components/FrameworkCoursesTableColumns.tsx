@@ -1,18 +1,20 @@
 import {ActionIcon, Checkbox, Group} from "@mantine/core";
 import {ArrowDownUp} from "lucide-react";
 import {SectionsCombobox} from "@/features/study-plan/components/SectionsCombobox.tsx";
-import {createColumnHelper} from "@tanstack/react-table";
-import {StudyPlan} from "@/features/study-plan/types.ts";
+import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
+import {FrameworkCourse, StudyPlan} from "@/features/study-plan/types.ts";
 import {Course} from "@/features/course/types.ts";
 import {PrerequisitePillGroup} from "@/features/study-plan/components/PrerequisitePillGroup.tsx";
-import {FrameworkCourse} from "@/features/study-plan/hooks/useFrameworkCoursesTable.ts";
 
 type FrameworkCoursesTableColumnsProps = {
     studyPlan: StudyPlan;
     courses: Record<number, Course>;
 }
 
-export function getFrameworkCoursesTableColumns({studyPlan, courses}: FrameworkCoursesTableColumnsProps) {
+export function getFrameworkCoursesTableColumns({
+                                                    studyPlan,
+                                                    courses
+                                                }: FrameworkCoursesTableColumnsProps): ColumnDef<FrameworkCourse>[] {
     const columnHelper = createColumnHelper<FrameworkCourse>();
 
     return [
