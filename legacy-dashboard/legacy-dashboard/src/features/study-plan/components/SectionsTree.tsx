@@ -8,7 +8,7 @@ import {
     Tree,
     TreeNodeData
 } from "@mantine/core";
-import {Section, SectionLevel, SectionType, StudyPlan} from "@/features/study-plan/types.ts";
+import {SectionLevel, SectionType, StudyPlan} from "@/features/study-plan/types.ts";
 import {ChevronDown, Filter, List} from "lucide-react";
 import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
 import {SectionOptionsMenu} from "@/features/study-plan/components/SectionOptionsMenu.tsx";
@@ -16,16 +16,18 @@ import classes from './SectionsTabs.module.css';
 import React from "react";
 import {MoveSectionMenu} from "@/features/study-plan/components/MoveSectionMenu.tsx";
 import {getSectionCode, getSectionLevelCode, getSectionTypeCode} from "@/lib/getSectionCode.ts";
+import {useSelectedSection} from "@/features/study-plan/hooks/useSelectedSection.ts";
 import {Table} from "@tanstack/react-table";
 import {FrameworkCourse} from "@/features/study-plan/hooks/useFrameworkCoursesTable.ts";
 
 type SectionsTreeProps = {
-    table: Table<FrameworkCourse>;
-    selectedSection: Section | null;
     studyPlan: StudyPlan;
+    table: Table<FrameworkCourse>;
 }
 
-export function SectionsTree({table, selectedSection, studyPlan}: SectionsTreeProps) {
+export function SectionsTree({studyPlan, table}: SectionsTreeProps) {
+    const {selectedSection, setSelectedSection} = useSelectedSection(table);
+
     const data: TreeNodeData[] = React.useMemo(() => {
         return Object.values(SectionLevel).flatMap(level => {
             const levelCode = getSectionLevelCode(level);
@@ -71,10 +73,10 @@ export function SectionsTree({table, selectedSection, studyPlan}: SectionsTreePr
 
         const handleFilter = () => {
             if (!isSelected) {
-                selectSection(Number(node.value));
+                setSelectedSection(Number(node.value));
                 return;
             }
-            selectSection(null);
+            setSelectedSection(null);
         }
 
         return (
@@ -120,14 +122,6 @@ export function SectionsTree({table, selectedSection, studyPlan}: SectionsTreePr
             </Box>
         );
     };
-
-    const selectSection = ((sectionId: number | null) => {
-        if (sectionId === null) {
-            table.setColumnFilters([]);
-            return;
-        }
-        table.setColumnFilters([{id: 'section', value: sectionId}]);
-    });
 
     return (
         <Flex direction="column" gap={8}>

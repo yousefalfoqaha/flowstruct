@@ -21,28 +21,21 @@ import {useAddCoursesToSection} from "@/features/study-plan/hooks/useAddCoursesT
 import {usePaginatedCourses} from "@/features/course/hooks/usePaginatedCourses.ts";
 import {CreateCourseModal} from "@/features/course/components/CreateCourseModal.tsx";
 import {getSectionCode} from "@/lib/getSectionCode.ts";
-import {Section, StudyPlan} from "@/features/study-plan/types.ts";
+import {StudyPlan} from "@/features/study-plan/types.ts";
 
 type CourseSearchProps = {
-    focusedSection: Section | null;
     studyPlan: StudyPlan;
 }
 
-export function CourseSearch({focusedSection, studyPlan}: CourseSearchProps) {
+export function CourseSearch({studyPlan}: CourseSearchProps) {
     const [popoverOpened, setPopoverOpened] = React.useState(false);
-    const [selectedSection, setSelectedSection] = React.useState<string | null>(
-        focusedSection ? String(focusedSection.id) : null
-    );
+    const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
     const [selectedCourses, setSelectedCourses] = React.useState<Course[]>([]);
     const [search, setSearch] = React.useState<string>("");
     const [debouncedSearch] = useDebouncedValue(search, 750);
     const [createModalOpen, setCreateModalOpen] = React.useState(false);
 
     const addCoursesToSection = useAddCoursesToSection();
-
-    React.useEffect(() => {
-        setSelectedSection(String(focusedSection));
-    }, [focusedSection]);
 
     const combobox = useCombobox({
         onDropdownClose: () => combobox.resetSelectedOption(),

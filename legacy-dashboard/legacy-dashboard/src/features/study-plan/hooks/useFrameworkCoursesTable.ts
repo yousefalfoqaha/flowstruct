@@ -19,11 +19,7 @@ export type FrameworkCourse = Course & {
     sectionCode: string
 }
 
-type UseFrameworkCoursesTableProps = {
-    studyPlan: StudyPlan;
-}
-
-export const useFrameworkCoursesTable = ({studyPlan}: UseFrameworkCoursesTableProps) => {
+export const useFrameworkCoursesTable = (studyPlan: StudyPlan) => {
     const [sorting, setSorting] = React.useState<SortingState>([{id: 'code', desc: false}]);
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
     const [pagination, setPagination] = React.useState({pageIndex: 0, pageSize: 10,});

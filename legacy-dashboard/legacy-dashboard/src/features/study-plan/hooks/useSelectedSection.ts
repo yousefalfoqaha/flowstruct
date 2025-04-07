@@ -1,21 +1,28 @@
-import {Table} from "@tanstack/react-table";
 import {FrameworkCourse} from "@/features/study-plan/hooks/useFrameworkCoursesTable.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import React from "react";
+import {Table} from "@tanstack/react-table";
 
-type UseSelectedSectionProps = {
-    table: Table<FrameworkCourse>;
-}
+export const useSelectedSection = (table: Table<FrameworkCourse>) => {
+    const {data: studyPlan} = useStudyPlan();
 
-export const useSelectedSection = ({table}: UseSelectedSectionProps) => {
-    const {data: {sections}} = useStudyPlan();
     const columnFilters = table.getState().columnFilters;
 
     const selectedSectionId = React.useMemo(() => {
         return columnFilters.find(f => f.id === 'section')?.value as number;
     }, [columnFilters]);
 
-    return React.useMemo(() => {
-        return sections.find(s => s.id === selectedSectionId);
-    }, [selectedSectionId, sections]) ?? null;
+    const selectedSection = React.useMemo(() => {
+        return studyPlan.sections.find(s => s.id === selectedSectionId);
+    }, [selectedSectionId, studyPlan.sections]) ?? null;
+
+    const setSelectedSection = ((sectionId: number | null) => {
+        if (sectionId === null) {
+            table.setColumnFilters([]);
+            return;
+        }
+        table.setColumnFilters([{id: 'section', value: sectionId}]);
+    });
+
+    return {selectedSection, setSelectedSection}
 };
