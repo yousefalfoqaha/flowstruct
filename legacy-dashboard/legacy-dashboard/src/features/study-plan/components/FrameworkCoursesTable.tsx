@@ -3,9 +3,9 @@ import {DataTable} from "@/shared/components/DataTable.tsx";
 import {SectionsTree} from "@/features/study-plan/components/SectionsTree.tsx";
 import {CourseSearch} from "@/features/course/components/CourseSearch.tsx";
 import {useDataTable} from "@/features/study-plan/hooks/useFrameworkCoursesTable.ts";
-import {FrameworkCoursesTablePagination} from "@/features/study-plan/components/FrameworkCoursesTablePagination.tsx";
+import {DataTablePagination} from "@/shared/components/DataTablePagination.tsx";
 import {RemoveStudyPlanCoursesButton} from "@/features/study-plan/components/RemoveStudyPlanCoursesButton.tsx";
-import {FrameworkCoursesSearch} from "@/features/study-plan/components/FrameworkCoursesSearch.tsx";
+import {DataTableSearch} from "@/shared/components/DataTableSearch.tsx";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {FilteredSectionIndicator} from "@/features/study-plan/components/FilteredSectionIndicator.tsx";
 import React from "react";
@@ -28,8 +28,6 @@ export function FrameworkCoursesTable() {
     );
 
     const data = React.useMemo(() => {
-        if (!studyPlan || !courses) return [];
-
         const rows: FrameworkCourse[] = [];
 
         studyPlan.sections.forEach((section) => {
@@ -57,7 +55,7 @@ export function FrameworkCoursesTable() {
 
             <Flex direction="column" style={{flex: 1}} gap="sm">
                 <Group justify="space-between">
-                    <FrameworkCoursesSearch table={table}/>
+                    <DataTableSearch placeholder="Search courses..." table={table} />
 
                     <Group gap="sm">
                         <RemoveStudyPlanCoursesButton studyPlan={studyPlan} table={table}/>
@@ -69,7 +67,7 @@ export function FrameworkCoursesTable() {
 
                 <Group justify="space-between">
                     <FilteredSectionIndicator table={table}/>
-                    <FrameworkCoursesTablePagination table={table}/>
+                    <DataTablePagination table={table}/>
                 </Group>
             </Flex>
         </Flex>

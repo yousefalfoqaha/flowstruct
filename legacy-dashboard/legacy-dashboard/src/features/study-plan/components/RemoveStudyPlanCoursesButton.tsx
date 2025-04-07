@@ -2,9 +2,8 @@ import {Button, Text} from "@mantine/core";
 import {openConfirmModal} from "@mantine/modals";
 import {Table} from "@tanstack/react-table";
 import {Trash} from "lucide-react";
-import {FrameworkCourse} from "@/features/study-plan/hooks/useFrameworkCoursesTable.ts";
 import {useRemoveCoursesFromSection} from "@/features/study-plan/hooks/useRemoveCourseFromSection.ts";
-import {StudyPlan} from "@/features/study-plan/types.ts";
+import {FrameworkCourse, StudyPlan} from "@/features/study-plan/types.ts";
 
 type RemoveStudyPlanCoursesButtonProps = {
     table: Table<FrameworkCourse>;

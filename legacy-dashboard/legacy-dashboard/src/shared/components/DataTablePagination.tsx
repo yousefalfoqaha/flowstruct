@@ -1,13 +1,12 @@
 import {Divider, Group, Pagination, Select, Text} from "@mantine/core";
 import {ListEnd} from "lucide-react";
 import {Table} from "@tanstack/react-table";
-import {FrameworkCourse} from "@/features/study-plan/components/FrameworkCoursesTable.tsx";
 
-type FrameworkCoursesTablePaginationProps = {
-    table: Table<FrameworkCourse>;
+type FrameworkCoursesTablePaginationProps<TData> = {
+    table: Table<TData>;
 }
 
-export function FrameworkCoursesTablePagination({table}: FrameworkCoursesTablePaginationProps) {
+export function DataTablePagination<TData>({table}: FrameworkCoursesTablePaginationProps<TData>) {
     const {pageSize, pageIndex} = table.getState().pagination;
     const paginationMessage = `Showing ${pageSize * (pageIndex) + 1} – ${Math.min(table.getFilteredRowModel().rows.length, pageSize * (pageIndex + 1))} of ${table.getFilteredRowModel().rows.length}`;
     const PAGE_SIZES = ["5", "7", "10", "20", "50"];

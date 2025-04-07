@@ -2,21 +2,31 @@ import {Search, X} from "lucide-react";
 import {ActionIcon, Input} from "@mantine/core";
 import React from "react";
 import {Table} from "@tanstack/react-table";
-import {FrameworkCourse} from "@/features/study-plan/hooks/useFrameworkCoursesTable.ts";
 
-type FrameworkCoursesSearchProps = {
-    table: Table<FrameworkCourse>;
-}
+type TableSearchProps<TData> = {
+    table: Table<TData>;
+    width?: number | string;
+    placeholder?: string;
+};
 
-export function FrameworkCoursesSearch({table}: FrameworkCoursesSearchProps) {
+export function DataTableSearch<TData>({
+                                       table,
+                                       width = 450,
+                                       placeholder = "Search..."
+                                   }: TableSearchProps<TData>) {
     const [search, setSearch] = React.useState<string>("");
-    React.useEffect(() => table.setGlobalFilter(search), [search, table]);
+
+    React.useEffect(() => {
+        table.setGlobalFilter(search);
+    }, [search, table]);
+
+    const handleClear = () => setSearch("");
 
     return (
         <Input
-            w={450}
+            w={width}
             leftSection={<Search size={18}/>}
-            placeholder="Search courses..."
+            placeholder={placeholder}
             value={search}
             rightSectionPointerEvents="all"
             rightSection={
@@ -25,7 +35,7 @@ export function FrameworkCoursesSearch({table}: FrameworkCoursesSearchProps) {
                         radius="xl"
                         variant="white"
                         color="gray"
-                        onClick={() => setSearch("")}
+                        onClick={handleClear}
                     >
                         <X size={18}/>
                     </ActionIcon>
