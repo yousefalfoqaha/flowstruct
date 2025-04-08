@@ -37,26 +37,26 @@ export const api = {
             throw new Error(errorData.message || `Request failed with status ${response.status}`);
         }
 
-        if (method === "DELETE" || response.status === 204) {
+        if (response.status === 204) {
             return {} as T;
         }
 
         return await response.json() as T;
     },
 
-    get<T>(endpoint: string, params?: Record<string, any>, options?: Omit<RequestOptions, "method" | "body">) {
-        return this.request<T>(endpoint, {...options, method: "GET", params});
+    get<T>(endpoint: string, options?: Omit<RequestOptions, "method" | "body">) {
+        return this.request<T>(endpoint, {...options, method: "GET"});
     },
 
-    post<T>(endpoint: string, body?: any, params?: Record<string, any>, options?: Omit<RequestOptions, "method">) {
-        return this.request<T>(endpoint, {...options, method: "POST", body, params});
+    post<T>(endpoint: string, options?: Omit<RequestOptions, "method">) {
+        return this.request<T>(endpoint, {...options, method: "POST"});
     },
 
-    put<T>(endpoint: string, body?: any, params?: Record<string, any>, options?: Omit<RequestOptions, "method">) {
-        return this.request<T>(endpoint, {...options, method: "PUT", body, params});
+    put<T>(endpoint: string, options?: Omit<RequestOptions, "method">) {
+        return this.request<T>(endpoint, {...options, method: "PUT"});
     },
 
-    delete<T>(endpoint: string, params?: Record<string, any>, options?: Omit<RequestOptions, "method">) {
-        return this.request<T>(endpoint, {...options, method: "DELETE", params});
+    delete<T>(endpoint: string, options?: Omit<RequestOptions, "method">) {
+        return this.request<T>(endpoint, {...options, method: "DELETE"});
     }
 };

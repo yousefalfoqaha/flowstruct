@@ -2,7 +2,7 @@ import {CourseCard} from "@/features/course/components/CourseCard.tsx";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {Divider, Flex, ScrollArea, Stack, Text} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
-import {SemesterCoursesMultiSelect} from "@/features/study-plan/components/SemesterCoursesMultiSelect.tsx";
+import {CoursePlacementMultiSelect} from "@/features/study-plan/components/CoursePlacementMultiSelect.tsx";
 
 export function ProgramMap() {
     const {data: studyPlan} = useStudyPlan();
@@ -85,7 +85,7 @@ export function ProgramMap() {
                                                     );
                                                 })}
 
-                                                <SemesterCoursesMultiSelect
+                                                <CoursePlacementMultiSelect
                                                     courses={courses}
                                                     studyPlan={studyPlan}
                                                     semester={semesterNumber}

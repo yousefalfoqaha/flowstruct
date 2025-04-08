@@ -27,11 +27,11 @@ export function DataTable<TData>({table}: DataTableProps<TData>) {
                     {table.getRowModel().rows.length ? (
                         table.getRowModel().rows.map((row) => (
                             <Table.Tr key={row.id}>
-                                      {row.getVisibleCells().map((cell) => (
-                                          <Table.Td key={cell.id}>
-                                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                          </Table.Td>
-                                      ))}
+                                {row.getVisibleCells().map((cell) => (
+                                    <Table.Td key={cell.id}>
+                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                    </Table.Td>
+                                ))}
                             </Table.Tr>
                         ))
                     ) : (

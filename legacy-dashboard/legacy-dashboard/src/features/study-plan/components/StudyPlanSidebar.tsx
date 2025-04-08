@@ -20,8 +20,7 @@ type StudyPlanSidebarProps = {
 
 export function StudyPlanSidebar({studyPlan, closeSidebar}: StudyPlanSidebarProps) {
     const {location} = useRouterState();
-    const segments = location.pathname.split('/');
-    const activePage = segments.pop();
+    const activePage = location.pathname.split('/').pop();
 
     const {data: program} = useProgram();
 

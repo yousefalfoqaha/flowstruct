@@ -1,14 +1,15 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {addCoursesToSemesterRequest} from "@/features/study-plan/api.ts";
+import {addCoursesToSemester} from "@/features/study-plan/api.ts";
 import {notifications} from "@mantine/notifications";
+import {studyPlanKeys} from "@/features/study-plan/queries.ts";
 
 export const useAddCoursesToSemester = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: addCoursesToSemesterRequest,
+        mutationFn: addCoursesToSemester,
         onSuccess: (updatedStudyPlan) => {
-            queryClient.setQueryData(["study-plan", "detail", updatedStudyPlan.id], updatedStudyPlan);
+            queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan);
 
             notifications.show({
                 title: "Success!",

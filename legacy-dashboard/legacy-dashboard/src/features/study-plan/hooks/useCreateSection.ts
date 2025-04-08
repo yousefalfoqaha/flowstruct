@@ -1,14 +1,15 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {createSectionRequest} from "@/features/study-plan/api.ts";
+import {createSection} from "@/features/study-plan/api.ts";
 import {notifications} from "@mantine/notifications";
+import {studyPlanKeys} from "@/features/study-plan/queries.ts";
 
 export const useCreateSection = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: createSectionRequest,
+        mutationFn: createSection,
         onSuccess: ((updatedStudyPlan) => {
-            queryClient.setQueryData(["study-plan", "detail", updatedStudyPlan.id], updatedStudyPlan);
+            queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan);
 
             notifications.show({
                 title: "Success!",

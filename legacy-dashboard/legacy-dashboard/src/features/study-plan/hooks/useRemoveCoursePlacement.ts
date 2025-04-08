@@ -1,14 +1,15 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {removeCoursePlacementRequest} from "@/features/study-plan/api.ts";
+import {removeCoursePlacement} from "@/features/study-plan/api.ts";
 import {notifications} from "@mantine/notifications";
+import {studyPlanKeys} from "@/features/study-plan/queries.ts";
 
 export const useRemoveCoursePlacement = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: removeCoursePlacementRequest,
+        mutationFn: removeCoursePlacement,
         onSuccess: (updatedStudyPlan) => {
-            queryClient.setQueryData(["study-plan", "detail", updatedStudyPlan.id], updatedStudyPlan);
+            queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan);
 
             notifications.show({
                 title: "Success!",

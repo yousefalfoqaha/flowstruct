@@ -2,7 +2,6 @@ import {Course} from "@/features/course/types.ts";
 
 export type PresetType = "lecture" | "lab" | "custom";
 
-
 export const getCoursePresetSettings = (preset: PresetType) => {
     const fields: Pick<Course, "creditHours" | "lectureHours" | "practicalHours" | "type"> = {
         creditHours: 0,

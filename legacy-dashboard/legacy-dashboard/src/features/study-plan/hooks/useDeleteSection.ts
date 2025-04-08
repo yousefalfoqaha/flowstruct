@@ -1,14 +1,15 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {deleteSectionRequest} from "@/features/study-plan/api.ts";
+import {deleteSection} from "@/features/study-plan/api.ts";
 import {notifications} from "@mantine/notifications";
+import {studyPlanKeys} from "@/features/study-plan/queries.ts";
 
 export const useDeleteSection = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: deleteSectionRequest,
+        mutationFn: deleteSection,
         onSuccess: (updatedStudyPlan) => {
-            queryClient.setQueryData(["study-plan", "detail", updatedStudyPlan.id], updatedStudyPlan);
+            queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan);
 
             notifications.show({
                 title: "Success!",

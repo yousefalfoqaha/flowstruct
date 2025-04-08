@@ -1,16 +1,17 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {StudyPlan, StudyPlanListItem} from "@/features/study-plan/types.ts";
-import {updateStudyPlanDetailsRequest} from "@/features/study-plan/api.ts";
+import {updateStudyPlanDetails} from "@/features/study-plan/api.ts";
 import {notifications} from "@mantine/notifications";
+import {studyPlanKeys} from "@/features/study-plan/queries.ts";
 
 export const useEditStudyPlanDetails = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: updateStudyPlanDetailsRequest,
+        mutationFn: updateStudyPlanDetails,
         onSuccess: (updatedStudyPlan: Partial<StudyPlan>) => {
             queryClient.setQueryData(
-                ["study-plans", "list", updatedStudyPlan.program],
+                studyPlanKeys.list(updatedStudyPlan.program),
                 (previous: StudyPlanListItem[]) => {
                     return previous.map(studyPlan =>
                         studyPlan.id === updatedStudyPlan.id ? updatedStudyPlan : studyPlan
@@ -18,10 +19,10 @@ export const useEditStudyPlanDetails = () => {
                 }
             );
 
-            const detailedStudyPlan = queryClient.getQueryData(["study-plan", "detail", updatedStudyPlan.id]);
+            const detailedStudyPlan = queryClient.getQueryData(studyPlanKeys.detail(updatedStudyPlan.id));
 
             if (detailedStudyPlan) {
-                queryClient.setQueryData(["study-plan", "detail", updatedStudyPlan.id], {
+                queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), {
                     ...detailedStudyPlan,
                     duration: updatedStudyPlan.duration,
                     track: updatedStudyPlan.track,

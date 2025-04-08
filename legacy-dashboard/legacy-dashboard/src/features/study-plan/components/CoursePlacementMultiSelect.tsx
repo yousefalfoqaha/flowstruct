@@ -7,7 +7,7 @@ import {getSectionCode} from "@/lib/getSectionCode.ts";
 import {StudyPlan} from "@/features/study-plan/types.ts";
 import {Course} from "@/features/course/types.ts";
 
-type SemesterCoursesMultiSelectProps = {
+type CoursePlacementMultiSelectProps = {
     semester: number;
     studyPlan: StudyPlan;
     courses: Record<number, Course>;
@@ -21,7 +21,7 @@ interface CourseOption {
     unmetPrerequisites: string[];
 }
 
-export function SemesterCoursesMultiSelect({semester, studyPlan, courses}: SemesterCoursesMultiSelectProps) {
+export function CoursePlacementMultiSelect({semester, studyPlan, courses}: CoursePlacementMultiSelectProps) {
     const [opened, setOpened] = React.useState(false);
     const [selectedCourses, setSelectedCourses] = React.useState<string[]>([]);
 

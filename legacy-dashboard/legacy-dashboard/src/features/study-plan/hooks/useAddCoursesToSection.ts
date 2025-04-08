@@ -1,22 +1,24 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {addCoursesToSectionRequest} from "@/features/study-plan/api.ts";
+import {addCoursesToSection} from "@/features/study-plan/api.ts";
 import {Course} from "@/features/course/types.ts";
 import {notifications} from "@mantine/notifications";
+import {studyPlanKeys} from "@/features/study-plan/queries.ts";
+import {courseKeys} from "@/features/course/queries.ts";
 
 export const useAddCoursesToSection = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: addCoursesToSectionRequest,
+        mutationFn: addCoursesToSection,
         onSuccess: (updatedStudyPlan, {addedCourses}) => {
-            queryClient.setQueryData(["courses"], (previous: Record<number, Course> = {}) => {
+            queryClient.setQueryData(courseKeys.all, (previous: Record<number, Course> = {}) => {
                 return {
                     ...previous,
                     ...Object.fromEntries(addedCourses.map(course => [course.id, course]))
                 };
             });
 
-            queryClient.setQueryData(["study-plan", "detail", updatedStudyPlan.id], updatedStudyPlan);
+            queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan);
 
             notifications.show({
                 title: "Success!",
@@ -33,4 +35,3 @@ export const useAddCoursesToSection = () => {
         },
     });
 };
-

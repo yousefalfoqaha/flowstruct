@@ -1,18 +1,19 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {StudyPlan, StudyPlanListItem} from "@/features/study-plan/types.ts";
-import {toggleStudyPlanVisibilityRequest} from "@/features/study-plan/api.ts";
+import {toggleStudyPlanVisibility} from "@/features/study-plan/api.ts";
 import {notifications} from "@mantine/notifications";
 import {Eye, EyeOff} from "lucide-react";
 import React from "react";
+import {studyPlanKeys} from "@/features/study-plan/queries.ts";
 
 export const useToggleStudyPlanVisibility = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: toggleStudyPlanVisibilityRequest,
+        mutationFn: toggleStudyPlanVisibility,
         onSuccess: (updatedStudyPlan) => {
             queryClient.setQueryData(
-                ["study-plans", "list", updatedStudyPlan.program],
+                studyPlanKeys.list(updatedStudyPlan.program),
                 (previous: StudyPlanListItem[]) => {
                     if (!previous) return [];
                     return previous.map(sp => (
@@ -21,7 +22,7 @@ export const useToggleStudyPlanVisibility = () => {
                 });
 
             queryClient.setQueryData(
-                ["study-plan", "detail", updatedStudyPlan.id], (studyPlan: Partial<StudyPlan>) => {
+                studyPlanKeys.detail(updatedStudyPlan.id), (studyPlan: Partial<StudyPlan>) => {
                     return {...studyPlan, isPrivate: !studyPlan.isPrivate}
                 }
             );

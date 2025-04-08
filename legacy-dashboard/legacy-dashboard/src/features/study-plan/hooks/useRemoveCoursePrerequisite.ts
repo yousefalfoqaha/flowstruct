@@ -1,14 +1,15 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {removeCoursePrerequisiteRequest} from "@/features/study-plan/api.ts";
+import {removeCoursePrerequisite} from "@/features/study-plan/api.ts";
 import {notifications} from "@mantine/notifications";
+import {studyPlanKeys} from "@/features/study-plan/queries.ts";
 
 export const useRemoveCoursePrerequisite = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: removeCoursePrerequisiteRequest,
+        mutationFn: removeCoursePrerequisite,
         onSuccess: (updatedStudyPlan) => {
-            queryClient.setQueryData(["study-plan", "detail", updatedStudyPlan.id], updatedStudyPlan);
+            queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan);
 
             notifications.show({
                 title: "Success!",

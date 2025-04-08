@@ -8,17 +8,16 @@ import {
     Tree,
     TreeNodeData
 } from "@mantine/core";
-import {SectionLevel, SectionType, StudyPlan} from "@/features/study-plan/types.ts";
+import {FrameworkCourse, SectionLevel, SectionType, StudyPlan} from "@/features/study-plan/types.ts";
 import {ChevronDown, Filter, List} from "lucide-react";
 import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
 import {SectionOptionsMenu} from "@/features/study-plan/components/SectionOptionsMenu.tsx";
-import classes from './SectionsTabs.module.css';
+import classes from './SectionsTree.module.css';
 import React from "react";
 import {MoveSectionMenu} from "@/features/study-plan/components/MoveSectionMenu.tsx";
 import {getSectionCode, getSectionLevelCode, getSectionTypeCode} from "@/lib/getSectionCode.ts";
 import {useSelectedSection} from "@/features/study-plan/hooks/useSelectedSection.ts";
 import {Table} from "@tanstack/react-table";
-import {FrameworkCourse} from "@/features/study-plan/hooks/useFrameworkCoursesTable.ts";
 
 type SectionsTreeProps = {
     studyPlan: StudyPlan;
@@ -113,7 +112,7 @@ export function SectionsTree({studyPlan, table}: SectionsTreeProps) {
 
                         <SectionOptionsMenu
                             selectedSection={selectedSection}
-                            resetSelectedSection={() => selectSection(null)}
+                            resetSelectedSection={() => setSelectedSection(null)}
                             section={section}
                             studyPlanId={studyPlan.id}
                         />
@@ -133,7 +132,7 @@ export function SectionsTree({studyPlan, table}: SectionsTreeProps) {
 
                 <Group>
                     {selectedSection && (
-                        <Button onClick={() => selectSection(null)} size="compact-sm" p={0}
+                        <Button onClick={() => setSelectedSection(null)} size="compact-sm" p={0}
                                 leftSection={<Filter size={14}/>} color="gray" variant="transparent">
                             Clear
                         </Button>

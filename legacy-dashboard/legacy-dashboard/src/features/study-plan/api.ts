@@ -4,272 +4,138 @@ import {api} from "@/shared/api.ts";
 
 const ENDPOINT = '/study-plans';
 
-export const getStudyPlanListRequest = (programId: number) => {
-    return api.get<StudyPlanListItem[]>(ENDPOINT, {"program": programId});
-}
+export const getStudyPlanList = (programId: number) =>
+    api.get<StudyPlanListItem[]>(ENDPOINT, {params: {program: programId}});
 
-export const getStudyPlanRequest = (studyPlanId: number) => {
-    return api.get<StudyPlan>(`${ENDPOINT}/${studyPlanId}`);
-};
+export const getStudyPlan = (studyPlanId: number) =>
+    api.get<StudyPlan>(`${ENDPOINT}/${studyPlanId}`);
 
-export const createStudyPlanRequest = ({createdStudyPlanDetails, programId}: {
-    createdStudyPlanDetails: Partial<StudyPlan>,
-    programId: number
-}) => {
-    return api.post<StudyPlanListItem>(ENDPOINT, {...createdStudyPlanDetails, program: programId});
-};
-
-export const toggleStudyPlanVisibilityRequest = async (studyPlanId: number) => {
-    return api.put<Partial<StudyPlan>>(`${ENDPOINT}/${studyPlanId}/toggle-visibility`);
-};
-
-export const deleteStudyPlanRequest = async (deletedStudyPlan: Partial<StudyPlan>) => {
-    return api.put(`${ENDPOINT}/${deletedStudyPlan.id}`);
-};
-
-export const updateStudyPlanDetailsRequest = async (
-    {studyPlanId, updatedStudyPlanDetails}: { studyPlanId: number; updatedStudyPlanDetails: Partial<StudyPlan> }) => {
-    const response = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}`, {
-        method: "PUT",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(updatedStudyPlanDetails),
+export const createStudyPlan = ({createdStudyPlanDetails, programId,}: {
+    createdStudyPlanDetails: Partial<StudyPlan>;
+    programId: number;
+}) =>
+    api.post<StudyPlanListItem>(ENDPOINT, {
+        body: {...createdStudyPlanDetails, program: programId},
     });
 
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to update study plan");
-    }
+export const toggleStudyPlanVisibility = (studyPlanId: number) =>
+    api.put<Partial<StudyPlan>>(`${ENDPOINT}/${studyPlanId}/toggle-visibility`);
 
-    return await response.json() as Partial<StudyPlan>;
-}
+export const deleteStudyPlan = (deletedStudyPlan: Partial<StudyPlan>) =>
+    api.delete(`${ENDPOINT}/${deletedStudyPlan.id}`);
 
-export const createSectionRequest = async (
-    {studyPlanId, newSectionDetails}: { studyPlanId: number, newSectionDetails: Partial<Section> }
-) => {
-    const response = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/create-section`, {
-        method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(newSectionDetails)
+export const updateStudyPlanDetails = ({studyPlanId, updatedStudyPlanDetails,}: {
+    studyPlanId: number;
+    updatedStudyPlanDetails: Partial<StudyPlan>;
+}) =>
+    api.put<Partial<StudyPlan>>(`${ENDPOINT}/${studyPlanId}`, {
+        body: updatedStudyPlanDetails,
     });
 
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'An unknown error occurred');
-    }
+export const createSection = ({studyPlanId, newSectionDetails,}: {
+    studyPlanId: number;
+    newSectionDetails: Partial<Section>;
+}) =>
+    api.put<StudyPlan>(`${ENDPOINT}/${studyPlanId}/create-section`, {
+        body: newSectionDetails,
+    });
 
-    return await response.json() as StudyPlan;
-};
+export const addCoursesToSection = ({addedCourses, sectionId, studyPlanId}: {
+    addedCourses: Course[];
+    sectionId: number;
+    studyPlanId: number;
+}) =>
+    api.post<StudyPlan>(`${ENDPOINT}/${studyPlanId}/sections/${sectionId}/courses`, {
+        body: {courseIds: addedCourses.map(c => c.id)},
+    });
 
-export const addCoursesToSectionRequest = async ({addedCourses, sectionId, studyPlanId}: {
-    addedCourses: Course[],
-    sectionId: number,
-    studyPlanId: number
-}) => {
-    const response = await fetch(
-        `http://localhost:8080/api/v1/study-plans/${studyPlanId}/sections/${sectionId}/courses`,
-        {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({courseIds: addedCourses.map(c => c.id)}),
-        }
+export const editSectionDetails = ({updatedSectionDetails, sectionId, studyPlanId}: {
+    updatedSectionDetails: Partial<Section>;
+    sectionId: number;
+    studyPlanId: number;
+}) =>
+    api.put<StudyPlan>(`${ENDPOINT}/${studyPlanId}/sections/${sectionId}`, {
+        body: updatedSectionDetails,
+    });
+
+export const removeCoursesFromSection = ({courseIds, studyPlanId}: {
+    courseIds: number[];
+    studyPlanId: number;
+}) =>
+    api.delete<StudyPlan>(`${ENDPOINT}/${studyPlanId}/courses/by-ids`, {
+        params: {courses: courseIds},
+    });
+
+export const deleteSection = ({studyPlanId, sectionId}: {
+    studyPlanId: number;
+    sectionId: number;
+}) =>
+    api.delete<StudyPlan>(`${ENDPOINT}/${studyPlanId}/sections/${sectionId}`);
+
+export const assignCoursePrerequisites = ({studyPlanId, courseId, prerequisites}: {
+    studyPlanId: number;
+    courseId: number;
+    prerequisites: CoursePrerequisite[];
+}) =>
+    api.post<StudyPlan>(
+        `${ENDPOINT}/${studyPlanId}/courses/${courseId}/prerequisites`,
+        {body: prerequisites}
     );
 
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "An error occurred.");
-    }
+export const removeCoursePrerequisite = ({studyPlanId, courseId, prerequisiteId}: {
+    studyPlanId: number;
+    courseId: number;
+    prerequisiteId: number;
+}) =>
+    api.delete<StudyPlan>(
+        `${ENDPOINT}/${studyPlanId}/courses/${courseId}/prerequisites/${prerequisiteId}`
+    );
 
-    return await response.json() as StudyPlan;
-};
-
-export const editSectionDetailsRequest = async ({updatedSectionDetails, sectionId, studyPlanId}: {
-    updatedSectionDetails: Partial<Section>,
-    sectionId: number,
-    studyPlanId: number
-}) => {
-    const response = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/sections/${sectionId}`, {
-        method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(updatedSectionDetails)
+export const assignCourseCorequisites = ({studyPlanId, courseId, corequisites}: {
+    studyPlanId: number;
+    courseId: number;
+    corequisites: number[];
+}) =>
+    api.post<StudyPlan>(`${ENDPOINT}/${studyPlanId}/courses/${courseId}/corequisites`, {
+        body: corequisites,
     });
 
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'An unknown error occurred');
-    }
+export const removeCourseCorequisite = ({studyPlanId, courseId, corequisiteId}: {
+    studyPlanId: number;
+    courseId: number;
+    corequisiteId: number;
+}) =>
+    api.delete<StudyPlan>(
+        `${ENDPOINT}/${studyPlanId}/courses/${courseId}/corequisites/${corequisiteId}`
+    );
 
-    return await response.json() as StudyPlan;
-};
+export const moveCourseSection = ({studyPlanId, courseId, sectionId}: {
+    studyPlanId: number;
+    courseId: number;
+    sectionId: number;
+}) =>
+    api.put<StudyPlan>(`${ENDPOINT}/${studyPlanId}/courses/${courseId}/move-to-section/${sectionId}`);
 
-export const removeCoursesFromSectionRequest = async ({courseIds, studyPlanId}: {
-    courseIds: number[],
-    studyPlanId: number
-}) => {
-    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/courses/by-ids?courses=${courseIds}`, {
-        method: 'DELETE'
+export const moveSection = ({studyPlanId, sectionId, direction}: {
+    studyPlanId: number;
+    sectionId: number;
+    direction: MoveDirection;
+}) =>
+    api.put<StudyPlan>(`${ENDPOINT}/${studyPlanId}/sections/${sectionId}/move`, {
+        params: {direction},
     });
 
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'An unknown error occurred');
-    }
-
-    return await res.json() as StudyPlan;
-};
-
-export const deleteSectionRequest = async ({studyPlanId, sectionId}: {
-    studyPlanId: number,
-    sectionId: number
-}) => {
-    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/sections/${sectionId}`, {
-        method: 'DELETE'
+export const addCoursesToSemester = ({studyPlanId, semester, courseIds}: {
+    studyPlanId: number;
+    semester: number;
+    courseIds: number[];
+}) =>
+    api.post<StudyPlan>(`${ENDPOINT}/${studyPlanId}/course-placements`, {
+        body: {semester, courseIds},
     });
 
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'An unknown error occurred');
-    }
-
-    return await res.json() as StudyPlan;
-}
-
-export const assignCoursePrerequisitesRequest = async ({studyPlanId, courseId, prerequisites}: {
-    studyPlanId: number,
-    courseId: number,
-    prerequisites: CoursePrerequisite[]
-}) => {
-    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/courses/${courseId}/prerequisites`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(prerequisites)
-    });
-
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'An unknown error occurred');
-    }
-
-    return await res.json() as StudyPlan;
-}
-
-export const removeCoursePrerequisiteRequest = async ({studyPlanId, courseId, prerequisiteId}: {
-    studyPlanId: number,
-    courseId: number,
-    prerequisiteId: number
-}) => {
-    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/courses/${courseId}/prerequisites/${prerequisiteId}`, {
-        method: 'DELETE'
-    });
-
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'An unknown error occurred');
-    }
-
-    return await res.json() as StudyPlan;
-}
-
-export const assignCourseCorequisitesRequest = async ({studyPlanId, courseId, corequisites}: {
-    studyPlanId: number,
-    courseId: number,
-    corequisites: number[]
-}) => {
-    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/courses/${courseId}/corequisites`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(corequisites)
-    });
-
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'An unknown error occurred');
-    }
-
-    return await res.json() as StudyPlan;
-}
-
-export const removeCourseCorequisiteRequest = async ({studyPlanId, courseId, corequisiteId}: {
-    studyPlanId: number,
-    courseId: number,
-    corequisiteId: number
-}) => {
-    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/courses/${courseId}/corequisites/${corequisiteId}`, {
-        method: 'DELETE'
-    });
-
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'An unknown error occurred');
-    }
-
-    return await res.json() as StudyPlan;
-}
-
-export const moveCourseSectionRequest = async ({studyPlanId, courseId, sectionId}: {
-    studyPlanId: number,
-    courseId: number,
-    sectionId: number
-}) => {
-    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/courses/${courseId}/move-to-section/${sectionId}`, {
-        method: 'PUT'
-    });
-
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'An unknown error occurred');
-    }
-
-    return await res.json() as StudyPlan;
-}
-
-export const moveSectionRequest = async ({studyPlanId, sectionId, direction}: {
-    studyPlanId: number,
-    sectionId: number,
-    direction: MoveDirection
-}) => {
-    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/sections/${sectionId}/move?direction=${direction}`, {
-        method: 'PUT'
-    });
-
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'An unknown error occurred');
-    }
-
-    return await res.json() as StudyPlan;
-}
-
-export const addCoursesToSemesterRequest = async ({studyPlanId, semester, courseIds}: {
-    studyPlanId: number,
-    semester: number,
-    courseIds: number[]
-}) => {
-    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/course-placements`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({semester: semester, courseIds: courseIds})
-    });
-
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'An unknown error occurred');
-    }
-
-    return await res.json() as StudyPlan;
-}
-
-export const removeCoursePlacementRequest = async ({studyPlanId, courseId}: {
-    studyPlanId: number,
-    courseId: number
-}) => {
-    const res = await fetch(`http://localhost:8080/api/v1/study-plans/${studyPlanId}/course-placements/${courseId}`, {
-        method: 'DELETE'
-    });
-
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || 'An unknown error occurred');
-    }
-
-    return await res.json() as StudyPlan;
-}
+export const removeCoursePlacement = ({studyPlanId, courseId}: {
+    studyPlanId: number;
+    courseId: number;
+}) =>
+    api.delete<StudyPlan>(`${ENDPOINT}/${studyPlanId}/course-placements/${courseId}`);

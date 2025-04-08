@@ -23,26 +23,25 @@ import {CreateCourseModal} from "@/features/course/components/CreateCourseModal.
 import {getSectionCode} from "@/lib/getSectionCode.ts";
 import {StudyPlan} from "@/features/study-plan/types.ts";
 
-type CourseSearchProps = {
+type StudyPlanCourseAdderProps = {
     studyPlan: StudyPlan;
 }
 
-export function CourseSearch({studyPlan}: CourseSearchProps) {
+export function StudyPlanCourseAdder({studyPlan}: StudyPlanCourseAdderProps) {
     const [popoverOpened, setPopoverOpened] = React.useState(false);
     const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
     const [selectedCourses, setSelectedCourses] = React.useState<Course[]>([]);
     const [search, setSearch] = React.useState<string>("");
     const [debouncedSearch] = useDebouncedValue(search, 750);
     const [createModalOpen, setCreateModalOpen] = React.useState(false);
-
-    const addCoursesToSection = useAddCoursesToSection();
-
     const combobox = useCombobox({
         onDropdownClose: () => combobox.resetSelectedOption(),
         onDropdownOpen: () => combobox.focusSearchInput()
     });
 
     const {data, isFetching, isFetched, fetchNextPage, hasNextPage} = usePaginatedCourses(debouncedSearch);
+
+    const addCoursesToSection = useAddCoursesToSection();
 
     const handleCourseSelect = (courseString: string) => {
         const course: Course = JSON.parse(courseString);
@@ -80,25 +79,30 @@ export function CourseSearch({studyPlan}: CourseSearchProps) {
         );
     };
 
-    const selectedOptions = selectedCourses.map((course) => (
-        <Pill key={course.id} withRemoveButton onRemove={() => handleCourseRemove(course.id)}>
-            {course.code}: {course.name}
-        </Pill>
-    ));
+    const sectionOptions = React.useMemo(() =>
+        studyPlan?.sections.map((section) => ({
+            value: section.id.toString(),
+            label: `${getSectionCode(section)}: ${section.level} ${section.type} ${section.name
+                ? `- ${section.name}`
+                : (getSectionCode(section).split('.').length > 2 ? "- General" : "")}`
+        })), [studyPlan]
+    );
 
     const options =
         data?.pages.flatMap(page =>
             page.content.map(course => {
-                const alreadyAdded = studyPlan?.sections.some(s => s.courses.includes(course.id));
+                const isAlreadyAdded = studyPlan?.sections.some(s => s.courses.includes(course.id));
+                const isSelected = selectedCourses.some(c => c.id === course.id);
+
                 return (
                     <Combobox.Option
                         value={JSON.stringify(course)}
                         key={course.id}
-                        disabled={alreadyAdded}
+                        disabled={isAlreadyAdded}
                     >
                         <Flex align="center" gap="sm">
                             <Checkbox
-                                checked={selectedCourses.some(c => c.id === course.id) || alreadyAdded}
+                                checked={isSelected || isAlreadyAdded}
                                 onChange={() => {
                                 }}
                                 aria-hidden
@@ -114,7 +118,13 @@ export function CourseSearch({studyPlan}: CourseSearchProps) {
             })
         ) ?? [];
 
-    const canAddCourses = selectedCourses.length > 0 && selectedSection !== null;
+    const selectedOptions = React.useMemo(() =>
+        selectedCourses.map((course) => (
+            <Pill key={course.id} withRemoveButton onRemove={() => handleCourseRemove(course.id)}>
+                {course.code}: {course.name}
+            </Pill>
+        )), [selectedCourses]
+    );
 
     return (
         <>
@@ -139,7 +149,10 @@ export function CourseSearch({studyPlan}: CourseSearchProps) {
                 width={360}
             >
                 <Popover.Target>
-                    <Button onClick={() => setPopoverOpened((o) => !o)} leftSection={<Plus size={18}/>}>
+                    <Button
+                        onClick={() => setPopoverOpened((o) => !o)}
+                        leftSection={<Plus size={18}/>}
+                    >
                         Add Courses
                     </Button>
                 </Popover.Target>
@@ -150,7 +163,7 @@ export function CourseSearch({studyPlan}: CourseSearchProps) {
                             leftSection={<Plus size={14}/>}
                             onClick={handleAddCourses}
                             loading={addCoursesToSection.isPending}
-                            disabled={!canAddCourses}
+                            disabled={selectedCourses.length <= 0 || !selectedSection}
                         >
                             Add To Study Plan
                         </Button>
@@ -159,16 +172,7 @@ export function CourseSearch({studyPlan}: CourseSearchProps) {
                             label="Section"
                             withAsterisk
                             placeholder="Select a section"
-                            data={
-                                studyPlan
-                                    ? studyPlan.sections.map((section) => ({
-                                        value: section.id.toString(),
-                                        label: `${getSectionCode(section)}: ${section.level} ${section.type} ${section.name
-                                            ? `- ${section.name}`
-                                            : (getSectionCode(section).split('.').length > 2 ? "- General" : "")}`
-                                    }))
-                                    : []
-                            }
+                            data={sectionOptions ?? []}
                             comboboxProps={{withinPortal: false}}
                             value={selectedSection}
                             onChange={setSelectedSection}
@@ -188,6 +192,7 @@ export function CourseSearch({studyPlan}: CourseSearchProps) {
                                     >
                                         <Pill.Group>
                                             {selectedOptions}
+
                                             <PillsInput.Field
                                                 value={search}
                                                 placeholder="Search any course"

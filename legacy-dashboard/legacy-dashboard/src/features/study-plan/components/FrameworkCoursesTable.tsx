@@ -1,8 +1,8 @@
 import {Flex, Group} from "@mantine/core";
 import {DataTable} from "@/shared/components/DataTable.tsx";
 import {SectionsTree} from "@/features/study-plan/components/SectionsTree.tsx";
-import {CourseSearch} from "@/features/course/components/CourseSearch.tsx";
-import {useDataTable} from "@/features/study-plan/hooks/useFrameworkCoursesTable.ts";
+import {StudyPlanCourseAdder} from "@/features/study-plan/components/StudyPlanCourseAdder.tsx";
+import {useDataTable} from "@/shared/hooks/useDataTable.ts";
 import {DataTablePagination} from "@/shared/components/DataTablePagination.tsx";
 import {RemoveStudyPlanCoursesButton} from "@/features/study-plan/components/RemoveStudyPlanCoursesButton.tsx";
 import {DataTableSearch} from "@/shared/components/DataTableSearch.tsx";
@@ -17,15 +17,6 @@ import {FrameworkCourse} from "@/features/study-plan/types.ts";
 export function FrameworkCoursesTable() {
     const {data: studyPlan} = useStudyPlan();
     const {data: courses} = useCourseList();
-
-    const columns = React.useMemo(
-        () =>
-            getFrameworkCoursesTableColumns({
-                studyPlan: studyPlan,
-                courses: courses
-            }),
-        [courses, studyPlan]
-    );
 
     const data = React.useMemo(() => {
         const rows: FrameworkCourse[] = [];
@@ -47,6 +38,15 @@ export function FrameworkCoursesTable() {
         return rows;
     }, [studyPlan, courses]);
 
+    const columns = React.useMemo(
+        () =>
+            getFrameworkCoursesTableColumns({
+                studyPlan: studyPlan,
+                courses: courses
+            }),
+        [courses, studyPlan]
+    );
+
     const {table} = useDataTable<FrameworkCourse>({data, columns});
 
     return (
@@ -59,7 +59,7 @@ export function FrameworkCoursesTable() {
 
                     <Group gap="sm">
                         <RemoveStudyPlanCoursesButton studyPlan={studyPlan} table={table}/>
-                        <CourseSearch studyPlan={studyPlan}/>
+                        <StudyPlanCourseAdder studyPlan={studyPlan}/>
                     </Group>
                 </Group>
 
