@@ -1,6 +1,6 @@
 import {Section, SectionLevel, SectionType} from "@/features/study-plan/types.ts";
 
-export const getSectionCode = (section: Section) => {
+export const getSectionCode = (section: Pick<Section, 'level' | 'type' | 'position'>) => {
     let code = '';
 
     code += getSectionLevelCode(section.level);
