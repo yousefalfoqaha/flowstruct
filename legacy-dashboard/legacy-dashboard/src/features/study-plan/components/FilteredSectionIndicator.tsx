@@ -3,7 +3,7 @@ import {Group, Text} from "@mantine/core";
 import {getSectionCode} from "@/lib/getSectionCode.ts";
 import {useSelectedSection} from "@/features/study-plan/hooks/useSelectedSection.ts";
 import {Table} from "@tanstack/react-table";
-import {FrameworkCourse} from "@/shared/hooks/useDataTable.ts";
+import {FrameworkCourse} from "@/features/study-plan/types.ts";
 
 type FilteredSectionIndicator = {
     table: Table<FrameworkCourse>;

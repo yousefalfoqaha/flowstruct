@@ -20,6 +20,16 @@ export function SectionOptionsMenu({
                                    }: SectionOptionsMenuProps) {
     const deleteSection = useDeleteSection();
 
+    const handleConfirm = () => deleteSection.mutate({
+        studyPlanId: studyPlanId,
+        sectionId: section.id
+    }, {
+        onSuccess: () => {
+            if (section.id !== selectedSection?.id) return;
+            resetSelectedSection();
+        }
+    });
+
     if (!section) return;
 
     return (
@@ -69,16 +79,7 @@ export function SectionOptionsMenu({
                                 </Text>
                             ),
                             labels: {confirm: "Confirm", cancel: "Cancel"},
-                            onConfirm: () =>
-                                deleteSection.mutate({
-                                    studyPlanId: studyPlanId,
-                                    sectionId: section.id
-                                }, {
-                                    onSuccess: () => {
-                                        if (section.id !== selectedSection?.id) return;
-                                        resetSelectedSection();
-                                    }
-                                })
+                            onConfirm: handleConfirm
                         });
                     }}
                 >

@@ -1,36 +1,22 @@
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useQueryClient} from "@tanstack/react-query";
 import {StudyPlanListItem} from "@/features/study-plan/types.ts";
 import {deleteStudyPlan} from "@/features/study-plan/api.ts";
-import {notifications} from "@mantine/notifications";
 import {studyPlanKeys} from "@/features/study-plan/queries.ts";
+import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 
 export const useDeleteStudyPlan = () => {
     const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: deleteStudyPlan,
+    return useAppMutation(deleteStudyPlan, {
         onSuccess: (_, deletedStudyPlan) => {
             queryClient.setQueryData(
-                studyPlanKeys.list(deletedStudyPlan.program),
+                studyPlanKeys.list(deletedStudyPlan.program as number),
                 (previous: StudyPlanListItem[]) => {
                     return previous.filter((plan) => plan.id !== deletedStudyPlan.id);
                 }
             );
 
-            queryClient.removeQueries({queryKey: studyPlanKeys.detail(deletedStudyPlan.id)});
-
-            notifications.show({
-                title: "Success!",
-                message: "Study plan deleted successfully",
-                color: "green"
-            });
+            queryClient.removeQueries({queryKey: studyPlanKeys.detail(deletedStudyPlan.id as number)});
         },
-        onError: (error) => {
-            notifications.show({
-                title: "An error occurred.",
-                message: error.message,
-                color: "red",
-            });
-        },
+        successNotification: {message: "Deleted study plan successfully."}
     });
 }

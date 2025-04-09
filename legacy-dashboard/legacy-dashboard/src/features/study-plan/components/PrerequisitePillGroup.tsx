@@ -15,21 +15,17 @@ export function PrerequisitePillGroup({parentCourseId, courses, studyPlan}: Prer
     const removePrerequisite = useRemoveCoursePrerequisite();
     const removeCorequisite = useRemoveCourseCorequisite();
 
-    const handleRemovePrerequisite = (prerequisiteId: number) => {
-        removePrerequisite.mutate({
-            studyPlanId: studyPlan.id,
-            courseId: parentCourseId,
-            prerequisiteId: prerequisiteId
-        });
-    };
+    const handleRemovePrerequisite = (prerequisiteId: number) => removePrerequisite.mutate({
+        studyPlanId: studyPlan.id,
+        courseId: parentCourseId,
+        prerequisiteId: prerequisiteId
+    });
 
-    const handleRemoveCorequisite = (corequisiteId: number) => {
-        removeCorequisite.mutate({
-            studyPlanId: studyPlan.id,
-            courseId: parentCourseId,
-            corequisiteId: corequisiteId
-        });
-    }
+    const handleRemoveCorequisite = (corequisiteId: number) => removeCorequisite.mutate({
+        studyPlanId: studyPlan.id,
+        courseId: parentCourseId,
+        corequisiteId: corequisiteId
+    });
 
     const prerequisites = studyPlan.coursePrerequisites[parentCourseId] ?? {};
     const corequisites = studyPlan.courseCorequisites[parentCourseId] ?? [];

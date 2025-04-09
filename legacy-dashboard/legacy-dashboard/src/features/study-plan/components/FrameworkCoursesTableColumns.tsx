@@ -48,7 +48,7 @@ export function getFrameworkCoursesTableColumns({
             cell: ({row}) => (
                 <p>{row.original.code}</p>
             ),
-        }),
+        }) as ColumnDef<FrameworkCourse>,
         columnHelper.accessor("name", {
             header: ({column}) => (
                 <Group wrap="nowrap">
@@ -59,15 +59,17 @@ export function getFrameworkCoursesTableColumns({
                 </Group>
             ),
             cell: ({row}) => <p>{row.original.name}</p>,
-            sortingFn: 'alphanumeric'
-        }),
+            sortingFn: 'alphanumeric',
+        }) as ColumnDef<FrameworkCourse>,
+
         columnHelper.accessor("creditHours", {
             header: 'Credits',
             sortingFn: 'alphanumeric',
             cell: ({row}) => (
                 <p>{row.original.creditHours} Cr.</p>
             )
-        }),
+        }) as ColumnDef<FrameworkCourse>,
+
         columnHelper.display({
             id: "prerequisites",
             header: "Prerequisites / Corequisites",

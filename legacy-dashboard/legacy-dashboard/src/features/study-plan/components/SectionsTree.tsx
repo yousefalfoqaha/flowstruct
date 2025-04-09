@@ -132,13 +132,19 @@ export function SectionsTree({studyPlan, table}: SectionsTreeProps) {
 
                 <Group>
                     {selectedSection && (
-                        <Button onClick={() => setSelectedSection(null)} size="compact-sm" p={0}
-                                leftSection={<Filter size={14}/>} color="gray" variant="transparent">
+                        <Button
+                            onClick={() => setSelectedSection(null)}
+                            size="compact-sm"
+                            p={0}
+                            leftSection={<Filter size={14}/>}
+                            color="gray"
+                            variant="transparent"
+                        >
                             Clear
                         </Button>
                     )}
 
-                    <CreateSectionModal studyPlanId={studyPlan.id} />
+                    <CreateSectionModal studyPlanId={studyPlan.id}/>
                 </Group>
             </Group>
 

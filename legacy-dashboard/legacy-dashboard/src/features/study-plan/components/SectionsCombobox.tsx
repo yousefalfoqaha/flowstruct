@@ -40,20 +40,13 @@ export function SectionsCombobox({
             );
         });
 
-    const handleChangeCourseSection = (sectionId: string) => {
-        moveCourseSection.mutate(
-            {
-                studyPlanId: studyPlanId,
-                courseId: courseId,
-                sectionId: parseInt(sectionId)
-            },
-            {
-                onSuccess: () => {
-                    combobox.closeDropdown();
-                }
-            }
-        );
-    }
+    const handleChangeCourseSection = (sectionId: string) => moveCourseSection.mutate({
+            studyPlanId: studyPlanId,
+            courseId: courseId,
+            sectionId: parseInt(sectionId)
+        },
+        {onSuccess: () => combobox.closeDropdown()}
+    );
 
     return (
         <Combobox
