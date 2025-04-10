@@ -2,7 +2,7 @@ import {MutationFunction, useMutation, UseMutationOptions} from "@tanstack/react
 import {notifications} from "@mantine/notifications";
 import {ErrorObject, Notification} from "@/shared/types.ts";
 
-interface UseAppMutationOptions<TData, TError, TVariables, TContext> extends Omit<UseMutationOptions<TData, TError, TVariables, TContext>, 'mutationFn'> {
+interface AppMutationOptions<TData, TError, TVariables, TContext> extends Omit<UseMutationOptions<TData, TError, TVariables, TContext>, 'mutationFn'> {
     successNotification?: Notification<TData, TVariables>;
 }
 
@@ -13,7 +13,7 @@ export function useAppMutation<
     TContext = unknown,
 >(
     mutationFn: MutationFunction<TData, TVariables>,
-    options?: UseAppMutationOptions<TData, TError, TVariables, TContext>
+    options?: AppMutationOptions<TData, TError, TVariables, TContext>
 ) {
     return useMutation<TData, TError, TVariables, TContext>({
         mutationFn,
