@@ -1,15 +1,10 @@
-import {MutationFunction, useMutation, UseMutationOptions, UseMutationResult} from "@tanstack/react-query";
+import {MutationFunction, useMutation, UseMutationOptions} from "@tanstack/react-query";
 import {notifications} from "@mantine/notifications";
-import {ErrorObject} from "@/shared/types.ts";
-import {ReactElement} from "react";
+import {ErrorObject, Notification} from "@/shared/types.ts";
 
-type MessageOption<TData, TVariables> =
-    | string
-    | ((data: TData, variables: TVariables) => string);
-
-type IconOption<TData, TVariables> =
-    | ReactElement
-    | ((data: TData, variables: TVariables) => ReactElement | undefined);
+interface UseAppMutationOptions<TData, TError, TVariables, TContext> extends Omit<UseMutationOptions<TData, TError, TVariables, TContext>, 'mutationFn'> {
+    successNotification?: Notification<TData, TVariables>;
+}
 
 export function useAppMutation<
     TData = unknown,
@@ -18,14 +13,8 @@ export function useAppMutation<
     TContext = unknown,
 >(
     mutationFn: MutationFunction<TData, TVariables>,
-    options?: Omit<UseMutationOptions<TData, TError, TVariables, TContext>, 'mutationFn'> & {
-        successNotification?: {
-            title?: MessageOption<TData, TVariables>;
-            message: MessageOption<TData, TVariables>;
-            icon?: IconOption<TData, TVariables>;
-        };
-    }
-): UseMutationResult<TData, TError, TVariables, TContext> {
+    options?: UseAppMutationOptions<TData, TError, TVariables, TContext>
+) {
     return useMutation<TData, TError, TVariables, TContext>({
         mutationFn,
         ...options,
@@ -54,7 +43,7 @@ export function useAppMutation<
         onError: (error, variables, context) => {
             notifications.show({
                 title: "Error",
-                message: (error as Error)?.message || "An unknown error occurred",
+                message: (error as ErrorObject)?.message || "An unknown error occurred",
                 color: "red",
             });
 

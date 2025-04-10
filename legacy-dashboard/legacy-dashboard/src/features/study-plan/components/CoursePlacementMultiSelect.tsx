@@ -1,7 +1,7 @@
 import {ActionIcon, Button, Group, MultiSelect, MultiSelectProps, Popover, Stack, Text} from "@mantine/core";
 import {BetweenHorizontalStart, CircleAlert, Plus} from "lucide-react";
 import React from "react";
-import {useAddCoursesToSemester} from "@/features/study-plan/hooks/useAddCoursesToSemester.ts";
+import {usePlaceCourses} from "@/features/study-plan/hooks/useAddCoursesToSemester.ts";
 import classes from './CoursesMultiSelect.module.css';
 import {getSectionCode} from "@/lib/getSectionCode.ts";
 import {StudyPlan} from "@/features/study-plan/types.ts";
@@ -25,7 +25,18 @@ export function CoursePlacementMultiSelect({semester, studyPlan, courses}: Cours
     const [opened, setOpened] = React.useState(false);
     const [selectedCourses, setSelectedCourses] = React.useState<string[]>([]);
 
-    const addCoursesToSemester = useAddCoursesToSemester();
+    const placeCourses = usePlaceCourses();
+
+    const handlePlaceCourses = () => placeCourses.mutate({
+        studyPlanId: studyPlan.id,
+        semester: semester,
+        courseIds: selectedCourses.map(id => Number(id))
+    }, {
+        onSuccess: () => {
+            setSelectedCourses([]);
+            setOpened(false);
+        }
+    });
 
     if (!semester) return null;
 
@@ -37,7 +48,7 @@ export function CoursePlacementMultiSelect({semester, studyPlan, courses}: Cours
                 : (sectionCode.split('.').length > 2 ? "- General" : "");
 
             return {
-                group: `${sectionCode}: ${section.level} ${section.type} ${displayName}`,
+                group: `${sectionCode}. ${section.level} ${section.type} ${displayName}`,
                 items: section.courses.map(courseId => {
                     const course = courses[courseId];
                     if (!course) return null;
@@ -63,7 +74,6 @@ export function CoursePlacementMultiSelect({semester, studyPlan, courses}: Cours
 
     const renderOption: MultiSelectProps['renderOption'] = ({option}) => {
         const courseOption = option as unknown as CourseOption;
-
         return (
             <div>
                 <div className={classes.label}>{option.label}</div>
@@ -107,18 +117,9 @@ export function CoursePlacementMultiSelect({semester, studyPlan, courses}: Cours
                 <Stack>
                     <Button
                         disabled={selectedCourses.length === 0}
-                        loading={addCoursesToSemester.isPending}
+                        loading={placeCourses.isPending}
                         leftSection={<BetweenHorizontalStart size={18}/>}
-                        onClick={() => addCoursesToSemester.mutate({
-                            studyPlanId: studyPlan.id,
-                            semester: semester,
-                            courseIds: selectedCourses.map(id => Number(id))
-                        }, {
-                            onSuccess: () => {
-                                setSelectedCourses([]);
-                                setOpened(false);
-                            }
-                        })}
+                        onClick={handlePlaceCourses}
                     >
                         Place Courses
                     </Button>

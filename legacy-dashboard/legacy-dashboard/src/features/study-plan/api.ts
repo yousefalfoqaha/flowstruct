@@ -125,7 +125,7 @@ export const moveSection = ({studyPlanId, sectionId, direction}: {
         params: {direction},
     });
 
-export const addCoursesToSemester = ({studyPlanId, semester, courseIds}: {
+export const placeCourses = ({studyPlanId, semester, courseIds}: {
     studyPlanId: number;
     semester: number;
     courseIds: number[];
