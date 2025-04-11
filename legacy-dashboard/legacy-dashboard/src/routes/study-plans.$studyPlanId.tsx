@@ -47,5 +47,5 @@ function RouteComponent() {
                 </Stack>
             </AppShell.Main>
         </AppShell>
-    )
+    );
 }

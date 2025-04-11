@@ -22,7 +22,7 @@ export function StudyPlanBreadcrumbs() {
                     </Button>
                 </Link>
                 <Link
-                    to="/programs/$programId/study-plans"
+                    to="/programs/$programId"
                     params={{programId: program.id.toString()}}
                 >
                     <Button size="compact-md" variant="transparent">
