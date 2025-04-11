@@ -1,29 +1,26 @@
-import {Link, useRouterState} from "@tanstack/react-router";
-import classes from "@/features/study-plan/components/StudyPlanSidebar.module.css";
-import {ActionIcon, Text, Title} from "@mantine/core";
-import {GraduationCap, LibraryBig, Settings, X} from "lucide-react";
+import {Link} from "@tanstack/react-router";
+import classes from "@/shared/components/Sidebar.module.css";
+import {ActionIcon} from "@mantine/core";
+import {Settings, X} from "lucide-react";
+import {SidebarLink} from "@/shared/types.ts";
+import {ReactNode} from "react";
 
-const data = [
-    {label: 'Programs', icon: GraduationCap, page: '' as const},
-    {label: 'Courses', icon: LibraryBig, page: 'courses' as const}
-];
-
-type IndexSidebarProps = {
+type SidebarProps = {
+    sidebarHeader: ReactNode;
+    data: SidebarLink[];
     closeSidebar: () => void;
 }
 
-export function IndexSidebar({closeSidebar}: IndexSidebarProps) {
-    const {location} = useRouterState();
-    const activePage = location.pathname.split('/').pop();
+export function Sidebar({sidebarHeader, data, closeSidebar}: SidebarProps) {
 
     const links = data.map((item) => {
         const Icon = item.icon;
         return (
             <Link
-                to={`/${item.page}`}
+                to={item.route}
                 className={classes.link}
-                data-active={item.page === activePage || undefined}
-                key={item.page}
+                activeOptions={{exact: true}}
+                key={item.route}
             >
                 <Icon className={classes.linkIcon} strokeWidth="1.5"/>
                 <span>{item.label}</span>
@@ -42,10 +39,8 @@ export function IndexSidebar({closeSidebar}: IndexSidebarProps) {
             >
                 <X strokeWidth={1.5}/>
             </ActionIcon>
-            <div className={classes.header}>
-                <Title order={3} fw={600} pb={8}>GJUPlans Admin Dashboard</Title>
-                <Text size="sm" c="dimmed">Last update: 2 weeks ago</Text>
-            </div>
+
+            <div className={classes.header}>{sidebarHeader}</div>
 
             <div className={classes.navbarMain}>
                 {links}
@@ -59,5 +54,4 @@ export function IndexSidebar({closeSidebar}: IndexSidebarProps) {
             </div>
         </nav>
     );
-
 }

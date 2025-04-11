@@ -27,6 +27,8 @@ const router = createRouter({
     scrollRestoration: true,
 });
 
+export type AppRouter = typeof router;
+
 declare module '@tanstack/react-router' {
     interface Register {
         router: typeof router;

@@ -47,7 +47,7 @@
         }
     }
 
-    &[data-active] {
+    &[data-status] {
         &,
         &:hover {
             background-color: var(--mantine-color-blue-light);

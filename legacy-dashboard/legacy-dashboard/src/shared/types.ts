@@ -1,4 +1,4 @@
-import {ReactElement} from "react";
+import React, {ReactElement} from "react";
 
 export interface ErrorObject {
     statusCode: number;
@@ -19,3 +19,9 @@ export type TextResolver<TData, TVariables> =
 export type IconResolver<TData, TVariables> =
     | ReactElement
     | ((data: TData, variables: TVariables) => ReactElement | undefined);
+
+export type SidebarLink = {
+    label: string;
+    icon: React.FC<React.SVGProps<SVGSVGElement>>;
+    route: string;
+}

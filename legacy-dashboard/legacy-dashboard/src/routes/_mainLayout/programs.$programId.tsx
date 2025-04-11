@@ -6,7 +6,7 @@ import {getStudyPlanListQuery} from '@/features/study-plan/queries.ts'
 import {useStudyPlanList} from '@/features/study-plan/hooks/useStudyPlanList.ts'
 import {Loader2} from 'lucide-react'
 
-export const Route = createFileRoute('/programs/$programId')({
+export const Route = createFileRoute('/_mainLayout/programs/$programId')({
     component: RouteComponent,
     loader: async ({context: {queryClient}, params}) => {
         const programId = parseInt(params.programId)
@@ -14,7 +14,7 @@ export const Route = createFileRoute('/programs/$programId')({
         await queryClient.ensureQueryData(getProgramQuery(programId))
         await queryClient.ensureQueryData(getStudyPlanListQuery(programId))
     },
-});
+})
 
 function RouteComponent() {
     const programId = parseInt(Route.useParams().programId)
