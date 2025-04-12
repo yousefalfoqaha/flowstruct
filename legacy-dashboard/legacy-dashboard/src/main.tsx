@@ -21,13 +21,11 @@ const queryClient = new QueryClient({
 
 const router = createRouter({
     routeTree,
-    context: {queryClient},
+    context: {queryClient, breadcrumbs: []},
     defaultPreload: 'intent',
     defaultPreloadStaleTime: 0,
     scrollRestoration: true,
 });
-
-export type AppRouter = typeof router;
 
 declare module '@tanstack/react-router' {
     interface Register {

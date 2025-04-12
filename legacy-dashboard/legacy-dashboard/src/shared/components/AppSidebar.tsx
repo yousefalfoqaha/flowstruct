@@ -1,17 +1,17 @@
 import {Link} from "@tanstack/react-router";
-import classes from "@/shared/components/Sidebar.module.css";
+import classes from "@/shared/components/AppSidebar.module.css";
 import {ActionIcon} from "@mantine/core";
 import {Settings, X} from "lucide-react";
 import {SidebarLink} from "@/shared/types.ts";
 import {ReactNode} from "react";
 
-type SidebarProps = {
+type AppSidebarProps = {
     sidebarHeader: ReactNode;
     data: SidebarLink[];
     closeSidebar: () => void;
 }
 
-export function Sidebar({sidebarHeader, data, closeSidebar}: SidebarProps) {
+export function AppSidebar({sidebarHeader, data, closeSidebar}: AppSidebarProps) {
 
     const links = data.map((item) => {
         const Icon = item.icon;

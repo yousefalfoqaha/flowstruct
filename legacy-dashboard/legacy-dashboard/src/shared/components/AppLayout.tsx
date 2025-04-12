@@ -1,8 +1,9 @@
 import {AppShell} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
-import {Sidebar} from "@/shared/components/Sidebar.tsx";
+import {AppSidebar} from "@/shared/components/AppSidebar.tsx";
 import {SidebarLink} from "@/shared/types.ts";
 import {ReactNode} from "react";
+import {AppHeader} from "@/shared/components/AppHeader.tsx";
 
 type AppLayoutProps = {
     sidebarHeader?: ReactNode;
@@ -21,11 +22,17 @@ export function AppLayout({sidebarHeader, sidebarData, children}: AppLayoutProps
                 breakpoint: MOBILE_BREAKPOINT,
                 collapsed: {mobile: !sidebarOpened},
             }}
+            header={{height: '60'}}
             padding="xl"
+            layout="alt"
         >
             <AppShell.Navbar p="lg">
-                <Sidebar sidebarHeader={sidebarHeader} data={sidebarData} closeSidebar={toggle} />
+                <AppSidebar sidebarHeader={sidebarHeader} data={sidebarData} closeSidebar={toggle}/>
             </AppShell.Navbar>
+
+            <AppShell.Header>
+                <AppHeader toggleSidebar={toggle} mobileBreakpoint={MOBILE_BREAKPOINT}/>
+            </AppShell.Header>
 
             <AppShell.Main>
                 {children}

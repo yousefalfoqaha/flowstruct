@@ -12,6 +12,8 @@ import {Route as OverviewRoute} from "@/routes/study-plans/$studyPlanId/_studyPl
 import {Route as FrameworkRoute} from "@/routes/study-plans/$studyPlanId/_studyPlanLayout/framework.tsx";
 import {Route as ProgramMapRoute} from "@/routes/study-plans/$studyPlanId/_studyPlanLayout/program-map.tsx";
 import {SidebarLink} from "@/shared/types.ts";
+import {getStudyPlanDisplayName} from "@/lib/getStudyPlanDisplayName.ts";
+import {getProgramDisplayName} from "@/lib/getProgramName.ts";
 
 export const Route = createFileRoute(
     '/study-plans/$studyPlanId/_studyPlanLayout',
@@ -20,8 +22,12 @@ export const Route = createFileRoute(
         const studyPlanId = parseInt(params.studyPlanId)
         const studyPlan = await queryClient.ensureQueryData(
             getStudyPlanQuery(studyPlanId),
-        )
-        await queryClient.ensureQueryData(getProgramQuery(studyPlan.program))
+        );
+        const program = await queryClient.ensureQueryData(getProgramQuery(studyPlan.program))
+
+        return {
+            crumb: `${getProgramDisplayName(program)} ${getStudyPlanDisplayName(studyPlan)}`
+        };
     },
     component: RouteComponent,
 });
@@ -30,13 +36,13 @@ const data: SidebarLink[] = [
     {label: 'Overview', icon: ScrollText, route: OverviewRoute.to},
     {label: 'Framework', icon: Folder, route: FrameworkRoute.to},
     {label: 'Program Map', icon: Map, route: ProgramMapRoute.to},
-]
+];
 
 function RouteComponent() {
     const {data: program} = useProgram()
     const {data: studyPlan} = useStudyPlan()
 
-    const studyPlanDisplayName = `${studyPlan.year}-${studyPlan.year + 1} ${studyPlan.track ?? ''}`
+    const studyPlanDisplayName = getStudyPlanDisplayName(studyPlan);
 
     const sidebarHeader = () => (
         <>

@@ -33,7 +33,7 @@ export const api = {
         const response = await fetch(url, config);
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({message: "An unknown error occurred"}));
+            const errorData = await response.json().catch(() => ({message: "An unknown error occurred."}));
             throw new Error(errorData.message || `Request failed with status ${response.status}`);
         }
 

@@ -1,9 +1,12 @@
-import { createFileRoute } from '@tanstack/react-router'
+import {createFileRoute} from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_mainLayout/study-plans')({
-  component: RouteComponent,
-})
+        loader: () => ({
+            crumb: 'Study Plans'
+        }),
+    component: RouteComponent,
+});
 
 function RouteComponent() {
-  return <div>Hello "/study-plans"!</div>
+    return <div>Hello "/study-plans"!</div>
 }
