@@ -4,6 +4,7 @@ public record ProgramSummaryResponse(
         long id,
         String code,
         String name,
-        String degree
+        String degree,
+        boolean isPrivate
 ) {
 }

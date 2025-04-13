@@ -11,6 +11,8 @@ public record CreateProgramRequest(
         @NotEmpty(message = "Name cannot be empty")
         String name,
 
-        Degree degree
+        Degree degree,
+
+        boolean isPrivate
 ) {
 }

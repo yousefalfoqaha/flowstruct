@@ -40,6 +40,13 @@ public class ProgramController {
         return new ResponseEntity<>(programService.createProgram(request), HttpStatus.CREATED);
     }
 
+    @PutMapping("/{programId}/toggle-visibility")
+    public ResponseEntity<ProgramResponse> toggleProgramVisibility(
+            @PathVariable long programId
+    ) {
+        return new ResponseEntity<>(programService.toggleVisibility(programId), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{programId}")
     public ResponseEntity<Void> deleteProgram(@PathVariable long programId) {
         programService.deleteProgram(programId);

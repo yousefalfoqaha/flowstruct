@@ -8,6 +8,8 @@ import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramSummaryResponse;
 import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramResponse;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
+import com.yousefalfoqaha.gjuplans.program.mapper.ProgramResponseMapper;
+import com.yousefalfoqaha.gjuplans.program.mapper.ProgramSummaryResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,16 +22,12 @@ public class ProgramService {
     private final ProgramRepository programRepository;
     private final ObjectValidator<UpdateProgramRequest> updateProgramValidator;
     private final ObjectValidator<CreateProgramRequest> createProgramValidator;
+    private final ProgramSummaryResponseMapper programSummaryResponseMapper;
+    private final ProgramResponseMapper programResponseMapper;
 
     public List<ProgramSummaryResponse> getAllProgramOptions() {
-        return programRepository.findAllProgramOptions()
-                .stream()
-                .map(o -> new ProgramSummaryResponse(
-                        o.getId(),
-                        o.getCode(),
-                        o.getName(),
-                        o.getDegree().name()
-                ))
+        return programRepository.findAllProgramOptions().stream()
+                .map(programSummaryResponseMapper)
                 .toList();
     }
 
@@ -39,12 +37,7 @@ public class ProgramService {
                         "Program with id " + programId + " was not found."
                 ));
 
-        return new ProgramResponse(
-                program.getId(),
-                program.getCode(),
-                program.getName(),
-                program.getDegree().name()
-        );
+        return programResponseMapper.apply(program);
     }
 
     @Transactional
@@ -62,15 +55,10 @@ public class ProgramService {
         program.setCode(request.code());
         program.setName(request.name());
         program.setDegree(request.degree());
+        program.setPrivate(request.isPrivate());
 
         Program updatedProgram = programRepository.save(program);
-
-        return new ProgramResponse(
-                updatedProgram.getId(),
-                updatedProgram.getCode(),
-                updatedProgram.getName(),
-                updatedProgram.getDegree().name()
-        );
+        return programResponseMapper.apply(updatedProgram);
     }
 
     @Transactional
@@ -86,20 +74,33 @@ public class ProgramService {
                         null,
                         request.code(),
                         request.name(),
-                        request.degree()
+                        request.degree(),
+                        request.isPrivate()
                 )
         );
 
-        return new ProgramResponse(
-                createdProgram.getId(),
-                createdProgram.getCode(),
-                createdProgram.getName(),
-                createdProgram.getDegree().name()
-        );
+        return programResponseMapper.apply(createdProgram);
     }
 
     @Transactional
     public void deleteProgram(long programId) {
         programRepository.deleteById(programId);
+    }
+
+    @Transactional
+    public ProgramResponse toggleVisibility(long programId) {
+        var program = findProgram(programId);
+
+        program.setPrivate(!program.isPrivate());
+
+        programRepository.save(program);
+        return programResponseMapper.apply(program);
+    }
+
+    private Program findProgram(long programId) {
+        return programRepository.findById(programId)
+                .orElseThrow(
+                        () -> new ProgramNotFoundException("Program with id " + programId + " was not found.")
+                );
     }
 }
