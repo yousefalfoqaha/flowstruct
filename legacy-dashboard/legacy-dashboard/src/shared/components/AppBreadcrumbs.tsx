@@ -1,22 +1,22 @@
-import { ChevronRight, Home } from "lucide-react";
-import { Link, useMatches } from "@tanstack/react-router";
-import { ActionIcon, Breadcrumbs, Button } from "@mantine/core";
+import {ChevronRight, Home} from "lucide-react";
+import {Link, useRouterState} from "@tanstack/react-router";
+import {ActionIcon, Breadcrumbs, Button} from "@mantine/core";
 
 export function AppBreadcrumbs() {
-    const matches = useMatches();
+    const matches = useRouterState({select: (s) => s.matches});
 
     const breadcrumbs = matches
         .filter((match) => match.loaderData?.crumb)
-        .map(({ pathname, loaderData }) => ({
+        .map(({pathname, loaderData}) => ({
             route: pathname,
             label: loaderData?.crumb,
         }));
 
     return (
-        <Breadcrumbs separator={<ChevronRight size={14} />} separatorMargin={5}>
-            <Link to="/">
+        <Breadcrumbs separator={<ChevronRight size={14}/>} separatorMargin={5}>
+            <Link to="/dashboard">
                 <ActionIcon mr="xs" size="compact-md" color="gray" variant="transparent">
-                    <Home size={18} />
+                    <Home size={18}/>
                 </ActionIcon>
             </Link>
             {breadcrumbs.map((crumb, i) => (

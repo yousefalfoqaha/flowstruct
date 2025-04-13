@@ -6,7 +6,7 @@ import {openModal} from '@mantine/modals'
 import {EditStudyPlanDetailsModal} from '@/features/study-plan/components/EditStudyPlanDetailsModal.tsx'
 import {getStudyPlanQuery} from '@/features/study-plan/queries.ts'
 import {getProgramQuery} from '@/features/program/queries.ts'
-import {useProgram} from '@/features/program/hooks/useProgram.ts'
+import {useProgram} from '@/features/program/hooks/useStudyPlanProgram.ts'
 import {useStudyPlan} from '@/features/study-plan/hooks/useStudyPlan.ts'
 import {Route as OverviewRoute} from "@/routes/study-plans/$studyPlanId/_studyPlanLayout/index.tsx";
 import {Route as FrameworkRoute} from "@/routes/study-plans/$studyPlanId/_studyPlanLayout/framework.tsx";

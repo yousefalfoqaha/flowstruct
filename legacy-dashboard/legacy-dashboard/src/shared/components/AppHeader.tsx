@@ -1,5 +1,5 @@
-import {ActionIcon, Avatar, Burger, Group, MantineSize} from "@mantine/core";
-import {LogOut} from "lucide-react";
+import {ActionIcon, Avatar, Burger, Button, Group, MantineSize} from "@mantine/core";
+import {LogOut, Upload} from "lucide-react";
 import {AppBreadcrumbs} from "@/shared/components/AppBreadcrumbs.tsx";
 
 type AppHeaderProps = {
@@ -21,6 +21,14 @@ export function AppHeader({toggleSidebar, mobileBreakpoint}: AppHeaderProps) {
             </Group>
 
             <Group gap="lg">
+                <Button
+                    size="xs"
+                    radius="xl"
+                    variant="default"
+                    leftSection={<Upload size={14}/>}
+                >
+                    Last Update: 2 weeks ago
+                </Button>
                 <Avatar
                     color="blue"
                     variant="transparent"

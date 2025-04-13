@@ -1,34 +1,36 @@
-import {createColumnHelper, getCoreRowModel, useReactTable} from "@tanstack/react-table"
-import {Book, Loader2, Pencil, Trash} from "lucide-react";
 import {DataTable} from "@/shared/components/DataTable.tsx";
-import {Link} from "@tanstack/react-router";
-import {ProgramListItem} from "@/features/program/types.ts";
 import {useProgramList} from "@/features/program/hooks/useProgramList.ts";
-import {modals} from "@mantine/modals";
-import {EditProgramDetailsModal} from "@/features/program/components/EditProgramDetailsModal.tsx";
-import {ActionIcon, Badge, Button, Text} from "@mantine/core";
-import {useDeleteProgram} from "@/features/program/hooks/useDeleteProgram.ts";
-import React from "react";
 import {getProgramsTableColumns} from "@/features/program/components/ProgramsTableColumns.tsx";
+import {useDataTable} from "@/shared/hooks/useDataTable.ts";
+import {ProgramListItem} from "@/features/program/types.ts";
+import {DataTableSearch} from "@/shared/components/DataTableSearch.tsx";
+import {Box, Card, Stack, Text} from "@mantine/core";
+import React from "react";
+import {DataTablePagination} from "@/shared/components/DataTablePagination.tsx";
 
 export function ProgramsTable() {
-    const {accessor, display} = createColumnHelper<ProgramListItem>();
-
-
+    const {data} = useProgramList();
     const columns = React.useMemo(
-        () => getProgramsTableColumns(), [])
+        () => getProgramsTableColumns(),
+        []
+    );
 
-    const {isPending, data} = useProgramList();
-
-    const table = useReactTable({
-        columns: columns,
-        data: data ?? [],
-        getCoreRowModel: getCoreRowModel()
-    });
-
-    if (isPending) return <div className="p-10"><Loader2 className="animate-spin text-gray-500 mx-auto"/></div>
+    const {table} = useDataTable<ProgramListItem>({data, columns});
 
     return (
-        <DataTable table={table}/>
+        <Stack gap="md">
+            <DataTableSearch table={table} placeholder="Search any program..."/>
+            <Card shadow="sm" withBorder>
+                <Text size="xl" fw={600}>All Programs</Text>
+                <Text size="xs" c="dimmed">Manage university programs - {data.length} program{data.length > 1 && 's'} total</Text>
+
+                <Card.Section inheritPadding py="lg">
+                    <DataTable table={table}/>
+                </Card.Section>
+            </Card>
+            <Box ml="auto">
+                <DataTablePagination table={table} />
+            </Box>
+        </Stack>
     );
 }

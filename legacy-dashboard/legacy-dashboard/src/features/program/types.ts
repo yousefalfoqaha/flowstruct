@@ -10,7 +10,8 @@ export type Program = {
     code: string;
     name: string;
     degree: string;
+    isPrivate: boolean;
 }
 
 export type ProgramListItem = Pick<Program,
-    "id" | "code" | "name" | "degree">;
+    "id" | "code" | "name" | "degree" | "isPrivate">;

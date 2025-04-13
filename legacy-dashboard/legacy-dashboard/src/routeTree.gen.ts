@@ -13,16 +13,18 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as MainLayoutImport } from './routes/_mainLayout'
-import { Route as MainLayoutIndexImport } from './routes/_mainLayout/index'
-import { Route as MainLayoutStudyPlansImport } from './routes/_mainLayout/study-plans'
-import { Route as MainLayoutProgramsImport } from './routes/_mainLayout/programs'
-import { Route as MainLayoutCoursesImport } from './routes/_mainLayout/courses'
+import { Route as DashboardImport } from './routes/dashboard'
+import { Route as DashboardIndexImport } from './routes/dashboard/index'
+import { Route as DashboardStudyPlansImport } from './routes/dashboard/study-plans'
+import { Route as DashboardCoursesImport } from './routes/dashboard/courses'
+import { Route as DashboardProgramsIndexImport } from './routes/dashboard/programs/index'
 import { Route as StudyPlansStudyPlanIdStudyPlanLayoutImport } from './routes/study-plans/$studyPlanId/_studyPlanLayout'
-import { Route as MainLayoutProgramsProgramIdImport } from './routes/_mainLayout/programs.$programId'
+import { Route as DashboardProgramsNewImport } from './routes/dashboard/programs/new'
 import { Route as StudyPlansStudyPlanIdStudyPlanLayoutIndexImport } from './routes/study-plans/$studyPlanId/_studyPlanLayout/index'
+import { Route as DashboardProgramsProgramIdIndexImport } from './routes/dashboard/programs/$programId/index'
 import { Route as StudyPlansStudyPlanIdStudyPlanLayoutProgramMapImport } from './routes/study-plans/$studyPlanId/_studyPlanLayout/program-map'
 import { Route as StudyPlansStudyPlanIdStudyPlanLayoutFrameworkImport } from './routes/study-plans/$studyPlanId/_studyPlanLayout/framework'
+import { Route as DashboardProgramsProgramIdEditImport } from './routes/dashboard/programs/$programId/edit'
 
 // Create Virtual Routes
 
@@ -32,8 +34,9 @@ const StudyPlansStudyPlanIdImport = createFileRoute(
 
 // Create/Update Routes
 
-const MainLayoutRoute = MainLayoutImport.update({
-  id: '/_mainLayout',
+const DashboardRoute = DashboardImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -43,28 +46,28 @@ const StudyPlansStudyPlanIdRoute = StudyPlansStudyPlanIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const MainLayoutIndexRoute = MainLayoutIndexImport.update({
+const DashboardIndexRoute = DashboardIndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => MainLayoutRoute,
+  getParentRoute: () => DashboardRoute,
 } as any)
 
-const MainLayoutStudyPlansRoute = MainLayoutStudyPlansImport.update({
+const DashboardStudyPlansRoute = DashboardStudyPlansImport.update({
   id: '/study-plans',
   path: '/study-plans',
-  getParentRoute: () => MainLayoutRoute,
+  getParentRoute: () => DashboardRoute,
 } as any)
 
-const MainLayoutProgramsRoute = MainLayoutProgramsImport.update({
-  id: '/programs',
-  path: '/programs',
-  getParentRoute: () => MainLayoutRoute,
-} as any)
-
-const MainLayoutCoursesRoute = MainLayoutCoursesImport.update({
+const DashboardCoursesRoute = DashboardCoursesImport.update({
   id: '/courses',
   path: '/courses',
-  getParentRoute: () => MainLayoutRoute,
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const DashboardProgramsIndexRoute = DashboardProgramsIndexImport.update({
+  id: '/programs/',
+  path: '/programs/',
+  getParentRoute: () => DashboardRoute,
 } as any)
 
 const StudyPlansStudyPlanIdStudyPlanLayoutRoute =
@@ -73,18 +76,24 @@ const StudyPlansStudyPlanIdStudyPlanLayoutRoute =
     getParentRoute: () => StudyPlansStudyPlanIdRoute,
   } as any)
 
-const MainLayoutProgramsProgramIdRoute =
-  MainLayoutProgramsProgramIdImport.update({
-    id: '/$programId',
-    path: '/$programId',
-    getParentRoute: () => MainLayoutProgramsRoute,
-  } as any)
+const DashboardProgramsNewRoute = DashboardProgramsNewImport.update({
+  id: '/programs/new',
+  path: '/programs/new',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 const StudyPlansStudyPlanIdStudyPlanLayoutIndexRoute =
   StudyPlansStudyPlanIdStudyPlanLayoutIndexImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => StudyPlansStudyPlanIdStudyPlanLayoutRoute,
+  } as any)
+
+const DashboardProgramsProgramIdIndexRoute =
+  DashboardProgramsProgramIdIndexImport.update({
+    id: '/programs/$programId/',
+    path: '/programs/$programId/',
+    getParentRoute: () => DashboardRoute,
   } as any)
 
 const StudyPlansStudyPlanIdStudyPlanLayoutProgramMapRoute =
@@ -101,51 +110,51 @@ const StudyPlansStudyPlanIdStudyPlanLayoutFrameworkRoute =
     getParentRoute: () => StudyPlansStudyPlanIdStudyPlanLayoutRoute,
   } as any)
 
+const DashboardProgramsProgramIdEditRoute =
+  DashboardProgramsProgramIdEditImport.update({
+    id: '/programs/$programId/edit',
+    path: '/programs/$programId/edit',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_mainLayout': {
-      id: '/_mainLayout'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof MainLayoutImport
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardImport
       parentRoute: typeof rootRoute
     }
-    '/_mainLayout/courses': {
-      id: '/_mainLayout/courses'
+    '/dashboard/courses': {
+      id: '/dashboard/courses'
       path: '/courses'
-      fullPath: '/courses'
-      preLoaderRoute: typeof MainLayoutCoursesImport
-      parentRoute: typeof MainLayoutImport
+      fullPath: '/dashboard/courses'
+      preLoaderRoute: typeof DashboardCoursesImport
+      parentRoute: typeof DashboardImport
     }
-    '/_mainLayout/programs': {
-      id: '/_mainLayout/programs'
-      path: '/programs'
-      fullPath: '/programs'
-      preLoaderRoute: typeof MainLayoutProgramsImport
-      parentRoute: typeof MainLayoutImport
-    }
-    '/_mainLayout/study-plans': {
-      id: '/_mainLayout/study-plans'
+    '/dashboard/study-plans': {
+      id: '/dashboard/study-plans'
       path: '/study-plans'
-      fullPath: '/study-plans'
-      preLoaderRoute: typeof MainLayoutStudyPlansImport
-      parentRoute: typeof MainLayoutImport
+      fullPath: '/dashboard/study-plans'
+      preLoaderRoute: typeof DashboardStudyPlansImport
+      parentRoute: typeof DashboardImport
     }
-    '/_mainLayout/': {
-      id: '/_mainLayout/'
+    '/dashboard/': {
+      id: '/dashboard/'
       path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof MainLayoutIndexImport
-      parentRoute: typeof MainLayoutImport
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexImport
+      parentRoute: typeof DashboardImport
     }
-    '/_mainLayout/programs/$programId': {
-      id: '/_mainLayout/programs/$programId'
-      path: '/$programId'
-      fullPath: '/programs/$programId'
-      preLoaderRoute: typeof MainLayoutProgramsProgramIdImport
-      parentRoute: typeof MainLayoutProgramsImport
+    '/dashboard/programs/new': {
+      id: '/dashboard/programs/new'
+      path: '/programs/new'
+      fullPath: '/dashboard/programs/new'
+      preLoaderRoute: typeof DashboardProgramsNewImport
+      parentRoute: typeof DashboardImport
     }
     '/study-plans/$studyPlanId': {
       id: '/study-plans/$studyPlanId'
@@ -161,6 +170,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudyPlansStudyPlanIdStudyPlanLayoutImport
       parentRoute: typeof StudyPlansStudyPlanIdRoute
     }
+    '/dashboard/programs/': {
+      id: '/dashboard/programs/'
+      path: '/programs'
+      fullPath: '/dashboard/programs'
+      preLoaderRoute: typeof DashboardProgramsIndexImport
+      parentRoute: typeof DashboardImport
+    }
+    '/dashboard/programs/$programId/edit': {
+      id: '/dashboard/programs/$programId/edit'
+      path: '/programs/$programId/edit'
+      fullPath: '/dashboard/programs/$programId/edit'
+      preLoaderRoute: typeof DashboardProgramsProgramIdEditImport
+      parentRoute: typeof DashboardImport
+    }
     '/study-plans/$studyPlanId/_studyPlanLayout/framework': {
       id: '/study-plans/$studyPlanId/_studyPlanLayout/framework'
       path: '/framework'
@@ -175,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudyPlansStudyPlanIdStudyPlanLayoutProgramMapImport
       parentRoute: typeof StudyPlansStudyPlanIdStudyPlanLayoutImport
     }
+    '/dashboard/programs/$programId/': {
+      id: '/dashboard/programs/$programId/'
+      path: '/programs/$programId'
+      fullPath: '/dashboard/programs/$programId'
+      preLoaderRoute: typeof DashboardProgramsProgramIdIndexImport
+      parentRoute: typeof DashboardImport
+    }
     '/study-plans/$studyPlanId/_studyPlanLayout/': {
       id: '/study-plans/$studyPlanId/_studyPlanLayout/'
       path: '/'
@@ -187,33 +217,28 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-interface MainLayoutProgramsRouteChildren {
-  MainLayoutProgramsProgramIdRoute: typeof MainLayoutProgramsProgramIdRoute
+interface DashboardRouteChildren {
+  DashboardCoursesRoute: typeof DashboardCoursesRoute
+  DashboardStudyPlansRoute: typeof DashboardStudyPlansRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardProgramsNewRoute: typeof DashboardProgramsNewRoute
+  DashboardProgramsIndexRoute: typeof DashboardProgramsIndexRoute
+  DashboardProgramsProgramIdEditRoute: typeof DashboardProgramsProgramIdEditRoute
+  DashboardProgramsProgramIdIndexRoute: typeof DashboardProgramsProgramIdIndexRoute
 }
 
-const MainLayoutProgramsRouteChildren: MainLayoutProgramsRouteChildren = {
-  MainLayoutProgramsProgramIdRoute: MainLayoutProgramsProgramIdRoute,
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardCoursesRoute: DashboardCoursesRoute,
+  DashboardStudyPlansRoute: DashboardStudyPlansRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+  DashboardProgramsNewRoute: DashboardProgramsNewRoute,
+  DashboardProgramsIndexRoute: DashboardProgramsIndexRoute,
+  DashboardProgramsProgramIdEditRoute: DashboardProgramsProgramIdEditRoute,
+  DashboardProgramsProgramIdIndexRoute: DashboardProgramsProgramIdIndexRoute,
 }
 
-const MainLayoutProgramsRouteWithChildren =
-  MainLayoutProgramsRoute._addFileChildren(MainLayoutProgramsRouteChildren)
-
-interface MainLayoutRouteChildren {
-  MainLayoutCoursesRoute: typeof MainLayoutCoursesRoute
-  MainLayoutProgramsRoute: typeof MainLayoutProgramsRouteWithChildren
-  MainLayoutStudyPlansRoute: typeof MainLayoutStudyPlansRoute
-  MainLayoutIndexRoute: typeof MainLayoutIndexRoute
-}
-
-const MainLayoutRouteChildren: MainLayoutRouteChildren = {
-  MainLayoutCoursesRoute: MainLayoutCoursesRoute,
-  MainLayoutProgramsRoute: MainLayoutProgramsRouteWithChildren,
-  MainLayoutStudyPlansRoute: MainLayoutStudyPlansRoute,
-  MainLayoutIndexRoute: MainLayoutIndexRoute,
-}
-
-const MainLayoutRouteWithChildren = MainLayoutRoute._addFileChildren(
-  MainLayoutRouteChildren,
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
 )
 
 interface StudyPlansStudyPlanIdStudyPlanLayoutRouteChildren {
@@ -252,90 +277,102 @@ const StudyPlansStudyPlanIdRouteWithChildren =
   )
 
 export interface FileRoutesByFullPath {
-  '': typeof MainLayoutRouteWithChildren
-  '/courses': typeof MainLayoutCoursesRoute
-  '/programs': typeof MainLayoutProgramsRouteWithChildren
-  '/study-plans': typeof MainLayoutStudyPlansRoute
-  '/': typeof MainLayoutIndexRoute
-  '/programs/$programId': typeof MainLayoutProgramsProgramIdRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard/courses': typeof DashboardCoursesRoute
+  '/dashboard/study-plans': typeof DashboardStudyPlansRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/programs/new': typeof DashboardProgramsNewRoute
   '/study-plans/$studyPlanId': typeof StudyPlansStudyPlanIdStudyPlanLayoutRouteWithChildren
+  '/dashboard/programs': typeof DashboardProgramsIndexRoute
+  '/dashboard/programs/$programId/edit': typeof DashboardProgramsProgramIdEditRoute
   '/study-plans/$studyPlanId/framework': typeof StudyPlansStudyPlanIdStudyPlanLayoutFrameworkRoute
   '/study-plans/$studyPlanId/program-map': typeof StudyPlansStudyPlanIdStudyPlanLayoutProgramMapRoute
+  '/dashboard/programs/$programId': typeof DashboardProgramsProgramIdIndexRoute
   '/study-plans/$studyPlanId/': typeof StudyPlansStudyPlanIdStudyPlanLayoutIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/courses': typeof MainLayoutCoursesRoute
-  '/programs': typeof MainLayoutProgramsRouteWithChildren
-  '/study-plans': typeof MainLayoutStudyPlansRoute
-  '/': typeof MainLayoutIndexRoute
-  '/programs/$programId': typeof MainLayoutProgramsProgramIdRoute
+  '/dashboard/courses': typeof DashboardCoursesRoute
+  '/dashboard/study-plans': typeof DashboardStudyPlansRoute
+  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/programs/new': typeof DashboardProgramsNewRoute
   '/study-plans/$studyPlanId': typeof StudyPlansStudyPlanIdStudyPlanLayoutIndexRoute
+  '/dashboard/programs': typeof DashboardProgramsIndexRoute
+  '/dashboard/programs/$programId/edit': typeof DashboardProgramsProgramIdEditRoute
   '/study-plans/$studyPlanId/framework': typeof StudyPlansStudyPlanIdStudyPlanLayoutFrameworkRoute
   '/study-plans/$studyPlanId/program-map': typeof StudyPlansStudyPlanIdStudyPlanLayoutProgramMapRoute
+  '/dashboard/programs/$programId': typeof DashboardProgramsProgramIdIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/_mainLayout': typeof MainLayoutRouteWithChildren
-  '/_mainLayout/courses': typeof MainLayoutCoursesRoute
-  '/_mainLayout/programs': typeof MainLayoutProgramsRouteWithChildren
-  '/_mainLayout/study-plans': typeof MainLayoutStudyPlansRoute
-  '/_mainLayout/': typeof MainLayoutIndexRoute
-  '/_mainLayout/programs/$programId': typeof MainLayoutProgramsProgramIdRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard/courses': typeof DashboardCoursesRoute
+  '/dashboard/study-plans': typeof DashboardStudyPlansRoute
+  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/programs/new': typeof DashboardProgramsNewRoute
   '/study-plans/$studyPlanId': typeof StudyPlansStudyPlanIdRouteWithChildren
   '/study-plans/$studyPlanId/_studyPlanLayout': typeof StudyPlansStudyPlanIdStudyPlanLayoutRouteWithChildren
+  '/dashboard/programs/': typeof DashboardProgramsIndexRoute
+  '/dashboard/programs/$programId/edit': typeof DashboardProgramsProgramIdEditRoute
   '/study-plans/$studyPlanId/_studyPlanLayout/framework': typeof StudyPlansStudyPlanIdStudyPlanLayoutFrameworkRoute
   '/study-plans/$studyPlanId/_studyPlanLayout/program-map': typeof StudyPlansStudyPlanIdStudyPlanLayoutProgramMapRoute
+  '/dashboard/programs/$programId/': typeof DashboardProgramsProgramIdIndexRoute
   '/study-plans/$studyPlanId/_studyPlanLayout/': typeof StudyPlansStudyPlanIdStudyPlanLayoutIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | ''
-    | '/courses'
-    | '/programs'
-    | '/study-plans'
-    | '/'
-    | '/programs/$programId'
+    | '/dashboard'
+    | '/dashboard/courses'
+    | '/dashboard/study-plans'
+    | '/dashboard/'
+    | '/dashboard/programs/new'
     | '/study-plans/$studyPlanId'
+    | '/dashboard/programs'
+    | '/dashboard/programs/$programId/edit'
     | '/study-plans/$studyPlanId/framework'
     | '/study-plans/$studyPlanId/program-map'
+    | '/dashboard/programs/$programId'
     | '/study-plans/$studyPlanId/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/courses'
-    | '/programs'
-    | '/study-plans'
-    | '/'
-    | '/programs/$programId'
+    | '/dashboard/courses'
+    | '/dashboard/study-plans'
+    | '/dashboard'
+    | '/dashboard/programs/new'
     | '/study-plans/$studyPlanId'
+    | '/dashboard/programs'
+    | '/dashboard/programs/$programId/edit'
     | '/study-plans/$studyPlanId/framework'
     | '/study-plans/$studyPlanId/program-map'
+    | '/dashboard/programs/$programId'
   id:
     | '__root__'
-    | '/_mainLayout'
-    | '/_mainLayout/courses'
-    | '/_mainLayout/programs'
-    | '/_mainLayout/study-plans'
-    | '/_mainLayout/'
-    | '/_mainLayout/programs/$programId'
+    | '/dashboard'
+    | '/dashboard/courses'
+    | '/dashboard/study-plans'
+    | '/dashboard/'
+    | '/dashboard/programs/new'
     | '/study-plans/$studyPlanId'
     | '/study-plans/$studyPlanId/_studyPlanLayout'
+    | '/dashboard/programs/'
+    | '/dashboard/programs/$programId/edit'
     | '/study-plans/$studyPlanId/_studyPlanLayout/framework'
     | '/study-plans/$studyPlanId/_studyPlanLayout/program-map'
+    | '/dashboard/programs/$programId/'
     | '/study-plans/$studyPlanId/_studyPlanLayout/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  MainLayoutRoute: typeof MainLayoutRouteWithChildren
+  DashboardRoute: typeof DashboardRouteWithChildren
   StudyPlansStudyPlanIdRoute: typeof StudyPlansStudyPlanIdRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  MainLayoutRoute: MainLayoutRouteWithChildren,
+  DashboardRoute: DashboardRouteWithChildren,
   StudyPlansStudyPlanIdRoute: StudyPlansStudyPlanIdRouteWithChildren,
 }
 
@@ -349,41 +386,37 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_mainLayout",
+        "/dashboard",
         "/study-plans/$studyPlanId"
       ]
     },
-    "/_mainLayout": {
-      "filePath": "_mainLayout.tsx",
+    "/dashboard": {
+      "filePath": "dashboard.tsx",
       "children": [
-        "/_mainLayout/courses",
-        "/_mainLayout/programs",
-        "/_mainLayout/study-plans",
-        "/_mainLayout/"
+        "/dashboard/courses",
+        "/dashboard/study-plans",
+        "/dashboard/",
+        "/dashboard/programs/new",
+        "/dashboard/programs/",
+        "/dashboard/programs/$programId/edit",
+        "/dashboard/programs/$programId/"
       ]
     },
-    "/_mainLayout/courses": {
-      "filePath": "_mainLayout/courses.tsx",
-      "parent": "/_mainLayout"
+    "/dashboard/courses": {
+      "filePath": "dashboard/courses.tsx",
+      "parent": "/dashboard"
     },
-    "/_mainLayout/programs": {
-      "filePath": "_mainLayout/programs.tsx",
-      "parent": "/_mainLayout",
-      "children": [
-        "/_mainLayout/programs/$programId"
-      ]
+    "/dashboard/study-plans": {
+      "filePath": "dashboard/study-plans.tsx",
+      "parent": "/dashboard"
     },
-    "/_mainLayout/study-plans": {
-      "filePath": "_mainLayout/study-plans.tsx",
-      "parent": "/_mainLayout"
+    "/dashboard/": {
+      "filePath": "dashboard/index.tsx",
+      "parent": "/dashboard"
     },
-    "/_mainLayout/": {
-      "filePath": "_mainLayout/index.tsx",
-      "parent": "/_mainLayout"
-    },
-    "/_mainLayout/programs/$programId": {
-      "filePath": "_mainLayout/programs.$programId.tsx",
-      "parent": "/_mainLayout/programs"
+    "/dashboard/programs/new": {
+      "filePath": "dashboard/programs/new.tsx",
+      "parent": "/dashboard"
     },
     "/study-plans/$studyPlanId": {
       "filePath": "study-plans/$studyPlanId",
@@ -400,6 +433,14 @@ export const routeTree = rootRoute
         "/study-plans/$studyPlanId/_studyPlanLayout/"
       ]
     },
+    "/dashboard/programs/": {
+      "filePath": "dashboard/programs/index.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/programs/$programId/edit": {
+      "filePath": "dashboard/programs/$programId/edit.tsx",
+      "parent": "/dashboard"
+    },
     "/study-plans/$studyPlanId/_studyPlanLayout/framework": {
       "filePath": "study-plans/$studyPlanId/_studyPlanLayout/framework.tsx",
       "parent": "/study-plans/$studyPlanId/_studyPlanLayout"
@@ -407,6 +448,10 @@ export const routeTree = rootRoute
     "/study-plans/$studyPlanId/_studyPlanLayout/program-map": {
       "filePath": "study-plans/$studyPlanId/_studyPlanLayout/program-map.tsx",
       "parent": "/study-plans/$studyPlanId/_studyPlanLayout"
+    },
+    "/dashboard/programs/$programId/": {
+      "filePath": "dashboard/programs/$programId/index.tsx",
+      "parent": "/dashboard"
     },
     "/study-plans/$studyPlanId/_studyPlanLayout/": {
       "filePath": "study-plans/$studyPlanId/_studyPlanLayout/index.tsx",

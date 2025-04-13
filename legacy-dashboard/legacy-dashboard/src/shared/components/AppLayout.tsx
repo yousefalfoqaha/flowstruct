@@ -4,6 +4,7 @@ import {AppSidebar} from "@/shared/components/AppSidebar.tsx";
 import {SidebarLink} from "@/shared/types.ts";
 import {ReactNode} from "react";
 import {AppHeader} from "@/shared/components/AppHeader.tsx";
+import classes from './AppShell.module.css';
 
 type AppLayoutProps = {
     sidebarHeader?: ReactNode;
@@ -23,8 +24,12 @@ export function AppLayout({sidebarHeader, sidebarData, children}: AppLayoutProps
                 collapsed: {mobile: !sidebarOpened},
             }}
             header={{height: '60'}}
-            padding="xl"
+            padding="lg"
             layout="alt"
+
+            classNames={{
+                main: classes.main
+            }}
         >
             <AppShell.Navbar p="lg">
                 <AppSidebar sidebarHeader={sidebarHeader} data={sidebarData} closeSidebar={toggle}/>

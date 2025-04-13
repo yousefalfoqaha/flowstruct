@@ -1,4 +1,7 @@
 import {Program, ProgramListItem} from "@/features/program/types.ts";
+import {api} from "@/shared/api.ts";
+
+const ENDPOINT = '/programs';
 
 export const getProgramRequest = async (programId: number) => {
     const res = await fetch(`http://localhost:8080/api/v1/programs/${programId}`);
@@ -16,20 +19,11 @@ export const getProgramListRequest = async () => {
     return await res.json() as ProgramListItem[];
 };
 
-export const createProgramRequest = async (newProgram: Partial<Program>) => {
-    const res = await fetch("http://localhost:8080/api/v1/programs", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(newProgram),
-    });
+export const createProgram = async (newProgram: Partial<Program>) =>
+    api.post<ProgramListItem>(ENDPOINT, {body: newProgram});
 
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Failed to create program");
-    }
-
-    return res.json();
-};
+export const toggleProgramVisibility = async (programId: number) =>
+    api.put<Program>(`${ENDPOINT}/${programId}/toggle-visibility`);
 
 export const editProgramDetailsRequest = async ({programId, editedProgramDetails}: {
     programId: number;

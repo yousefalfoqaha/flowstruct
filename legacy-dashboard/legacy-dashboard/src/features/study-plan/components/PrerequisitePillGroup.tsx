@@ -2,18 +2,19 @@ import {Flex, Indicator, Loader, Pill} from "@mantine/core";
 import {PrerequisiteMultiSelect} from "@/features/study-plan/components/PrerequisiteMultiSelect.tsx";
 import {useRemoveCoursePrerequisite} from "@/features/study-plan/hooks/useRemoveCoursePrerequisite.ts";
 import {useRemoveCourseCorequisite} from "@/features/study-plan/hooks/useRemoveCourseCorequisite.ts";
-import {Course} from "@/features/course/types.ts";
-import {StudyPlan} from "@/features/study-plan/types.ts";
+import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
+import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 
 type PrerequisitePillGroupProps = {
     parentCourseId: number;
-    courses: Record<number, Course>;
-    studyPlan: StudyPlan;
 }
 
-export function PrerequisitePillGroup({parentCourseId, courses, studyPlan}: PrerequisitePillGroupProps) {
+export function PrerequisitePillGroup({parentCourseId}: PrerequisitePillGroupProps) {
     const removePrerequisite = useRemoveCoursePrerequisite();
     const removeCorequisite = useRemoveCourseCorequisite();
+
+    const {data: courses} = useCourseList();
+    const {data: studyPlan} = useStudyPlan();
 
     const handleRemovePrerequisite = (prerequisiteId: number) => removePrerequisite.mutate({
         studyPlanId: studyPlan.id,

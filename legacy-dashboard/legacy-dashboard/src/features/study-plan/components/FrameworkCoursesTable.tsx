@@ -39,12 +39,8 @@ export function FrameworkCoursesTable() {
     }, [studyPlan, courses]);
 
     const columns = React.useMemo(
-        () =>
-            getFrameworkCoursesTableColumns({
-                studyPlan: studyPlan,
-                courses: courses
-            }),
-        [courses, studyPlan]
+        () => getFrameworkCoursesTableColumns(),
+        []
     );
 
     const {table} = useDataTable<FrameworkCourse>({data, columns});
@@ -55,7 +51,7 @@ export function FrameworkCoursesTable() {
 
             <Flex direction="column" style={{flex: 1}} gap="sm">
                 <Group justify="space-between">
-                    <DataTableSearch placeholder="Search courses..." table={table} />
+                    <DataTableSearch placeholder="Search courses..." table={table}/>
 
                     <Group gap="sm">
                         <RemoveStudyPlanCoursesButton studyPlan={studyPlan} table={table}/>

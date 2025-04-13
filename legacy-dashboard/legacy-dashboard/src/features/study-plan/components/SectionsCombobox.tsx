@@ -2,27 +2,21 @@ import {Combobox, Group, InputBase, Loader, ScrollArea, Text, useCombobox} from 
 import {useMoveCourseSection} from "@/features/study-plan/hooks/useMoveCourseSection.ts";
 import {getSectionCode} from "@/lib/getSectionCode.ts";
 import {Check} from "lucide-react";
-import {Section} from "@/features/study-plan/types.ts";
+import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 
 type SectionsComboboxProps = {
     courseId: number;
     sectionId: number;
-    studyPlanId: number;
-    sections: Section[];
     courseSectionCode: string;
 }
 
-export function SectionsCombobox({
-                                     courseId,
-                                     sections,
-                                     studyPlanId,
-                                     sectionId,
-                                     courseSectionCode
-                                 }: SectionsComboboxProps) {
+export function SectionsCombobox({courseId, sectionId, courseSectionCode}: SectionsComboboxProps) {
     const combobox = useCombobox();
     const moveCourseSection = useMoveCourseSection();
 
-    const options = sections
+    const {data: studyPlan} = useStudyPlan();
+
+    const options = studyPlan.sections
         .map((section) => {
             const sectionCode = getSectionCode(section);
             const displayName = section.name
@@ -41,7 +35,7 @@ export function SectionsCombobox({
         });
 
     const handleChangeCourseSection = (sectionId: string) => moveCourseSection.mutate({
-            studyPlanId: studyPlanId,
+            studyPlanId: studyPlan.id,
             courseId: courseId,
             sectionId: parseInt(sectionId)
         },

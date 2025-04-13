@@ -1,6 +1,7 @@
 import {Table as TanStackTable} from "@tanstack/table-core";
 import {flexRender} from "@tanstack/react-table";
 import {Table} from "@mantine/core";
+import classes from "./DataTable.module.css";
 
 type DataTableProps<TData> = {
     table: TanStackTable<TData>;
@@ -9,7 +10,13 @@ type DataTableProps<TData> = {
 export function DataTable<TData>({table}: DataTableProps<TData>) {
     return (
         <div>
-            <Table horizontalSpacing="sm" verticalSpacing="sm">
+            <Table
+                horizontalSpacing="sm"
+                classNames={{
+                    table: classes.table
+                }}
+                verticalSpacing="sm"
+            >
                 <Table.Thead>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <Table.Tr key={headerGroup.id}>

@@ -2,19 +2,10 @@ import {ActionIcon, Checkbox, Group} from "@mantine/core";
 import {ArrowDownUp} from "lucide-react";
 import {SectionsCombobox} from "@/features/study-plan/components/SectionsCombobox.tsx";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
-import {FrameworkCourse, StudyPlan} from "@/features/study-plan/types.ts";
-import {Course} from "@/features/course/types.ts";
+import {FrameworkCourse} from "@/features/study-plan/types.ts";
 import {PrerequisitePillGroup} from "@/features/study-plan/components/PrerequisitePillGroup.tsx";
 
-type FrameworkCoursesTableColumnsProps = {
-    studyPlan: StudyPlan;
-    courses: Record<number, Course>;
-}
-
-export function getFrameworkCoursesTableColumns({
-                                                    studyPlan,
-                                                    courses
-                                                }: FrameworkCoursesTableColumnsProps): ColumnDef<FrameworkCourse>[] {
+export function getFrameworkCoursesTableColumns(): ColumnDef<FrameworkCourse>[] {
     const columnHelper = createColumnHelper<FrameworkCourse>();
 
     return [
@@ -74,7 +65,7 @@ export function getFrameworkCoursesTableColumns({
             id: "prerequisites",
             header: "Prerequisites / Corequisites",
             cell: ({row}) => (
-                <PrerequisitePillGroup parentCourseId={row.original.id} courses={courses} studyPlan={studyPlan}/>
+                <PrerequisitePillGroup parentCourseId={row.original.id}/>
             ),
         }),
         columnHelper.display({
@@ -85,8 +76,6 @@ export function getFrameworkCoursesTableColumns({
                 return (
                     <SectionsCombobox
                         sectionId={row.original.section}
-                        sections={studyPlan.sections}
-                        studyPlanId={studyPlan.id}
                         courseId={row.original.id}
                         courseSectionCode={row.original.sectionCode}
                     />

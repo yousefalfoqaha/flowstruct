@@ -1,77 +1,42 @@
 import {createColumnHelper} from "@tanstack/react-table";
 import {ProgramListItem} from "@/features/program/types.ts";
-import {Link} from "@tanstack/react-router";
-import {ActionIcon, Badge, Button, Text} from "@mantine/core";
-import {Book, Pencil, Trash} from "lucide-react";
-import {modals} from "@mantine/modals";
-import {EditProgramDetailsModal} from "@/features/program/components/EditProgramDetailsModal.tsx";
-import {useDeleteProgram} from "@/features/program/hooks/useDeleteProgram.ts";
+import {ProgramOptionsMenu} from "@/features/program/components/ProgramOptionsMenu.tsx";
+import {Badge} from "@mantine/core";
+import {Eye, EyeOff} from "lucide-react";
+import classes from "./StatusBadge.module.css";
 
 export function getProgramsTableColumns() {
     const {display, accessor} = createColumnHelper<ProgramListItem>();
-    const deleteProgram = useDeleteProgram();
 
     return [
-        display({
-            id: 'study-plans',
-            cell: ({row}) => (
-                <Link to="/programs/$programId" params={{programId: String(row.original.id)}}>
-                    <Button variant="outline" leftSection={<Book size={14}/>}>
-                        Study Plans
-                    </Button>
-                </Link>
-            )
+        accessor('code', {
+            header: 'Code'
         }),
         accessor('name', {
-            header: 'Name'
+            header: 'Name',
         }),
         accessor('degree', {
-            header: 'Degree'
+            header: 'Degree',
         }),
-        accessor('code', {
-            header: 'Code',
+        accessor('isPrivate', {
+            header: 'Status',
             cell: ({row}) => (
-                <Badge>{row.original.code}</Badge>
+                row.original.isPrivate ? (
+                    <Badge variant="outline" classNames={{root: classes.root}}
+                           leftSection={<EyeOff size={14}/>}>Hidden</Badge>
+                ) : (
+                    <Badge variant="light" classNames={{root: classes.root}}
+                           leftSection={<Eye size={14}/>}>Public</Badge>
+                )
             )
         }),
         display({
             id: 'actions',
-            header: () => <div className="flex justify-end pr-7">Actions</div>,
+            header: 'Actions',
             cell: ({row}) => (
-                <div className="flex gap-2 justify-end">
-                    <ActionIcon
-                        variant="light"
-                        size="md"
-                        onClick={() =>
-                            modals.open({
-                                title: `Edit ${row.original.degree} ${row.original.name} Details`,
-                                centered: true,
-                                children: <EditProgramDetailsModal program={row.original}/>,
-                            })
-                        }>
-                        <Pencil size={18}/>
-                    </ActionIcon>
-                    <ActionIcon
-                        variant="light"
-                        size="md"
-                        onClick={() =>
-                            modals.openConfirmModal({
-                                title: 'Please confirm your action',
-                                children: (
-                                    <Text size="sm">
-                                        Deleting this program will delete all of its study plans, are you absolutely
-                                        sure?
-                                    </Text>
-                                ),
-                                labels: {confirm: 'Confirm', cancel: 'Cancel'},
-                                onConfirm: () => deleteProgram.mutate(row.original.id)
-                            })
-                        }
-                    >
-                        <Trash size={18}/>
-                    </ActionIcon>
-                </div>
-            )
-        })
+                <ProgramOptionsMenu program={row.original}/>
+
+            ),
+        }),
     ];
 }

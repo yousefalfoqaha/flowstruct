@@ -1,12 +1,12 @@
 import {ActionIcon, Breadcrumbs, Button} from '@mantine/core';
 import {ChevronRight, Home} from "lucide-react";
 import {Link} from "@tanstack/react-router";
-import {useProgram} from "@/features/program/hooks/useProgram.ts";
+import {useStudyPlanProgram} from "@/features/program/hooks/useStudyPlanProgram.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 
 export function StudyPlanBreadcrumbs() {
     const {data: studyPlan} = useStudyPlan();
-    const {data: program} = useProgram();
+    const {data: program} = useStudyPlanProgram();
 
     return (
         <>

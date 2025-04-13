@@ -1,12 +1,11 @@
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useQueryClient} from "@tanstack/react-query";
 import {ProgramListItem} from "@/features/program/types.ts";
-import {createProgramRequest} from "@/features/program/api.ts";
-import {notifications} from "@mantine/notifications";
+import {createProgram} from "@/features/program/api.ts";
+import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 
 export const useCreateProgram = () => {
     const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: createProgramRequest,
+    return useAppMutation(createProgram, {
         onSuccess: (createdProgram: ProgramListItem) => {
             queryClient.setQueryData(
                 ["programs"],
@@ -14,19 +13,7 @@ export const useCreateProgram = () => {
                     return [...previous, createdProgram];
                 }
             );
-
-            notifications.show({
-                title: "Success!",
-                message: "Program created successfully",
-                color: "green"
-            });
         },
-        onError: (error) => {
-            notifications.show({
-                title: "An error occurred.",
-                message: error.message,
-                color: "red",
-            });
-        },
+        successNotification: {message: "Program created successfully."}
     });
 };

@@ -1,9 +1,13 @@
+import {useParams} from "@tanstack/react-router";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {getProgramQuery} from "@/features/program/queries.ts";
-import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 
 export const useProgram = () => {
-    const {data: {program}} = useStudyPlan();
+    const programId = parseInt(useParams({strict: false}).programId ?? '');
 
-    return useSuspenseQuery(getProgramQuery(program));
+    if (!programId) {
+        throw new Error("Cannot use program without a program ID search parameter.");
+    }
+
+    return useSuspenseQuery(getProgramQuery(programId));
 }
