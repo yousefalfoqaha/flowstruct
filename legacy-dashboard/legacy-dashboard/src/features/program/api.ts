@@ -25,23 +25,10 @@ export const createProgram = async (newProgram: Partial<Program>) =>
 export const toggleProgramVisibility = async (programId: number) =>
     api.put<Program>(`${ENDPOINT}/${programId}/toggle-visibility`);
 
-export const editProgramDetailsRequest = async ({programId, editedProgramDetails}: {
+export const editProgramDetails = async ({programId, editedProgramDetails}: {
     programId: number;
     editedProgramDetails: Partial<Program>
-}) => {
-    const response = await fetch(`http://localhost:8080/api/v1/programs/${programId}`, {
-        method: "PUT",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(editedProgramDetails),
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to update program");
-    }
-
-    return response.json();
-};
+}) => api.put<Program>(`${ENDPOINT}/${programId}`, {body: editedProgramDetails});
 
 export const deleteProgramRequest = async (programId: number) => {
     const response = await fetch(`http://localhost:8080/api/v1/programs/${programId}`, {

@@ -1,9 +1,15 @@
-import {Controller} from "react-hook-form";
-import {Flex, Text, Select, Stack, Switch, TextInput} from "@mantine/core";
+import {Controller, UseFormReturn} from "react-hook-form";
+import {Flex, Select, Stack, Switch, Text, TextInput} from "@mantine/core";
 import {Degree} from "@/features/program/types.ts";
 import {Eye, EyeOff, GraduationCap, Hash} from "lucide-react";
+import {programDetailsSchema} from "@/features/program/form-schemas.ts";
+import {InferFormValues} from "@/shared/hooks/useAppForm.ts";
 
-export function ProgramDetailsFormFields({control, errors}: { control: any, errors: any }) {
+type ProgramDetailsFormValues = InferFormValues<typeof programDetailsSchema>;
+
+export function ProgramDetailsFormFields({form}: { form: UseFormReturn<ProgramDetailsFormValues> }) {
+    const {control, formState: {errors}} = form;
+
     return (
         <>
             <Flex gap="md">
@@ -40,6 +46,7 @@ export function ProgramDetailsFormFields({control, errors}: { control: any, erro
                     )}
                 />
             </Flex>
+
             <Flex gap="md" mt="md">
                 <Controller
                     name="degree"

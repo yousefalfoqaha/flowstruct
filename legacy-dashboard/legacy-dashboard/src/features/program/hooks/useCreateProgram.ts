@@ -2,18 +2,20 @@ import {useQueryClient} from "@tanstack/react-query";
 import {ProgramListItem} from "@/features/program/types.ts";
 import {createProgram} from "@/features/program/api.ts";
 import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
+import {programKeys} from "@/features/program/queries.ts";
+import {getProgramDisplayName} from "@/lib/getProgramDisplayName.ts";
 
 export const useCreateProgram = () => {
     const queryClient = useQueryClient();
     return useAppMutation(createProgram, {
-        onSuccess: (createdProgram: ProgramListItem) => {
+        onSuccess: (createdProgram) => {
             queryClient.setQueryData(
-                ["programs"],
+                programKeys.all,
                 (previous: ProgramListItem[]) => {
                     return [...previous, createdProgram];
                 }
             );
         },
-        successNotification: {message: "Program created successfully."}
+        successNotification: {message: (data) => `${getProgramDisplayName(data)} was created successfully.`}
     });
 };

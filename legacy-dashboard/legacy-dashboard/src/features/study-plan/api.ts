@@ -32,7 +32,7 @@ export const updateStudyPlanDetails = ({studyPlanId, updatedStudyPlanDetails,}: 
         body: updatedStudyPlanDetails,
     });
 
-    export const createSection = ({studyPlanId, newSectionDetails}: {
+export const createSection = ({studyPlanId, newSectionDetails}: {
     studyPlanId: number;
     newSectionDetails: Partial<Section>;
 }) =>

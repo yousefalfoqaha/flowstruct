@@ -25,13 +25,13 @@ export function ProgramOptionsMenu({program}: ProgramOptionsMenuProps) {
 
             <Menu.Dropdown>
                 <Menu.Label>Actions</Menu.Label>
-                <Link style={{textDecoration: 'none'}} to="/dashboard/programs/$programId"
+                <Link style={{textDecoration: 'none'}} to="/programs/$programId"
                       params={{programId: String(program.id)}}>
                     <Menu.Item leftSection={<ScrollText size={14}/>}>
                         View
                     </Menu.Item>
                 </Link>
-                <Link style={{textDecoration: 'none'}} to="/dashboard/programs/$programId/edit"
+                <Link style={{textDecoration: 'none'}} to="/programs/$programId/edit"
                       params={{programId: String(program.id)}}>
                     <Menu.Item leftSection={<Pencil size={14}/>}>
                         Edit details

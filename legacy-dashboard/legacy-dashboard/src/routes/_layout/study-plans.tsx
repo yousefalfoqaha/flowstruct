@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/dashboard/courses')({
+export const Route = createFileRoute('/_layout/study-plans')({
   loader: () => ({
-    crumb: 'Courses',
+    crumb: 'Study Plans',
   }),
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <div>Hello "/courses"!</div>
+  return <div>Hello "/dashboard/study-plans"!</div>
 }

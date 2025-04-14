@@ -9,14 +9,10 @@ export function getProgramsTableColumns() {
     const {display, accessor} = createColumnHelper<ProgramListItem>();
 
     return [
-        accessor('code', {
-            header: 'Code'
-        }),
-        accessor('name', {
-            header: 'Name',
-        }),
+        accessor('code', {header: 'Code'}),
+        accessor('name', {header: 'Name'}),
         accessor('degree', {
-            header: 'Degree',
+            header: 'Degree'
         }),
         accessor('isPrivate', {
             header: 'Status',
@@ -28,14 +24,13 @@ export function getProgramsTableColumns() {
                     <Badge variant="light" classNames={{root: classes.root}}
                            leftSection={<Eye size={14}/>}>Public</Badge>
                 )
-            )
+            ),
         }),
         display({
             id: 'actions',
             header: 'Actions',
             cell: ({row}) => (
                 <ProgramOptionsMenu program={row.original}/>
-
             ),
         }),
     ];

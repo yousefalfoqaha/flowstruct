@@ -1,53 +1,44 @@
-import {Button, Card, Group, Text} from "@mantine/core";
+import {Button, Group} from "@mantine/core";
 import {ProgramDetailsFormFields} from "@/features/program/components/ProgramDetailsFormFields.tsx";
-import {useForm} from "react-hook-form";
-import {ProgramDetailsFormValues, programDetailsSchema} from "@/features/program/form-schemas.ts";
-import {zodResolver} from "@hookform/resolvers/zod";
+import {programDetailsSchema} from "@/features/program/form-schemas.ts";
 import {Link, useNavigate} from "@tanstack/react-router";
 import {Pencil, Trash} from "lucide-react";
 import {useEditProgramDetails} from "@/features/program/hooks/useEditProgramDetails.ts";
 import {Program} from "@/features/program/types.ts";
+import {AppCard} from "@/shared/components/AppCard.tsx";
+import {useAppForm} from "@/shared/hooks/useAppForm.ts";
 
 type EditProgramFieldsetProps = {
     program: Program;
 }
 
 export function EditProgramFieldset({program}: EditProgramFieldsetProps) {
-    const {
-        control,
-        handleSubmit,
-        formState: {errors},
-    } = useForm<ProgramDetailsFormValues>({
-        resolver: zodResolver(programDetailsSchema),
-        defaultValues: {...program},
-    });
-
+    const form = useAppForm(programDetailsSchema, {...program});
     const editProgramDetails = useEditProgramDetails();
     const navigate = useNavigate();
 
-    const onSubmit = (data: ProgramDetailsFormValues) => {
+    const onSubmit = form.handleSubmit(data => {
         editProgramDetails.mutate({
             programId: program.id,
             editedProgramDetails: data
         }, {
             onSuccess: () => {
-                navigate({to: "/dashboard/programs"})
+                navigate({to: "/programs/$programId", params: {programId: String(program.id)}});
             }
         });
-    };
+    });
 
     return (
-        <Card padding="lg" withBorder shadow="sm">
-            <Text size="xl" fw={600}>Program Information</Text>
-            <Text size="xs" c="dimmed">Update the details for this program</Text>
-
-            <Card.Section py="lg" inheritPadding>
-                <form onSubmit={handleSubmit(onSubmit)} style={{width: '100%'}}>
-                    <ProgramDetailsFormFields control={control} errors={errors}/>
-
+        <AppCard
+            title="Program Information"
+            subtitle="Update the details for this program"
+            footer={
+                <>
                     <Group justify="space-between" mt="xl">
-                        <Link to="/dashboard/programs">
-                            <Button variant="filled" color="red" leftSection={<Trash size={18}/>}>Delete Program</Button>
+                        <Link to="/programs">
+                            <Button variant="filled" color="red" leftSection={<Trash size={18}/>}>
+                                Delete Program
+                            </Button>
                         </Link>
 
                         <Button
@@ -58,8 +49,12 @@ export function EditProgramFieldset({program}: EditProgramFieldsetProps) {
                             Update Details
                         </Button>
                     </Group>
-                </form>
-            </Card.Section>
-        </Card>
+                </>
+            }
+        >
+            <form onSubmit={onSubmit} style={{width: '100%'}}>
+                <ProgramDetailsFormFields form={form}/>
+            </form>
+        </AppCard>
     );
 }

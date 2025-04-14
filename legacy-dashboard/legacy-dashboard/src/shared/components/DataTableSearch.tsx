@@ -9,11 +9,7 @@ type TableSearchProps<TData> = {
     placeholder?: string;
 };
 
-export function DataTableSearch<TData>({
-                                       table,
-                                       width = 450,
-                                       placeholder = "Search..."
-                                   }: TableSearchProps<TData>) {
+export function DataTableSearch<TData>({table, width = 450, placeholder = "Search..."}: TableSearchProps<TData>) {
     const [search, setSearch] = React.useState<string>("");
 
     React.useEffect(() => {

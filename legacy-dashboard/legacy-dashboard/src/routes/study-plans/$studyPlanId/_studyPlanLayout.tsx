@@ -13,7 +13,7 @@ import {Route as FrameworkRoute} from "@/routes/study-plans/$studyPlanId/_studyP
 import {Route as ProgramMapRoute} from "@/routes/study-plans/$studyPlanId/_studyPlanLayout/program-map.tsx";
 import {SidebarLink} from "@/shared/types.ts";
 import {getStudyPlanDisplayName} from "@/lib/getStudyPlanDisplayName.ts";
-import {getProgramDisplayName} from "@/lib/getProgramName.ts";
+import {getProgramDisplayName} from "@/lib/getProgramDisplayName.ts";
 
 export const Route = createFileRoute(
     '/study-plans/$studyPlanId/_studyPlanLayout',

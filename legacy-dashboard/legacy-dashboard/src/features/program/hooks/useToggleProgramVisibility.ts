@@ -5,6 +5,7 @@ import {ProgramListItem} from "@/features/program/types.ts";
 import {Eye, EyeOff} from "lucide-react";
 import React from "react";
 import {programKeys} from "@/features/program/queries.ts";
+import {getProgramDisplayName} from "@/lib/getProgramDisplayName.ts";
 
 export const useToggleProgramVisibility = () => {
     const queryClient = useQueryClient();
@@ -22,7 +23,7 @@ export const useToggleProgramVisibility = () => {
         },
         successNotification: {
             title: (data) =>
-                `${data.degree} ${data.name} is now ${data.isPrivate ? 'hidden' : 'public'}.`,
+                `${getProgramDisplayName(data)} is now ${data.isPrivate ? 'hidden' : 'public'}.`,
             message: (data) =>
                 `Program's study plans will also be ${data.isPrivate ? 'hidden' : 'public'}.`,
             icon: (data) =>
