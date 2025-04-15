@@ -4,8 +4,8 @@ import {api} from "@/shared/api.ts";
 
 const ENDPOINT = '/study-plans';
 
-export const getStudyPlanList = (programId: number) =>
-    api.get<StudyPlanListItem[]>(ENDPOINT, {params: {program: programId}});
+export const getStudyPlanList = () =>
+    api.get<StudyPlanListItem[]>(ENDPOINT);
 
 export const getStudyPlan = (studyPlanId: number) =>
     api.get<StudyPlan>(`${ENDPOINT}/${studyPlanId}`);
@@ -19,7 +19,7 @@ export const createStudyPlan = ({createdStudyPlanDetails, programId,}: {
     });
 
 export const toggleStudyPlanVisibility = (studyPlanId: number) =>
-    api.put<Partial<StudyPlan>>(`${ENDPOINT}/${studyPlanId}/toggle-visibility`);
+    api.put<StudyPlan>(`${ENDPOINT}/${studyPlanId}/toggle-visibility`);
 
 export const deleteStudyPlan = (deletedStudyPlan: Partial<StudyPlan>) =>
     api.delete(`${ENDPOINT}/${deletedStudyPlan.id}`);

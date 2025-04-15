@@ -1,18 +1,15 @@
 import {createFileRoute, Outlet} from '@tanstack/react-router'
-import {Stack, Title} from "@mantine/core";
+import {getStudyPlanListQuery} from "@/features/study-plan/queries.ts";
+import {getProgramListQuery} from "@/features/program/queries.ts";
 
 export const Route = createFileRoute('/_layout/study-plans')({
-    loader: () => ({
-        crumb: 'Study Plans',
-    }),
-    component: RouteComponent,
-});
+    loader: async ({context: {queryClient}}) => {
+        await queryClient.ensureQueryData(getStudyPlanListQuery());
+        await queryClient.ensureQueryData(getProgramListQuery);
 
-function RouteComponent() {
-    return (
-        <Stack>
-            <Title order={2} fw={600}>Programs</Title>
-            <Outlet/>
-        </Stack>
-    );
-}
+        return {
+            crumb: 'Study Plans',
+        };
+    },
+    component: () => <Outlet/>,
+});

@@ -50,5 +50,5 @@ export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
         autoResetPageIndex: false,
     });
 
-    return {table};
+    return table;
 }

@@ -9,10 +9,9 @@ export const studyPlanKeys = {
     detail: (id: number) => [...studyPlanKeys.details(), id] as const,
 };
 
-export const getStudyPlanListQuery = (programId: number) => queryOptions({
-    queryKey: studyPlanKeys.list(programId),
-    queryFn: () => getStudyPlanList(programId),
-    enabled: !!programId
+export const getStudyPlanListQuery = () => queryOptions({
+    queryKey: studyPlanKeys.lists(),
+    queryFn: () => getStudyPlanList()
 });
 
 export const getStudyPlanQuery = (studyPlanId: number) => queryOptions({

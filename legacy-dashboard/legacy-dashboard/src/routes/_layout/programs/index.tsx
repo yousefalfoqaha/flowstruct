@@ -1,16 +1,20 @@
-import { createFileRoute } from '@tanstack/react-router'
-import {Stack, Title} from "@mantine/core";
+import {createFileRoute} from '@tanstack/react-router'
+import {Group, Stack, Title} from "@mantine/core";
 import {ProgramsTable} from "@/features/program/components/ProgramsTable.tsx";
+import {GraduationCap} from "lucide-react";
 
 export const Route = createFileRoute('/_layout/programs/')({
-  component: RouteComponent,
+    component: RouteComponent,
 })
 
 function RouteComponent() {
-  return (
-      <Stack>
-        <Title order={2} fw={600}>Programs</Title>
-        <ProgramsTable/>
-      </Stack>
-  );
+    return (
+        <Stack>
+            <Group>
+                <GraduationCap/>
+                <Title order={2} fw={600}>Programs</Title>
+            </Group>
+            <ProgramsTable/>
+        </Stack>
+    );
 }

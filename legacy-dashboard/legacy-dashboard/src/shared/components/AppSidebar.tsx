@@ -7,14 +7,14 @@ import {Route as DashboardRoute} from "@/routes/_layout/dashboard";
 import {Route as ProgramsRoute} from "@/routes/_layout/programs/route.tsx";
 import {Route as StudyPlansRoute} from "@/routes/_layout/study-plans/route.tsx";
 import {Route as CoursesRoute} from "@/routes/_layout/courses";
-import {Route as LogsRoute} from "@/routes/_layout/logs";
+import {Route as ActivityLogsRoute} from "@/routes/_layout/activity-logs";
 
 const data: SidebarLink[] = [
     {label: 'Dashboard', icon: LayoutPanelLeft, route: DashboardRoute.to},
     {label: 'Programs', icon: GraduationCap, route: ProgramsRoute.to},
     {label: 'Study Plans', icon: ScrollText, route: StudyPlansRoute.to},
     {label: 'Courses', icon: BookOpen, route: CoursesRoute.to},
-    {label: 'Logs', icon: Logs, route: LogsRoute.to}
+    {label: 'Activity Logs', icon: Logs, route: ActivityLogsRoute.to}
 ];
 
 type AppSidebarProps = {

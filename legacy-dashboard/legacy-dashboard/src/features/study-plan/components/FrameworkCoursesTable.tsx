@@ -43,7 +43,7 @@ export function FrameworkCoursesTable() {
         []
     );
 
-    const {table} = useDataTable<FrameworkCourse>({data, columns});
+    const table = useDataTable<FrameworkCourse>({data, columns});
 
     return (
         <Flex gap="xl">

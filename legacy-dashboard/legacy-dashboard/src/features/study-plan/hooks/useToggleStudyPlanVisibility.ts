@@ -5,6 +5,7 @@ import {Eye, EyeOff} from "lucide-react";
 import React from "react";
 import {studyPlanKeys} from "@/features/study-plan/queries.ts";
 import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
+import {getStudyPlanDisplayName} from "@/lib/getStudyPlanDisplayName.ts";
 
 export const useToggleStudyPlanVisibility = () => {
     const queryClient = useQueryClient();
@@ -12,7 +13,7 @@ export const useToggleStudyPlanVisibility = () => {
     return useAppMutation(toggleStudyPlanVisibility, {
         onSuccess: (updatedStudyPlan) => {
             queryClient.setQueryData(
-                studyPlanKeys.list(updatedStudyPlan.program as number),
+                studyPlanKeys.lists(),
                 (previous: StudyPlanListItem[] | undefined) => {
                     if (!previous) return [];
                     return previous.map(sp =>
@@ -35,9 +36,9 @@ export const useToggleStudyPlanVisibility = () => {
         },
         successNotification: {
             title: (data) =>
-                data.isPrivate
+                `${getStudyPlanDisplayName(data)} ${data.isPrivate
                     ? "Study plan has been made public."
-                    : "Study plan has been made private.",
+                    : "Study plan has been made private."}`,
             message: (data) =>
                 data.isPrivate
                     ? "Latest changes will be public."

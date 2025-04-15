@@ -14,7 +14,7 @@ import {Link} from "@tanstack/react-router";
 export function ProgramsTable() {
     const {data} = useProgramList();
     const columns = React.useMemo(() => getProgramsTableColumns(), []);
-    const {table} = useDataTable<ProgramListItem>({data, columns});
+    const table = useDataTable<ProgramListItem>({data, columns});
 
     return (
         <Stack gap="md">
@@ -31,7 +31,7 @@ export function ProgramsTable() {
                     <DataTableSearch table={table} placeholder="Search any program..."/>
                 </Group>
                 <Link to={'/programs/new'}>
-                    <Button leftSection={<Plus size={18} />}>Create Program</Button>
+                    <Button leftSection={<Plus size={18} />}>Create New Program</Button>
                 </Link>
             </Group>
 
