@@ -45,11 +45,17 @@ public class StudyPlanService {
         return studyPlanResponseMapper.apply(studyPlan);
     }
 
-    public StudyPlanSummaryResponse toggleVisibility(long studyPlanId) {
+    public List<StudyPlanSummaryResponse> getAllStudyPlans() {
+        return studyPlanRepository.findAllStudyPlanSummaries().stream()
+                .map(studyPlanSummaryResponseMapper)
+                .toList();
+    }
+
+    public StudyPlanResponse toggleVisibility(long studyPlanId) {
         studyPlanRepository.toggleStudyPlanVisibility(studyPlanId);
 
-        var updatedStudyPlan = findStudyPlanSummary(studyPlanId);
-        return studyPlanSummaryResponseMapper.apply(updatedStudyPlan);
+        var updatedStudyPlan = findStudyPlan(studyPlanId);
+        return studyPlanResponseMapper.apply(updatedStudyPlan);
     }
 
     @Transactional

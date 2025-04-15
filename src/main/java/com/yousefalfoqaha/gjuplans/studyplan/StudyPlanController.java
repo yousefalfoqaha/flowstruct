@@ -19,6 +19,11 @@ public class StudyPlanController {
     private final StudyPlanService studyPlanService;
 
     @GetMapping
+    public ResponseEntity<List<StudyPlanSummaryResponse>> getAllStudyPlans() {
+        return new ResponseEntity<>(studyPlanService.getAllStudyPlans(), HttpStatus.OK);
+    }
+
+    @GetMapping("/by-program")
     public ResponseEntity<List<StudyPlanSummaryResponse>> getProgramStudyPlans(
             @RequestParam(value = "program", defaultValue = "") long programId
     ) {
@@ -31,7 +36,7 @@ public class StudyPlanController {
     }
 
     @PutMapping("/{studyPlanId}/toggle-visibility")
-    public ResponseEntity<StudyPlanSummaryResponse> toggleVisibility(@PathVariable long studyPlanId) {
+    public ResponseEntity<StudyPlanResponse> toggleVisibility(@PathVariable long studyPlanId) {
         return new ResponseEntity<>(studyPlanService.toggleVisibility(studyPlanId), HttpStatus.OK);
     }
 
