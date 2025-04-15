@@ -3,11 +3,11 @@ import classes from "@/shared/components/AppSidebar.module.css";
 import {ActionIcon, Text, Title} from "@mantine/core";
 import {BookOpen, GraduationCap, LayoutPanelLeft, Logs, ScrollText, Settings, X} from "lucide-react";
 import {SidebarLink} from "@/shared/types.ts";
-import {Route as DashboardRoute} from "@/routes/_layout/dashboard.tsx";
-import {Route as ProgramsRoute} from "@/routes/_layout/programs/index.tsx";
-import {Route as StudyPlansRoute} from "@/routes/_layout/study-plans.tsx";
-import {Route as CoursesRoute} from "@/routes/_layout/courses.tsx";
-import {Route as LogsRoute} from "@/routes/_layout/logs.tsx";
+import {Route as DashboardRoute} from "@/routes/_layout/dashboard";
+import {Route as ProgramsRoute} from "@/routes/_layout/programs/route.tsx";
+import {Route as StudyPlansRoute} from "@/routes/_layout/study-plans/route.tsx";
+import {Route as CoursesRoute} from "@/routes/_layout/courses";
+import {Route as LogsRoute} from "@/routes/_layout/logs";
 
 const data: SidebarLink[] = [
     {label: 'Dashboard', icon: LayoutPanelLeft, route: DashboardRoute.to},

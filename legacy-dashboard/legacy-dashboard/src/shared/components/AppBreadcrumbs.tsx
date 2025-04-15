@@ -1,16 +1,15 @@
 import {ChevronRight, Home} from "lucide-react";
-import {Link, useRouterState} from "@tanstack/react-router";
+import {isMatch, Link, useMatches} from "@tanstack/react-router";
 import {ActionIcon, Breadcrumbs, Button} from "@mantine/core";
 
 export function AppBreadcrumbs() {
-    const matches = useRouterState({select: (s) => s.matches});
+    const matches = useMatches()
 
-    const breadcrumbs = matches
-        .filter((match) => match.loaderData?.crumb)
-        .map(({pathname, loaderData}) => ({
-            route: pathname,
-            label: loaderData?.crumb,
-        }));
+    if (matches.some((match) => match.status === 'pending')) return null;
+
+    const breadcrumbs = matches.filter((match) =>
+        isMatch(match, 'loaderData.crumb'),
+    );
 
     return (
         <Breadcrumbs separator={<ChevronRight size={14}/>} separatorMargin={5}>
@@ -20,9 +19,9 @@ export function AppBreadcrumbs() {
                 </ActionIcon>
             </Link>
             {breadcrumbs.map((crumb, i) => (
-                <Link key={i} to={crumb.route || "/"}>
+                <Link key={i} to={crumb.pathname || "/"}>
                     <Button size="compact-sm" variant="transparent">
-                        {crumb.label}
+                        {crumb.loaderData?.crumb}
                     </Button>
                 </Link>
             ))}
