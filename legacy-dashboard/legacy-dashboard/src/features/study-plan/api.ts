@@ -14,7 +14,7 @@ export const createStudyPlan = ({createdStudyPlanDetails, programId,}: {
     createdStudyPlanDetails: Partial<StudyPlan>;
     programId: number;
 }) =>
-    api.post<StudyPlanListItem>(ENDPOINT, {
+    api.post<StudyPlan>(ENDPOINT, {
         body: {...createdStudyPlanDetails, program: programId},
     });
 
@@ -28,7 +28,7 @@ export const updateStudyPlanDetails = ({studyPlanId, updatedStudyPlanDetails,}: 
     studyPlanId: number;
     updatedStudyPlanDetails: Partial<StudyPlan>;
 }) =>
-    api.put<Partial<StudyPlan>>(`${ENDPOINT}/${studyPlanId}`, {
+    api.put<StudyPlan>(`${ENDPOINT}/${studyPlanId}`, {
         body: updatedStudyPlanDetails,
     });
 
