@@ -1,6 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
 import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.projection.StudyPlanSummaryProjection;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
@@ -17,21 +18,21 @@ public interface StudyPlanRepository extends CrudRepository<StudyPlan, Long> {
             "SELECT id, year, duration, track, is_private, program " +
             "FROM study_plan"
     )
-    List<StudyPlanSummaryProjection> findAllStudyPlanSummaries();
+    List<StudyPlanSummaryResponse> findAllStudyPlanSummaries();
 
     @Query(
             "SELECT id, year, duration, track, is_private, program " +
             "FROM study_plan " +
             "WHERE id = :studyPlanId"
     )
-    Optional<StudyPlanSummaryProjection> findStudyPlanSummary(long studyPlanId);
+    Optional<StudyPlanSummaryResponse> findStudyPlanSummary(long studyPlanId);
 
     @Query(
             "SELECT id, year, duration, track, is_private, program " +
             "FROM study_plan " +
             "WHERE program = :programId"
     )
-    List<StudyPlanSummaryProjection> findAllStudyPlanSummariesByProgram(long programId);
+    List<StudyPlanSummaryResponse> findAllStudyPlanSummariesByProgram(long programId);
 
     @Modifying
     @Query(

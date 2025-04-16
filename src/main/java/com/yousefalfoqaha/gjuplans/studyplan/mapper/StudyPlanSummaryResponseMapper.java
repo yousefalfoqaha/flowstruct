@@ -1,23 +1,23 @@
 package com.yousefalfoqaha.gjuplans.studyplan.mapper;
 
+import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
-import com.yousefalfoqaha.gjuplans.studyplan.projection.StudyPlanSummaryProjection;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 
 @Service
-public class StudyPlanSummaryResponseMapper implements Function<StudyPlanSummaryProjection, StudyPlanSummaryResponse> {
+public class StudyPlanSummaryResponseMapper implements Function<StudyPlan, StudyPlanSummaryResponse> {
 
     @Override
-    public StudyPlanSummaryResponse apply(StudyPlanSummaryProjection studyPlan) {
+    public StudyPlanSummaryResponse apply(StudyPlan studyPlan) {
         return new StudyPlanSummaryResponse(
-                        studyPlan.id(),
-                        studyPlan.year(),
-                        studyPlan.duration(),
-                        studyPlan.track(),
+                        studyPlan.getId(),
+                        studyPlan.getYear(),
+                        studyPlan.getDuration(),
+                        studyPlan.getTrack(),
                         studyPlan.isPrivate(),
-                        studyPlan.program()
+                        studyPlan.getProgram().getId()
                 );
     }
 }

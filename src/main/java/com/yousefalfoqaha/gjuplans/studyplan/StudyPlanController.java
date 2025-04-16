@@ -41,7 +41,7 @@ public class StudyPlanController {
     }
 
     @PutMapping("/{studyPlanId}")
-    public ResponseEntity<StudyPlanSummaryResponse> editStudyPlanDetails(
+    public ResponseEntity<StudyPlanResponse> editStudyPlanDetails(
             @PathVariable long studyPlanId,
             @RequestBody EditStudyPlanDetailsRequest request
     ) {
@@ -49,7 +49,7 @@ public class StudyPlanController {
     }
 
     @PostMapping
-    public ResponseEntity<StudyPlanSummaryResponse> createStudyPlan(@RequestBody CreateStudyPlanRequest request) {
+    public ResponseEntity<StudyPlanResponse> createStudyPlan(@RequestBody CreateStudyPlanRequest request) {
         return new ResponseEntity<>(studyPlanService.createStudyPlan(request), HttpStatus.OK);
     }
 

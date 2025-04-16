@@ -8,14 +8,13 @@ import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.*;
 import com.yousefalfoqaha.gjuplans.studyplan.mapper.StudyPlanResponseMapper;
-import com.yousefalfoqaha.gjuplans.studyplan.mapper.StudyPlanSummaryResponseMapper;
-import com.yousefalfoqaha.gjuplans.studyplan.projection.StudyPlanSummaryProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -26,14 +25,10 @@ public class StudyPlanService {
     private final ObjectValidator<AddCoursesToSemesterRequest> addCoursesToSemesterValidator;
     private final ObjectValidator<EditSectionRequest> editSectionRequestValidator;
     private final StudyPlanResponseMapper studyPlanResponseMapper;
-    private final StudyPlanSummaryResponseMapper studyPlanSummaryResponseMapper;
     private final ObjectValidator<AddCoursesToSectionRequest> addCoursesToSectionValidator;
 
     public List<StudyPlanSummaryResponse> getProgramStudyPlans(long programId) {
-        return studyPlanRepository.findAllStudyPlanSummariesByProgram(programId)
-                .stream()
-                .map(studyPlanSummaryResponseMapper)
-                .toList();
+        return studyPlanRepository.findAllStudyPlanSummariesByProgram(programId);
     }
 
     public StudyPlanResponse getStudyPlan(long studyPlanId) {
@@ -46,16 +41,16 @@ public class StudyPlanService {
     }
 
     public List<StudyPlanSummaryResponse> getAllStudyPlans() {
-        return studyPlanRepository.findAllStudyPlanSummaries().stream()
-                .map(studyPlanSummaryResponseMapper)
-                .toList();
+        return studyPlanRepository.findAllStudyPlanSummaries();
     }
 
+    @Transactional
     public StudyPlanResponse toggleVisibility(long studyPlanId) {
-        studyPlanRepository.toggleStudyPlanVisibility(studyPlanId);
+        var studyPlan = findStudyPlan(studyPlanId);
 
-        var updatedStudyPlan = findStudyPlan(studyPlanId);
-        return studyPlanResponseMapper.apply(updatedStudyPlan);
+        studyPlan.setPrivate(!studyPlan.isPrivate());
+
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     @Transactional
@@ -92,12 +87,11 @@ public class StudyPlanService {
             );
         }
 
-        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-        return studyPlanResponseMapper.apply(updatedStudyPlan);
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     @Transactional
-    public StudyPlanSummaryResponse editStudyPlanDetails(long studyPlanId, EditStudyPlanDetailsRequest request) {
+    public StudyPlanResponse editStudyPlanDetails(long studyPlanId, EditStudyPlanDetailsRequest request) {
         editStudyPlanDetailsValidator.validate(request);
 
         var studyPlan = findStudyPlan(studyPlanId);
@@ -106,14 +100,11 @@ public class StudyPlanService {
         studyPlan.setDuration(request.duration());
         studyPlan.setTrack(request.track());
 
-        studyPlanRepository.save(studyPlan);
-
-        var studyPlanSummary = findStudyPlanSummary(studyPlanId);
-        return studyPlanSummaryResponseMapper.apply(studyPlanSummary);
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     @Transactional
-    public StudyPlanSummaryResponse createStudyPlan(CreateStudyPlanRequest request) {
+    public StudyPlanResponse createStudyPlan(CreateStudyPlanRequest request) {
         StudyPlan studyPlan = new StudyPlan();
 
         studyPlan.setYear(request.year());
@@ -122,10 +113,7 @@ public class StudyPlanService {
         studyPlan.setPrivate(true);
         studyPlan.setProgram(AggregateReference.to(request.program()));
 
-        var newStudyPlan = studyPlanRepository.save(studyPlan);
-
-        var studyPlanSummary = findStudyPlanSummary(newStudyPlan.getId());
-        return studyPlanSummaryResponseMapper.apply(studyPlanSummary);
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     @Transactional
@@ -159,8 +147,7 @@ public class StudyPlanService {
 
         studyPlan.getSections().add(newSection);
 
-        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-        return studyPlanResponseMapper.apply(updatedStudyPlan);
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     @Transactional
@@ -182,8 +169,7 @@ public class StudyPlanService {
                         }
                 );
 
-        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-        return studyPlanResponseMapper.apply(updatedStudyPlan);
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     @Transactional
@@ -228,8 +214,7 @@ public class StudyPlanService {
 
         studyPlan.getSections().remove(section);
 
-        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-        return studyPlanResponseMapper.apply(updatedStudyPlan);
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     @Transactional
@@ -271,8 +256,7 @@ public class StudyPlanService {
 
         section.getCourses().putAll(toBeAddedCourses);
 
-        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-        return studyPlanResponseMapper.apply(updatedStudyPlan);
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     @Transactional
@@ -293,8 +277,7 @@ public class StudyPlanService {
             studyPlan.getCoursePlacements().remove(courseId);
         }
 
-        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-        return studyPlanResponseMapper.apply(updatedStudyPlan);
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     @Transactional
@@ -322,8 +305,7 @@ public class StudyPlanService {
             );
         }
 
-        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-        return studyPlanResponseMapper.apply(updatedStudyPlan);
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     @Transactional
@@ -343,8 +325,7 @@ public class StudyPlanService {
             );
         }
 
-        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-        return studyPlanResponseMapper.apply(updatedStudyPlan);
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     @Transactional
@@ -361,8 +342,7 @@ public class StudyPlanService {
 
         if (!removed) throw new CourseNotFoundException("Corequisite not found");
 
-        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-        return studyPlanResponseMapper.apply(updatedStudyPlan);
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     @Transactional
@@ -379,8 +359,7 @@ public class StudyPlanService {
 
         if (!removed) throw new CourseNotFoundException("Prerequisite not found");
 
-        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-        return studyPlanResponseMapper.apply(updatedStudyPlan);
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     @Transactional
@@ -404,8 +383,7 @@ public class StudyPlanService {
 
         targetSection.getCourses().put(courseId, new SectionCourse(AggregateReference.to(courseId)));
 
-        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-        return studyPlanResponseMapper.apply(updatedStudyPlan);
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     @Transactional
@@ -450,8 +428,7 @@ public class StudyPlanService {
         targetSection.setPosition(newPosition);
         swappedSection.setPosition(currentPosition);
 
-        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-        return studyPlanResponseMapper.apply(updatedStudyPlan);
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     public StudyPlanResponse removeCoursePlacement(long studyPlanId, long courseId) {
@@ -491,8 +468,13 @@ public class StudyPlanService {
                 .orElseThrow(() -> new StudyPlanNotFoundException("Study plan with id " + studyPlanId + " was not found."));
     }
 
-    private StudyPlanSummaryProjection findStudyPlanSummary(long studyPlanId) {
+    private StudyPlanSummaryResponse findStudyPlanSummary(long studyPlanId) {
         return studyPlanRepository.findStudyPlanSummary(studyPlanId)
                 .orElseThrow(() -> new StudyPlanNotFoundException("Study plan was not found."));
+    }
+
+    private <T> T saveAndMapStudyPlan(StudyPlan studyPlan, Function<StudyPlan, T> mapper) {
+        var savedStudyPlan = studyPlanRepository.save(studyPlan);
+        return mapper.apply(savedStudyPlan);
     }
 }
