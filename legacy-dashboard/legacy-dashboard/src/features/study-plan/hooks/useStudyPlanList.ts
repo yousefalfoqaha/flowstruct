@@ -1,6 +1,6 @@
 import {getStudyPlanListQuery} from "@/features/study-plan/queries.ts";
-import {useQuery} from "@tanstack/react-query";
+import {useSuspenseQuery} from "@tanstack/react-query";
 
 export const useStudyPlanList = () => {
-    return useQuery(getStudyPlanListQuery());
+    return useSuspenseQuery(getStudyPlanListQuery());
 }

@@ -11,8 +11,7 @@ export const studyPlanKeys = {
 
 export const getStudyPlanListQuery = () => queryOptions({
     queryKey: studyPlanKeys.lists(),
-    queryFn: () => getStudyPlanList(),
-    placeholderData: keepPreviousData
+    queryFn: () => getStudyPlanList()
 });
 
 export const getStudyPlanQuery = (studyPlanId: number) => queryOptions({

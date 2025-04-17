@@ -1,11 +1,18 @@
-import {CoursePrerequisite, MoveDirection, Section, StudyPlan, StudyPlansPage} from "@/features/study-plan/types.ts";
+import {
+    CoursePrerequisite,
+    MoveDirection,
+    Section,
+    StudyPlan,
+    StudyPlanListItem,
+    StudyPlansPage
+} from "@/features/study-plan/types.ts";
 import {Course} from "@/features/course/types.ts";
 import {api} from "@/shared/api.ts";
 
 const ENDPOINT = '/study-plans';
 
 export const getStudyPlanList = () =>
-    api.get<StudyPlansPage>(ENDPOINT);
+    api.get<StudyPlanListItem[]>(ENDPOINT);
 
 export const getStudyPlan = (studyPlanId: number) =>
     api.get<StudyPlan>(`${ENDPOINT}/${studyPlanId}`);

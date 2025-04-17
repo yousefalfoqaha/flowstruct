@@ -24,8 +24,7 @@ export function StudyPlansTable() {
 
     const data: StudyPlanRowItem[] = React.useMemo(
         () => {
-            if (!studyPlans) return;
-            return studyPlans?.content.map(studyPlan => {
+            return studyPlans.map(studyPlan => {
                 const program = programs.find(p => p.id === studyPlan.program);
                 return {
                     ...studyPlan,
@@ -37,8 +36,6 @@ export function StudyPlansTable() {
     );
 
     const table = useDataTable<StudyPlanRowItem>({data, columns});
-
-    if (!studyPlans) return;
 
     return (
         <Stack gap="md">
@@ -54,7 +51,7 @@ export function StudyPlansTable() {
                     />
                     <DataTableSearch table={table} placeholder="Search any study plan..."/>
                 </Group>
-                <Link to={'/study-plans/new'}>
+                <Link to="/study-plans">
                     <Button leftSection={<Plus size={18}/>}>Create New Study Plan</Button>
                 </Link>
             </Group>

@@ -3,11 +3,12 @@ import {
     ColumnFiltersState,
     getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel,
     RowSelectionState,
-    SortingState, TableOptions,
+    SortingState, TableOptions, Updater,
     useReactTable
 } from "@tanstack/react-table";
+import {useLocation, useNavigate, useSearch} from "@tanstack/react-router";
 
-type useDataTableProps<TData> =  Omit<
+type useDataTableProps<TData> = Omit<
     TableOptions<TData>,
     | "state"
     | "pageCount"
@@ -15,20 +16,31 @@ type useDataTableProps<TData> =  Omit<
     | "manualFiltering"
     | "manualPagination"
     | "manualSorting"
->
+>;
 
-export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
-    const {columns, data} = props;
+export const useDataTable = <TData>({columns, data}: useDataTableProps<TData>) => {
+    const params = useSearch({strict: false});
+    const navigate = useNavigate({from: "/"});
 
     const [sorting, setSorting] = React.useState<SortingState>([{id: 'code', desc: false}]);
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
     const [pagination, setPagination] = React.useState({pageIndex: 0, pageSize: 10,});
-    const [globalFilter, setGlobalFilter] = React.useState("");
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 
-    // use search params as table state parameters
+    const onGlobalFilterChange = React.useCallback(
+        (updaterOrValue: Updater<string>) => {
+            const newVal = typeof updaterOrValue === "function"
+                ? (updaterOrValue as (prev: string) => string)(params.filter)
+                : updaterOrValue;
 
-    const table = useReactTable({
+            navigate({
+                search: (prev) => ({...prev, filter: newVal})
+            });
+        },
+        [navigate, params.filter]
+    );
+
+    return useReactTable({
         columns,
         data,
         getCoreRowModel: getCoreRowModel(),
@@ -40,15 +52,13 @@ export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
             pagination,
             sorting,
             rowSelection,
-            globalFilter,
+            globalFilter: params.filter,
             columnFilters
         },
         onColumnFiltersChange: setColumnFilters,
-        onGlobalFilterChange: setGlobalFilter,
+        onGlobalFilterChange: onGlobalFilterChange,
         onPaginationChange: setPagination,
         onSortingChange: setSorting,
         autoResetPageIndex: false,
     });
-
-    return table;
 }
