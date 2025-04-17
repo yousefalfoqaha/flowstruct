@@ -1,5 +1,5 @@
-import {queryOptions} from "@tanstack/react-query";
-import {getStudyPlanList, getStudyPlan} from "@/features/study-plan/api.ts";
+import {keepPreviousData, queryOptions} from "@tanstack/react-query";
+import {getStudyPlan, getStudyPlanList} from "@/features/study-plan/api.ts";
 
 export const studyPlanKeys = {
     all: ['study-plans'] as const,
@@ -11,7 +11,8 @@ export const studyPlanKeys = {
 
 export const getStudyPlanListQuery = () => queryOptions({
     queryKey: studyPlanKeys.lists(),
-    queryFn: () => getStudyPlanList()
+    queryFn: () => getStudyPlanList(),
+    placeholderData: keepPreviousData
 });
 
 export const getStudyPlanQuery = (studyPlanId: number) => queryOptions({

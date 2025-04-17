@@ -57,6 +57,15 @@ export type FrameworkCourse = Course & {
     sectionCode: string
 }
 
+export type StudyPlansPage = {
+    content: StudyPlanListItem[];
+    page: number;
+    size: number;
+    totalStudyPlans: number;
+    totalPages: number;
+    isLastPage: boolean;
+}
+
 export type StudyPlanRowItem = StudyPlanListItem & {
     programName: string
 }

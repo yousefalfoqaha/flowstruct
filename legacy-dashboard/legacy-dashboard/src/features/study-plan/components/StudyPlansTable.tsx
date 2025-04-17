@@ -1,7 +1,7 @@
 import {DataTable} from "@/shared/components/DataTable.tsx";
 import {useStudyPlanList} from "@/features/study-plan/hooks/useStudyPlanList.ts";
 import {useDataTable} from "@/shared/hooks/useDataTable.ts";
-import {StudyPlanListItem, StudyPlanRowItem} from "@/features/study-plan/types.ts";
+import {StudyPlanRowItem} from "@/features/study-plan/types.ts";
 import React from "react";
 import {getStudyPlansTableColumns} from "@/features/study-plan/components/StudyPlansTableColumns.tsx";
 import {AppCard} from "@/shared/components/AppCard.tsx";
@@ -23,18 +23,22 @@ export function StudyPlansTable() {
     );
 
     const data: StudyPlanRowItem[] = React.useMemo(
-        () =>
-            studyPlans.map(studyPlan => {
+        () => {
+            if (!studyPlans) return;
+            return studyPlans?.content.map(studyPlan => {
                 const program = programs.find(p => p.id === studyPlan.program);
                 return {
                     ...studyPlan,
                     programName: program ? getProgramDisplayName(program) : 'Undefined',
                 };
-            }),
+            })
+        },
         [programs, studyPlans]
     );
 
     const table = useDataTable<StudyPlanRowItem>({data, columns});
+
+    if (!studyPlans) return;
 
     return (
         <Stack gap="md">
@@ -45,6 +49,7 @@ export function StudyPlansTable() {
                         placeholder="Filter by program"
                         data={programs.map(p => getProgramDisplayName(p))}
                         onChange={(val) => table.setGlobalFilter(val || '')}
+                        searchable
                         clearable
                     />
                     <DataTableSearch table={table} placeholder="Search any study plan..."/>
@@ -56,7 +61,7 @@ export function StudyPlansTable() {
 
             <AppCard
                 title="All Study Plans"
-                subtitle={`Manage university study plans - ${studyPlans.length} study plan${studyPlans.length > 1 && 's'} total`}
+                subtitle={`Manage university study plans - ${studyPlans.totalStudyPlans} study plan${studyPlans.totalStudyPlans > 1 && 's'} total`}
             >
                 <DataTable table={table}/>
             </AppCard>
