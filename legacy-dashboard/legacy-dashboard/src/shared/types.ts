@@ -1,5 +1,5 @@
 import React, {ReactElement} from "react";
-import {ColumnFiltersState} from "@tanstack/react-table";
+import {ColumnFilter} from "@tanstack/react-table";
 
 export interface ErrorObject {
     statusCode: number;
@@ -31,5 +31,5 @@ export type TableSearchOptions = {
     filter: string;
     page: number;
     size: number;
-    columnFilters: ColumnFiltersState
+    columnFilters: ColumnFilter[]
 }

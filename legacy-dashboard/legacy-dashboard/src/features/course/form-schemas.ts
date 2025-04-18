@@ -5,23 +5,20 @@ export const searchCourseFormSchema = z.object({
     code: z.string().optional(),
     name: z.string().optional(),
 }).refine(data => data.code || data.name, {
-    message: "At least one field must be filled"
+    error: "At least one field must be filled"
 });
 
 export const courseDetailsSchema = z.object({
     code: z.string().transform(val => val.toLocaleUpperCase()),
     name: z.string(),
-    creditHours: z.number().min(0, {message: "Must be positive"}),
+    creditHours: z.number().min(0, {error: "Must be positive"}),
     ects: z.number()
-        .min(0, {message: "Must be positive"})
+        .min(0, {error: "Must be positive"})
         .optional()
         .transform(val => val ?? 0),
-    lectureHours: z.number().min(0, {message: "Must be positive"}),
-    practicalHours: z.number().min(0, {message: "Must be positive"}),
-    type: z.enum(
-        Object.keys(CourseType) as [string, ...string[]],
-        {errorMap: () => ({message: "A type is required"})}
-    ),
+    lectureHours: z.number().min(0, {error: "Must be positive"}),
+    practicalHours: z.number().min(0, {error: "Must be positive"}),
+    type: z.enum(CourseType),
     isRemedial: z.boolean().default(false)
 });
 

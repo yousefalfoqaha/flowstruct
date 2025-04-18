@@ -18,7 +18,7 @@ const TableSearchSchema = z.object({
         z.object({
             id: z.string(),
             value: z.unknown()
-        }).required()
+        })
     ).catch(defaultValues.columnFilters)
 });
 

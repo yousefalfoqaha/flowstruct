@@ -2,7 +2,6 @@ import {Table} from "@tanstack/react-table";
 import {getProgramDisplayName} from "@/lib/getProgramDisplayName.ts";
 import {Select} from "@mantine/core";
 import {ProgramListItem} from "@/features/program/types.ts";
-import {useNavigate} from "@tanstack/react-router";
 import {StudyPlanRowItem} from "@/features/study-plan/types.ts";
 
 type Props = {
@@ -11,14 +10,7 @@ type Props = {
 };
 
 export function ProgramFilter({table, programs}: Props) {
-    const navigate = useNavigate();
-
     const selectedProgram = table.getState().columnFilters.find(f => f.id === 'programName')?.value as string | undefined;
-
-    const resetFilter = () => navigate({
-        to: ".",
-        search: (prev) => ({...prev, columnFilters: []})
-    });
 
     return (
         <Select
@@ -29,7 +21,7 @@ export function ProgramFilter({table, programs}: Props) {
             onChange={(val) => table.setColumnFilters([{id: 'programName', value: val ?? ''}])}
             searchable
             clearable
-            onClear={resetFilter}
+            onClear={() => table.setColumnFilters([])}
         />
     );
 }

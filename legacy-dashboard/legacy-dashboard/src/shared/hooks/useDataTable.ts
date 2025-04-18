@@ -4,7 +4,7 @@ import {
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
-    getSortedRowModel,
+    getSortedRowModel, PaginationState,
     RowSelectionState,
     SortingState,
     TableOptions,
@@ -30,7 +30,6 @@ export const useDataTable = <TData>({columns, data}: useDataTableProps<TData>) =
 
     const [sorting, setSorting] = React.useState<SortingState>([{id: 'code', desc: false}]);
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
-    const [pagination, setPagination] = React.useState({pageIndex: 0, pageSize: 10,});
 
     const onGlobalFilterChange = React.useCallback(
         (updaterOrValue: Updater<string>) => {
@@ -52,13 +51,34 @@ export const useDataTable = <TData>({columns, data}: useDataTableProps<TData>) =
             const newVal = typeof updaterOrValue === "function"
                 ? (updaterOrValue as (prev: ColumnFiltersState) => ColumnFiltersState)(params.columnFilters)
                 : updaterOrValue;
-            
+
             navigate({
                 search: (prev) => ({...prev, columnFilters: newVal}),
                 to: location.pathname
             });
         },
         [location.pathname, navigate, params.columnFilters]
+    );
+
+    const onPaginationChange = React.useCallback(
+        (updaterOrValue: Updater<PaginationState>) => {
+            const newVal = typeof updaterOrValue === 'function'
+                ? (updaterOrValue as (prev: PaginationState) => PaginationState)({
+                    pageIndex: params.page,
+                    pageSize: params.size
+                })
+                : updaterOrValue;
+
+            navigate({
+                search: (prev) => ({
+                    ...prev,
+                    page: newVal.pageIndex,
+                    size: newVal.pageSize
+                }),
+                to: location.pathname
+            });
+        },
+        [location.pathname, navigate, params.page, params.size]
     );
 
     return useReactTable({
@@ -70,7 +90,7 @@ export const useDataTable = <TData>({columns, data}: useDataTableProps<TData>) =
         getFilteredRowModel: getFilteredRowModel(),
         onRowSelectionChange: setRowSelection,
         state: {
-            pagination,
+            pagination: {pageIndex: params.page, pageSize: params.size},
             sorting,
             rowSelection,
             globalFilter: params.filter,
@@ -78,7 +98,7 @@ export const useDataTable = <TData>({columns, data}: useDataTableProps<TData>) =
         },
         onColumnFiltersChange: onColumnFilterChange,
         onGlobalFilterChange: onGlobalFilterChange,
-        onPaginationChange: setPagination,
+        onPaginationChange: onPaginationChange,
         onSortingChange: setSorting,
         autoResetPageIndex: false,
     });
