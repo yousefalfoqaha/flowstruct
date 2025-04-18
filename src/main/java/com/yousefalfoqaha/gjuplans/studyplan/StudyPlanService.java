@@ -99,6 +99,7 @@ public class StudyPlanService {
         studyPlan.setYear(request.year());
         studyPlan.setDuration(request.duration());
         studyPlan.setTrack(request.track());
+        studyPlan.setPrivate(request.isPrivate());
 
         return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
@@ -110,7 +111,7 @@ public class StudyPlanService {
         studyPlan.setYear(request.year());
         studyPlan.setDuration(request.duration());
         studyPlan.setTrack(request.track());
-        studyPlan.setPrivate(true);
+        studyPlan.setPrivate(request.isPrivate());
         studyPlan.setProgram(AggregateReference.to(request.program()));
 
         return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
@@ -436,8 +437,7 @@ public class StudyPlanService {
 
         studyPlan.getCoursePlacements().remove(courseId);
 
-        var updatedStudyPlan = studyPlanRepository.save(studyPlan);
-        return studyPlanResponseMapper.apply(updatedStudyPlan);
+        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
     }
 
     private void detectCycle(

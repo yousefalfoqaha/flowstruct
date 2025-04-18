@@ -14,6 +14,8 @@ public record CreateStudyPlanRequest (
 
     String track,
 
+    boolean isPrivate,
+
     @NotNull(message = "Study plan must belong to a program.")
     long program
 ) {

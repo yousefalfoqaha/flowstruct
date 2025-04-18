@@ -10,9 +10,7 @@ import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -36,16 +34,16 @@ public class StudyPlan {
     private AggregateReference<Program, Long> program;
 
     @MappedCollection(idColumn = "study_plan")
-    private Set<Section> sections;
+    private Set<Section> sections = new HashSet<>();
 
     @MappedCollection(idColumn = "study_plan", keyColumn = "course")
-    private Map<Long, CoursePlacement> coursePlacements;
+    private Map<Long, CoursePlacement> coursePlacements = new HashMap<>();
 
     @MappedCollection(idColumn = "study_plan")
-    private Set<CoursePrerequisite> coursePrerequisites;
+    private Set<CoursePrerequisite> coursePrerequisites = new HashSet<>();
 
     @MappedCollection(idColumn = "study_plan")
-    private Set<CourseCorequisite> courseCorequisites;
+    private Set<CourseCorequisite> courseCorequisites = new HashSet<>();
 
     public Map<Long, List<CoursePrerequisite>> getCoursePrerequisitesMap() {
         return coursePrerequisites

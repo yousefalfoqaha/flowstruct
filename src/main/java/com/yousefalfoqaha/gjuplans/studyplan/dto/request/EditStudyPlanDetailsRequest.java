@@ -12,6 +12,8 @@ public record EditStudyPlanDetailsRequest(
         @Min(value = 1, message = "Duration must be at least 1 year.")
         int duration,
 
-        String track
+        String track,
+
+        boolean isPrivate
 ) {
 }
