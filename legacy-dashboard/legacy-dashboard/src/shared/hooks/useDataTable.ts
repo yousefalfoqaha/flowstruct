@@ -1,9 +1,14 @@
 import React from "react";
 import {
     ColumnFiltersState,
-    getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel,
+    getCoreRowModel,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
     RowSelectionState,
-    SortingState, TableOptions, Updater,
+    SortingState,
+    TableOptions,
+    Updater,
     useReactTable
 } from "@tanstack/react-table";
 import {useLocation, useNavigate, useSearch} from "@tanstack/react-router";
@@ -19,8 +24,9 @@ type useDataTableProps<TData> = Omit<
 >;
 
 export const useDataTable = <TData>({columns, data}: useDataTableProps<TData>) => {
-    const params = useSearch({strict: false});
-    const navigate = useNavigate({from: "/"});
+    const params = useSearch({from: "__root__"});
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const [sorting, setSorting] = React.useState<SortingState>([{id: 'code', desc: false}]);
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
@@ -34,10 +40,11 @@ export const useDataTable = <TData>({columns, data}: useDataTableProps<TData>) =
                 : updaterOrValue;
 
             navigate({
-                search: (prev) => ({...prev, filter: newVal})
-            });
+                search: (prev) => ({...prev, filter: newVal}),
+                to: location.pathname
+            }).then(() => {});
         },
-        [navigate, params.filter]
+        [location.pathname, navigate, params.filter]
     );
 
     return useReactTable({
