@@ -31,7 +31,6 @@ export const useDataTable = <TData>({columns, data}: useDataTableProps<TData>) =
     const [sorting, setSorting] = React.useState<SortingState>([{id: 'code', desc: false}]);
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
     const [pagination, setPagination] = React.useState({pageIndex: 0, pageSize: 10,});
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
 
     const onGlobalFilterChange = React.useCallback(
         (updaterOrValue: Updater<string>) => {
@@ -42,9 +41,24 @@ export const useDataTable = <TData>({columns, data}: useDataTableProps<TData>) =
             navigate({
                 search: (prev) => ({...prev, filter: newVal}),
                 to: location.pathname
-            }).then(() => {});
+            }).then(() => {
+            });
         },
         [location.pathname, navigate, params.filter]
+    );
+
+    const onColumnFilterChange = React.useCallback(
+        (updaterOrValue: Updater<ColumnFiltersState>) => {
+            const newVal = typeof updaterOrValue === "function"
+                ? (updaterOrValue as (prev: ColumnFiltersState) => ColumnFiltersState)(params.columnFilters)
+                : updaterOrValue;
+            
+            navigate({
+                search: (prev) => ({...prev, columnFilters: newVal}),
+                to: location.pathname
+            });
+        },
+        [location.pathname, navigate, params.columnFilters]
     );
 
     return useReactTable({
@@ -60,9 +74,9 @@ export const useDataTable = <TData>({columns, data}: useDataTableProps<TData>) =
             sorting,
             rowSelection,
             globalFilter: params.filter,
-            columnFilters
+            columnFilters: params.columnFilters
         },
-        onColumnFiltersChange: setColumnFilters,
+        onColumnFiltersChange: onColumnFilterChange,
         onGlobalFilterChange: onGlobalFilterChange,
         onPaginationChange: setPagination,
         onSortingChange: setSorting,

@@ -1,7 +1,7 @@
 import {Search, X} from "lucide-react";
 import {ActionIcon, Input} from "@mantine/core";
-import React from "react";
 import {Table} from "@tanstack/react-table";
+import {useNavigate} from "@tanstack/react-router";
 
 type TableSearchProps<TData> = {
     table: Table<TData>;
@@ -10,34 +10,35 @@ type TableSearchProps<TData> = {
 };
 
 export function DataTableSearch<TData>({table, width = 450, placeholder = "Search..."}: TableSearchProps<TData>) {
-    const [search, setSearch] = React.useState<string>("");
+    const navigate = useNavigate();
 
-    React.useEffect(() => {
-        table.setGlobalFilter(search);
-    }, [search, table]);
+    const resetSearch = () => navigate({
+        to: ".",
+        search: (prev) => ({...prev, filter: ''})
+    });
 
-    const handleClear = () => setSearch("");
+    const currentValue = table.getState().globalFilter as string;
 
     return (
         <Input
             w={width}
             leftSection={<Search size={18}/>}
             placeholder={placeholder}
-            value={search}
+            value={currentValue}
             rightSectionPointerEvents="all"
             rightSection={
-                search !== "" && (
+                currentValue !== "" && (
                     <ActionIcon
                         radius="xl"
                         variant="white"
                         color="gray"
-                        onClick={handleClear}
+                        onClick={resetSearch}
                     >
                         <X size={18}/>
                     </ActionIcon>
                 )
             }
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => table.setGlobalFilter(e.target.value)}
         />
     );
 }

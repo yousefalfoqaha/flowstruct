@@ -8,7 +8,9 @@ export function getStudyPlansTableColumns() {
 
     return [
         accessor('programName', {
-            header: 'Program'
+            header: 'Program',
+            enableColumnFilter: true,
+            filterFn: "equalsString"
         }),
         accessor('year', {
             header: 'Year',

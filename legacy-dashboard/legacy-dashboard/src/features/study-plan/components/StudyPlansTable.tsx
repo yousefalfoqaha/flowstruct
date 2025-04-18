@@ -6,12 +6,13 @@ import React from "react";
 import {getStudyPlansTableColumns} from "@/features/study-plan/components/StudyPlansTableColumns.tsx";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {useProgramList} from "@/features/program/hooks/useProgramList.ts";
-import {Box, Button, Group, Select, Stack} from "@mantine/core";
+import {Box, Button, Group, Stack} from "@mantine/core";
 import {DataTableSearch} from "@/shared/components/DataTableSearch.tsx";
 import {Link} from "@tanstack/react-router";
 import {Plus} from "lucide-react";
 import {DataTablePagination} from "@/shared/components/DataTablePagination.tsx";
 import {getProgramDisplayName} from "@/lib/getProgramDisplayName.ts";
+import {ProgramFilter} from "@/features/study-plan/components/ProgramFilter.tsx";
 
 export function StudyPlansTable() {
     const {data: studyPlans} = useStudyPlanList();
@@ -41,14 +42,7 @@ export function StudyPlansTable() {
         <Stack gap="md">
             <Group justify="space-between" preventGrowOverflow>
                 <Group>
-                    <Select
-                        w={300}
-                        placeholder="Filter by program"
-                        data={programs.map(p => getProgramDisplayName(p))}
-                        onChange={(val) => table.setGlobalFilter(val || '')}
-                        searchable
-                        clearable
-                    />
+                    <ProgramFilter table={table} programs={programs} />
                     <DataTableSearch table={table} placeholder="Search any study plan..."/>
                 </Group>
                 <Link to="/study-plans">
@@ -58,7 +52,7 @@ export function StudyPlansTable() {
 
             <AppCard
                 title="All Study Plans"
-                subtitle={`Manage university study plans - ${studyPlans.totalStudyPlans} study plan${studyPlans.totalStudyPlans > 1 && 's'} total`}
+                subtitle={`Manage university study plans - ${studyPlans.length} study plan${studyPlans.length > 1 && 's'} total`}
             >
                 <DataTable table={table}/>
             </AppCard>

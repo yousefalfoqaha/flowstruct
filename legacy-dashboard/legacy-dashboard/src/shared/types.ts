@@ -1,4 +1,5 @@
 import React, {ReactElement} from "react";
+import {ColumnFiltersState} from "@tanstack/react-table";
 
 export interface ErrorObject {
     statusCode: number;
@@ -24,4 +25,11 @@ export type SidebarLink = {
     label: string;
     icon: React.FC<React.SVGProps<SVGSVGElement>>;
     route: string;
+}
+
+export type TableSearchOptions = {
+    filter: string;
+    page: number;
+    size: number;
+    columnFilters: ColumnFiltersState
 }
