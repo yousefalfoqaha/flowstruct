@@ -2,7 +2,7 @@ import {Group, NumberInput, Select, Stack, TextInput} from "@mantine/core";
 import {Control, Controller, FieldErrors, UseFormGetValues} from "react-hook-form";
 import {SectionLevel, SectionType} from "@/features/study-plan/types.ts";
 import {GraduationCap, Tag, University} from "lucide-react";
-import {SectionDetailsFormValues} from "@/features/study-plan/form-schemas.ts";
+import {SectionDetailsFormValues} from "@/features/study-plan/schemas.ts";
 
 export function SectionDetailsFormFields({control, errors, getValues}: {
     control: Control<SectionDetailsFormValues>;

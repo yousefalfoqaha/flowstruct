@@ -1,6 +1,6 @@
-import {Button, Group} from "@mantine/core";
+import {Button} from "@mantine/core";
 import {ProgramDetailsFormFields} from "@/features/program/components/ProgramDetailsFormFields.tsx";
-import {programDetailsSchema} from "@/features/program/form-schemas.ts";
+import {programDetailsSchema} from "@/features/program/schemas.ts";
 import {Link, useNavigate} from "@tanstack/react-router";
 import {Pencil, Trash} from "lucide-react";
 import {useEditProgramDetails} from "@/features/program/hooks/useEditProgramDetails.ts";
@@ -34,21 +34,19 @@ export function EditProgramFieldset({program}: EditProgramFieldsetProps) {
             subtitle="Update the details for this program"
             footer={
                 <>
-                    <Group justify="space-between" mt="xl">
-                        <Link to="/programs">
-                            <Button variant="filled" color="red" leftSection={<Trash size={18}/>}>
-                                Delete Program
-                            </Button>
-                        </Link>
-
-                        <Button
-                            type="submit"
-                            leftSection={<Pencil size={18}/>}
-                            loading={editProgramDetails.isPending}
-                        >
-                            Update Details
+                    <Link to="/programs">
+                        <Button variant="filled" color="red" leftSection={<Trash size={18}/>}>
+                            Delete Program
                         </Button>
-                    </Group>
+                    </Link>
+
+                    <Button
+                        type="submit"
+                        leftSection={<Pencil size={18}/>}
+                        loading={editProgramDetails.isPending}
+                    >
+                        Update Details
+                    </Button>
                 </>
             }
         >

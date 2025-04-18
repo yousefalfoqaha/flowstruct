@@ -2,7 +2,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Button, Flex, LoadingOverlay, Modal} from "@mantine/core";
 import {useCreateCourse} from "@/features/course/hooks/useCreateCourse.ts";
-import {CourseDetailsFormValues, courseDetailsSchema} from "@/features/course/form-schemas.ts";
+import {CourseDetailsFormValues, courseDetailsSchema} from "@/features/course/schemas.ts";
 import {CourseDetailsFormFields} from "@/features/course/components/CourseDetailsFormFields.tsx";
 import {Plus} from "lucide-react";
 import {Course} from "@/features/course/types.ts";

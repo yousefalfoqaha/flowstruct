@@ -1,15 +1,13 @@
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {ZodSchema, infer as zInfer, z} from 'zod';
+import {infer as zInfer, ZodSchema} from 'zod';
 
 export function useAppForm<TSchema extends ZodSchema<any>>(
     schema: TSchema,
-    defaultValues?: zInfer<TSchema>
+    defaultValues?: Partial<zInfer<TSchema>>
 ) {
     return useForm<zInfer<TSchema>>({
         resolver: zodResolver(schema),
-        defaultValues,
+        defaultValues: defaultValues as zInfer<TSchema> | undefined,
     });
 }
-
-export type InferFormValues<TSchema extends z.ZodType> = z.infer<TSchema>;

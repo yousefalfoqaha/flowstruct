@@ -6,5 +6,5 @@ export const Route = createFileRoute('/_layout/programs')({
     loader: async ({context: {queryClient}}) => {
         await queryClient.ensureQueryData(getProgramListQuery);
         return {crumb: 'Programs'}
-    }
+    },
 });

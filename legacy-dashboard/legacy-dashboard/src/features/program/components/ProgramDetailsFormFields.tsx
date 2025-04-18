@@ -2,12 +2,14 @@ import {Controller, UseFormReturn} from "react-hook-form";
 import {Flex, Select, Stack, Switch, Text, TextInput} from "@mantine/core";
 import {Degree} from "@/features/program/types.ts";
 import {Eye, EyeOff, GraduationCap, Hash} from "lucide-react";
-import {programDetailsSchema} from "@/features/program/form-schemas.ts";
-import {InferFormValues} from "@/shared/hooks/useAppForm.ts";
+import {programDetailsSchema} from "@/features/program/schemas.ts";
+import {z} from "zod";
 
-type ProgramDetailsFormValues = InferFormValues<typeof programDetailsSchema>;
+type Props = {
+    form: UseFormReturn<z.infer<typeof programDetailsSchema>>;
+}
 
-export function ProgramDetailsFormFields({form}: { form: UseFormReturn<ProgramDetailsFormValues> }) {
+export function ProgramDetailsFormFields({form}: Props) {
     const {control, formState: {errors}} = form;
 
     return (
@@ -25,7 +27,7 @@ export function ProgramDetailsFormFields({form}: { form: UseFormReturn<ProgramDe
                             error={errors.code?.message}
                             autoComplete="off"
                             withAsterisk
-                            w="50%"
+                            w="100%"
                         />
                     )}
                 />
@@ -41,7 +43,7 @@ export function ProgramDetailsFormFields({form}: { form: UseFormReturn<ProgramDe
                             error={errors.name?.message}
                             autoComplete="off"
                             withAsterisk
-                            w="50%"
+                            w="100%"
                         />
                     )}
                 />

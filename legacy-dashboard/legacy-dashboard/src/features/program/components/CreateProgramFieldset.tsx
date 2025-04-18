@@ -1,6 +1,6 @@
 import {Button} from "@mantine/core";
 import {ProgramDetailsFormFields} from "@/features/program/components/ProgramDetailsFormFields.tsx";
-import {programDetailsSchema} from "@/features/program/form-schemas.ts";
+import {programDetailsSchema} from "@/features/program/schemas.ts";
 import {useCreateProgram} from "@/features/program/hooks/useCreateProgram.ts";
 import {Link, useNavigate} from "@tanstack/react-router";
 import {Plus, X} from "lucide-react";
@@ -9,10 +9,9 @@ import {useAppForm} from "@/shared/hooks/useAppForm.ts";
 
 export function CreateProgramFieldset() {
     const form = useAppForm(programDetailsSchema, {
-        isPrivate: true,
         code: '',
         name: '',
-        degree: '',
+        isPrivate: true,
     });
     const createProgram = useCreateProgram();
     const navigate = useNavigate();
@@ -38,6 +37,7 @@ export function CreateProgramFieldset() {
                                 Cancel
                             </Button>
                         </Link>
+
                         <Button
                             type="submit"
                             leftSection={<Plus size={18}/>}

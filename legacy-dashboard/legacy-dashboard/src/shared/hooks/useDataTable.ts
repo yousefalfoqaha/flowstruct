@@ -4,7 +4,8 @@ import {
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
-    getSortedRowModel, PaginationState,
+    getSortedRowModel,
+    PaginationState,
     RowSelectionState,
     SortingState,
     TableOptions,
@@ -12,6 +13,7 @@ import {
     useReactTable
 } from "@tanstack/react-table";
 import {useLocation, useNavigate, useSearch} from "@tanstack/react-router";
+import {TableSearchSchema} from "@/shared/schemas.ts";
 
 type useDataTableProps<TData> = Omit<
     TableOptions<TData>,
@@ -24,11 +26,16 @@ type useDataTableProps<TData> = Omit<
 >;
 
 export const useDataTable = <TData>({columns, data}: useDataTableProps<TData>) => {
-    const params = useSearch({from: "__root__"});
+    const parsedParams = TableSearchSchema.safeParse(useSearch({strict: false}));
+    if (!parsedParams.success) {
+        throw new Error("useDataTable hook must be used in a route with table search validation");
+    }
+
     const location = useLocation();
     const navigate = useNavigate();
+    const params = parsedParams.data;
 
-    const [sorting, setSorting] = React.useState<SortingState>([{id: 'code', desc: false}]);
+    const [sorting, setSorting] = React.useState<SortingState>([]);
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
 
     const onGlobalFilterChange = React.useCallback(

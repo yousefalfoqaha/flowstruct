@@ -4,7 +4,7 @@ import {CoursesGraphProvider} from '@/contexts/CoursesGraphContext.tsx'
 import {Stack, Title} from '@mantine/core'
 
 export const Route = createFileRoute(
-    '/study-plans/$studyPlanId/_studyPlanLayout/framework',
+    '/old-study-plans/_studyPlanLayout/framework',
 )({
     loader: () => ({
         crumb: 'Framework'

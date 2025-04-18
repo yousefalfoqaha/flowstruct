@@ -1,10 +1,16 @@
-import {createFileRoute} from '@tanstack/react-router'
+import {createFileRoute, stripSearchParams} from '@tanstack/react-router'
 import {Group, Stack, Title} from "@mantine/core";
 import {StudyPlansTable} from "@/features/study-plan/components/StudyPlansTable.tsx";
 import {ScrollText} from "lucide-react";
+import {TableSearchSchema} from "@/shared/schemas.ts";
+import {getDefaultSearchValues} from "@/lib/getDefaultSearchValues.ts";
 
 export const Route = createFileRoute('/_layout/study-plans/')({
     component: RouteComponent,
+    validateSearch: TableSearchSchema,
+    search: {
+        middlewares: [stripSearchParams(getDefaultSearchValues())]
+    }
 })
 
 function RouteComponent() {

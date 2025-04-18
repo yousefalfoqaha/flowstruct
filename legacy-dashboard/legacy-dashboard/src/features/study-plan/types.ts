@@ -41,7 +41,7 @@ export type StudyPlan = {
     id: number;
     year: number;
     duration: number;
-    track: string | null;
+    track: string | undefined;
     isPrivate: boolean;
     program: number;
     sections: Section[];
@@ -55,15 +55,6 @@ export type FrameworkCourse = Course & {
     corequisites: number[],
     section: number,
     sectionCode: string
-}
-
-export type StudyPlansPage = {
-    content: StudyPlanListItem[];
-    page: number;
-    size: number;
-    totalStudyPlans: number;
-    totalPages: number;
-    isLastPage: boolean;
 }
 
 export type StudyPlanRowItem = StudyPlanListItem & {

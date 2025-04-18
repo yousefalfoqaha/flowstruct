@@ -1,6 +1,6 @@
 import {useCreateSection} from "@/features/study-plan/hooks/useCreateSection.ts";
 import {useForm} from "react-hook-form";
-import {SectionDetailsFormValues, sectionDetailsSchema} from "@/features/study-plan/form-schemas.ts";
+import {SectionDetailsFormValues, sectionDetailsSchema} from "@/features/study-plan/schemas.ts";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Flex, LoadingOverlay, Modal, Button} from "@mantine/core";
 import {SectionDetailsFormFields} from "@/features/study-plan/components/SectionDetailsFormFields.tsx";

@@ -2,7 +2,7 @@ import {Checkbox, Group, NumberInput, Radio, SegmentedControl, Text, Stack, Text
 import {Control, Controller, DeepRequired, FieldErrorsImpl} from "react-hook-form";
 import {CourseType} from "@/features/course/types.ts";
 import {BookOpenText, Earth, FlaskConical, GraduationCap, Hash, Settings2, Timer} from "lucide-react";
-import {CourseDetailsFormValues} from "@/features/course/form-schemas.ts";
+import {CourseDetailsFormValues} from "@/features/course/schemas.ts";
 import {PresetType} from "@/lib/getCoursePresetSettings.ts";
 
 type CourseDetailsFormFieldsProps = {

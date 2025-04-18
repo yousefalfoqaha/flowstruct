@@ -6,13 +6,26 @@ import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 
 export const useCreateStudyPlan = () => {
     const queryClient = useQueryClient();
+
     return useAppMutation(createStudyPlan, {
         onSuccess: (newStudyPlan) => {
             queryClient.setQueryData(
-                studyPlanKeys.list(newStudyPlan.program),
+                studyPlanKeys.lists(),
                 (studyPlans: StudyPlanListItem[]) => {
-                    return [...studyPlans, newStudyPlan];
+                    return [
+                        ...studyPlans,
+                        {
+                            id: newStudyPlan.id,
+                            year: newStudyPlan.year,
+                            duration: newStudyPlan.duration,
+                            track: newStudyPlan.track,
+                            isPrivate: newStudyPlan.isPrivate,
+                            program: newStudyPlan.program
+                        }
+                    ];
                 });
+
+            queryClient.setQueryData(studyPlanKeys.detail(newStudyPlan.id), newStudyPlan);
         },
         successNotification: {message: "Study plan created successfully."}
     });

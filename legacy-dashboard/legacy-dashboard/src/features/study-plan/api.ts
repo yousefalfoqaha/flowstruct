@@ -1,11 +1,4 @@
-import {
-    CoursePrerequisite,
-    MoveDirection,
-    Section,
-    StudyPlan,
-    StudyPlanListItem,
-    StudyPlansPage
-} from "@/features/study-plan/types.ts";
+import {CoursePrerequisite, MoveDirection, Section, StudyPlan, StudyPlanListItem} from "@/features/study-plan/types.ts";
 import {Course} from "@/features/course/types.ts";
 import {api} from "@/shared/api.ts";
 
@@ -17,19 +10,18 @@ export const getStudyPlanList = () =>
 export const getStudyPlan = (studyPlanId: number) =>
     api.get<StudyPlan>(`${ENDPOINT}/${studyPlanId}`);
 
-export const createStudyPlan = ({createdStudyPlanDetails, programId,}: {
+export const createStudyPlan = ({createdStudyPlanDetails}: {
     createdStudyPlanDetails: Partial<StudyPlan>;
-    programId: number;
 }) =>
     api.post<StudyPlan>(ENDPOINT, {
-        body: {...createdStudyPlanDetails, program: programId},
+        body: {...createdStudyPlanDetails},
     });
 
 export const toggleStudyPlanVisibility = (studyPlanId: number) =>
     api.put<StudyPlan>(`${ENDPOINT}/${studyPlanId}/toggle-visibility`);
 
 export const deleteStudyPlan = (deletedStudyPlan: Partial<StudyPlan>) =>
-    api.delete(`${ENDPOINT}/${deletedStudyPlan.id}`);
+    api.delete<void>(`${ENDPOINT}/${deletedStudyPlan.id}`);
 
 export const updateStudyPlanDetails = ({studyPlanId, updatedStudyPlanDetails,}: {
     studyPlanId: number;

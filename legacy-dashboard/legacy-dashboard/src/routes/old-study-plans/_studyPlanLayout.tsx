@@ -16,7 +16,7 @@ import {getStudyPlanDisplayName} from "@/lib/getStudyPlanDisplayName.ts";
 import {getProgramDisplayName} from "@/lib/getProgramDisplayName.ts";
 
 export const Route = createFileRoute(
-    '/study-plans/$studyPlanId/_studyPlanLayout',
+    '/old-study-plans/_studyPlanLayout',
 )({
     loader: async ({context: {queryClient}, params}) => {
         const studyPlanId = parseInt(params.studyPlanId)

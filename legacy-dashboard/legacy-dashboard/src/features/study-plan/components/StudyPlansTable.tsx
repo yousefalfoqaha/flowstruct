@@ -45,7 +45,7 @@ export function StudyPlansTable() {
                     <ProgramFilter table={table} programs={programs} />
                     <DataTableSearch table={table} placeholder="Search any study plan..."/>
                 </Group>
-                <Link to="/study-plans">
+                <Link to="/study-plans/new">
                     <Button leftSection={<Plus size={18}/>}>Create New Study Plan</Button>
                 </Link>
             </Group>

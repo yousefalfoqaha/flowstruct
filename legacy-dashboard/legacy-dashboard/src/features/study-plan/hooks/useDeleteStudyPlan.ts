@@ -8,14 +8,16 @@ export const useDeleteStudyPlan = () => {
     const queryClient = useQueryClient();
     return useAppMutation(deleteStudyPlan, {
         onSuccess: (_, deletedStudyPlan) => {
+            if (!deletedStudyPlan.id) return;
+
             queryClient.setQueryData(
-                studyPlanKeys.list(deletedStudyPlan.program as number),
+                studyPlanKeys.lists(),
                 (previous: StudyPlanListItem[]) => {
                     return previous.filter((plan) => plan.id !== deletedStudyPlan.id);
                 }
             );
 
-            queryClient.removeQueries({queryKey: studyPlanKeys.detail(deletedStudyPlan.id as number)});
+            queryClient.removeQueries({queryKey: studyPlanKeys.detail(deletedStudyPlan.id)});
         },
         successNotification: {message: "Deleted study plan successfully."}
     });

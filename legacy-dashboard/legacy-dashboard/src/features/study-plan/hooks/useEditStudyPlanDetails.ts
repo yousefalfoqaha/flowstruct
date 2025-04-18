@@ -6,10 +6,11 @@ import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 
 export const useEditStudyPlanDetails = () => {
     const queryClient = useQueryClient();
+
     return useAppMutation(updateStudyPlanDetails, {
         onSuccess: (updatedStudyPlan: StudyPlan) => {
             queryClient.setQueryData(
-                studyPlanKeys.list(updatedStudyPlan.program as number),
+                studyPlanKeys.lists(),
                 (previous: StudyPlanListItem[]) => {
                     return previous.map(studyPlan =>
                         studyPlan.id === updatedStudyPlan.id
@@ -18,13 +19,14 @@ export const useEditStudyPlanDetails = () => {
                                 year: updatedStudyPlan.year,
                                 duration: updatedStudyPlan.duration,
                                 track: updatedStudyPlan.track,
-                                isPrivate: updatedStudyPlan.isPrivate
+                                isPrivate: updatedStudyPlan.isPrivate,
+                                program: updatedStudyPlan.program
                             } : studyPlan
                     );
                 }
             );
 
-            queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id as number), updatedStudyPlan);
+            queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan);
         },
         successNotification: {message: "Study plan details updated successfully."}
     })

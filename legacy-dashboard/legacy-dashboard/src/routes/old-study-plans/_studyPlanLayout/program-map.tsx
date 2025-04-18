@@ -3,7 +3,7 @@ import {ProgramMap} from '@/features/study-plan/components/ProgramMap.tsx'
 import {Stack, Title} from '@mantine/core'
 
 export const Route = createFileRoute(
-    '/study-plans/$studyPlanId/_studyPlanLayout/program-map',
+    '/old-study-plans/_studyPlanLayout/program-map',
 )({
     loader: () => ({
         crumb: 'Program Map'

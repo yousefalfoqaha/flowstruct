@@ -2,7 +2,7 @@ import {createFileRoute} from '@tanstack/react-router';
 import {Stack, Title} from '@mantine/core';
 
 export const Route = createFileRoute(
-    '/study-plans/$studyPlanId/_studyPlanLayout/',
+    '/old-study-plans/_studyPlanLayout/',
 )({
     loader: () => ({
         crumb: 'Overview'

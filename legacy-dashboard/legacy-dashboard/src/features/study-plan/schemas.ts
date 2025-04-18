@@ -2,17 +2,23 @@ import {z} from "zod";
 import {SectionLevel, SectionType} from "@/features/study-plan/types.ts";
 
 export const studyPlanDetailsSchema = z.object({
-    year: z.date(),
-    duration: z.number().min(1, {error: "Must be at least 1 year"}),
+    program: z.string(),
+    year: z
+        .date()
+        .default(new Date()),
+    duration: z
+        .number()
+        .min(1, {error: "Must be at least 1 year"})
+        .default(4),
     track: z
         .string()
         .trim()
-        .transform((val) => (val === "" ? null : val))
-        .nullable()
-        .optional()
+        .transform(val => val === '' ? undefined : val)
+        .optional(),
+    isPrivate: z
+        .boolean()
+        .default(true)
 });
-
-export type StudyPlanDetailsFormValues = z.infer<typeof studyPlanDetailsSchema>;
 
 export const sectionDetailsSchema = z.object({
     level: z.enum(SectionLevel),
