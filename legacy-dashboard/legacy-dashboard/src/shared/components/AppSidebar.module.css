@@ -37,7 +37,7 @@
     font-weight: 500;
     gap: 0.25rem;
 
-    @mixin hover {
+    &:hover {
         background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
         color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
 
