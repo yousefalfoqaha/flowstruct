@@ -28,18 +28,18 @@ public class CourseService {
     private final CourseResponseMapper courseResponseMapper;
     private final CoursesPageResponseMapper coursesPageResponseMapper;
 
-    public CoursesPageResponse getPaginatedCourses(String search, int page, int size) {
+    public CoursesPageResponse getPaginatedCourses(int page, int size, String filter) {
         Pageable pageable = PageRequest.of(page, size);
-        var searchParam = '%' + search + '%';
+        var filterParam = '%' + filter + '%';
 
-        var courseIds = courseRepository.findAllBySearchQuery(
-                searchParam,
+        var courseIds = courseRepository.findAllByFilter(
                 pageable.getPageSize(),
-                pageable.getOffset()
+                pageable.getOffset(),
+                filterParam
         );
 
         var courses = courseRepository.findAllById(courseIds);
-        var total = courseRepository.countAllBySearchQuery(searchParam);
+        var total = courseRepository.countByFilter(filterParam);
 
         Page<Course> coursesPage = new PageImpl<>(courses, pageable, total);
 

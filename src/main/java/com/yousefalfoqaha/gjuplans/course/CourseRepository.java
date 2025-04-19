@@ -14,21 +14,21 @@ public interface CourseRepository extends ListCrudRepository<Course, Long> {
             "SELECT id " +
             "FROM course " +
             "WHERE name " +
-            "ILIKE :search " +
+            "ILIKE :filter " +
             "OR code " +
-            "ILIKE :search " +
+            "ILIKE :filter " +
             "LIMIT :limit " +
             "OFFSET :offset"
     )
-    List<Long> findAllBySearchQuery(String search, int limit, long offset);
+    List<Long> findAllByFilter(int limit, long offset, String filter);
 
     @Query(
             "SELECT COUNT(*) " +
             "FROM Course " +
             "WHERE name " +
-            "ILIKE :search " +
+            "ILIKE :filter " +
             "OR code " +
-            "ILIKE :search"
+            "ILIKE :filter"
     )
-    long countAllBySearchQuery(String search);
+    long countByFilter(String filter);
 }

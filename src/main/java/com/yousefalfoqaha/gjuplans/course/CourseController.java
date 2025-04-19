@@ -21,11 +21,11 @@ public class CourseController {
 
     @GetMapping
     public ResponseEntity<CoursesPageResponse> getPaginatedCourses(
-            @RequestParam(value = "search", defaultValue = "", required = false) String search,
-            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
-            @RequestParam(value = "size", defaultValue = "10", required = false) int size
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int size,
+            @RequestParam(value = "filter", defaultValue = "", required = false) String filter
     ) {
-        return new ResponseEntity<>(courseService.getPaginatedCourses(search, page, size), HttpStatus.OK);
+        return new ResponseEntity<>(courseService.getPaginatedCourses(page, size, filter), HttpStatus.OK);
     }
 
     @GetMapping("/{courseId}")
