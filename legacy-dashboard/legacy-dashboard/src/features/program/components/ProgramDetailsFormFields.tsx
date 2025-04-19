@@ -60,7 +60,7 @@ export function ProgramDetailsFormFields({form}: Props) {
                             {...field}
                             data={Object.entries(Degree).map(([key, value]) => ({
                                 value: key,
-                                label: value,
+                                label: `${value} (${key})`,
                             }))}
                             leftSection={<GraduationCap size={18}/>}
                             error={errors.degree?.message}

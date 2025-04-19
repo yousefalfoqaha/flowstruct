@@ -12,7 +12,9 @@ export function getProgramsTableColumns() {
         accessor('code', {header: 'Code'}),
         accessor('name', {header: 'Name'}),
         accessor('degree', {
-            header: 'Degree'
+            header: 'Degree',
+            enableColumnFilter: true,
+            filterFn: 'equalsString'
         }),
         accessor('isPrivate', {
             header: 'Status',

@@ -3,11 +3,13 @@ import {useAppForm} from "@/shared/hooks/useAppForm.ts";
 import {studyPlanDetailsSchema} from "@/features/study-plan/schemas.ts";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {StudyPlanDetailsFormFields} from "@/features/study-plan/components/StudyPlanDetailsFormFields.tsx";
-import {Link, useNavigate} from "@tanstack/react-router";
-import {Button} from "@mantine/core";
+import {useNavigate} from "@tanstack/react-router";
+import {Button, Text} from "@mantine/core";
 import {Pencil, Trash} from "lucide-react";
 import {getDefaultSearchValues} from "@/lib/getDefaultSearchValues.ts";
 import {useEditStudyPlanDetails} from "@/features/study-plan/hooks/useEditStudyPlanDetails.ts";
+import {useDeleteStudyPlan} from "@/features/study-plan/hooks/useDeleteStudyPlan.ts";
+import {modals} from "@mantine/modals";
 
 type Props = {
     studyPlan: StudyPlan;
@@ -23,6 +25,8 @@ export function EditStudyPlanDetailsFieldset({studyPlan}: Props) {
     });
 
     const editStudyPlanDetails = useEditStudyPlanDetails();
+    const deleteStudyPlan = useDeleteStudyPlan();
+
     const navigate = useNavigate();
 
     const onSubmit = form.handleSubmit(data => {
@@ -43,13 +47,37 @@ export function EditStudyPlanDetailsFieldset({studyPlan}: Props) {
         });
     });
 
+    const handleDelete = () => deleteStudyPlan.mutate(studyPlan, {
+            onSuccess: () => navigate({
+                to: '/study-plans',
+                search: getDefaultSearchValues()
+            })
+        }
+    );
+
     const footer = (
         <>
-            <Link search={getDefaultSearchValues()} to="/study-plans">
-                <Button variant="filled" color="red" leftSection={<Trash size={18}/>}>
-                    Delete Study plan
-                </Button>
-            </Link>
+            <Button
+                variant="filled"
+                color="red"
+                leftSection={<Trash size={18}/>}
+                onClick={() =>
+                    modals.openConfirmModal({
+                        title: 'Please confirm your action',
+                        children: (
+                            <Text size="sm">
+                                Deleting this study plan will delete all of its sections, program map, and
+                                overview, are you absolutely
+                                sure?
+                            </Text>
+                        ),
+                        labels: {confirm: 'Confirm', cancel: 'Cancel'},
+                        onConfirm: handleDelete
+                    })}
+                loading={deleteStudyPlan.isPending}
+            >
+                Delete Study plan
+            </Button>
 
             <Button
                 type="submit"

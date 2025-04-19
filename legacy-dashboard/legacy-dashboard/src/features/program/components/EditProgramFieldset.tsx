@@ -1,12 +1,15 @@
-import {Button} from "@mantine/core";
+import {Button, Text} from "@mantine/core";
 import {ProgramDetailsFormFields} from "@/features/program/components/ProgramDetailsFormFields.tsx";
 import {programDetailsSchema} from "@/features/program/schemas.ts";
-import {Link, useNavigate} from "@tanstack/react-router";
+import {useNavigate} from "@tanstack/react-router";
 import {Pencil, Trash} from "lucide-react";
 import {useEditProgramDetails} from "@/features/program/hooks/useEditProgramDetails.ts";
 import {Program} from "@/features/program/types.ts";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {useAppForm} from "@/shared/hooks/useAppForm.ts";
+import {modals} from "@mantine/modals";
+import {useDeleteProgram} from "@/features/program/hooks/useDeleteProgram.ts";
+import {getDefaultSearchValues} from "@/lib/getDefaultSearchValues.ts";
 
 type EditProgramFieldsetProps = {
     program: Program;
@@ -15,6 +18,7 @@ type EditProgramFieldsetProps = {
 export function EditProgramFieldset({program}: EditProgramFieldsetProps) {
     const form = useAppForm(programDetailsSchema, {...program});
     const editProgramDetails = useEditProgramDetails();
+    const deleteProgram = useDeleteProgram();
     const navigate = useNavigate();
 
     const onSubmit = form.handleSubmit(data => {
@@ -28,17 +32,41 @@ export function EditProgramFieldset({program}: EditProgramFieldsetProps) {
         });
     });
 
+    const handleDelete = () => deleteProgram.mutate(program.id, {
+            onSuccess: () => navigate({
+                to: '/programs',
+                search: getDefaultSearchValues()
+            })
+        }
+    );
+
     return (
         <AppCard
             title="Program Information"
             subtitle="Update the details for this program"
             footer={
                 <>
-                    <Link to="/programs">
-                        <Button variant="filled" color="red" leftSection={<Trash size={18}/>}>
-                            Delete Program
-                        </Button>
-                    </Link>
+                    <Button
+                        variant="filled"
+                        color="red"
+                        leftSection={<Trash size={18}/>}
+                        onClick={() =>
+                            modals.openConfirmModal({
+                                title: 'Please confirm your action',
+                                children: (
+                                    <Text size="sm">
+                                        Deleting this program will delete all of its study plans. Are
+                                        you absolutely sure?
+                                    </Text>
+                                ),
+                                labels: {confirm: 'Confirm', cancel: 'Cancel'},
+                                onConfirm: handleDelete,
+                            })
+                        }
+                        loading={deleteProgram.isPending}
+                    >
+                        Delete Program
+                    </Button>
 
                     <Button
                         type="submit"
