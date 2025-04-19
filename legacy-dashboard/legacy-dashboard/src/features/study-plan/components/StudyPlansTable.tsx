@@ -13,6 +13,7 @@ import {Plus} from "lucide-react";
 import {DataTablePagination} from "@/shared/components/DataTablePagination.tsx";
 import {getProgramDisplayName} from "@/lib/getProgramDisplayName.ts";
 import {ProgramFilter} from "@/features/study-plan/components/ProgramFilter.tsx";
+import {StudyPlanYearFilter} from "@/features/study-plan/components/StudyPlanYearFilter.tsx";
 
 export function StudyPlansTable() {
     const {data: studyPlans} = useStudyPlanList();
@@ -40,19 +41,20 @@ export function StudyPlansTable() {
 
     return (
         <Stack gap="md">
-            <Group justify="space-between" preventGrowOverflow>
-                <Group>
-                    <ProgramFilter table={table} programs={programs} />
-                    <DataTableSearch table={table} placeholder="Search any study plan..."/>
-                </Group>
-                <Link to="/study-plans/new">
-                    <Button leftSection={<Plus size={18}/>}>Create New Study Plan</Button>
-                </Link>
+            <Group grow preventGrowOverflow={false}>
+                <DataTableSearch width={800} table={table} placeholder="Search any study plan..."/>
+                <ProgramFilter table={table} programs={programs}/>
+                <StudyPlanYearFilter table={table}/>
             </Group>
 
             <AppCard
                 title="All Study Plans"
                 subtitle={`Manage university study plans - ${studyPlans.length} study plan${studyPlans.length > 1 && 's'} total`}
+                headerAction={
+                    <Link to="/study-plans/new">
+                        <Button leftSection={<Plus size={18}/>}>Create New Study Plan</Button>
+                    </Link>
+                }
             >
                 <DataTable table={table}/>
             </AppCard>

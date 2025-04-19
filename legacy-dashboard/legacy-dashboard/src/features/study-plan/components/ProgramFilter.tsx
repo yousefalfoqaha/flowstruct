@@ -3,6 +3,7 @@ import {getProgramDisplayName} from "@/lib/getProgramDisplayName.ts";
 import {Select} from "@mantine/core";
 import {ProgramListItem} from "@/features/program/types.ts";
 import {StudyPlanRowItem} from "@/features/study-plan/types.ts";
+import React from "react";
 
 type Props = {
     table: Table<StudyPlanRowItem>;
@@ -10,18 +11,24 @@ type Props = {
 };
 
 export function ProgramFilter({table, programs}: Props) {
-    const selectedProgram = table.getState().columnFilters.find(f => f.id === 'programName')?.value as string | undefined;
+    const programColumn = React.useMemo(
+        () => table.getColumn('programName'),
+        [table]
+    );
+    if (!programColumn) return;
+
+    const filteredProgram = programColumn.getFilterValue();
 
     return (
         <Select
-            w={300}
+            w={200}
             placeholder="Filter by program"
-            value={selectedProgram || null}
+            value={typeof filteredProgram === 'string' ? filteredProgram : null}
             data={programs.map(p => getProgramDisplayName(p))}
-            onChange={(val) => table.setColumnFilters([{id: 'programName', value: val ?? ''}])}
+            onChange={val => programColumn.setFilterValue(val)}
             searchable
             clearable
-            onClear={() => table.setColumnFilters([])}
+            onClear={() => programColumn.setFilterValue(null)}
         />
     );
 }

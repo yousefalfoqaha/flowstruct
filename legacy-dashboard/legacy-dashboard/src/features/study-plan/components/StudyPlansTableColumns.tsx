@@ -14,7 +14,9 @@ export function getStudyPlansTableColumns() {
         }),
         accessor('year', {
             header: 'Year',
-            cell: ({row}) => <p>{row.original.year} - {row.original.year + 1}</p>
+            cell: ({row}) => <p>{row.original.year} - {row.original.year + 1}</p>,
+            enableColumnFilter: true,
+            filterFn: "equals"
         }),
         accessor('track', {
             header: 'Track',

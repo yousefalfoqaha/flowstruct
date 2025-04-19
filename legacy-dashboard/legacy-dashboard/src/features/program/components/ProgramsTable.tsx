@@ -20,6 +20,7 @@ export function ProgramsTable() {
         <Stack gap="md">
             <Group justify="space-between" preventGrowOverflow>
                 <Group>
+                    <DataTableSearch table={table} placeholder="Search any program..."/>
                     <Select
                         placeholder="Filter degree"
                         data={Object.entries(Degree).map(([key, value]) => (
@@ -28,7 +29,6 @@ export function ProgramsTable() {
                         onChange={(val) => table.setGlobalFilter(val || '')}
                         clearable
                     />
-                    <DataTableSearch table={table} placeholder="Search any program..."/>
                 </Group>
                 <Link to={'/programs/new'}>
                     <Button leftSection={<Plus size={18} />}>Create New Program</Button>
