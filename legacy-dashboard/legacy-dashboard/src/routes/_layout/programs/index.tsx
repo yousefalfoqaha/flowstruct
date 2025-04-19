@@ -20,6 +20,7 @@ function RouteComponent() {
                 <GraduationCap/>
                 <Title order={2} fw={600}>Programs</Title>
             </Group>
+
             <ProgramsTable/>
         </Stack>
     );

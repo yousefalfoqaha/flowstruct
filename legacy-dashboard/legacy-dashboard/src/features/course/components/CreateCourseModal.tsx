@@ -61,7 +61,7 @@ export function CreateCourseModal({opened, setOpened, openCourseSearch, selectCr
         setOpened(false);
         openCourseSearch();
         reset();
-    }
+    };
 
     const onSubmit = (data: CourseDetailsFormValues) => {
         createCourse.mutate(data, {

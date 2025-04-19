@@ -6,7 +6,7 @@ import React from "react";
 import {getStudyPlansTableColumns} from "@/features/study-plan/components/StudyPlansTableColumns.tsx";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {useProgramList} from "@/features/program/hooks/useProgramList.ts";
-import {Box, Button, Group, Stack} from "@mantine/core";
+import {Button, Group, Stack} from "@mantine/core";
 import {DataTableSearch} from "@/shared/components/DataTableSearch.tsx";
 import {Link} from "@tanstack/react-router";
 import {Plus} from "lucide-react";
@@ -40,7 +40,7 @@ export function StudyPlansTable() {
     const table = useDataTable<StudyPlanRowItem>({data, columns});
 
     return (
-        <Stack gap="md">
+        <Stack>
             <Group grow preventGrowOverflow={false}>
                 <DataTableSearch width={800} table={table} placeholder="Search any study plan..."/>
                 <ProgramFilter table={table} programs={programs}/>
@@ -59,9 +59,7 @@ export function StudyPlansTable() {
                 <DataTable table={table}/>
             </AppCard>
 
-            <Box ml="auto">
-                <DataTablePagination table={table}/>
-            </Box>
+            <DataTablePagination table={table}/>
         </Stack>
     );
 }

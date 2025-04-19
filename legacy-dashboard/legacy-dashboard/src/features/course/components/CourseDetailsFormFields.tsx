@@ -1,27 +1,29 @@
-import {Checkbox, Group, NumberInput, Radio, SegmentedControl, Text, Stack, TextInput, Center} from "@mantine/core";
-import {Control, Controller, DeepRequired, FieldErrorsImpl} from "react-hook-form";
+import {Center, Checkbox, Group, NumberInput, Radio, SegmentedControl, Stack, Text, TextInput} from "@mantine/core";
+import {Controller, UseFormReturn} from "react-hook-form";
 import {CourseType} from "@/features/course/types.ts";
 import {BookOpenText, Earth, FlaskConical, GraduationCap, Hash, Settings2, Timer} from "lucide-react";
-import {CourseDetailsFormValues} from "@/features/course/schemas.ts";
 import {PresetType} from "@/lib/getCoursePresetSettings.ts";
+import {z} from "zod";
+import {courseDetailsSchema} from "@/features/course/schemas.ts";
 
 type CourseDetailsFormFieldsProps = {
-    control: Control<CourseDetailsFormValues>;
-    errors: Partial<FieldErrorsImpl<DeepRequired<CourseDetailsFormValues>>>;
+    form: UseFormReturn<z.infer<typeof courseDetailsSchema>>;
     preset: PresetType;
     changePreset: (value: string) => void;
 }
 
-export function CourseDetailsFormFields({control, errors, preset, changePreset}: CourseDetailsFormFieldsProps) {
+export function CourseDetailsFormFields({form, preset, changePreset}: CourseDetailsFormFieldsProps) {
+    const {control, formState: {errors}} = form;
+
     return (
-        <Stack gap="md">
-            <Group preventGrowOverflow={false} wrap="nowrap">
+        <Stack>
+            <Group wrap="nowrap">
                 <Controller
                     name="code"
                     control={control}
                     render={({field}) => (
                         <TextInput
-                            w={130}
+                            w="25%"
                             label="Code"
                             leftSection={<Hash size={18}/>}
                             {...field}
@@ -92,7 +94,7 @@ export function CourseDetailsFormFields({control, errors, preset, changePreset}:
                 />
             </div>
 
-            <Group preventGrowOverflow={false} wrap="nowrap">
+            <Group wrap="nowrap">
                 <Controller
                     name="creditHours"
                     control={control}
@@ -106,6 +108,7 @@ export function CourseDetailsFormFields({control, errors, preset, changePreset}:
                             withAsterisk
                             allowNegative={false}
                             suffix=" Cr."
+                            flex={1}
                         />
                     )}
                 />
@@ -122,13 +125,14 @@ export function CourseDetailsFormFields({control, errors, preset, changePreset}:
                             leftSection={<Earth size={18}/>}
                             allowNegative={false}
                             suffix=" ECTS"
+                            flex={1}
                         />
                     )}
                 />
             </Group>
 
 
-            <Group preventGrowOverflow={false} wrap="nowrap">
+            <Group wrap="nowrap">
                 <Controller
                     name="lectureHours"
                     control={control}
@@ -142,6 +146,7 @@ export function CourseDetailsFormFields({control, errors, preset, changePreset}:
                             leftSection={<Timer size={18}/>}
                             allowNegative={false}
                             suffix=" Hrs/Week"
+                            flex={1}
                         />
                     )}
                 />
@@ -159,43 +164,55 @@ export function CourseDetailsFormFields({control, errors, preset, changePreset}:
                             leftSection={<Timer size={18}/>}
                             allowNegative={false}
                             suffix=" Hrs/Week"
+                            flex={1}
                         />
                     )}
                 />
             </Group>
 
 
-            <Controller
-                name="type"
-                control={control}
-                render={({field}) => (
-                    <Radio.Group
-                        {...field}
-                        label="Teaching Method"
-                        withAsterisk
-                        error={errors.type?.message}
-                    >
-                        <Group mt="xs">
-                            {Object.entries(CourseType).map(([key, value]) => (
-                                <Radio value={key} label={`${key}: ${value}`}/>
-                            ))}
-                        </Group>
-                    </Radio.Group>
-                )}
-            />
+            <Group gap="md">
+                <Controller
+                    name="type"
+                    control={control}
+                    render={({field}) => (
+                        <Radio.Group
+                            {...field}
+                            label="Teaching Method"
+                            withAsterisk
+                            error={errors.type?.message}
+                            flex={1}
+                        >
+                            <Group mt="xs">
+                                {Object.entries(CourseType).map(([key, value]) => (
+                                    <Radio key={key} value={key} label={`${key}: ${value}`}/>
+                                ))}
+                            </Group>
+                        </Radio.Group>
+                    )}
+                />
 
-            <Controller
-                name="isRemedial"
-                control={control}
-                render={({field}) => (
-                    <Checkbox
-                        mt="xs"
-                        {...field}
-                        defaultChecked={false}
+                <Controller
+                    name="isRemedial"
+                    control={control}
+                    render={({field}) => (
+                        <Checkbox
+                            mt="xs"
+                            {...{...field, value: undefined}}
+                            checked={field.value}
                             label="Remedial Course"
-                    />
-                )}
-            />
+                            description={
+                                field.value
+                                    ? 'This course will be ignored as a prerequisite'
+                                    : 'This course will count as a prerequisite'
+                            }
+                            flex={1}
+                        />
+
+                    )}
+                />
+
+            </Group>
         </Stack>
     );
 }

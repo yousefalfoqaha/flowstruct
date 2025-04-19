@@ -1,4 +1,8 @@
 import {Course, CoursesPage} from "@/features/course/types.ts";
+import {api} from "@/shared/api.ts";
+import {TableSearchOptions} from "@/shared/types.ts";
+
+const ENDPOINT = '/courses';
 
 export const getCoursesRequest = async (courseIds: number[]) => {
     const res = await fetch(`http://localhost:8080/api/v1/courses/by-ids?courses=${courseIds}`);
@@ -6,12 +10,10 @@ export const getCoursesRequest = async (courseIds: number[]) => {
     return await res.json() as Record<number, Course>;
 };
 
-export const fetchPaginatedCoursesBySearch = async (search: string, pageParam: number) => {
-    const res = await fetch(
-        `http://localhost:8080/api/v1/courses?search=${search}&page=${pageParam}&size=5`
-    );
-    if (!res.ok) throw new Error("Failed to fetch courses page");
-    return (await res.json()) as CoursesPage;
+export const getPaginatedCourses = async (options: Omit<TableSearchOptions, 'columnFilters'>) => {
+    return api.get<CoursesPage>(ENDPOINT, {
+        params: {...options}
+    });
 };
 
 export const createCourseRequest = async (newCourse: Partial<Course>) => {

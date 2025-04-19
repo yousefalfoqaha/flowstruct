@@ -18,14 +18,11 @@ import {TableSearchSchema} from "@/shared/schemas.ts";
 type useDataTableProps<TData> = Omit<
     TableOptions<TData>,
     | "state"
-    | "pageCount"
     | "getCoreRowModel"
-    | "manualFiltering"
-    | "manualPagination"
-    | "manualSorting"
+    | "autoResetPageIndex"
 >;
 
-export const useDataTable = <TData>({columns, data}: useDataTableProps<TData>) => {
+export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
     const parsedParams = TableSearchSchema.safeParse(useSearch({strict: false}));
     if (!parsedParams.success) {
         throw new Error("useDataTable hook must be used in a route with table search validation");
@@ -89,8 +86,7 @@ export const useDataTable = <TData>({columns, data}: useDataTableProps<TData>) =
     );
 
     return useReactTable({
-        columns,
-        data,
+        ...props,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
@@ -107,6 +103,6 @@ export const useDataTable = <TData>({columns, data}: useDataTableProps<TData>) =
         onGlobalFilterChange: onGlobalFilterChange,
         onPaginationChange: onPaginationChange,
         onSortingChange: setSorting,
-        autoResetPageIndex: false,
+        autoResetPageIndex: false
     });
 }

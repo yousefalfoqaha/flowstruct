@@ -9,7 +9,9 @@ export const Route = createFileRoute('/_layout/study-plans/')({
     component: RouteComponent,
     validateSearch: TableSearchSchema,
     search: {
-        middlewares: [stripSearchParams(getDefaultSearchValues())]
+        middlewares: [
+            stripSearchParams(getDefaultSearchValues())
+        ]
     }
 })
 

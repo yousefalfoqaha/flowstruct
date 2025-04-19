@@ -1,3 +1,5 @@
+import {useEffect, useState} from "react";
+import {useDebouncedValue} from "@mantine/hooks";
 import {Search, X} from "lucide-react";
 import {ActionIcon, Input} from "@mantine/core";
 import {Table} from "@tanstack/react-table";
@@ -6,31 +8,43 @@ type TableSearchProps<TData> = {
     table: Table<TData>;
     width?: number | string;
     placeholder?: string;
+    debounce?: number; // debounce delay in ms (0 = no debounce)
 };
 
-export function DataTableSearch<TData>({table, width = 450, placeholder = "Search..."}: TableSearchProps<TData>) {
-    const currentValue = table.getState().globalFilter as string;
+export function DataTableSearch<TData>({
+                                           table,
+                                           width = 450,
+                                           placeholder = "Search...",
+                                           debounce = 0,
+                                       }: TableSearchProps<TData>) {
+    const [value, setValue] = useState(table.getState().globalFilter as string || "");
+    const [debounced] = useDebouncedValue(value, debounce);
+
+    // Update table filter only when debounced value changes
+    useEffect(() => {
+        table.setGlobalFilter(debounced);
+    }, [debounced, table]);
 
     return (
         <Input
             w={width}
-            leftSection={<Search size={18}/>}
+            leftSection={<Search size={18} />}
             placeholder={placeholder}
-            value={currentValue}
+            value={value}
             rightSectionPointerEvents="all"
             rightSection={
-                currentValue !== "" && (
+                value !== "" && (
                     <ActionIcon
                         radius="xl"
                         variant="white"
                         color="gray"
-                        onClick={() => table.setGlobalFilter('')}
+                        onClick={() => setValue("")}
                     >
-                        <X size={18}/>
+                        <X size={18} />
                     </ActionIcon>
                 )
             }
-            onChange={(e) => table.setGlobalFilter(e.target.value)}
+            onChange={(e) => setValue(e.target.value)}
         />
     );
 }

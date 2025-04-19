@@ -9,8 +9,13 @@ export function getProgramsTableColumns() {
     const {display, accessor} = createColumnHelper<ProgramListItem>();
 
     return [
-        accessor('code', {header: 'Code'}),
-        accessor('name', {header: 'Name'}),
+        accessor('code', {
+            header: 'Code',
+            cell: ({cell}) => <Badge variant="default">{cell.getValue()}</Badge>
+        }),
+        accessor('name', {
+            header: 'Name'
+        }),
         accessor('degree', {
             header: 'Degree',
             enableColumnFilter: true,
