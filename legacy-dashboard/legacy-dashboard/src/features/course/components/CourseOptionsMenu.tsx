@@ -33,8 +33,6 @@ export function CourseOptionsMenu({course}: Props) {
                         Edit details
                     </Menu.Item>
                 </Link>
-
-                <Menu.Divider/>
             </Menu.Dropdown>
 
         </Menu>

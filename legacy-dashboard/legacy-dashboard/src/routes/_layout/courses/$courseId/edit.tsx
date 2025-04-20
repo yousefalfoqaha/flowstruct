@@ -4,6 +4,7 @@ import {useCourse} from "@/features/course/hooks/useCourse.ts";
 import {getCourseDisplayName} from "@/lib/getCourseDisplayName.ts";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {PageLayout} from "@/shared/components/PageLayout.tsx";
+import {EditCourseFieldset} from "@/features/course/components/EditCourseFieldset.tsx";
 
 export const Route = createFileRoute('/_layout/courses/$courseId/edit')({
     component: RouteComponent,
@@ -25,12 +26,7 @@ function RouteComponent() {
                 />
             }
         >
-            <AppCard
-                title="Course Information"
-                subtitle="Update the details for this course"
-            >
-                <></>
-            </AppCard>
+                <EditCourseFieldset course={course} />
         </PageLayout>
     );
 }

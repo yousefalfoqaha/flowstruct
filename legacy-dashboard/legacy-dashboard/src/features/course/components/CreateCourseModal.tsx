@@ -1,13 +1,12 @@
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {Button, Flex, LoadingOverlay, Modal} from "@mantine/core";
+import {Button, LoadingOverlay, Modal, Stack} from "@mantine/core";
 import {useCreateCourse} from "@/features/course/hooks/useCreateCourse.ts";
-import {CourseDetailsFormValues, courseDetailsSchema} from "@/features/course/schemas.ts";
+import {courseDetailsSchema} from "@/features/course/schemas.ts";
 import {CourseDetailsFormFields} from "@/features/course/components/CourseDetailsFormFields.tsx";
 import {Plus} from "lucide-react";
 import {Course} from "@/features/course/types.ts";
-import React from "react";
-import {getCoursePresetSettings, PresetType} from "@/lib/getCoursePresetSettings.ts";
+import {getCoursePresetSettings} from "@/lib/getCoursePresetSettings.ts";
+import {useCoursePreset} from "@/features/course/hooks/useCoursePreset.ts";
+import {useAppForm} from "@/shared/hooks/useAppForm.ts";
 
 interface CreateCourseModalProps {
     opened: boolean;
@@ -17,60 +16,30 @@ interface CreateCourseModalProps {
 }
 
 export function CreateCourseModal({opened, setOpened, openCourseSearch, selectCreatedCourse}: CreateCourseModalProps) {
-    const [preset, setPreset] = React.useState<PresetType>("lecture");
-
-    const {control, handleSubmit, reset, watch, formState: {errors}} = useForm<CourseDetailsFormValues>({
-        resolver: zodResolver(courseDetailsSchema),
-        defaultValues: {
+    const form = useAppForm(courseDetailsSchema, {
             code: '',
             name: '',
             isRemedial: false,
-            ...getCoursePresetSettings(preset)
+            ...getCoursePresetSettings("lecture")
         }
-    });
-
+    );
+    const {preset, changePreset} = useCoursePreset(form);
     const createCourse = useCreateCourse();
-
-    const changePreset = (value: string) => {
-        setPreset(value as PresetType);
-
-        reset((prevValues) => ({
-            ...prevValues,
-            ...getCoursePresetSettings(value as PresetType)
-        }));
-    };
-
-    React.useEffect(() => {
-        const subscription = watch((_, {name, type}) => {
-            if (type !== 'change') return;
-
-            const presetFields: (keyof Pick<Course, "creditHours" | "lectureHours" | "practicalHours" | "type">)[] = [
-                "creditHours",
-                "lectureHours",
-                "practicalHours",
-                "type"
-            ];
-
-            const presetFieldsModified = presetFields.includes(name);
-            if (presetFieldsModified) setPreset("custom");
-        });
-        return () => subscription.unsubscribe();
-    }, [watch]);
 
     const handleClose = () => {
         setOpened(false);
         openCourseSearch();
-        reset();
+        form.reset();
     };
 
-    const onSubmit = (data: CourseDetailsFormValues) => {
+    const onSubmit = form.handleSubmit(data => {
         createCourse.mutate(data, {
             onSuccess: (newCourse) => {
                 selectCreatedCourse(newCourse);
                 handleClose();
             }
         });
-    };
+    });
 
     return (
         <Modal
@@ -79,23 +48,22 @@ export function CreateCourseModal({opened, setOpened, openCourseSearch, selectCr
             title="Create Course"
             centered
         >
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <Flex gap="md" direction="column">
+            <form onSubmit={onSubmit}>
+                <Stack>
                     <LoadingOverlay
                         visible={createCourse.isPending}
                         zIndex={1000}
                         overlayProps={{radius: "sm", blur: 2}}
                     />
                     <CourseDetailsFormFields
-                        control={control}
-                        errors={errors}
+                        form={form}
                         preset={preset}
                         changePreset={changePreset}
                     />
                     <Button leftSection={<Plus size={18}/>} type="submit" fullWidth mt="md">
                         Create and Select Course
                     </Button>
-                </Flex>
+                </Stack>
             </form>
         </Modal>
     );

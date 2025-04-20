@@ -78,7 +78,7 @@ export function EditProgramFieldset({program}: EditProgramFieldsetProps) {
                 </>
             }
         >
-            <form onSubmit={onSubmit} style={{width: '100%'}}>
+            <form onSubmit={onSubmit}>
                 <ProgramDetailsFormFields form={form}/>
             </form>
         </AppCard>

@@ -1,7 +1,7 @@
 import {z} from "zod";
 import {CourseType} from "@/features/course/types.ts";
 
-export const courseDetailsSchema = z.object({
+export const courseDetailsSchema = z.interface({
     code: z.string().transform(val => val.toLocaleUpperCase()),
     name: z.string(),
     creditHours: z.number().min(0, {error: "Must be positive"}),
