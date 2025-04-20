@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.gjuplans.course;
 
-import com.yousefalfoqaha.gjuplans.course.dto.request.CreateCourseRequest;
+import com.yousefalfoqaha.gjuplans.course.dto.request.CourseDetailsRequest;
 import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
 import com.yousefalfoqaha.gjuplans.course.dto.response.CoursesPageResponse;
 import com.yousefalfoqaha.gjuplans.course.service.CourseService;
@@ -40,9 +40,17 @@ public class CourseController {
         return new ResponseEntity<>(courseService.getCoursesById(courseIds), HttpStatus.OK);
     }
 
+    @PutMapping("/{courseId}")
+    public ResponseEntity<CourseResponse> editCourseDetails(
+            @PathVariable long courseId,
+            @RequestBody CourseDetailsRequest request
+    ) {
+        return new ResponseEntity<>(courseService.editCourseDetails(courseId, request), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<CourseResponse> createCourse(
-            @RequestBody @Valid CreateCourseRequest request
+            @RequestBody @Valid CourseDetailsRequest request
     ) {
         return new ResponseEntity<>(courseService.createCourse(request), HttpStatus.CREATED);
     }

@@ -3,7 +3,7 @@ package com.yousefalfoqaha.gjuplans.course.service;
 import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.course.CourseRepository;
 import com.yousefalfoqaha.gjuplans.course.domain.Course;
-import com.yousefalfoqaha.gjuplans.course.dto.request.CreateCourseRequest;
+import com.yousefalfoqaha.gjuplans.course.dto.request.CourseDetailsRequest;
 import com.yousefalfoqaha.gjuplans.course.dto.response.*;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import com.yousefalfoqaha.gjuplans.course.mapper.CourseResponseMapper;
@@ -17,14 +17,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class CourseService {
     private final CourseRepository courseRepository;
-//    private final CourseGraphService courseGraphService;
-    private final ObjectValidator<CreateCourseRequest> createCourseValidator;
+    //    private final CourseGraphService courseGraphService;
+    private final ObjectValidator<CourseDetailsRequest> courseDetailsValidator;
     private final CourseResponseMapper courseResponseMapper;
     private final CoursesPageResponseMapper coursesPageResponseMapper;
 
@@ -53,10 +54,7 @@ public class CourseService {
     }
 
     public CourseResponse getCourse(long courseId) {
-        var course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new CourseNotFoundException(
-                        "Course with id " + courseId + " was not found."
-                ));
+        var course = findCourse(courseId);
 
         return courseResponseMapper.apply(course);
     }
@@ -88,29 +86,47 @@ public class CourseService {
 //                ));
 //    }
 
-    public Map<Long, CourseResponse> getCourses(List<Long> courseIds) {
-        return courseRepository.findAllById(courseIds)
-                .stream()
-                .collect(Collectors.toMap(Course::getId, courseResponseMapper));
+    public CourseResponse editCourseDetails(long courseId, CourseDetailsRequest request) {
+        courseDetailsValidator.validate(request);
+
+        var course = findCourse(courseId);
+
+        course.setCode(request.code());
+        course.setName(request.name());
+        course.setCreditHours(request.creditHours());
+        course.setEcts(request.ects());
+        course.setLectureHours(request.lectureHours());
+        course.setPracticalHours(request.practicalHours());
+        course.setType(request.type());
+        course.setRemedial(request.isRemedial());
+
+        return saveAndMap(course, courseResponseMapper);
     }
 
-    public CourseResponse createCourse(CreateCourseRequest request) {
-        createCourseValidator.validate(request);
+    public CourseResponse createCourse(CourseDetailsRequest request) {
+        courseDetailsValidator.validate(request);
 
-        var savedCourse = courseRepository.save(
-                new Course(
-                        null,
-                        request.code(),
-                        request.name(),
-                        request.creditHours(),
-                        request.ects(),
-                        request.lectureHours(),
-                        request.practicalHours(),
-                        request.type(),
-                        request.isRemedial()
-                )
+        var newCourse = new Course(
+                null,
+                request.code(),
+                request.name(),
+                request.creditHours(),
+                request.ects(),
+                request.lectureHours(),
+                request.practicalHours(),
+                request.type(),
+                request.isRemedial()
         );
 
-        return courseResponseMapper.apply(savedCourse);
+        return saveAndMap(newCourse, courseResponseMapper);
+    }
+
+    private Course findCourse(long id) {
+        return courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException("Course with id " + id + " was not found."));
+    }
+
+    private <T> T saveAndMap(Course course, Function<Course, T> mapper) {
+        var savedCourse = courseRepository.save(course);
+        return mapper.apply(savedCourse);
     }
 }
