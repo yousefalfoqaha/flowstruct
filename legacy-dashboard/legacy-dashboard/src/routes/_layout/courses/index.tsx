@@ -1,10 +1,10 @@
 import {createFileRoute, retainSearchParams, stripSearchParams} from '@tanstack/react-router'
-import {Stack} from "@mantine/core";
 import {BookOpen} from "lucide-react";
 import {CoursesTable} from "@/features/course/components/CoursesTable.tsx";
 import {TableSearchSchema} from "@/shared/schemas.ts";
 import {getDefaultSearchValues} from "@/lib/getDefaultSearchValues.ts";
 import {PageHeader} from "@/shared/components/PageHeader.tsx";
+import {PageLayout} from "@/shared/components/PageLayout.tsx";
 
 export const Route = createFileRoute('/_layout/courses/')({
     component: RouteComponent,
@@ -19,9 +19,8 @@ export const Route = createFileRoute('/_layout/courses/')({
 
 function RouteComponent() {
     return (
-        <Stack gap="lg">
-            <PageHeader title="Courses" icon={<BookOpen/>}/>
+        <PageLayout header={<PageHeader title="Courses" icon={<BookOpen/>}/>}>
             <CoursesTable/>
-        </Stack>
+        </PageLayout>
     );
 }
