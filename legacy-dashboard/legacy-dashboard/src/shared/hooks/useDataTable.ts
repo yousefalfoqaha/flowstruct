@@ -42,10 +42,13 @@ export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
                 : updaterOrValue;
 
             navigate({
-                search: (prev) => ({...prev, filter: newVal}),
+                search: (prev) => ({
+                    ...prev,
+                    filter: newVal,
+                    page: prev.filter !== newVal && newVal !== '' ? 0 : prev.page
+                }),
                 to: location.pathname
-            }).then(() => {
-            });
+            }).then(() => {});
         },
         [location.pathname, navigate, params.filter]
     );
@@ -59,7 +62,7 @@ export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
             navigate({
                 search: (prev) => ({...prev, columnFilters: newVal}),
                 to: location.pathname
-            });
+            }).then(() => {});
         },
         [location.pathname, navigate, params.columnFilters]
     );
@@ -80,7 +83,7 @@ export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
                     size: newVal.pageSize
                 }),
                 to: location.pathname
-            });
+            }).then(() => {});
         },
         [location.pathname, navigate, params.page, params.size]
     );

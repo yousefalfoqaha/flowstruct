@@ -12,7 +12,7 @@ export type Course = {
     ects: number;
     lectureHours: number;
     practicalHours: number;
-    type: string;
+    type: keyof typeof CourseType;
     isRemedial: boolean;
 }
 

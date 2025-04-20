@@ -1,9 +1,10 @@
 import {createFileRoute, stripSearchParams} from '@tanstack/react-router'
-import {Group, Stack, Title} from "@mantine/core";
 import {StudyPlansTable} from "@/features/study-plan/components/StudyPlansTable.tsx";
 import {ScrollText} from "lucide-react";
 import {TableSearchSchema} from "@/shared/schemas.ts";
 import {getDefaultSearchValues} from "@/lib/getDefaultSearchValues.ts";
+import {PageHeader} from "@/shared/components/PageHeader.tsx";
+import {PageLayout} from "@/shared/components/PageLayout.tsx";
 
 export const Route = createFileRoute('/_layout/study-plans/')({
     component: RouteComponent,
@@ -17,12 +18,8 @@ export const Route = createFileRoute('/_layout/study-plans/')({
 
 function RouteComponent() {
     return (
-        <Stack>
-            <Group>
-                <ScrollText />
-                <Title order={2} fw={600}>Study Plans</Title>
-            </Group>
+        <PageLayout header={<PageHeader title="Study Plans" icon={<ScrollText/>}/>}>
             <StudyPlansTable/>
-        </Stack>
+        </PageLayout>
     );
 }

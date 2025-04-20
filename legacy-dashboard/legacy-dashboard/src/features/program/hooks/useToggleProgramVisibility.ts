@@ -27,7 +27,7 @@ export const useToggleProgramVisibility = () => {
             message: (data) =>
                 `Program's study plans will also be ${data.isPrivate ? 'hidden' : 'public'}.`,
             icon: (data) =>
-                React.createElement(data.isPrivate ? EyeOff : Eye, {size: 18}),
+                React.createElement(data.isPrivate ? EyeOff : Eye),
         }
     });
 }

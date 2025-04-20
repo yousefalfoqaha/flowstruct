@@ -1,6 +1,8 @@
 import {createFileRoute} from '@tanstack/react-router'
 import {CreateCourseFieldset} from "@/features/course/components/CreateCourseFieldset.tsx";
-import {CreatePageLayout} from "@/shared/components/CreatePageLayout.tsx";
+import {PageHeaderWithBack} from "@/shared/components/PageHeaderWithBack.tsx";
+import {getDefaultSearchValues} from "@/lib/getDefaultSearchValues.ts";
+import {PageLayout} from "@/shared/components/PageLayout.tsx";
 
 export const Route = createFileRoute('/_layout/courses/new')({
     component: RouteComponent,
@@ -9,8 +11,18 @@ export const Route = createFileRoute('/_layout/courses/new')({
 
 function RouteComponent() {
     return (
-        <CreatePageLayout title="Create new Course" backLink="/courses">
+        <PageLayout
+            header={
+                <PageHeaderWithBack
+                    title="Create New Course"
+                    linkProps={{
+                        to: '/courses',
+                        search: getDefaultSearchValues
+                    }}
+                />
+            }
+        >
             <CreateCourseFieldset/>
-        </CreatePageLayout>
+        </PageLayout>
     );
 }

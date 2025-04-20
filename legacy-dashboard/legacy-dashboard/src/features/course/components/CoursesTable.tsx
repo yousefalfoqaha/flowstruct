@@ -5,14 +5,14 @@ import {Course} from "@/features/course/types.ts";
 import React from "react";
 import {getCoursesTableColumns} from "@/features/course/components/CoursesTableColumns.tsx";
 import {DataTable} from "@/shared/components/DataTable.tsx";
-import {Button, Stack} from "@mantine/core";
+import {Button, Group, Loader, LoadingOverlay, Stack} from "@mantine/core";
 import {DataTablePagination} from "@/shared/components/DataTablePagination.tsx";
 import {DataTableSearch} from "@/shared/components/DataTableSearch.tsx";
 import {Plus} from "lucide-react";
 import {Link} from "@tanstack/react-router";
 
 export function CoursesTable() {
-    const {data: coursesPage} = usePaginatedCourses();
+    const {data: coursesPage, isFetching, isPending} = usePaginatedCourses();
 
     const columns = React.useMemo(
         () => getCoursesTableColumns(),
@@ -35,7 +35,10 @@ export function CoursesTable() {
 
     return (
         <Stack>
-            <DataTableSearch table={table} debounce={750}/>
+            <Group justify="space-between">
+                <DataTableSearch table={table} debounce={750}/>
+                <Loader mr="lg" size={18} opacity={isFetching ? 100 : 0}/>
+            </Group>
 
             <AppCard
                 title="All Courses"
@@ -44,10 +47,12 @@ export function CoursesTable() {
                     <Link to="/courses/new">
                         <Button leftSection={<Plus size={18}/>}>
                             Create New Course
+
                         </Button>
                     </Link>
                 }
             >
+                <LoadingOverlay visible={isPending} zIndex={1000} overlayProps={{radius: "sm"}}/>
                 <DataTable table={table}/>
             </AppCard>
 

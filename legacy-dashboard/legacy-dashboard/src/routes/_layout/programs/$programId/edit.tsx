@@ -1,10 +1,11 @@
-import {createFileRoute, Link} from '@tanstack/react-router'
+import {createFileRoute} from '@tanstack/react-router'
 import {getProgramDisplayName} from '@/lib/getProgramDisplayName.ts'
-import {ActionIcon, Group, Stack, Title} from '@mantine/core'
-import {ArrowLeft} from 'lucide-react'
+import {Group} from '@mantine/core'
 import {useProgram} from '@/features/program/hooks/useProgram.ts'
 import {EditProgramFieldset} from '@/features/program/components/EditProgramFieldset.tsx'
 import {getVisibilityBadge} from '@/lib/getVisibilityBadge.tsx'
+import {PageHeaderWithBack} from "@/shared/components/PageHeaderWithBack.tsx";
+import {PageLayout} from "@/shared/components/PageLayout.tsx";
 
 export const Route = createFileRoute('/_layout/programs/$programId/edit')({
     component: RouteComponent,
@@ -17,25 +18,21 @@ function RouteComponent() {
     const {data: program} = useProgram()
 
     return (
-        <Stack>
-            <Group>
-                <Link
-                    to="/programs/$programId"
-                    params={{programId: String(program.id)}}
-                >
-                    <ActionIcon size={42} variant="default">
-                        <ArrowLeft size={18}/>
-                    </ActionIcon>
-                </Link>
-
-                <Title order={2} fw={600}>
-                    {getProgramDisplayName(program)}
-                </Title>
-
-                {getVisibilityBadge(program.isPrivate)}
-            </Group>
-
+        <PageLayout
+            header={
+                <Group>
+                    <PageHeaderWithBack
+                        title={getProgramDisplayName(program)}
+                        linkProps={{
+                            to: '/programs/$programId',
+                            params: {programId: String(program.id)}
+                        }}
+                    />
+                    {getVisibilityBadge(program.isPrivate)}
+                </Group>
+            }
+        >
             <EditProgramFieldset program={program}/>
-        </Stack>
+        </PageLayout>
     )
 }

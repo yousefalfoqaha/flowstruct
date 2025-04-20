@@ -1,4 +1,4 @@
-import {Card, Group, Text} from '@mantine/core';
+import {Card, Group, Stack, Text} from '@mantine/core';
 import {ReactNode} from 'react';
 
 type AppCardProps = {
@@ -21,10 +21,13 @@ export function AppCard({title, subtitle, children, footer, headerAction}: AppCa
             </Group>
 
             <Card.Section py="lg" inheritPadding>
-                {children}
-                {footer && <Group justify="space-between" mt="xl">{footer}</Group>}
+                <Stack gap="lg">
+                    {children}
+                    {footer && (
+                        <Group justify="space-between" mt="xs">{footer}</Group>
+                    )}
+                </Stack>
             </Card.Section>
         </Card>
     );
 }
-

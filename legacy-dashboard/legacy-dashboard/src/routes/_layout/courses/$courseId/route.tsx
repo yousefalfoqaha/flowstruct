@@ -1,9 +1,15 @@
-import { createFileRoute } from '@tanstack/react-router'
+import {createFileRoute, Outlet} from '@tanstack/react-router'
+import {getCourseQuery} from "@/features/course/queries.ts";
+import {getCourseDisplayName} from "@/lib/getCourseDisplayName.ts";
 
 export const Route = createFileRoute('/_layout/courses/$courseId')({
-  component: RouteComponent,
-})
+    component: () => <Outlet/>,
+    loader: async ({context: {queryClient}, params}) => {
+        const courseId = Number(params.courseId);
+        const course = await queryClient.ensureQueryData(getCourseQuery(courseId));
 
-function RouteComponent() {
-  return <div>Hello "/_layout/courses/$courseId"!</div>
-}
+        return {
+            crumb: getCourseDisplayName(course)
+        };
+    }
+});

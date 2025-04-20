@@ -16,17 +16,10 @@ export const getPaginatedCourses = async (options: Omit<TableSearchOptions, 'col
     });
 };
 
-export const createCourseRequest = async (newCourse: Partial<Course>) => {
-    const res = await fetch('http://localhost:8080/api/v1/courses', {
-        method: 'POST',
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(newCourse),
+export const createCourse = async (newCourse: Partial<Course>) =>
+    api.post<Course>(ENDPOINT, {
+        body: newCourse
     });
 
-    if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Failed to create program");
-    }
-
-    return await res.json() as Course;
-}
+export const getCourse = async (courseId: number) =>
+    api.get<Course>(`${ENDPOINT}/${courseId}`);

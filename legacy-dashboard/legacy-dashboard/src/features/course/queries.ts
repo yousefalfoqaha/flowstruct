@@ -1,5 +1,5 @@
 import {keepPreviousData, queryOptions} from "@tanstack/react-query";
-import {getCoursesRequest, getPaginatedCourses} from "@/features/course/api.ts";
+import {getCourse, getCoursesRequest, getPaginatedCourses} from "@/features/course/api.ts";
 import {TableSearchOptions} from "@/shared/types.ts";
 
 export const courseKeys = {
@@ -9,6 +9,11 @@ export const courseKeys = {
     details: () => [...courseKeys.all, 'detail'] as const,
     detail: (id: number) => [...courseKeys.details(), id] as const,
 };
+
+export const getCourseQuery = (courseId: number) => queryOptions({
+    queryKey: courseKeys.detail(courseId),
+    queryFn: () => getCourse(courseId)
+});
 
 export const getCourseListQuery = (courseIds: number[]) => queryOptions({
     queryKey: courseKeys.all,
