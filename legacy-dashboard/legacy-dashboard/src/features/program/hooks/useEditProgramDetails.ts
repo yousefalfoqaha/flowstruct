@@ -3,7 +3,7 @@ import {editProgramDetails} from "@/features/program/api.ts";
 import {ProgramListItem} from "@/features/program/types.ts";
 import {programKeys} from "@/features/program/queries.ts";
 import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
-import {getProgramDisplayName} from "@/lib/getProgramDisplayName.ts";
+import {getProgramDisplayName} from "@/utils/getProgramDisplayName.ts";
 
 export const useEditProgramDetails = () => {
     const queryClient = useQueryClient();

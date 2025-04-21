@@ -4,7 +4,7 @@ import {courseDetailsSchema} from "@/features/course/schemas.ts";
 import {CourseDetailsFormFields} from "@/features/course/components/CourseDetailsFormFields.tsx";
 import {Plus} from "lucide-react";
 import {Course} from "@/features/course/types.ts";
-import {getCoursePresetSettings} from "@/lib/getCoursePresetSettings.ts";
+import {getCoursePresetSettings} from "@/utils/getCoursePresetSettings.ts";
 import {useCoursePreset} from "@/features/course/hooks/useCoursePreset.ts";
 import {useAppForm} from "@/shared/hooks/useAppForm.ts";
 

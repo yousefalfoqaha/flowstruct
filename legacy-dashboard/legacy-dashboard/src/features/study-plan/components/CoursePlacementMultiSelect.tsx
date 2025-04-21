@@ -3,7 +3,7 @@ import {BetweenHorizontalStart, CircleAlert, Plus} from "lucide-react";
 import React from "react";
 import {usePlaceCourses} from "@/features/study-plan/hooks/useAddCoursesToSemester.ts";
 import classes from './CoursesMultiSelect.module.css';
-import {getSectionCode} from "@/lib/getSectionCode.ts";
+import {getSectionCode} from "@/utils/getSectionCode.ts";
 import {StudyPlan} from "@/features/study-plan/types.ts";
 import {Course} from "@/features/course/types.ts";
 

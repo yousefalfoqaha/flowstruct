@@ -8,7 +8,6 @@ interface AppMutationOptions<TData, TError, TVariables, TContext> extends Omit<U
     successNotification?: Notification<TData, TVariables>;
 }
 
-// Set fixed icon size
 const ICON_SIZE = 18;
 
 export function useAppMutation<

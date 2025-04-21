@@ -6,7 +6,7 @@ import {StudyPlanDetailsFormFields} from "@/features/study-plan/components/Study
 import {useNavigate} from "@tanstack/react-router";
 import {Button, Text} from "@mantine/core";
 import {Pencil, Trash} from "lucide-react";
-import {getDefaultSearchValues} from "@/lib/getDefaultSearchValues.ts";
+import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
 import {useEditStudyPlanDetails} from "@/features/study-plan/hooks/useEditStudyPlanDetails.ts";
 import {useDeleteStudyPlan} from "@/features/study-plan/hooks/useDeleteStudyPlan.ts";
 import {modals} from "@mantine/modals";

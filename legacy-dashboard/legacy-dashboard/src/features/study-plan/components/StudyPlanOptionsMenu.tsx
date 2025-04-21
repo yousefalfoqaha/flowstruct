@@ -32,7 +32,7 @@ export function StudyPlanOptionsMenu({studyPlan}: StudyPlanOptionsMenuProps) {
                     </Menu.Item>
                 </Link>
 
-                <Link style={{textDecoration: 'none'}} to="/study-plans/$studyPlanId/edit"
+                <Link style={{textDecoration: 'none'}} to="/study-plans/$studyPlanId/details/edit"
                       params={{studyPlanId: String(studyPlan.id)}}>
                     <Menu.Item leftSection={<Pencil size={14}/>}>
                         Edit details

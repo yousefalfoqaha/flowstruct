@@ -2,7 +2,7 @@ import {createFileRoute} from '@tanstack/react-router'
 import {Group} from "@mantine/core";
 import {PageHeaderWithBack} from "@/shared/components/PageHeaderWithBack.tsx";
 import {useCourse} from "@/features/course/hooks/useCourse.ts";
-import {getCourseDisplayName} from "@/lib/getCourseDisplayName.ts";
+import {getCourseDisplayName} from "@/utils/getCourseDisplayName.ts";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {EditDetailsButton} from "@/shared/components/EditDetailsButton.tsx";
 import {InfoItem} from "@/shared/components/InfoItem.tsx";

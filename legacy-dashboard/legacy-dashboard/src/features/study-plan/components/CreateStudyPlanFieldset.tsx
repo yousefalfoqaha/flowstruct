@@ -4,7 +4,7 @@ import {useAppForm} from "@/shared/hooks/useAppForm.ts";
 import {studyPlanDetailsSchema} from "@/features/study-plan/schemas.ts";
 import {useCreateStudyPlan} from "@/features/study-plan/hooks/useCreateStudyPlan.ts";
 import {Link, useNavigate} from "@tanstack/react-router";
-import {getDefaultSearchValues} from "@/lib/getDefaultSearchValues.ts";
+import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
 import {Button} from "@mantine/core";
 import {Plus, X} from "lucide-react";
 

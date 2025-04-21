@@ -15,7 +15,7 @@ import {SectionOptionsMenu} from "@/features/study-plan/components/SectionOption
 import classes from './SectionsTree.module.css';
 import React from "react";
 import {MoveSectionMenu} from "@/features/study-plan/components/MoveSectionMenu.tsx";
-import {getSectionCode, getSectionLevelCode, getSectionTypeCode} from "@/lib/getSectionCode.ts";
+import {getSectionCode, getSectionLevelCode, getSectionTypeCode} from "@/utils/getSectionCode.ts";
 import {useSelectedSection} from "@/features/study-plan/hooks/useSelectedSection.ts";
 import {Table} from "@tanstack/react-table";
 

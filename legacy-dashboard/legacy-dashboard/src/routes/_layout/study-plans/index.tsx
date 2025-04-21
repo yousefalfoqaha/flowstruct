@@ -2,7 +2,7 @@ import {createFileRoute, stripSearchParams} from '@tanstack/react-router'
 import {StudyPlansTable} from "@/features/study-plan/components/StudyPlansTable.tsx";
 import {ScrollText} from "lucide-react";
 import {TableSearchSchema} from "@/shared/schemas.ts";
-import {getDefaultSearchValues} from "@/lib/getDefaultSearchValues.ts";
+import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
 import {PageHeader} from "@/shared/components/PageHeader.tsx";
 import {PageLayout} from "@/shared/components/PageLayout.tsx";
 

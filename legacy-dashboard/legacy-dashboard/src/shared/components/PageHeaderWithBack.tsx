@@ -9,7 +9,7 @@ type Props = {
 
 export function PageHeaderWithBack({title, linkProps}: Props) {
     return (
-        <Group>
+        <Group gap="lg">
             <Link {...linkProps}>
                 <ActionIcon size={42} variant="default">
                     <ArrowLeft size={18}/>

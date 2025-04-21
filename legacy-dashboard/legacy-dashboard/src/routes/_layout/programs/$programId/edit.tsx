@@ -1,9 +1,9 @@
 import {createFileRoute} from '@tanstack/react-router'
-import {getProgramDisplayName} from '@/lib/getProgramDisplayName.ts'
+import {getProgramDisplayName} from '@/utils/getProgramDisplayName.ts'
 import {Group} from '@mantine/core'
 import {useProgram} from '@/features/program/hooks/useProgram.ts'
 import {EditProgramFieldset} from '@/features/program/components/EditProgramFieldset.tsx'
-import {getVisibilityBadge} from '@/lib/getVisibilityBadge.tsx'
+import {getVisibilityBadge} from '@/utils/getVisibilityBadge.tsx'
 import {PageHeaderWithBack} from "@/shared/components/PageHeaderWithBack.tsx";
 import {PageLayout} from "@/shared/components/PageLayout.tsx";
 

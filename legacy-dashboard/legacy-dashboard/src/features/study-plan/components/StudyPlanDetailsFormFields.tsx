@@ -5,7 +5,7 @@ import {YearPickerInput} from "@mantine/dates";
 import {studyPlanDetailsSchema} from "@/features/study-plan/schemas.ts";
 import {z} from "zod";
 import {useProgramList} from "@/features/program/hooks/useProgramList.ts";
-import {getProgramDisplayName} from "@/lib/getProgramDisplayName.ts";
+import {getProgramDisplayName} from "@/utils/getProgramDisplayName.ts";
 
 type Props = {
     form: UseFormReturn<z.infer<typeof studyPlanDetailsSchema>>;

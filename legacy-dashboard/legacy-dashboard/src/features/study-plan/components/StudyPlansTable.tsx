@@ -11,7 +11,7 @@ import {DataTableSearch} from "@/shared/components/DataTableSearch.tsx";
 import {Link} from "@tanstack/react-router";
 import {Plus} from "lucide-react";
 import {DataTablePagination} from "@/shared/components/DataTablePagination.tsx";
-import {getProgramDisplayName} from "@/lib/getProgramDisplayName.ts";
+import {getProgramDisplayName} from "@/utils/getProgramDisplayName.ts";
 import {ProgramFilter} from "@/features/study-plan/components/ProgramFilter.tsx";
 import {StudyPlanYearFilter} from "@/features/study-plan/components/StudyPlanYearFilter.tsx";
 

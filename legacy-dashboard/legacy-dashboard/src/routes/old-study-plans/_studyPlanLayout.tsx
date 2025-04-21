@@ -12,8 +12,8 @@ import {Route as OverviewRoute} from "@/routes/study-plans/$studyPlanId/_studyPl
 import {Route as FrameworkRoute} from "@/routes/study-plans/$studyPlanId/_studyPlanLayout/framework.tsx";
 import {Route as ProgramMapRoute} from "@/routes/study-plans/$studyPlanId/_studyPlanLayout/program-map.tsx";
 import {SidebarLink} from "@/shared/types.ts";
-import {getStudyPlanDisplayName} from "@/lib/getStudyPlanDisplayName.ts";
-import {getProgramDisplayName} from "@/lib/getProgramDisplayName.ts";
+import {getStudyPlanDisplayName} from "@/utils/getStudyPlanDisplayName.ts";
+import {getProgramDisplayName} from "@/utils/getProgramDisplayName.ts";
 
 export const Route = createFileRoute(
     '/old-study-plans/_studyPlanLayout',

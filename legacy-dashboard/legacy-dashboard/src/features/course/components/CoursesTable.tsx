@@ -47,7 +47,6 @@ export function CoursesTable() {
                     <Link to="/courses/new">
                         <Button leftSection={<Plus size={18}/>}>
                             Create New Course
-
                         </Button>
                     </Link>
                 }

@@ -9,7 +9,7 @@ import {AppCard} from "@/shared/components/AppCard.tsx";
 import {useAppForm} from "@/shared/hooks/useAppForm.ts";
 import {modals} from "@mantine/modals";
 import {useDeleteProgram} from "@/features/program/hooks/useDeleteProgram.ts";
-import {getDefaultSearchValues} from "@/lib/getDefaultSearchValues.ts";
+import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
 
 type EditProgramFieldsetProps = {
     program: Program;

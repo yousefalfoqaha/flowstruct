@@ -1,6 +1,6 @@
 import {Eye} from "lucide-react";
 import {Group, Text} from "@mantine/core";
-import {getSectionCode} from "@/lib/getSectionCode.ts";
+import {getSectionCode} from "@/utils/getSectionCode.ts";
 import {useSelectedSection} from "@/features/study-plan/hooks/useSelectedSection.ts";
 import {Table} from "@tanstack/react-table";
 import {FrameworkCourse} from "@/features/study-plan/types.ts";

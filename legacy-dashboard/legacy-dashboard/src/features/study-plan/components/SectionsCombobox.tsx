@@ -1,6 +1,6 @@
 import {Combobox, Group, InputBase, Loader, ScrollArea, Text, useCombobox} from "@mantine/core";
 import {useMoveCourseSection} from "@/features/study-plan/hooks/useMoveCourseSection.ts";
-import {getSectionCode} from "@/lib/getSectionCode.ts";
+import {getSectionCode} from "@/utils/getSectionCode.ts";
 import {Check} from "lucide-react";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 

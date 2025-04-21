@@ -1,4 +1,4 @@
-import {getCoursePresetSettings} from "@/lib/getCoursePresetSettings.ts";
+import {getCoursePresetSettings} from "@/utils/getCoursePresetSettings.ts";
 import React from "react";
 import {UseFormReturn} from "react-hook-form";
 import {z} from "zod";

@@ -17,11 +17,11 @@ const data: SidebarLink[] = [
     {label: 'Activity Logs', icon: Logs, route: ActivityLogsRoute.to}
 ];
 
-type AppSidebarProps = {
+type Props = {
     closeSidebar: () => void;
-}
+};
 
-export function AppSidebar({closeSidebar}: AppSidebarProps) {
+export function AppSidebar({closeSidebar}: Props) {
     const links = data.map((item) => {
         const Icon = item.icon;
         return (

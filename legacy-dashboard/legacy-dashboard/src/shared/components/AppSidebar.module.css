@@ -12,7 +12,7 @@
 .header {
     margin-bottom: var(--mantine-spacing-md);
     padding-bottom: var(--mantine-spacing-md);
-    border-bottom: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+    border-bottom: 1px solid var(--mantine-color-gray-3);
 }
 
 .close {
@@ -23,7 +23,7 @@
 
 .footer {
     padding-top: var(--mantine-spacing-md);
-    border-top: 1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+    border-top: 1px solid var(--mantine-color-gray-3);
 }
 
 .link {
@@ -31,18 +31,18 @@
     align-items: center;
     text-decoration: none;
     font-size: var(--mantine-font-size-sm);
-    color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1));
+    color: var(--mantine-color-gray-7);
     padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
     border-radius: var(--mantine-radius-sm);
     font-weight: 500;
     gap: 0.25rem;
 
     &:hover {
-        background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
-        color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+        background-color: var(--mantine-color-gray-0);
+        color: var(--mantine-color-black);
 
         .linkIcon {
-            color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+            color: var(--mantine-color-black);
         }
     }
 
@@ -60,7 +60,7 @@
 }
 
 .linkIcon {
-    color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-dark-2));
+    color: var(--mantine-color-gray-6);
     margin-right: var(--mantine-spacing-sm);
     width: 25px;
     height: 25px;

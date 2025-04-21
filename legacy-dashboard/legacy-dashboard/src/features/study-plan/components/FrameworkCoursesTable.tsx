@@ -10,7 +10,7 @@ import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {FilteredSectionIndicator} from "@/features/study-plan/components/FilteredSectionIndicator.tsx";
 import React from "react";
 import {getFrameworkCoursesTableColumns} from "@/features/study-plan/components/FrameworkCoursesTableColumns.tsx";
-import {getSectionCode} from "@/lib/getSectionCode.ts";
+import {getSectionCode} from "@/utils/getSectionCode.ts";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {FrameworkCourse} from "@/features/study-plan/types.ts";
 

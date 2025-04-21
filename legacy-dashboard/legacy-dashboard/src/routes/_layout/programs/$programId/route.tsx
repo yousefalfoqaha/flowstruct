@@ -1,6 +1,6 @@
 import {createFileRoute, Outlet} from '@tanstack/react-router'
 import {getProgramQuery} from '@/features/program/queries.ts'
-import {getProgramDisplayName} from '@/lib/getProgramDisplayName.ts'
+import {getProgramDisplayName} from '@/utils/getProgramDisplayName.ts'
 
 export const Route = createFileRoute('/_layout/programs/$programId')({
     component: () => <Outlet/>,

@@ -2,7 +2,7 @@ import {Center, Checkbox, Group, NumberInput, Radio, SegmentedControl, Stack, Te
 import {Controller, UseFormReturn} from "react-hook-form";
 import {CourseType} from "@/features/course/types.ts";
 import {BookOpenText, Earth, FlaskConical, GraduationCap, Hash, Settings2, Timer} from "lucide-react";
-import {PresetType} from "@/lib/getCoursePresetSettings.ts";
+import {PresetType} from "@/utils/getCoursePresetSettings.ts";
 import {z} from "zod";
 import {courseDetailsSchema} from "@/features/course/schemas.ts";
 

@@ -6,7 +6,7 @@ import {Link, useNavigate} from "@tanstack/react-router";
 import {Plus, X} from "lucide-react";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {useAppForm} from "@/shared/hooks/useAppForm.ts";
-import {getDefaultSearchValues} from "@/lib/getDefaultSearchValues.ts";
+import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
 
 export function CreateProgramFieldset() {
     const form = useAppForm(programDetailsSchema, {

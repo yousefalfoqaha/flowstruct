@@ -20,7 +20,7 @@ import {Course} from "@/features/course/types.ts";
 import {useAddCoursesToSection} from "@/features/study-plan/hooks/useAddCoursesToSection.ts";
 import {usePaginatedCourses} from "@/features/course/hooks/usePaginatedCourses.ts";
 import {CreateCourseModal} from "@/features/course/components/CreateCourseModal.tsx";
-import {getSectionCode} from "@/lib/getSectionCode.ts";
+import {getSectionCode} from "@/utils/getSectionCode.ts";
 import {StudyPlan} from "@/features/study-plan/types.ts";
 
 type StudyPlanCourseAdderProps = {

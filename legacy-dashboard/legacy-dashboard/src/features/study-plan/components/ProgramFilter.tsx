@@ -1,5 +1,5 @@
 import {Table} from "@tanstack/react-table";
-import {getProgramDisplayName} from "@/lib/getProgramDisplayName.ts";
+import {getProgramDisplayName} from "@/utils/getProgramDisplayName.ts";
 import {Select} from "@mantine/core";
 import {ProgramListItem} from "@/features/program/types.ts";
 import {StudyPlanRowItem} from "@/features/study-plan/types.ts";

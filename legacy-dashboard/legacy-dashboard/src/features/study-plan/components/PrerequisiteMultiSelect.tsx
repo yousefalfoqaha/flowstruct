@@ -12,7 +12,7 @@ import {useAssignCoursePrerequisites} from "@/features/study-plan/hooks/useAssig
 import {CourseRelation, StudyPlan} from "@/features/study-plan/types.ts";
 import {useAssignCourseCorequisites} from "@/features/study-plan/hooks/useAssignCourseCorequisites.ts";
 import classes from "@/features/study-plan/components/CoursesMultiSelect.module.css";
-import {getSectionCode} from "@/lib/getSectionCode.ts";
+import {getSectionCode} from "@/utils/getSectionCode.ts";
 import {Course} from "@/features/course/types.ts";
 
 type CourseOption = {

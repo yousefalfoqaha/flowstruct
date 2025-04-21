@@ -2,12 +2,12 @@ import {AppCard} from "@/shared/components/AppCard.tsx";
 import {CourseDetailsFormFields} from "@/features/course/components/CourseDetailsFormFields.tsx";
 import {useAppForm} from "@/shared/hooks/useAppForm.ts";
 import {courseDetailsSchema} from "@/features/course/schemas.ts";
-import {getCoursePresetSettings} from "@/lib/getCoursePresetSettings.ts";
+import {getCoursePresetSettings} from "@/utils/getCoursePresetSettings.ts";
 import {useCreateCourse} from "@/features/course/hooks/useCreateCourse.ts";
 import {Link, useNavigate} from "@tanstack/react-router";
 import {Button} from "@mantine/core";
 import {Plus, X} from "lucide-react";
-import {getDefaultSearchValues} from "@/lib/getDefaultSearchValues.ts";
+import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
 import {useCoursePreset} from "@/features/course/hooks/useCoursePreset.ts";
 
 export function CreateCourseFieldset() {

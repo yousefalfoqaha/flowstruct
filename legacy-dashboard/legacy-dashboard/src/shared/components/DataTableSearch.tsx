@@ -8,7 +8,7 @@ type TableSearchProps<TData> = {
     table: Table<TData>;
     width?: number | string;
     placeholder?: string;
-    debounce?: number; // debounce delay in ms (0 = no debounce)
+    debounce?: number;
 };
 
 export function DataTableSearch<TData>({
@@ -20,7 +20,6 @@ export function DataTableSearch<TData>({
     const [value, setValue] = useState(table.getState().globalFilter as string || "");
     const [debounced] = useDebouncedValue(value, debounce);
 
-    // Update table filter only when debounced value changes
     useEffect(() => {
         table.setGlobalFilter(debounced);
     }, [debounced, table]);

@@ -4,7 +4,6 @@ import {Table} from "@tanstack/react-table";
 
 type Props<TData> = {
     table: Table<TData>;
-
 }
 
 export function DataTablePagination<TData>({table}: Props<TData>) {

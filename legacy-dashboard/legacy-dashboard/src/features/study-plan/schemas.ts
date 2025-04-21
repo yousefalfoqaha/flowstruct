@@ -1,7 +1,7 @@
 import {z} from "zod";
 import {SectionLevel, SectionType} from "@/features/study-plan/types.ts";
 
-export const studyPlanDetailsSchema = z.object({
+export const studyPlanDetailsSchema = z.interface({
     program: z.string(),
     year: z
         .date()
@@ -20,7 +20,7 @@ export const studyPlanDetailsSchema = z.object({
         .default(true)
 });
 
-export const sectionDetailsSchema = z.object({
+export const sectionDetailsSchema = z.interface({
     level: z.enum(SectionLevel),
     type: z.enum(SectionType),
     requiredCreditHours: z.number().nonnegative({error: "Must be positive"}),

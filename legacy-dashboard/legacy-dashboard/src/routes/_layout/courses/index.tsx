@@ -2,7 +2,7 @@ import {createFileRoute, retainSearchParams, stripSearchParams} from '@tanstack/
 import {BookOpen} from "lucide-react";
 import {CoursesTable} from "@/features/course/components/CoursesTable.tsx";
 import {TableSearchSchema} from "@/shared/schemas.ts";
-import {getDefaultSearchValues} from "@/lib/getDefaultSearchValues.ts";
+import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
 import {PageHeader} from "@/shared/components/PageHeader.tsx";
 import {PageLayout} from "@/shared/components/PageLayout.tsx";
 

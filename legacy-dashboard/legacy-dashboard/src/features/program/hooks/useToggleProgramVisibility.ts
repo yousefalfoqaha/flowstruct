@@ -5,7 +5,7 @@ import {ProgramListItem} from "@/features/program/types.ts";
 import {Eye, EyeOff} from "lucide-react";
 import React from "react";
 import {programKeys} from "@/features/program/queries.ts";
-import {getProgramDisplayName} from "@/lib/getProgramDisplayName.ts";
+import {getProgramDisplayName} from "@/utils/getProgramDisplayName.ts";
 
 export const useToggleProgramVisibility = () => {
     const queryClient = useQueryClient();

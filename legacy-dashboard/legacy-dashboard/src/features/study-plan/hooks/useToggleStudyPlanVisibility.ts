@@ -5,7 +5,7 @@ import {Eye, EyeOff} from "lucide-react";
 import React from "react";
 import {studyPlanKeys} from "@/features/study-plan/queries.ts";
 import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
-import {getStudyPlanDisplayName} from "@/lib/getStudyPlanDisplayName.ts";
+import {getStudyPlanDisplayName} from "@/utils/getStudyPlanDisplayName.ts";
 
 export const useToggleStudyPlanVisibility = () => {
     const queryClient = useQueryClient();
