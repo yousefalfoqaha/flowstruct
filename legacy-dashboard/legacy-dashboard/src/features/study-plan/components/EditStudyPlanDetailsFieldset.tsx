@@ -3,9 +3,9 @@ import {useAppForm} from "@/shared/hooks/useAppForm.ts";
 import {studyPlanDetailsSchema} from "@/features/study-plan/schemas.ts";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {StudyPlanDetailsFormFields} from "@/features/study-plan/components/StudyPlanDetailsFormFields.tsx";
-import {useNavigate} from "@tanstack/react-router";
+import {Link, useNavigate} from "@tanstack/react-router";
 import {Button, Text} from "@mantine/core";
-import {Pencil, Trash} from "lucide-react";
+import {ChevronLeft, Pencil, Trash} from "lucide-react";
 import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
 import {useEditStudyPlanDetails} from "@/features/study-plan/hooks/useEditStudyPlanDetails.ts";
 import {useDeleteStudyPlan} from "@/features/study-plan/hooks/useDeleteStudyPlan.ts";
@@ -95,6 +95,16 @@ export function EditStudyPlanDetailsFieldset({studyPlan}: Props) {
                 title="Study Plan Information"
                 subtitle="Update the details for this study plan"
                 footer={footer}
+                headerAction={
+                    <Link
+                        to="/study-plans/$studyPlanId/details"
+                        params={{studyPlanId: String(studyPlan.id)}}
+                    >
+                        <Button variant="default" leftSection={<ChevronLeft size={18}/>}>
+                            Back
+                        </Button>
+                    </Link>
+                }
             >
                 <StudyPlanDetailsFormFields disableProgramSelect={true} form={form}/>
             </AppCard>
