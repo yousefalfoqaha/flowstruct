@@ -26,7 +26,7 @@ export function MoveSectionMenu({section, studyPlan}: MoveSectionMenuProps) {
             <Menu.Target>
                 <ActionIcon
                     loading={isPending}
-                    variant="white"
+                    variant="transparent"
                     color="black"
                 >
                     <ChevronsUpDown size={14}/>

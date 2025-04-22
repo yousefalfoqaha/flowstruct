@@ -6,11 +6,11 @@ import {StudyPlanListItem} from "@/features/study-plan/types.ts";
 import {Link} from "@tanstack/react-router";
 import {modals} from "@mantine/modals";
 
-type StudyPlanOptionsMenuProps = {
+type Props = {
     studyPlan: StudyPlanListItem;
 }
 
-export function StudyPlanOptionsMenu({studyPlan}: StudyPlanOptionsMenuProps) {
+export function StudyPlanOptionsMenu({studyPlan}: Props) {
     const toggleVisibility = useToggleStudyPlanVisibility();
     const deleteStudyPlan = useDeleteStudyPlan();
 
@@ -25,7 +25,7 @@ export function StudyPlanOptionsMenu({studyPlan}: StudyPlanOptionsMenuProps) {
             <Menu.Dropdown>
                 <Menu.Label>Actions</Menu.Label>
 
-                <Link style={{textDecoration: 'none'}} to="/study-plans/$studyPlanId"
+                <Link style={{textDecoration: 'none'}} to="/study-plans/$studyPlanId/overview"
                       params={{studyPlanId: String(studyPlan.id)}}>
                     <Menu.Item leftSection={<ScrollText size={14}/>}>
                         View

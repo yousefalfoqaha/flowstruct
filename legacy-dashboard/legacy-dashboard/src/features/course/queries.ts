@@ -1,6 +1,7 @@
-import {keepPreviousData, queryOptions} from "@tanstack/react-query";
+import {infiniteQueryOptions, keepPreviousData, queryOptions} from "@tanstack/react-query";
 import {getCourse, getCoursesRequest, getPaginatedCourses} from "@/features/course/api.ts";
 import {TableSearchOptions} from "@/shared/types.ts";
+import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
 
 export const courseKeys = {
     all: ['courses'] as const,
@@ -25,5 +26,14 @@ export const getPaginatedCoursesQuery = (options: Omit<TableSearchOptions, 'colu
     queryOptions({
         queryKey: courseKeys.list(options),
         queryFn: () => getPaginatedCourses(options),
+        placeholderData: keepPreviousData
+    });
+
+export const getInfiniteCoursesQuery = (filter: string) =>
+    infiniteQueryOptions({
+        queryKey: courseKeys.list({...getDefaultSearchValues(), filter: filter}),
+        queryFn: ({pageParam}) => getPaginatedCourses({...getDefaultSearchValues(), page: pageParam}),
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => lastPage.isLastPage ? lastPage.page : lastPage.page + 1,
         placeholderData: keepPreviousData
     });

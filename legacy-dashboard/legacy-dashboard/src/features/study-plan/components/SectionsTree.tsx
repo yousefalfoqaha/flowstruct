@@ -125,10 +125,7 @@ export function SectionsTree({studyPlan, table}: SectionsTreeProps) {
     return (
         <Flex direction="column" gap={8}>
             <Group style={{borderBottom: "1px solid #dee2e6"}} pb={10} justify="space-between">
-                <Group gap="sm">
-                    <List size={18}/>
-                    <Text fw={500}>Sections</Text>
-                </Group>
+                <Text fw={500}>All Sections</Text>
 
                 <Group>
                     {selectedSection && (

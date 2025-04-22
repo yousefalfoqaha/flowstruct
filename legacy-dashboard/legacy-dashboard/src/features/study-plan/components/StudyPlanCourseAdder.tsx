@@ -18,10 +18,10 @@ import {Plus} from "lucide-react";
 import {useDebouncedValue} from "@mantine/hooks";
 import {Course} from "@/features/course/types.ts";
 import {useAddCoursesToSection} from "@/features/study-plan/hooks/useAddCoursesToSection.ts";
-import {usePaginatedCourses} from "@/features/course/hooks/usePaginatedCourses.ts";
 import {CreateCourseModal} from "@/features/course/components/CreateCourseModal.tsx";
 import {getSectionCode} from "@/utils/getSectionCode.ts";
 import {StudyPlan} from "@/features/study-plan/types.ts";
+import {useInfiniteCourses} from "@/features/course/hooks/useInfiniteCourses.ts";
 
 type StudyPlanCourseAdderProps = {
     studyPlan: StudyPlan;
@@ -39,7 +39,7 @@ export function StudyPlanCourseAdder({studyPlan}: StudyPlanCourseAdderProps) {
         onDropdownOpen: () => combobox.focusSearchInput()
     });
 
-    const {data, isFetching, isFetched, fetchNextPage, hasNextPage} = usePaginatedCourses(debouncedSearch);
+    const {data, isFetching, isFetched, fetchNextPage, hasNextPage} = useInfiniteCourses(debouncedSearch);
 
     const addCoursesToSection = useAddCoursesToSection();
 

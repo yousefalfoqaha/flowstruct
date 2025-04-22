@@ -14,6 +14,7 @@ import {Route as DetailsRoute} from './details/index.tsx';
 import {Route as OverviewRoute} from './overview.tsx';
 import {Route as FrameworkRoute} from './framework.tsx';
 import {Route as ProgramMapRoute} from './program-map.tsx';
+import {ReactNode} from "react";
 
 
 export const Route = createFileRoute('/_layout/study-plans/$studyPlanId')({
@@ -32,6 +33,13 @@ export const Route = createFileRoute('/_layout/study-plans/$studyPlanId')({
     },
     component: RouteComponent,
 });
+
+type TabLink = {
+    label: string;
+    path: string;
+    icon: ReactNode;
+    rightAlign?: boolean
+}
 
 function RouteComponent() {
     const {data: studyPlan} = useStudyPlan();
@@ -52,7 +60,7 @@ function RouteComponent() {
 
     const fullPath = matches.at(-1)?.fullPath ?? '';
 
-    const tabs = [
+    const tabs: TabLink[] = [
         {label: 'Overview', path: OverviewRoute.to, icon: <ScrollText size={18}/>},
         {label: 'Framework', path: FrameworkRoute.to, icon: <Folder size={18}/>},
         {label: 'Program Map', path: ProgramMapRoute.to, icon: <Map size={18}/>},
@@ -60,7 +68,7 @@ function RouteComponent() {
     ];
 
     const activeTab = tabs.find(tab =>
-        fullPath.includes(tab.path))?.path ?? 'overview';
+        fullPath.includes(tab.path))?.path ?? OverviewRoute.to;
 
     return (
         <PageLayout header={header}>
@@ -70,7 +78,7 @@ function RouteComponent() {
                     to: val ?? '',
                     params: {studyPlanId: String(studyPlan.id)}
                 })}
-                variant="default"
+                variant="outline"
             >
                 <Tabs.List>
                     {tabs.map(tab => (

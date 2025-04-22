@@ -37,7 +37,7 @@ export function SectionOptionsMenu({
             <Menu.Target>
                 <ActionIcon
                     loading={deleteSection.isPending}
-                    variant="white"
+                    variant="transparent"
                     color="black"
                 >
                     <EllipsisVertical size={14}/>

@@ -13,6 +13,7 @@ import {getFrameworkCoursesTableColumns} from "@/features/study-plan/components/
 import {getSectionCode} from "@/utils/getSectionCode.ts";
 import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {FrameworkCourse} from "@/features/study-plan/types.ts";
+import {AppCard} from "@/shared/components/AppCard.tsx";
 
 export function FrameworkCoursesTable() {
     const {data: studyPlan} = useStudyPlan();
@@ -46,20 +47,22 @@ export function FrameworkCoursesTable() {
     const table = useDataTable<FrameworkCourse>({data, columns});
 
     return (
-        <Flex gap="xl">
+        <Flex gap="lg">
             <SectionsTree table={table} studyPlan={studyPlan}/>
 
-            <Flex direction="column" style={{flex: 1}} gap="sm">
+            <Flex direction="column" style={{flex: 1}} gap="md">
                 <Group justify="space-between">
                     <DataTableSearch placeholder="Search courses..." table={table}/>
-
-                    <Group gap="sm">
-                        <RemoveStudyPlanCoursesButton studyPlan={studyPlan} table={table}/>
-                        <StudyPlanCourseAdder studyPlan={studyPlan}/>
-                    </Group>
+                    <RemoveStudyPlanCoursesButton studyPlan={studyPlan} table={table}/>
                 </Group>
 
-                <DataTable table={table}/>
+                <AppCard
+                    title="Framework Courses"
+                    subtitle="Manage all study plan courses"
+                    headerAction={<StudyPlanCourseAdder studyPlan={studyPlan}/>}
+                >
+                    <DataTable table={table}/>
+                </AppCard>
 
                 <Group justify="space-between">
                     <FilteredSectionIndicator table={table}/>
