@@ -43,7 +43,7 @@ createRoot(document.getElementById('root')!).render(
                 </ModalsProvider>
                 <Notifications/>
             </MantineProvider>
-            <ReactQueryDevtools/>
+            {/*<ReactQueryDevtools/>*/}
         </QueryClientProvider>
     </StrictMode>
 );
