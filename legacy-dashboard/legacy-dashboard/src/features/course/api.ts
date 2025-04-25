@@ -22,12 +22,12 @@ export const createCourse = async (newCourse: Partial<Course>) =>
     });
 
 export const getCourse = async (courseId: number) =>
-    api.get<Course>(`${ENDPOINT}/${courseId}`);
+    api.get<Course>([ENDPOINT, courseId]);
 
 export const editCourseDetails = async ({courseId, courseDetails}: {
     courseId: number;
     courseDetails: Partial<Course>;
 }) =>
-    api.put<Course>(`${ENDPOINT}/${courseId}`, {
+    api.put<Course>([ENDPOINT, courseId], {
         body: courseDetails
     });

@@ -3,7 +3,7 @@ import {PrerequisiteMultiSelect} from "@/features/study-plan/components/Prerequi
 import {useRemoveCoursePrerequisite} from "@/features/study-plan/hooks/useRemoveCoursePrerequisite.ts";
 import {useRemoveCourseCorequisite} from "@/features/study-plan/hooks/useRemoveCourseCorequisite.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
-import {useStudyPlanCourses} from "@/features/course/hooks/useStudyPlanCourses.ts";
+import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
 
 type PrerequisitePillGroupProps = {
     parentCourseId: number;

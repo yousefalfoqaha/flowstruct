@@ -1,5 +1,5 @@
 import {CoursePrerequisite, MoveDirection, Section, StudyPlan, StudyPlanSummary} from "@/features/study-plan/types.ts";
-import {Course} from "@/features/course/types.ts";
+import {CourseSummary} from "@/features/course/types.ts";
 import {api} from "@/shared/api.ts";
 
 const ENDPOINT = '/study-plans';
@@ -8,136 +8,120 @@ export const getStudyPlanList = () =>
     api.get<StudyPlanSummary[]>(ENDPOINT);
 
 export const getStudyPlan = (studyPlanId: number) =>
-    api.get<StudyPlan>(`${ENDPOINT}/${studyPlanId}`);
+    api.get<StudyPlan>([ENDPOINT, studyPlanId]);
 
 export const createStudyPlan = ({createdStudyPlanDetails}: {
-    createdStudyPlanDetails: Partial<StudyPlan>;
+    createdStudyPlanDetails: Partial<StudyPlan>
 }) =>
     api.post<StudyPlan>(ENDPOINT, {
-        body: {...createdStudyPlanDetails},
+        body: {...createdStudyPlanDetails}
     });
 
 export const toggleStudyPlanVisibility = (studyPlanId: number) =>
-    api.put<StudyPlan>(`${ENDPOINT}/${studyPlanId}/toggle-visibility`);
+    api.put<StudyPlan>([ENDPOINT, studyPlanId, 'toggle-visibility']);
 
 export const deleteStudyPlan = (studyPlanId: number) =>
-    api.delete<void>(`${ENDPOINT}/${studyPlanId}`);
+    api.delete<void>([ENDPOINT, studyPlanId]);
 
 export const getStudyPlanCourses = (studyPlanId: number) =>
-    api.get<Record<number, Course>>(`${ENDPOINT}/${studyPlanId}/courses`);
+    api.get<Record<number, CourseSummary>>([ENDPOINT, studyPlanId, 'courses']);
 
-export const updateStudyPlanDetails = ({studyPlanId, updatedStudyPlanDetails,}: {
+export const updateStudyPlanDetails = ({studyPlanId, updatedStudyPlanDetails}: {
     studyPlanId: number;
-    updatedStudyPlanDetails: Partial<StudyPlan>;
+    updatedStudyPlanDetails: Partial<StudyPlan>
 }) =>
-    api.put<StudyPlan>(`${ENDPOINT}/${studyPlanId}`, {
-        body: updatedStudyPlanDetails,
-    });
+    api.put<StudyPlan>([ENDPOINT, studyPlanId], {body: updatedStudyPlanDetails});
 
 export const createSection = ({studyPlanId, newSectionDetails}: {
     studyPlanId: number;
-    newSectionDetails: Partial<Section>;
+    newSectionDetails: Partial<Section>
 }) =>
-    api.put<StudyPlan>(`${ENDPOINT}/${studyPlanId}/create-section`, {
-        body: newSectionDetails,
-    });
+    api.put<StudyPlan>([ENDPOINT, studyPlanId, 'create-section'], {body: newSectionDetails});
 
 export const addCoursesToSection = ({addedCourses, sectionId, studyPlanId}: {
-    addedCourses: Course[];
+    addedCourses: CourseSummary[];
     sectionId: number;
-    studyPlanId: number;
+    studyPlanId: number
 }) =>
-    api.post<StudyPlan>(`${ENDPOINT}/${studyPlanId}/sections/${sectionId}/courses`, {
-        body: {courseIds: addedCourses.map(c => c.id)},
-    });
+    api.post<StudyPlan>([ENDPOINT, studyPlanId, 'sections', sectionId, 'courses'], {body: {courseIds: addedCourses.map(c => c.id)}});
 
 export const editSectionDetails = ({updatedSectionDetails, sectionId, studyPlanId}: {
     updatedSectionDetails: Partial<Section>;
     sectionId: number;
-    studyPlanId: number;
+    studyPlanId: number
 }) =>
-    api.put<StudyPlan>(`${ENDPOINT}/${studyPlanId}/sections/${sectionId}`, {
-        body: updatedSectionDetails,
+    api.put<StudyPlan>([ENDPOINT, studyPlanId, 'sections', sectionId], {
+        body: updatedSectionDetails
     });
 
 export const removeCoursesFromSection = ({courseIds, studyPlanId}: {
     courseIds: number[];
-    studyPlanId: number;
+    studyPlanId: number
 }) =>
-    api.delete<StudyPlan>(`${ENDPOINT}/${studyPlanId}/courses/by-ids`, {
-        params: {courses: courseIds},
+    api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'courses', 'by-ids'], {
+        params: {
+            courses: courseIds
+        }
     });
 
 export const deleteSection = ({studyPlanId, sectionId}: {
     studyPlanId: number;
-    sectionId: number;
+    sectionId: number
 }) =>
-    api.delete<StudyPlan>(`${ENDPOINT}/${studyPlanId}/sections/${sectionId}`);
+    api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'sections', sectionId]);
 
 export const assignCoursePrerequisites = ({studyPlanId, courseId, prerequisites}: {
     studyPlanId: number;
     courseId: number;
-    prerequisites: CoursePrerequisite[];
+    prerequisites: CoursePrerequisite[]
 }) =>
-    api.post<StudyPlan>(
-        `${ENDPOINT}/${studyPlanId}/courses/${courseId}/prerequisites`,
-        {body: prerequisites}
-    );
+    api.post<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'prerequisites'], {
+        body: prerequisites
+    });
 
 export const removeCoursePrerequisite = ({studyPlanId, courseId, prerequisiteId}: {
     studyPlanId: number;
     courseId: number;
-    prerequisiteId: number;
+    prerequisiteId: number
 }) =>
-    api.delete<StudyPlan>(
-        `${ENDPOINT}/${studyPlanId}/courses/${courseId}/prerequisites/${prerequisiteId}`
-    );
+    api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'prerequisites', prerequisiteId]);
 
 export const assignCourseCorequisites = ({studyPlanId, courseId, corequisites}: {
     studyPlanId: number;
     courseId: number;
-    corequisites: number[];
+    corequisites: number[]
 }) =>
-    api.post<StudyPlan>(`${ENDPOINT}/${studyPlanId}/courses/${courseId}/corequisites`, {
-        body: corequisites,
-    });
+    api.post<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'corequisites'], {body: corequisites});
 
 export const removeCourseCorequisite = ({studyPlanId, courseId, corequisiteId}: {
     studyPlanId: number;
     courseId: number;
-    corequisiteId: number;
+    corequisiteId: number
 }) =>
-    api.delete<StudyPlan>(
-        `${ENDPOINT}/${studyPlanId}/courses/${courseId}/corequisites/${corequisiteId}`
-    );
+    api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'corequisites', corequisiteId]);
 
 export const moveCourseSection = ({studyPlanId, courseId, sectionId}: {
     studyPlanId: number;
     courseId: number;
-    sectionId: number;
+    sectionId: number
 }) =>
-    api.put<StudyPlan>(`${ENDPOINT}/${studyPlanId}/courses/${courseId}/move-to-section/${sectionId}`);
+    api.put<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'move-to-section', sectionId]);
 
 export const moveSection = ({studyPlanId, sectionId, direction}: {
     studyPlanId: number;
     sectionId: number;
-    direction: MoveDirection;
+    direction: MoveDirection
 }) =>
-    api.put<StudyPlan>(`${ENDPOINT}/${studyPlanId}/sections/${sectionId}/move`, {
-        params: {direction},
-    });
+    api.put<StudyPlan>([ENDPOINT, studyPlanId, 'sections', sectionId, 'move'], {params: {direction}});
 
 export const placeCourses = ({studyPlanId, semester, courseIds}: {
     studyPlanId: number;
     semester: number;
-    courseIds: number[];
+    courseIds: number[]
 }) =>
-    api.post<StudyPlan>(`${ENDPOINT}/${studyPlanId}/course-placements`, {
-        body: {semester, courseIds},
+    api.post<StudyPlan>([ENDPOINT, studyPlanId, 'course-placements'], {
+        body: {semester, courseIds}
     });
 
-export const removeCoursePlacement = ({studyPlanId, courseId}: {
-    studyPlanId: number;
-    courseId: number;
-}) =>
-    api.delete<StudyPlan>(`${ENDPOINT}/${studyPlanId}/course-placements/${courseId}`);
+export const removeCoursePlacement = ({studyPlanId, courseId}: { studyPlanId: number; courseId: number }) =>
+    api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'course-placements', courseId]);

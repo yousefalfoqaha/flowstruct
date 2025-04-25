@@ -13,7 +13,7 @@ import {getFrameworkCoursesTableColumns} from "@/features/study-plan/components/
 import {getSectionCode} from "@/utils/getSectionCode.ts";
 import {FrameworkCourse} from "@/features/study-plan/types.ts";
 import {AppCard} from "@/shared/components/AppCard.tsx";
-import {useStudyPlanCourses} from "@/features/course/hooks/useStudyPlanCourses.ts";
+import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
 
 export function FrameworkCoursesTable() {
     const {data: studyPlan} = useStudyPlan();

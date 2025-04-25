@@ -1,19 +1,8 @@
-import {useParams} from "@tanstack/react-router";
-import React from "react";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {CourseQuery} from "@/features/course/queries.ts";
+import {useEntityId} from "@/shared/hooks/useEntityId.ts";
 
 export const useCourse = (fallbackId?: number) => {
-    const params = useParams({strict: false});
-
-    const courseId = React.useMemo(() => {
-        const fromParams = params.courseId ? parseInt(params.courseId) : undefined;
-        return fromParams || fallbackId;
-    }, [params.courseId, fallbackId]);
-
-    if (!courseId) {
-        throw new Error("Cannot use course without course ID.");
-    }
-
+    const courseId = useEntityId('courseId', fallbackId);
     return useSuspenseQuery(CourseQuery(courseId));
 }

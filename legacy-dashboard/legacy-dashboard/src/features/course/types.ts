@@ -17,7 +17,7 @@ export type Course = {
 }
 
 export type CoursesPage = {
-    content: Course[];
+    content: CourseSummary[];
     page: number;
     size: number;
     totalCourses: number;
@@ -25,4 +25,4 @@ export type CoursesPage = {
     isLastPage: boolean;
 }
 
-export type CourseSummary = Pick<Course, "id" | "code" | "name" | "creditHours">;
+export type CourseSummary = Pick<Course, "id" | "code" | "name" | "creditHours" | "type">;

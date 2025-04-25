@@ -8,7 +8,11 @@ type RequestOptions = {
 };
 
 export const api = {
-    async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+    async request<T>(endpointSegments: unknown[] | string, options: RequestOptions = {}): Promise<T> {
+        const endpoint = Array.isArray(endpointSegments)
+            ? endpointSegments.map(segment => String(segment)).join('/')
+            : endpointSegments;
+
         const {method = "GET", params = {}, body, headers = {}} = options;
 
         const searchParams = new URLSearchParams();
@@ -44,19 +48,19 @@ export const api = {
         return await response.json() as T;
     },
 
-    get<T>(endpoint: string, options?: Omit<RequestOptions, "method" | "body">) {
-        return this.request<T>(endpoint, {...options, method: "GET"});
+    get<T>(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, "method" | "body">) {
+        return this.request<T>(endpointSegments, {...options, method: "GET"});
     },
 
-    post<T>(endpoint: string, options?: Omit<RequestOptions, "method">) {
-        return this.request<T>(endpoint, {...options, method: "POST"});
+    post<T>(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, "method">) {
+        return this.request<T>(endpointSegments, {...options, method: "POST"});
     },
 
-    put<T>(endpoint: string, options?: Omit<RequestOptions, "method">) {
-        return this.request<T>(endpoint, {...options, method: "PUT"});
+    put<T>(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, "method">) {
+        return this.request<T>(endpointSegments, {...options, method: "PUT"});
     },
 
-    delete<T>(endpoint: string, options?: Omit<RequestOptions, "method">) {
-        return this.request<T>(endpoint, {...options, method: "DELETE"});
+    delete<T>(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, "method">) {
+        return this.request<T>(endpointSegments, {...options, method: "DELETE"});
     }
 };

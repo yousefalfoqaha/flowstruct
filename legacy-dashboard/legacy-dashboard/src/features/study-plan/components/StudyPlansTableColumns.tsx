@@ -22,15 +22,15 @@ export function getStudyPlansTableColumns() {
             header: 'Track',
             cell: ({row}) => row.getValue('track') ?? '---'
         }),
+        accessor('duration', {
+            header: () => <p className="text-nowrap">Duration</p>,
+            cell: ({row}) => <p>{row.original.duration ?? 0} Years</p>
+        }),
         accessor('isPrivate', {
             header: 'Status',
             cell: ({row}) => {
                 return getVisibilityBadge(row.getValue('isPrivate'));
             }
-        }),
-        accessor('duration', {
-            header: () => <p className="text-nowrap">Duration</p>,
-            cell: ({row}) => <p>{row.original.duration ?? 0} Years</p>
         }),
         display({
             id: 'actions',

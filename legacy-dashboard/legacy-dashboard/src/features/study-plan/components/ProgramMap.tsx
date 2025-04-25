@@ -2,7 +2,7 @@ import {CourseCard} from "@/features/course/components/CourseCard.tsx";
 import {Divider, Flex, ScrollArea, Stack, Text} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {CoursePlacementMultiSelect} from "@/features/study-plan/components/CoursePlacementMultiSelect.tsx";
-import {useStudyPlanCourses} from "@/features/course/hooks/useStudyPlanCourses.ts";
+import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
 
 export function ProgramMap() {
     const {data: studyPlan} = useStudyPlan();

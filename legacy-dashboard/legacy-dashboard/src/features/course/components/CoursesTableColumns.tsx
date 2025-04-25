@@ -18,18 +18,6 @@ export function getCoursesTableColumns() {
             header: 'Credits',
             cell: ({cell}) => `${cell.getValue()} Cr.`
         }),
-        accessor('ects', {
-            header: 'ECTS',
-            cell: ({cell}) => `${cell.getValue()} ECTS`
-        }),
-        accessor('lectureHours', {
-            header: 'Lecture Hours',
-            cell: ({cell}) => `${cell.getValue()} Hrs/Week`
-        }),
-        accessor('practicalHours', {
-            header: 'Practical Hours',
-            cell: ({cell}) => `${cell.getValue()} Hrs/Week`
-        }),
         accessor('type', {
             header: 'Type'
         }),
@@ -37,7 +25,7 @@ export function getCoursesTableColumns() {
             id: 'actions',
             header: 'Actions',
             cell: ({row}) => (
-                <CourseOptionsMenu course={row.original} />
+                <CourseOptionsMenu course={row.original}/>
             )
         })
     ];
