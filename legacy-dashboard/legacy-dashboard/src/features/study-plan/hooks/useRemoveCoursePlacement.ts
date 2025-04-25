@@ -5,7 +5,8 @@ import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 
 export const useRemoveCoursePlacement = () => {
     const queryClient = useQueryClient();
+
     return useAppMutation(removeCoursePlacement, {
-        onSuccess: (updatedStudyPlan) => queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan)
+        onSuccess: (data) => queryClient.setQueryData(studyPlanKeys.detail(data.id), data)
     });
 }

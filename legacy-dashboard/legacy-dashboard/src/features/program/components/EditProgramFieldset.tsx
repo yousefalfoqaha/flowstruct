@@ -41,46 +41,46 @@ export function EditProgramFieldset({program}: EditProgramFieldsetProps) {
     );
 
     return (
-        <AppCard
-            title="Program Information"
-            subtitle="Update the details for this program"
-            footer={
-                <>
-                    <Button
-                        variant="filled"
-                        color="red"
-                        leftSection={<Trash size={18}/>}
-                        onClick={() =>
-                            modals.openConfirmModal({
-                                title: 'Please confirm your action',
-                                children: (
-                                    <Text size="sm">
-                                        Deleting this program will delete all of its study plans. Are
-                                        you absolutely sure?
-                                    </Text>
-                                ),
-                                labels: {confirm: 'Confirm', cancel: 'Cancel'},
-                                onConfirm: handleDelete,
-                            })
-                        }
-                        loading={deleteProgram.isPending}
-                    >
-                        Delete Program
-                    </Button>
+        <form onSubmit={onSubmit}>
+            <AppCard
+                title="Program Information"
+                subtitle="Update the details for this program"
+                footer={
+                    <>
+                        <Button
+                            variant="filled"
+                            color="red"
+                            leftSection={<Trash size={18}/>}
+                            onClick={() =>
+                                modals.openConfirmModal({
+                                    title: 'Please confirm your action',
+                                    children: (
+                                        <Text size="sm">
+                                            Deleting this program will delete all of its study plans. Are
+                                            you absolutely sure?
+                                        </Text>
+                                    ),
+                                    labels: {confirm: 'Confirm', cancel: 'Cancel'},
+                                    onConfirm: handleDelete,
+                                })
+                            }
+                            loading={deleteProgram.isPending}
+                        >
+                            Delete Program
+                        </Button>
 
-                    <Button
-                        type="submit"
-                        leftSection={<Pencil size={18}/>}
-                        loading={editProgramDetails.isPending}
-                    >
-                        Update Details
-                    </Button>
-                </>
-            }
-        >
-            <form onSubmit={onSubmit}>
+                        <Button
+                            type="submit"
+                            leftSection={<Pencil size={18}/>}
+                            loading={editProgramDetails.isPending}
+                        >
+                            Update Details
+                        </Button>
+                    </>
+                }
+            >
                 <ProgramDetailsFormFields form={form}/>
-            </form>
-        </AppCard>
+            </AppCard>
+        </form>
     );
 }

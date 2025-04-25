@@ -7,9 +7,7 @@ export const useRemoveCoursesFromSection = () => {
     const queryClient = useQueryClient();
 
     return useAppMutation(removeCoursesFromSection, {
-        onSuccess: (_, {studyPlanId}) => (
-            queryClient.invalidateQueries({queryKey: studyPlanKeys.detail(studyPlanId)})
-        ),
+        onSuccess: (data) => queryClient.invalidateQueries({queryKey: studyPlanKeys.detail(data.id)}),
         successNotification: {
             message: (_, {courseIds}) =>
                 `${courseIds.length} course(s) removed from study plan.`

@@ -40,7 +40,7 @@ export function EditStudyPlanDetailsFieldset({studyPlan}: Props) {
         }, {
             onSuccess: () => {
                 navigate({
-                    to: '/study-plans/$studyPlanId',
+                    to: '/study-plans/$studyPlanId/details',
                     params: {studyPlanId: String(studyPlan.id)}
                 })
             }

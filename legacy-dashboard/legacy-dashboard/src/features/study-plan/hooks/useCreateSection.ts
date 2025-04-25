@@ -5,8 +5,9 @@ import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 
 export const useCreateSection = () => {
     const queryClient = useQueryClient();
+
     return useAppMutation(createSection, {
-        onSuccess: (updatedStudyPlan) => queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan),
+        onSuccess: (data) => queryClient.setQueryData(studyPlanKeys.detail(data.id), data),
         successNotification: {message: "Section created."}
     });
 };

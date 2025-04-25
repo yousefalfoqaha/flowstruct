@@ -52,7 +52,11 @@ export function FrameworkCoursesTable() {
 
             <Flex direction="column" style={{flex: 1}} gap="md">
                 <Group justify="space-between">
-                    <DataTableSearch placeholder="Search courses..." table={table}/>
+                    <Group justify="space-between">
+                        <DataTableSearch placeholder="Search courses..." table={table}/>
+                        <FilteredSectionIndicator table={table}/>
+                    </Group>
+
                     <RemoveStudyPlanCoursesButton studyPlan={studyPlan} table={table}/>
                 </Group>
 
@@ -64,10 +68,7 @@ export function FrameworkCoursesTable() {
                     <DataTable table={table}/>
                 </AppCard>
 
-                <Group justify="space-between">
-                    <FilteredSectionIndicator table={table}/>
-                    <DataTablePagination table={table}/>
-                </Group>
+                <DataTablePagination table={table}/>
             </Flex>
         </Flex>
     );

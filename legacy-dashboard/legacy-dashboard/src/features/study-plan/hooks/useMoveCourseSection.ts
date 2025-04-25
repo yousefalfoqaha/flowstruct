@@ -5,8 +5,9 @@ import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 
 export const useMoveCourseSection = () => {
     const queryClient = useQueryClient();
+
     return useAppMutation(moveCourseSection, {
-        onSuccess: (updatedStudyPlan) => queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan),
+        onSuccess: (data) => queryClient.setQueryData(studyPlanKeys.detail(data.id), data),
         successNotification: {message: "Course section changed."}
     });
 }

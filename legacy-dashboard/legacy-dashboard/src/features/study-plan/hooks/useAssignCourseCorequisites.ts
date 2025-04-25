@@ -5,7 +5,8 @@ import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 
 export const useAssignCourseCorequisites = () => {
     const queryClient = useQueryClient();
+
     return useAppMutation(assignCourseCorequisites, {
-        onSuccess: (updatedStudyPlan) => queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan)
+        onSuccess: (data) => queryClient.setQueryData(studyPlanKeys.detail(data.id), data)
     });
 }

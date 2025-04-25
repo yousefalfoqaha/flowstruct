@@ -8,8 +8,8 @@ export const useDeleteStudyPlan = () => {
 
     return useAppMutation(deleteStudyPlan, {
         onSuccess: (_, studyPlanId) => {
-            queryClient.invalidateQueries({queryKey: studyPlanKeys.list()});
             queryClient.removeQueries({queryKey: studyPlanKeys.detail(studyPlanId)});
+            queryClient.invalidateQueries({queryKey: studyPlanKeys.list()});
         },
         successNotification: {message: "Deleted study plan."}
     });

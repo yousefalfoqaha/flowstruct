@@ -6,6 +6,6 @@ import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 export const useRemoveCoursePrerequisite = () => {
     const queryClient = useQueryClient();
     return useAppMutation(removeCoursePrerequisite, {
-        onSuccess: (updatedStudyPlan) => queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan)
+        onSuccess: (data) => queryClient.setQueryData(studyPlanKeys.detail(data.id), data)
     });
 }

@@ -7,7 +7,10 @@ export const useCreateStudyPlan = () => {
     const queryClient = useQueryClient();
 
     return useAppMutation(createStudyPlan, {
-        onSuccess: () => queryClient.invalidateQueries({queryKey: studyPlanKeys.list()}),
+        onSuccess: (data) => {
+            queryClient.setQueryData(studyPlanKeys.detail(data.id), data);
+            queryClient.invalidateQueries({queryKey: studyPlanKeys.list()});
+        },
         successNotification: {message: "Study plan created."}
     });
 };

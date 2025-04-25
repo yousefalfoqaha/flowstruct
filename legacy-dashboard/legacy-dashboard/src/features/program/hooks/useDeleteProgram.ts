@@ -8,7 +8,8 @@ export const useDeleteProgram = () => {
     const queryClient = useQueryClient();
 
     return useAppMutation(deleteProgram, {
-        onSuccess: () => {
+        onSuccess: (_, programId) => {
+            queryClient.removeQueries({queryKey: programKeys.detail(programId)})
             queryClient.invalidateQueries({queryKey: programKeys.list()});
             queryClient.invalidateQueries({queryKey: studyPlanKeys.list()});
         },
