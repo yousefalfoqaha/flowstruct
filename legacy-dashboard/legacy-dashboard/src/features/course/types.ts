@@ -25,4 +25,4 @@ export type CoursesPage = {
     isLastPage: boolean;
 }
 
-export type CourseSummary = Pick<Course, "id" | "code" | "name" | "creditHours" | "type">;
+export type CourseSummary = Pick<Course, "id" | "code" | "name" | "creditHours" | "type" | "isRemedial">;

@@ -1,10 +1,10 @@
 import {createColumnHelper} from "@tanstack/react-table";
-import {Course} from "@/features/course/types.ts";
+import {CourseSummary} from "@/features/course/types.ts";
 import {Badge} from "@mantine/core";
 import {CourseOptionsMenu} from "@/features/course/components/CourseOptionsMenu.tsx";
 
 export function getCoursesTableColumns() {
-    const {accessor, display} = createColumnHelper<Course>();
+    const {accessor, display} = createColumnHelper<CourseSummary>();
 
     return [
         accessor('code', {

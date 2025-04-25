@@ -1,9 +1,13 @@
 import {
     Button,
-    Flex, FocusTrap,
-    Group, MultiSelect, MultiSelectProps,
+    Flex,
+    FocusTrap,
+    Group,
+    MultiSelect,
+    MultiSelectProps,
     Popover,
-    SegmentedControl, Text,
+    SegmentedControl,
+    Text,
 } from "@mantine/core";
 import React from "react";
 import {CircleAlert, Link, Plus} from "lucide-react";
@@ -13,7 +17,7 @@ import {CourseRelation, StudyPlan} from "@/features/study-plan/types.ts";
 import {useAssignCourseCorequisites} from "@/features/study-plan/hooks/useAssignCourseCorequisites.ts";
 import classes from "@/features/study-plan/components/CoursesMultiSelect.module.css";
 import {getSectionCode} from "@/utils/getSectionCode.ts";
-import {Course} from "@/features/course/types.ts";
+import {CourseSummary} from "@/features/course/types.ts";
 
 type CourseOption = {
     value: string;
@@ -23,7 +27,7 @@ type CourseOption = {
 }
 
 type PrerequisiteMultiSelectProps = {
-    courses: Record<number, Course>;
+    courses: Record<number, CourseSummary>;
     parentCourseId: number;
     studyPlan: StudyPlan;
 }

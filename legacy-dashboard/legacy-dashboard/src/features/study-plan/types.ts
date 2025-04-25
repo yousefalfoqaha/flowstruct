@@ -1,4 +1,4 @@
-import {Course} from "@/features/course/types.ts";
+import {CourseSummary} from "@/features/course/types.ts";
 
 export enum SectionLevel {
     University = "University",
@@ -50,7 +50,7 @@ export type StudyPlan = {
     courseCorequisites: Record<number, number[]>;
 }
 
-export type FrameworkCourse = Course & {
+export type FrameworkCourse = CourseSummary & {
     prerequisites: Record<number, CourseRelation>,
     corequisites: number[],
     section: number,

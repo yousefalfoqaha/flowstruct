@@ -1,14 +1,13 @@
 import {ActionIcon, Menu} from "@mantine/core";
-import {Course} from "@/features/course/types.ts";
+import {CourseSummary} from "@/features/course/types.ts";
 import {Ellipsis, Pencil, ScrollText} from "lucide-react";
 import {Link} from "@tanstack/react-router";
 
 type Props = {
-    course: Course;
+    course: CourseSummary;
 }
 
 export function CourseOptionsMenu({course}: Props) {
-
     return (
         <Menu>
             <Menu.Target>

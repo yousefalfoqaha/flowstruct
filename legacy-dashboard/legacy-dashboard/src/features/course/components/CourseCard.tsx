@@ -1,4 +1,4 @@
-import {Course} from "@/features/course/types.ts";
+import {Course, CourseSummary} from "@/features/course/types.ts";
 import classes from "./CourseCard.module.css";
 import {ActionIcon, Indicator, Popover, Text} from "@mantine/core";
 import {CircleMinus} from "lucide-react";
@@ -6,7 +6,7 @@ import {useRemoveCoursePlacement} from "@/features/study-plan/hooks/useRemoveCou
 import {useDisclosure} from "@mantine/hooks";
 
 type CourseCardProps = {
-    course: Course;
+    course: CourseSummary;
     missingPrerequisites: Partial<Course>[];
     studyPlanId: number;
 }

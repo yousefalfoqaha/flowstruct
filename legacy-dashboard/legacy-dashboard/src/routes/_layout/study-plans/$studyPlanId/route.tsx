@@ -1,5 +1,5 @@
 import {createFileRoute, Outlet, useMatches, useNavigate} from '@tanstack/react-router'
-import {getStudyPlanQuery, StudyPlanCourseListQuery} from "@/features/study-plan/queries.ts";
+import {StudyPlanQuery, StudyPlanCourseListQuery} from "@/features/study-plan/queries.ts";
 import {getStudyPlanDisplayName} from "@/utils/getStudyPlanDisplayName.ts";
 import {getProgramQuery} from "@/features/program/queries.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
@@ -19,7 +19,7 @@ export const Route = createFileRoute('/_layout/study-plans/$studyPlanId')({
     loader: async ({context: {queryClient}, params}) => {
         const studyPlanId = Number(params.studyPlanId);
 
-        const studyPlan = await queryClient.ensureQueryData(getStudyPlanQuery(studyPlanId));
+        const studyPlan = await queryClient.ensureQueryData(StudyPlanQuery(studyPlanId));
 
         await queryClient.ensureQueryData(StudyPlanCourseListQuery(studyPlanId));
         await queryClient.ensureQueryData(getProgramQuery(studyPlan.program));

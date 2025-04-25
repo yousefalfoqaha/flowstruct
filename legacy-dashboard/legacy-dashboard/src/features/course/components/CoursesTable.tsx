@@ -1,7 +1,7 @@
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {usePaginatedCourses} from "@/features/course/hooks/usePaginatedCourses.ts";
 import {useDataTable} from "@/shared/hooks/useDataTable.ts";
-import {Course} from "@/features/course/types.ts";
+import {CourseSummary} from "@/features/course/types.ts";
 import React from "react";
 import {getCoursesTableColumns} from "@/features/course/components/CoursesTableColumns.tsx";
 import {DataTable} from "@/shared/components/DataTable.tsx";
@@ -19,12 +19,12 @@ export function CoursesTable() {
         []
     );
 
-    const data: Course[] = React.useMemo(
+    const data: CourseSummary[] = React.useMemo(
         () => coursesPage?.content ?? [],
         [coursesPage?.content]
     );
 
-    const table = useDataTable<Course>({
+    const table = useDataTable<CourseSummary>({
         data,
         columns,
         manualPagination: true,

@@ -13,8 +13,8 @@ export function PrerequisitePillGroup({parentCourseId}: PrerequisitePillGroupPro
     const removePrerequisite = useRemoveCoursePrerequisite();
     const removeCorequisite = useRemoveCourseCorequisite();
 
-    const {data: courses} = useStudyPlanCourses();
     const {data: studyPlan} = useStudyPlan();
+    const {data: courses} = useStudyPlanCourses();
 
     const handleRemovePrerequisite = (prerequisiteId: number) => removePrerequisite.mutate({
         studyPlanId: studyPlan.id,
