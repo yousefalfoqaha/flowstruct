@@ -4,6 +4,7 @@ public record CourseSummaryResponse(
         long id,
         String code,
         String name,
-        int creditHours
+        int creditHours,
+        String type
 ) {
 }

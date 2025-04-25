@@ -35,7 +35,7 @@ public class CourseController {
     }
 
     @GetMapping("/by-ids")
-    public ResponseEntity<Map<Long, CourseResponse>> getCoursesById(
+    public ResponseEntity<Map<Long, CourseSummaryResponse>> getCoursesById(
             @RequestParam(value = "courses", defaultValue = "") List<Long> courseIds
     ) {
         return new ResponseEntity<>(courseService.getCoursesById(courseIds), HttpStatus.OK);

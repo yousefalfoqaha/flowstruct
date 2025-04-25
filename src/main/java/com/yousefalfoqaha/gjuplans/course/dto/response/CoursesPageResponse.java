@@ -3,7 +3,7 @@ package com.yousefalfoqaha.gjuplans.course.dto.response;
 import java.util.List;
 
 public record CoursesPageResponse(
-        List<CourseResponse> content,
+        List<CourseSummaryResponse> content,
         int page,
         int size,
         long totalCourses,

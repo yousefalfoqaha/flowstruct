@@ -7,6 +7,7 @@ import com.yousefalfoqaha.gjuplans.course.dto.request.CourseDetailsRequest;
 import com.yousefalfoqaha.gjuplans.course.dto.response.*;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import com.yousefalfoqaha.gjuplans.course.mapper.CourseResponseMapper;
+import com.yousefalfoqaha.gjuplans.course.mapper.CourseSummaryResponseMapper;
 import com.yousefalfoqaha.gjuplans.course.mapper.CoursesPageResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ public class CourseService {
     //    private final CourseGraphService courseGraphService;
     private final ObjectValidator<CourseDetailsRequest> courseDetailsValidator;
     private final CourseResponseMapper courseResponseMapper;
+    private final CourseSummaryResponseMapper courseSummaryResponseMapper;
     private final CoursesPageResponseMapper coursesPageResponseMapper;
 
     public CoursesPageResponse getPaginatedCourses(int page, int size, String filter) {
@@ -47,10 +49,10 @@ public class CourseService {
         return coursesPageResponseMapper.apply(coursesPage);
     }
 
-    public Map<Long, CourseResponse> getCoursesById(List<Long> courseIds) {
+    public Map<Long, CourseSummaryResponse> getCoursesById(List<Long> courseIds) {
         return courseRepository.findAllById(courseIds)
                 .stream()
-                .collect(Collectors.toMap(Course::getId, courseResponseMapper));
+                .collect(Collectors.toMap(Course::getId, courseSummaryResponseMapper));
     }
 
     public CourseResponse getCourse(long courseId) {
