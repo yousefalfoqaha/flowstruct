@@ -27,5 +27,5 @@ public class Program {
     private boolean isPrivate;
 
     @Version
-    private long version;
+    private Long version;
 }

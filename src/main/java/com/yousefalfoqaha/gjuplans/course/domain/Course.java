@@ -1,12 +1,12 @@
 package com.yousefalfoqaha.gjuplans.course.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
-import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
-
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,5 +35,5 @@ public class Course {
         private boolean isRemedial;
 
         @Version
-        private long version;
+        private Long version;
 }

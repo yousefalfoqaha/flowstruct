@@ -35,7 +35,7 @@ public class StudyPlan {
     private AggregateReference<Program, Long> program;
 
     @Version
-    private long version;
+    private Long version;
 
     @MappedCollection(idColumn = "study_plan")
     private Set<Section> sections = new HashSet<>();
