@@ -1,10 +1,8 @@
 package com.yousefalfoqaha.gjuplans.course.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -18,21 +16,24 @@ import java.util.Set;
 public class Course {
 
         @Id
-        Long id;
+        private Long id;
 
-        String code;
+        private String code;
 
-        String name;
+        private String name;
 
-        int creditHours;
+        private int creditHours;
 
-        int ects;
+        private int ects;
 
-        int lectureHours;
+        private int lectureHours;
 
-        int practicalHours;
+        private int practicalHours;
 
-        CourseType type;
+        private CourseType type;
 
-        boolean isRemedial;
+        private boolean isRemedial;
+
+        @Version
+        private long version;
 }

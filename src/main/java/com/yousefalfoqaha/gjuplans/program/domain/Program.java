@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Table;
 
 @AllArgsConstructor
@@ -24,4 +25,7 @@ public class Program {
     private Degree degree;
 
     private boolean isPrivate;
+
+    @Version
+    private long version;
 }

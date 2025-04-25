@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
@@ -32,6 +33,9 @@ public class StudyPlan {
     private boolean isPrivate;
 
     private AggregateReference<Program, Long> program;
+
+    @Version
+    private long version;
 
     @MappedCollection(idColumn = "study_plan")
     private Set<Section> sections = new HashSet<>();

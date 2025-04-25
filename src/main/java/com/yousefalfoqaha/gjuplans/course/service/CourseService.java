@@ -117,7 +117,8 @@ public class CourseService {
                 request.lectureHours(),
                 request.practicalHours(),
                 request.type(),
-                request.isRemedial()
+                request.isRemedial(),
+                0
         );
 
         return saveAndMap(newCourse, courseResponseMapper);

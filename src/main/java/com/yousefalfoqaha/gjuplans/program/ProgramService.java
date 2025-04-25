@@ -10,11 +10,13 @@ import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
 import com.yousefalfoqaha.gjuplans.program.mapper.ProgramResponseMapper;
 import com.yousefalfoqaha.gjuplans.program.mapper.ProgramSummaryResponseMapper;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
 
 @RequiredArgsConstructor
 @Service
@@ -69,17 +71,14 @@ public class ProgramService {
             throw new UniqueProgramException("Program with code " + request.code() + " already exists.");
         }
 
-        Program createdProgram = programRepository.save(
-                new Program(
-                        null,
-                        request.code(),
-                        request.name(),
-                        request.degree(),
-                        request.isPrivate()
-                )
-        );
+        var newProgram = new Program();
 
-        return programResponseMapper.apply(createdProgram);
+        newProgram.setCode(request.code());
+        newProgram.setName(request.name());
+        newProgram.setDegree(request.degree());
+        newProgram.setPrivate(request.isPrivate());
+
+        return saveAndMapProgram(newProgram, programResponseMapper);
     }
 
     @Transactional
@@ -93,8 +92,7 @@ public class ProgramService {
 
         program.setPrivate(!program.isPrivate());
 
-        programRepository.save(program);
-        return programResponseMapper.apply(program);
+        return saveAndMapProgram(program, programResponseMapper);
     }
 
     private Program findProgram(long programId) {
@@ -102,5 +100,10 @@ public class ProgramService {
                 .orElseThrow(
                         () -> new ProgramNotFoundException("Program with id " + programId + " was not found.")
                 );
+    }
+
+    private <T> T saveAndMapProgram(Program program, Function<Program, T> mapper) {
+        var savedProgram = programRepository.save(program);
+        return mapper.apply(savedProgram);
     }
 }

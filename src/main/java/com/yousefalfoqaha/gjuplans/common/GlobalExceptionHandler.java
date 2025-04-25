@@ -4,6 +4,7 @@ import com.yousefalfoqaha.gjuplans.program.exception.InvalidDegreeException;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.*;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -56,6 +57,20 @@ public class GlobalExceptionHandler {
                 new ErrorObject(
                         HttpStatus.CONFLICT.value(),
                         exception.getMessage(),
+                        new Date()
+                ),
+                HttpStatus.CONFLICT
+        );
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            OptimisticLockingFailureException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.CONFLICT.value(),
+                        "This content has been modified by another user while you were editing. Please refresh to see the latest version.",
                         new Date()
                 ),
                 HttpStatus.CONFLICT
