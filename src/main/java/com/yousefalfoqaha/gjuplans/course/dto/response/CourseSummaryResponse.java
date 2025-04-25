@@ -5,6 +5,7 @@ public record CourseSummaryResponse(
         String code,
         String name,
         int creditHours,
-        String type
+        String type,
+        boolean isRemedial
 ) {
 }
