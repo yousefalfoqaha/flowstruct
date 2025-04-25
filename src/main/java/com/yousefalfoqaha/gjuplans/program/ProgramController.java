@@ -50,6 +50,6 @@ public class ProgramController {
     @DeleteMapping("/{programId}")
     public ResponseEntity<Void> deleteProgram(@PathVariable long programId) {
         programService.deleteProgram(programId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

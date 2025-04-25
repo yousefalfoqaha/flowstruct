@@ -1,7 +1,8 @@
-package com.yousefalfoqaha.gjuplans.studyplan;
+package com.yousefalfoqaha.gjuplans.studyplan.service;
 
 import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
+import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanRepository;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
@@ -26,10 +27,6 @@ public class StudyPlanService {
     private final ObjectValidator<EditSectionRequest> editSectionRequestValidator;
     private final StudyPlanResponseMapper studyPlanResponseMapper;
     private final ObjectValidator<AddCoursesToSectionRequest> addCoursesToSectionValidator;
-
-    public List<StudyPlanSummaryResponse> getProgramStudyPlans(long programId) {
-        return studyPlanRepository.findAllStudyPlanSummariesByProgram(programId);
-    }
 
     public StudyPlanResponse getStudyPlan(long studyPlanId) {
         var studyPlan = studyPlanRepository.findById(studyPlanId)

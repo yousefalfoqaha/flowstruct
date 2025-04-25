@@ -2,6 +2,7 @@ package com.yousefalfoqaha.gjuplans.course;
 
 import com.yousefalfoqaha.gjuplans.course.dto.request.CourseDetailsRequest;
 import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
+import com.yousefalfoqaha.gjuplans.course.dto.response.CourseSummaryResponse;
 import com.yousefalfoqaha.gjuplans.course.dto.response.CoursesPageResponse;
 import com.yousefalfoqaha.gjuplans.course.service.CourseService;
 import jakarta.validation.Valid;

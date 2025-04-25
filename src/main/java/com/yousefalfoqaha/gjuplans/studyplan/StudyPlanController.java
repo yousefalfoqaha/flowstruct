@@ -1,33 +1,35 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
+import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.MoveDirection;
-import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanCourseService;
+import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/study-plans")
 public class StudyPlanController {
     private final StudyPlanService studyPlanService;
+    private final StudyPlanCourseService studyPlanCourseService;
 
     @GetMapping
     public ResponseEntity<List<StudyPlanSummaryResponse>> getAllStudyPlans() {
         return new ResponseEntity<>(studyPlanService.getAllStudyPlans(), HttpStatus.OK);
     }
 
-    @GetMapping("/by-program")
-    public ResponseEntity<List<StudyPlanSummaryResponse>> getProgramStudyPlans(
-            @RequestParam(value = "program", defaultValue = "") long programId
-    ) {
-        return new ResponseEntity<>(studyPlanService.getProgramStudyPlans(programId), HttpStatus.OK);
+    @GetMapping("/{studyPlanId}/courses")
+    public ResponseEntity<Map<Long, CourseResponse>> getStudyPlanCourses(@PathVariable long studyPlanId) {
+        return new ResponseEntity<>(studyPlanCourseService.getStudyPlanCourses(studyPlanId), HttpStatus.OK);
     }
 
     @GetMapping("/{studyPlanId}")
