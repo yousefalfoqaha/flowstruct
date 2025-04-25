@@ -1,10 +1,10 @@
 import {createColumnHelper} from "@tanstack/react-table";
-import {StudyPlanRowItem} from "@/features/study-plan/types.ts";
+import {StudyPlanRow} from "@/features/study-plan/types.ts";
 import {StudyPlanOptionsMenu} from "@/features/study-plan/components/StudyPlanOptionsMenu.tsx";
 import {getVisibilityBadge} from "@/utils/getVisibilityBadge.tsx";
 
 export function getStudyPlansTableColumns() {
-    const {accessor, display} = createColumnHelper<StudyPlanRowItem>();
+    const {accessor, display} = createColumnHelper<StudyPlanRow>();
 
     return [
         accessor('programName', {

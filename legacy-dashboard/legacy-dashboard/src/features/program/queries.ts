@@ -1,20 +1,19 @@
 import {queryOptions} from "@tanstack/react-query";
-import {getProgramListRequest, getProgramRequest} from "@/features/program/api.ts";
+import {getProgram, getProgramList} from "@/features/program/api.ts";
 
 export const programKeys = {
     all: ['programs'] as const,
-    lists: () => [...programKeys.all, 'list'] as const,
-    list: (page: number) => [...programKeys.lists(), page] as const,
+    list: () => [...programKeys.all, 'list'] as const,
     details: () => [...programKeys.all, 'detail'] as const,
     detail: (id: number) => [...programKeys.details(), id] as const,
 };
 
 export const getProgramListQuery = queryOptions({
-    queryKey: programKeys.all,
-    queryFn: getProgramListRequest
+    queryKey: programKeys.list(),
+    queryFn: getProgramList
 });
 
 export const getProgramQuery = (programId: number) => queryOptions({
     queryKey: programKeys.detail(programId),
-    queryFn: () => getProgramRequest(programId)
+    queryFn: () => getProgram(programId)
 });

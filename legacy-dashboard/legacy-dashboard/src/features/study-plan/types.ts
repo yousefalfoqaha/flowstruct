@@ -57,8 +57,8 @@ export type FrameworkCourse = Course & {
     sectionCode: string
 }
 
-export type StudyPlanRowItem = StudyPlanListItem & {
+export type StudyPlanRow = StudyPlanSummary & {
     programName: string
 }
 
-export type StudyPlanListItem = Pick<StudyPlan, "id" | "year" | "duration" | "track" | "isPrivate" | "program">;
+export type StudyPlanSummary = Pick<StudyPlan, "id" | "year" | "duration" | "track" | "isPrivate" | "program">;

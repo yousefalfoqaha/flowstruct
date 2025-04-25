@@ -1,12 +1,12 @@
 import {createColumnHelper} from "@tanstack/react-table";
-import {ProgramListItem} from "@/features/program/types.ts";
+import {ProgramSummary} from "@/features/program/types.ts";
 import {ProgramOptionsMenu} from "@/features/program/components/ProgramOptionsMenu.tsx";
 import {Badge} from "@mantine/core";
 import {Eye, EyeOff} from "lucide-react";
 import classes from "./StatusBadge.module.css";
 
 export function getProgramsTableColumns() {
-    const {display, accessor} = createColumnHelper<ProgramListItem>();
+    const {display, accessor} = createColumnHelper<ProgramSummary>();
 
     return [
         accessor('code', {

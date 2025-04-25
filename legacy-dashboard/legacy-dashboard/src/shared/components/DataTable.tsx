@@ -1,6 +1,6 @@
 import {Table as TanStackTable} from "@tanstack/table-core";
 import {flexRender} from "@tanstack/react-table";
-import {Table} from "@mantine/core";
+import {Table, Text} from "@mantine/core";
 import classes from "./DataTable.module.css";
 
 type DataTableProps<TData> = {
@@ -44,7 +44,7 @@ export function DataTable<TData>({table}: DataTableProps<TData>) {
                     ) : (
                         <Table.Tr>
                             <Table.Td colSpan={table.getLeafHeaders().length}>
-                                No results.
+                                <Text c="dimmed" size="sm" ta="center" pt="sm">No results.</Text>
                             </Table.Td>
                         </Table.Tr>
                     )}

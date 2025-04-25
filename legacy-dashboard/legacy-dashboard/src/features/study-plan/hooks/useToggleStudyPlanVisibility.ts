@@ -1,5 +1,5 @@
 import {useQueryClient} from "@tanstack/react-query";
-import {StudyPlan, StudyPlanListItem} from "@/features/study-plan/types.ts";
+import {StudyPlan, StudyPlanSummary} from "@/features/study-plan/types.ts";
 import {toggleStudyPlanVisibility} from "@/features/study-plan/api.ts";
 import {Eye, EyeOff} from "lucide-react";
 import React from "react";
@@ -14,7 +14,7 @@ export const useToggleStudyPlanVisibility = () => {
         onSuccess: (updatedStudyPlan) => {
             queryClient.setQueryData(
                 studyPlanKeys.lists(),
-                (previous: StudyPlanListItem[] | undefined) => {
+                (previous: StudyPlanSummary[] | undefined) => {
                     if (!previous) return [];
                     return previous.map(sp =>
                         sp.id === updatedStudyPlan.id

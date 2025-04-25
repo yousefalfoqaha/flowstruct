@@ -1,7 +1,7 @@
 import {DataTable} from "@/shared/components/DataTable.tsx";
 import {useStudyPlanList} from "@/features/study-plan/hooks/useStudyPlanList.ts";
 import {useDataTable} from "@/shared/hooks/useDataTable.ts";
-import {StudyPlanRowItem} from "@/features/study-plan/types.ts";
+import {StudyPlanRow} from "@/features/study-plan/types.ts";
 import React from "react";
 import {getStudyPlansTableColumns} from "@/features/study-plan/components/StudyPlansTableColumns.tsx";
 import {AppCard} from "@/shared/components/AppCard.tsx";
@@ -24,7 +24,7 @@ export function StudyPlansTable() {
         []
     );
 
-    const data: StudyPlanRowItem[] = React.useMemo(
+    const data: StudyPlanRow[] = React.useMemo(
         () => {
             return studyPlans.map(studyPlan => {
                 const program = programs.find(p => p.id === studyPlan.program);
@@ -37,7 +37,7 @@ export function StudyPlansTable() {
         [programs, studyPlans]
     );
 
-    const table = useDataTable<StudyPlanRowItem>({data, columns});
+    const table = useDataTable<StudyPlanRow>({data, columns});
 
     return (
         <Stack>

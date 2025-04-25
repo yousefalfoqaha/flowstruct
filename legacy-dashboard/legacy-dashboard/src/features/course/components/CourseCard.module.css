@@ -54,7 +54,7 @@
     right: 0;
     padding-right: var(--mantine-spacing-sm);
     padding-left: var(--mantine-spacing-sm);
-    height: 2.5rem;
+    height: 1.75rem;
     transform: translateY(100%);
     transition: transform 0.2s ease;
 }

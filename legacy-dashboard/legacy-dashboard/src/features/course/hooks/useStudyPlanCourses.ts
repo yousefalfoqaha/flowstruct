@@ -1,9 +1,9 @@
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {getStudyPlanQuery} from "@/features/study-plan/queries.ts";
+import {StudyPlanCourseListQuery} from "@/features/study-plan/queries.ts";
 import {useParams} from "@tanstack/react-router";
 import React from "react";
 
-export const useStudyPlan = (fallbackStudyPlanId?: number) => {
+export const useStudyPlanCourses = (fallbackStudyPlanId?: number) => {
     const params = useParams({ strict: false });
 
     const studyPlanId = React.useMemo(() => {
@@ -15,5 +15,5 @@ export const useStudyPlan = (fallbackStudyPlanId?: number) => {
         throw new Error("Cannot use study plan without a study plan ID.");
     }
 
-    return useSuspenseQuery(getStudyPlanQuery(studyPlanId));
-};
+    return useSuspenseQuery(StudyPlanCourseListQuery(studyPlanId));
+}

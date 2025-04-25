@@ -1,7 +1,7 @@
 import {useQueryClient} from "@tanstack/react-query";
 import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 import {toggleProgramVisibility} from "@/features/program/api.ts";
-import {ProgramListItem} from "@/features/program/types.ts";
+import {ProgramSummary} from "@/features/program/types.ts";
 import {Eye, EyeOff} from "lucide-react";
 import React from "react";
 import {programKeys} from "@/features/program/queries.ts";
@@ -14,7 +14,7 @@ export const useToggleProgramVisibility = () => {
         onSuccess: (updatedProgram) => {
             queryClient.setQueryData(
                 programKeys.all,
-                (previous: ProgramListItem[]) => {
+                (previous: ProgramSummary[]) => {
                     return previous.map((program) =>
                         program.id === updatedProgram.id ? {...program, isPrivate: updatedProgram.isPrivate} : program
                     );

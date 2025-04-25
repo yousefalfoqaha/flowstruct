@@ -11,13 +11,13 @@ import {FilteredSectionIndicator} from "@/features/study-plan/components/Filtere
 import React from "react";
 import {getFrameworkCoursesTableColumns} from "@/features/study-plan/components/FrameworkCoursesTableColumns.tsx";
 import {getSectionCode} from "@/utils/getSectionCode.ts";
-import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {FrameworkCourse} from "@/features/study-plan/types.ts";
 import {AppCard} from "@/shared/components/AppCard.tsx";
+import {useStudyPlanCourses} from "@/features/course/hooks/useStudyPlanCourses.ts";
 
 export function FrameworkCoursesTable() {
     const {data: studyPlan} = useStudyPlan();
-    const {data: courses} = useCourseList();
+    const {data: courses} = useStudyPlanCourses();
 
     const data = React.useMemo(() => {
         const rows: FrameworkCourse[] = [];

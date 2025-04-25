@@ -7,6 +7,6 @@ export const useEditSectionDetails = () => {
     const queryClient = useQueryClient();
     return useAppMutation(editSectionDetails, {
         onSuccess: (updatedStudyPlan) => queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan),
-        successNotification: {message: "Section details updated successfully."}
+        successNotification: {message: "Section details updated."}
     });
 }

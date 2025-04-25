@@ -105,7 +105,7 @@ export function CoursePlacementMultiSelect({semester, studyPlan, courses}: Cours
         >
             <Popover.Target>
                 <ActionIcon
-                    variant="white"
+                    variant="transparent"
                     size="compact-xs"
                     onClick={() => setOpened((o) => !o)}
                 >

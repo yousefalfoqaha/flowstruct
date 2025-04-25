@@ -7,6 +7,6 @@ export const useDeleteSection = () => {
     const queryClient = useQueryClient();
     return useAppMutation(deleteSection, {
         onSuccess: (updatedStudyPlan) => queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan),
-        successNotification: {message: "Section deleted successfully."}
+        successNotification: {message: "Section deleted."}
     });
 }

@@ -5,11 +5,14 @@ import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 
 export const useRemoveCoursesFromSection = () => {
     const queryClient = useQueryClient();
+
     return useAppMutation(removeCoursesFromSection, {
-        onSuccess: (updatedStudyPlan) => queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan),
+        onSuccess: (_, {studyPlanId}) => (
+            queryClient.invalidateQueries({queryKey: studyPlanKeys.detail(studyPlanId)})
+        ),
         successNotification: {
             message: (_, {courseIds}) =>
-                `${courseIds.length} course(s) removed from study plan successfully.`
+                `${courseIds.length} course(s) removed from study plan.`
         }
     });
 }

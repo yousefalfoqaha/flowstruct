@@ -8,13 +8,14 @@ export const Route = createFileRoute(
     '/_layout/study-plans/$studyPlanId/framework',
 )({
     component: RouteComponent,
+    loader: () => ({crumb: 'Framework'}),
     validateSearch: TableSearchSchema,
     search: {
         middlewares: [
             stripSearchParams(getDefaultSearchValues())
         ]
     }
-})
+});
 
 function RouteComponent() {
     return (

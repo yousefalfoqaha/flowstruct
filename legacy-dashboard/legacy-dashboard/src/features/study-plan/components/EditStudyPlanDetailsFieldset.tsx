@@ -47,7 +47,7 @@ export function EditStudyPlanDetailsFieldset({studyPlan}: Props) {
         });
     });
 
-    const handleDelete = () => deleteStudyPlan.mutate(studyPlan, {
+    const handleDelete = () => deleteStudyPlan.mutate(studyPlan.id, {
             onSuccess: () => navigate({
                 to: '/study-plans',
                 search: getDefaultSearchValues()

@@ -1,35 +1,17 @@
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {deleteProgramRequest} from "@/features/program/api.ts";
-import {ProgramListItem} from "@/features/program/types.ts";
-import {notifications} from "@mantine/notifications";
+import {useQueryClient} from "@tanstack/react-query";
+import {deleteProgram} from "@/features/program/api.ts";
+import {programKeys} from "@/features/program/queries.ts";
+import {studyPlanKeys} from "@/features/study-plan/queries.ts";
+import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 
 export const useDeleteProgram = () => {
     const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: (programId: number) => deleteProgramRequest(programId),
-        onSuccess: (_, deletedProgramId) => {
-            queryClient.setQueryData(
-                ["programs"],
-                (previous: ProgramListItem[]) => {
-                    return previous.filter((program) => program.id !== deletedProgramId);
-                }
-            );
-
-            queryClient.removeQueries({queryKey: ["study-plans", "list", deletedProgramId]});
-
-            notifications.show({
-                title: "Success!",
-                message: "Program deleted successfully",
-                color: "green"
-            });
+    return useAppMutation(deleteProgram, {
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: programKeys.list()});
+            queryClient.invalidateQueries({queryKey: studyPlanKeys.list()});
         },
-        onError: (error) => {
-            notifications.show({
-                title: "An error occurred.",
-                message: error.message,
-                color: "red",
-            });
-        },
+        successNotification: {message: 'Program deleted.'}
     });
 }

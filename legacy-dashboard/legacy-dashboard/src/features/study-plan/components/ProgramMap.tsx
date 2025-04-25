@@ -1,12 +1,12 @@
 import {CourseCard} from "@/features/course/components/CourseCard.tsx";
-import {useCourseList} from "@/features/course/hooks/useCourseList.ts";
 import {Divider, Flex, ScrollArea, Stack, Text} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {CoursePlacementMultiSelect} from "@/features/study-plan/components/CoursePlacementMultiSelect.tsx";
+import {useStudyPlanCourses} from "@/features/course/hooks/useStudyPlanCourses.ts";
 
 export function ProgramMap() {
     const {data: studyPlan} = useStudyPlan();
-    const {data: courses} = useCourseList();
+    const {data: courses} = useStudyPlanCourses();
 
     const academicYears = Array.from({length: studyPlan.duration}, (_, i) => i + 1);
     const SEMESTERS_PER_YEAR = 3;

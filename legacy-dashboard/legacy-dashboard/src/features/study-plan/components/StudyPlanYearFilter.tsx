@@ -1,11 +1,11 @@
 import {DateValue, YearPickerInput} from "@mantine/dates";
 import {Calendar} from "lucide-react";
 import {Table} from "@tanstack/react-table";
-import {StudyPlanRowItem} from "@/features/study-plan/types.ts";
+import {StudyPlanRow} from "@/features/study-plan/types.ts";
 import React from "react";
 
 type Props = {
-    table: Table<StudyPlanRowItem>;
+    table: Table<StudyPlanRow>;
 }
 
 export function StudyPlanYearFilter({table}: Props) {

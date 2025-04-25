@@ -1,39 +1,39 @@
 import {infiniteQueryOptions, keepPreviousData, queryOptions} from "@tanstack/react-query";
-import {getCourse, getCoursesRequest, getPaginatedCourses} from "@/features/course/api.ts";
+import {getCourse, getPaginatedCourses} from "@/features/course/api.ts";
 import {TableSearchOptions} from "@/shared/types.ts";
-import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
 
 export const courseKeys = {
     all: ['courses'] as const,
+    infinites: () => [...courseKeys.all, 'infinite'] as const,
+    infinite: (filter: string) => [...courseKeys.infinites(), filter] as const,
     lists: () => [...courseKeys.all, 'list'] as const,
     list: (options: Omit<TableSearchOptions, 'columnFilters'>) => [...courseKeys.lists(), options] as const,
     details: () => [...courseKeys.all, 'detail'] as const,
     detail: (id: number) => [...courseKeys.details(), id] as const,
 };
 
-export const getCourseQuery = (courseId: number) => queryOptions({
+export const CourseQuery = (courseId: number) => queryOptions({
     queryKey: courseKeys.detail(courseId),
     queryFn: () => getCourse(courseId)
 });
 
-export const getCourseListQuery = (courseIds: number[]) => queryOptions({
-    queryKey: courseKeys.all,
-    queryFn: () => getCoursesRequest(courseIds),
-    enabled: courseIds.length > 0
-});
-
-export const getPaginatedCoursesQuery = (options: Omit<TableSearchOptions, 'columnFilters'>) =>
+export const PaginatedCoursesQuery = (options: Omit<TableSearchOptions, 'columnFilters'>) =>
     queryOptions({
         queryKey: courseKeys.list(options),
         queryFn: () => getPaginatedCourses(options),
         placeholderData: keepPreviousData
     });
 
-export const getInfiniteCoursesQuery = (filter: string) =>
+export const InfiniteCoursesQuery = (filter: string) =>
     infiniteQueryOptions({
-        queryKey: courseKeys.list({...getDefaultSearchValues(), filter: filter}),
-        queryFn: ({pageParam}) => getPaginatedCourses({...getDefaultSearchValues(), page: pageParam}),
+        queryKey: courseKeys.infinite(filter),
+        queryFn: ({pageParam}) => getPaginatedCourses({
+            page: pageParam,
+            filter: filter,
+            size: 5
+        }),
         initialPageParam: 0,
-        getNextPageParam: (lastPage) => lastPage.isLastPage ? lastPage.page : lastPage.page + 1,
-        placeholderData: keepPreviousData
+        getNextPageParam: (lastPage) => lastPage.isLastPage ? undefined : lastPage.page + 1,
+        placeholderData: keepPreviousData,
+        enabled: filter.trim().length > 0
     });

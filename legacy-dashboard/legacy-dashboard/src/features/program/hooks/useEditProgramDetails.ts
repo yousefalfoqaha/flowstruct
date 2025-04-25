@@ -1,6 +1,6 @@
 import {useQueryClient} from "@tanstack/react-query";
 import {editProgramDetails} from "@/features/program/api.ts";
-import {ProgramListItem} from "@/features/program/types.ts";
+import {ProgramSummary} from "@/features/program/types.ts";
 import {programKeys} from "@/features/program/queries.ts";
 import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 import {getProgramDisplayName} from "@/utils/getProgramDisplayName.ts";
@@ -14,7 +14,7 @@ export const useEditProgramDetails = () => {
 
             queryClient.setQueryData(
                 programKeys.all,
-                (previous: ProgramListItem[]) => {
+                (previous: ProgramSummary[]) => {
                     if (!previous) return;
                     return previous.map((program) =>
                         program.id === editedProgram.id ? editedProgram : program
@@ -22,6 +22,6 @@ export const useEditProgramDetails = () => {
                 }
             );
         },
-        successNotification: {message: (data) => `Edited ${getProgramDisplayName(data)} details successfully.`}
+        successNotification: {message: (data) => `Edited ${getProgramDisplayName(data)} details.`}
     });
 };

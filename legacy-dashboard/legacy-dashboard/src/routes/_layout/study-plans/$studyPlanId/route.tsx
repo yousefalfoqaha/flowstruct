@@ -1,5 +1,5 @@
 import {createFileRoute, Outlet, useMatches, useNavigate} from '@tanstack/react-router'
-import {getStudyPlanQuery} from "@/features/study-plan/queries.ts";
+import {getStudyPlanQuery, StudyPlanCourseListQuery} from "@/features/study-plan/queries.ts";
 import {getStudyPlanDisplayName} from "@/utils/getStudyPlanDisplayName.ts";
 import {getProgramQuery} from "@/features/program/queries.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
@@ -9,22 +9,19 @@ import {PageHeaderWithBack} from "@/shared/components/PageHeaderWithBack.tsx";
 import {getProgramDisplayName} from "@/utils/getProgramDisplayName.ts";
 import {getVisibilityBadge} from "@/utils/getVisibilityBadge.tsx";
 import {PageLayout} from "@/shared/components/PageLayout.tsx";
-import {Folder, Map, ReceiptText, ScrollText} from "lucide-react";
+import {Folder, Map, ReceiptText} from "lucide-react";
 import {Route as DetailsRoute} from './details/index.tsx';
-import {Route as OverviewRoute} from './overview.tsx';
 import {Route as FrameworkRoute} from './framework.tsx';
 import {Route as ProgramMapRoute} from './program-map.tsx';
 import {ReactNode} from "react";
-
 
 export const Route = createFileRoute('/_layout/study-plans/$studyPlanId')({
     loader: async ({context: {queryClient}, params}) => {
         const studyPlanId = Number(params.studyPlanId);
 
-        const studyPlan = await queryClient.ensureQueryData(
-            getStudyPlanQuery(studyPlanId)
-        );
+        const studyPlan = await queryClient.ensureQueryData(getStudyPlanQuery(studyPlanId));
 
+        await queryClient.ensureQueryData(StudyPlanCourseListQuery(studyPlanId));
         await queryClient.ensureQueryData(getProgramQuery(studyPlan.program));
 
         return {
@@ -52,7 +49,7 @@ function RouteComponent() {
         <Group>
             <PageHeaderWithBack
                 title={`${getProgramDisplayName(program)} - ${getStudyPlanDisplayName(studyPlan)}`}
-                linkProps={{to: '..'}}
+                linkProps={{to: '/study-plans'}}
             />
             {getVisibilityBadge(studyPlan.isPrivate)}
         </Group>
@@ -61,14 +58,13 @@ function RouteComponent() {
     const fullPath = matches.at(-1)?.fullPath ?? '';
 
     const tabs: TabLink[] = [
-        {label: 'Overview', path: OverviewRoute.to, icon: <ScrollText size={18}/>},
+        {label: 'Details', path: DetailsRoute.to, icon: <ReceiptText size={18}/>},
         {label: 'Framework', path: FrameworkRoute.to, icon: <Folder size={18}/>},
         {label: 'Program Map', path: ProgramMapRoute.to, icon: <Map size={18}/>},
-        {label: 'Details', path: DetailsRoute.to, icon: <ReceiptText size={18}/>, rightAlign: true}
     ];
 
     const activeTab = tabs.find(tab =>
-        fullPath.includes(tab.path))?.path ?? OverviewRoute.to;
+        fullPath.includes(tab.path))?.path ?? DetailsRoute.to;
 
     return (
         <PageLayout header={header}>

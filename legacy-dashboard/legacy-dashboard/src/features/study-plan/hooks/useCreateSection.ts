@@ -7,6 +7,6 @@ export const useCreateSection = () => {
     const queryClient = useQueryClient();
     return useAppMutation(createSection, {
         onSuccess: (updatedStudyPlan) => queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan),
-        successNotification: {message: "Section created successfully."}
+        successNotification: {message: "Section created."}
     });
 };

@@ -13,5 +13,5 @@ export type Program = {
     isPrivate: boolean;
 }
 
-export type ProgramListItem = Pick<Program,
+export type ProgramSummary = Pick<Program,
     "id" | "code" | "name" | "degree" | "isPrivate">;

@@ -1,20 +1,16 @@
 import {Link} from "@tanstack/react-router";
 import classes from "@/shared/components/AppSidebar.module.css";
 import {ActionIcon, Text, Title} from "@mantine/core";
-import {BookOpen, GraduationCap, LayoutPanelLeft, Logs, ScrollText, Settings, X} from "lucide-react";
+import {BookOpen, GraduationCap, ScrollText, Settings, X} from "lucide-react";
 import {SidebarLink} from "@/shared/types.ts";
-import {Route as DashboardRoute} from "@/routes/_layout/dashboard";
 import {Route as ProgramsRoute} from "@/routes/_layout/programs/route.tsx";
 import {Route as StudyPlansRoute} from "@/routes/_layout/study-plans/route.tsx";
 import {Route as CoursesRoute} from "@/routes/_layout/courses";
-import {Route as ActivityLogsRoute} from "@/routes/_layout/activity-logs";
 
 const data: SidebarLink[] = [
-    {label: 'Dashboard', icon: LayoutPanelLeft, route: DashboardRoute.to},
     {label: 'Programs', icon: GraduationCap, route: ProgramsRoute.to},
     {label: 'Study Plans', icon: ScrollText, route: StudyPlansRoute.to},
     {label: 'Courses', icon: BookOpen, route: CoursesRoute.to},
-    {label: 'Activity Logs', icon: Logs, route: ActivityLogsRoute.to}
 ];
 
 type Props = {

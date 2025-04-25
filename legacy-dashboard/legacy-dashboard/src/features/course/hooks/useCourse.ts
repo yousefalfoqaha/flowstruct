@@ -1,7 +1,7 @@
 import {useParams} from "@tanstack/react-router";
 import React from "react";
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {getCourseQuery} from "@/features/course/queries.ts";
+import {CourseQuery} from "@/features/course/queries.ts";
 
 export const useCourse = (fallbackId?: number) => {
     const params = useParams({strict: false});
@@ -15,5 +15,5 @@ export const useCourse = (fallbackId?: number) => {
         throw new Error("Cannot use course without course ID.");
     }
 
-    return useSuspenseQuery(getCourseQuery(courseId));
+    return useSuspenseQuery(CourseQuery(courseId));
 }

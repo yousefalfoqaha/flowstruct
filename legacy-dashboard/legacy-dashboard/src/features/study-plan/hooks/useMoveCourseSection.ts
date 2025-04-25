@@ -7,6 +7,6 @@ export const useMoveCourseSection = () => {
     const queryClient = useQueryClient();
     return useAppMutation(moveCourseSection, {
         onSuccess: (updatedStudyPlan) => queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan),
-        successNotification: {message: "Course section changed successfully."}
+        successNotification: {message: "Course section changed."}
     });
 }

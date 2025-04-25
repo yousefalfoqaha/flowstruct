@@ -39,7 +39,13 @@ export function StudyPlanCourseAdder({studyPlan}: StudyPlanCourseAdderProps) {
         onDropdownOpen: () => combobox.focusSearchInput()
     });
 
-    const {data, isFetching, isFetched, fetchNextPage, hasNextPage} = useInfiniteCourses(debouncedSearch);
+    const {
+        data,
+        isFetching,
+        isFetched,
+        fetchNextPage,
+        hasNextPage
+    } = useInfiniteCourses(debouncedSearch);
 
     const addCoursesToSection = useAddCoursesToSection();
 

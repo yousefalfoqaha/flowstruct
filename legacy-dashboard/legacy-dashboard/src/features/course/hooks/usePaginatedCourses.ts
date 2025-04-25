@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {getPaginatedCoursesQuery} from "@/features/course/queries.ts";
+import {PaginatedCoursesQuery} from "@/features/course/queries.ts";
 import {useSearch} from "@tanstack/react-router";
 import {TableSearchSchema} from "@/shared/schemas.ts";
 
@@ -11,5 +11,5 @@ export const usePaginatedCourses = () => {
 
     const params = parsedParams.data;
 
-    return useQuery(getPaginatedCoursesQuery(params));
+    return useQuery(PaginatedCoursesQuery(params));
 }

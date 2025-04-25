@@ -1,5 +1,5 @@
 import {useQueryClient} from "@tanstack/react-query";
-import {StudyPlan, StudyPlanListItem} from "@/features/study-plan/types.ts";
+import {StudyPlan, StudyPlanSummary} from "@/features/study-plan/types.ts";
 import {updateStudyPlanDetails} from "@/features/study-plan/api.ts";
 import {studyPlanKeys} from "@/features/study-plan/queries.ts";
 import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
@@ -11,7 +11,7 @@ export const useEditStudyPlanDetails = () => {
         onSuccess: (updatedStudyPlan: StudyPlan) => {
             queryClient.setQueryData(
                 studyPlanKeys.lists(),
-                (previous: StudyPlanListItem[]) => {
+                (previous: StudyPlanSummary[]) => {
                     return previous.map(studyPlan =>
                         studyPlan.id === updatedStudyPlan.id
                             ? {
@@ -28,6 +28,6 @@ export const useEditStudyPlanDetails = () => {
 
             queryClient.setQueryData(studyPlanKeys.detail(updatedStudyPlan.id), updatedStudyPlan);
         },
-        successNotification: {message: "Study plan details updated successfully."}
+        successNotification: {message: "Study plan details updated."}
     })
 };

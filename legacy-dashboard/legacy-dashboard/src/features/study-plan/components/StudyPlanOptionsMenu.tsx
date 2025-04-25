@@ -2,12 +2,12 @@ import {ActionIcon, Menu, Text} from "@mantine/core";
 import {Ellipsis, Eye, EyeOff, Pencil, ScrollText, Trash} from "lucide-react";
 import {useToggleStudyPlanVisibility} from "@/features/study-plan/hooks/useToggleStudyPlanVisibility.ts";
 import {useDeleteStudyPlan} from "@/features/study-plan/hooks/useDeleteStudyPlan.ts";
-import {StudyPlanListItem} from "@/features/study-plan/types.ts";
+import {StudyPlanSummary} from "@/features/study-plan/types.ts";
 import {Link} from "@tanstack/react-router";
 import {modals} from "@mantine/modals";
 
 type Props = {
-    studyPlan: StudyPlanListItem;
+    studyPlan: StudyPlanSummary;
 }
 
 export function StudyPlanOptionsMenu({studyPlan}: Props) {
@@ -25,7 +25,7 @@ export function StudyPlanOptionsMenu({studyPlan}: Props) {
             <Menu.Dropdown>
                 <Menu.Label>Actions</Menu.Label>
 
-                <Link style={{textDecoration: 'none'}} to="/study-plans/$studyPlanId/overview"
+                <Link style={{textDecoration: 'none'}} to="/study-plans/$studyPlanId/details"
                       params={{studyPlanId: String(studyPlan.id)}}>
                     <Menu.Item leftSection={<ScrollText size={14}/>}>
                         View
@@ -62,7 +62,7 @@ export function StudyPlanOptionsMenu({studyPlan}: Props) {
                                 </Text>
                             ),
                             labels: {confirm: 'Confirm', cancel: 'Cancel'},
-                            onConfirm: () => deleteStudyPlan.mutate(studyPlan)
+                            onConfirm: () => deleteStudyPlan.mutate(studyPlan.id)
                         })
                     }
                 >
