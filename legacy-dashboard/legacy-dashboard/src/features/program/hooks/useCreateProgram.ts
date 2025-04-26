@@ -8,7 +8,10 @@ export const useCreateProgram = () => {
     const queryClient = useQueryClient();
 
     return useAppMutation(createProgram, {
-        onSuccess: () => queryClient.invalidateQueries({queryKey: programKeys.list()}),
+        onSuccess: (data) => {
+            queryClient.setQueryData(programKeys.detail(data.id), data);
+            queryClient.invalidateQueries({queryKey: programKeys.list()});
+        },
         successNotification: {message: (data) => `${getProgramDisplayName(data)} created.`}
     });
 };

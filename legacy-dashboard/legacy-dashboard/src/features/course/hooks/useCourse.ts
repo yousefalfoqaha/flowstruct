@@ -3,6 +3,6 @@ import {CourseQuery} from "@/features/course/queries.ts";
 import {useEntityId} from "@/shared/hooks/useEntityId.ts";
 
 export const useCourse = (fallbackId?: number) => {
-    const courseId = useEntityId('courseId', fallbackId);
+    const courseId = useEntityId({paramKey: 'courseId', fallback: fallbackId});
     return useSuspenseQuery(CourseQuery(courseId));
 }

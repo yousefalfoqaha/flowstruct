@@ -10,7 +10,7 @@ export const getCourses = async (courseIds: number[]) => {
     return await res.json() as Record<number, Course>;
 };
 
-export const getPaginatedCourses = async (options: Omit<TableSearchOptions, 'columnFilters'>) => {
+export const getPaginatedCourseList = async (options: Omit<TableSearchOptions, 'columnFilters'>) => {
     return api.get<CoursesPage>(ENDPOINT, {
         params: {...options}
     });

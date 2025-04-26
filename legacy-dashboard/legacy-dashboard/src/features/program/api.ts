@@ -10,7 +10,7 @@ export const getProgramList = async () =>
     api.get<ProgramSummary[]>(ENDPOINT);
 
 export const createProgram = async (newProgram: Partial<Program>) =>
-    api.post<ProgramSummary>(ENDPOINT, {body: newProgram});
+    api.post<Program>(ENDPOINT, {body: newProgram});
 
 export const toggleProgramVisibility = async (programId: number) =>
     api.put<Program>([ENDPOINT, programId.toString(), "toggle-visibility"]);

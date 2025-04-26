@@ -7,7 +7,7 @@ import {useProgram} from "@/features/program/hooks/useProgram.ts";
 import {Group, Tabs} from "@mantine/core";
 import {PageHeaderWithBack} from "@/shared/components/PageHeaderWithBack.tsx";
 import {getProgramDisplayName} from "@/utils/getProgramDisplayName.ts";
-import {getVisibilityBadge} from "@/utils/getVisibilityBadge.tsx";
+import {visibilityBadge} from "@/shared/components/VisibilityBadge.tsx";
 import {PageLayout} from "@/shared/components/PageLayout.tsx";
 import {Folder, Map, ReceiptText} from "lucide-react";
 import {Route as DetailsRoute} from './details/index.tsx';
@@ -51,7 +51,7 @@ function RouteComponent() {
                 title={`${getProgramDisplayName(program)} - ${getStudyPlanDisplayName(studyPlan)}`}
                 linkProps={{to: '/study-plans'}}
             />
-            {getVisibilityBadge(studyPlan.isPrivate)}
+            {visibilityBadge(studyPlan.isPrivate)}
         </Group>
     );
 

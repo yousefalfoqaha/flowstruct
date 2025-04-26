@@ -2,7 +2,7 @@ import {createFileRoute} from '@tanstack/react-router'
 import {useProgram} from "@/features/program/hooks/useProgram.ts";
 import {Group} from "@mantine/core";
 import {getProgramDisplayName} from "@/utils/getProgramDisplayName.ts";
-import {getVisibilityBadge} from "@/utils/getVisibilityBadge.tsx";
+import {visibilityBadge} from "@/shared/components/VisibilityBadge.tsx";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {InfoItem} from "@/shared/components/InfoItem.tsx";
 import {Degree} from "@/features/program/types.ts";
@@ -29,7 +29,7 @@ function RouteComponent() {
                             search: getDefaultSearchValues()
                         }}
                     />
-                    {getVisibilityBadge(program.isPrivate)}
+                    {visibilityBadge(program.isPrivate)}
                 </Group>
             }
         >

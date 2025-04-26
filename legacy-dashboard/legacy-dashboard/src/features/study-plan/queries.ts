@@ -1,12 +1,13 @@
 import {queryOptions} from "@tanstack/react-query";
-import {getStudyPlan, getStudyPlanCourses, getStudyPlanList} from "@/features/study-plan/api.ts";
+import {getStudyPlan, getStudyPlanCourseList, getStudyPlanList} from "@/features/study-plan/api.ts";
 
 export const studyPlanKeys = {
     all: ['study-plans'] as const,
     list: () => [...studyPlanKeys.all, 'list'] as const,
     details: () => [...studyPlanKeys.all, 'detail'] as const,
     detail: (id: number) => [...studyPlanKeys.details(), id] as const,
-    courseList: (studyPlanId: number) => [...studyPlanKeys.detail(studyPlanId), 'courses'] as const,
+    courseLists: () => [...studyPlanKeys.all, 'courses'] as const,
+    courseList: (studyPlanId: number) => [...studyPlanKeys.courseLists(), studyPlanId] as const,
 };
 
 export const StudyPlanListQuery = queryOptions({
@@ -21,6 +22,6 @@ export const StudyPlanQuery = (studyPlanId: number) => queryOptions({
 
 export const StudyPlanCourseListQuery = (studyPlanId: number) => queryOptions({
     queryKey: studyPlanKeys.courseList(studyPlanId),
-    queryFn: () => getStudyPlanCourses(studyPlanId),
+    queryFn: () => getStudyPlanCourseList(studyPlanId),
     enabled: !!studyPlanId
 });

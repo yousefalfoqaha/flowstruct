@@ -7,7 +7,10 @@ export const useCreateCourse = () => {
     const queryClient = useQueryClient();
 
     return useAppMutation(createCourse, {
-        onSuccess: (data) => queryClient.setQueryData(courseKeys.detail(data.id), data),
+        onSuccess: (data) => {
+            queryClient.setQueryData(courseKeys.detail(data.id), data);
+            queryClient.invalidateQueries({queryKey: courseKeys.lists()});
+        },
         successNotification: {
             message: (data) => `Course ${data.code} created.`
         }

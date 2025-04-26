@@ -11,7 +11,7 @@ export const useEditCourseDetails = () => {
         onSuccess: (data) => {
             queryClient.setQueryData(courseKeys.detail(data.id), data);
             queryClient.invalidateQueries({queryKey: courseKeys.lists()});
-            queryClient.invalidateQueries({queryKey: studyPlanKeys.details()});
+            queryClient.invalidateQueries({queryKey: studyPlanKeys.courseLists()});
         },
         successNotification: {message: (data) => `Updated ${data.code} details.`}
     });

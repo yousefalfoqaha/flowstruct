@@ -1,7 +1,7 @@
 import {createColumnHelper} from "@tanstack/react-table";
 import {StudyPlanRow} from "@/features/study-plan/types.ts";
 import {StudyPlanOptionsMenu} from "@/features/study-plan/components/StudyPlanOptionsMenu.tsx";
-import {getVisibilityBadge} from "@/utils/getVisibilityBadge.tsx";
+import {visibilityBadge} from "@/shared/components/VisibilityBadge.tsx";
 
 export function getStudyPlansTableColumns() {
     const {accessor, display} = createColumnHelper<StudyPlanRow>();
@@ -29,7 +29,7 @@ export function getStudyPlansTableColumns() {
         accessor('isPrivate', {
             header: 'Status',
             cell: ({row}) => {
-                return getVisibilityBadge(row.getValue('isPrivate'));
+                return visibilityBadge(row.getValue('isPrivate'));
             }
         }),
         display({

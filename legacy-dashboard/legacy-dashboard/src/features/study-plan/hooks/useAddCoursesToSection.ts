@@ -7,7 +7,10 @@ export const useAddCoursesToSection = () => {
     const queryClient = useQueryClient();
 
     return useAppMutation(addCoursesToSection, {
-        onSuccess: (data) => queryClient.invalidateQueries({queryKey: studyPlanKeys.detail(data.id)}),
+        onSuccess: (data) => {
+            queryClient.setQueryData(studyPlanKeys.detail(data.id), data);
+            queryClient.invalidateQueries({queryKey: studyPlanKeys.courseList(data.id)});
+        },
         successNotification: {message: "Course(s) added to study plan."}
     });
 };

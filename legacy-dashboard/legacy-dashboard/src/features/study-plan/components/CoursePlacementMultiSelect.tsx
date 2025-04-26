@@ -5,12 +5,12 @@ import {usePlaceCourses} from "@/features/study-plan/hooks/useAddCoursesToSemest
 import classes from './CoursesMultiSelect.module.css';
 import {getSectionCode} from "@/utils/getSectionCode.ts";
 import {StudyPlan} from "@/features/study-plan/types.ts";
-import {Course} from "@/features/course/types.ts";
+import {CourseSummary} from "@/features/course/types.ts";
 
 type CoursePlacementMultiSelectProps = {
     semester: number;
     studyPlan: StudyPlan;
-    courses: Record<number, Course>;
+    courses: Record<number, CourseSummary>;
 }
 
 interface CourseOption {

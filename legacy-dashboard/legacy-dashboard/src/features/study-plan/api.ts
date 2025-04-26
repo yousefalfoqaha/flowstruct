@@ -23,7 +23,7 @@ export const toggleStudyPlanVisibility = (studyPlanId: number) =>
 export const deleteStudyPlan = (studyPlanId: number) =>
     api.delete<void>([ENDPOINT, studyPlanId]);
 
-export const getStudyPlanCourses = (studyPlanId: number) =>
+export const getStudyPlanCourseList = (studyPlanId: number) =>
     api.get<Record<number, CourseSummary>>([ENDPOINT, studyPlanId, 'courses']);
 
 export const updateStudyPlanDetails = ({studyPlanId, updatedStudyPlanDetails}: {
