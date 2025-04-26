@@ -43,7 +43,11 @@ export const addCoursesToSection = ({addedCourses, sectionId, studyPlanId}: {
     sectionId: number;
     studyPlanId: number
 }) =>
-    api.post<StudyPlan>([ENDPOINT, studyPlanId, 'sections', sectionId, 'courses'], {body: {courseIds: addedCourses.map(c => c.id)}});
+    api.post<StudyPlan>([ENDPOINT, studyPlanId, 'sections', sectionId, 'courses'], {
+        body: {
+            courseIds: addedCourses.map(c => c.id)
+        }
+    });
 
 export const editSectionDetails = ({updatedSectionDetails, sectionId, studyPlanId}: {
     updatedSectionDetails: Partial<Section>;
