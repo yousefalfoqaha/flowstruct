@@ -13,8 +13,8 @@ export const studyPlanDetailsSchema = z.interface({
     track: z
         .string()
         .trim()
-        .transform(val => val === '' ? undefined : val)
-        .optional(),
+        .nullable()
+        .transform(val => val === '' ? null : val),
     isPrivate: z
         .boolean()
         .default(true)
@@ -27,9 +27,8 @@ export const sectionDetailsSchema = z.interface({
     name: z
         .string()
         .trim()
-        .transform((val) => (val === "" ? null : val))
         .nullable()
-        .optional()
+        .transform(val => val === '' ? null : val)
 });
 
 export type SectionDetailsFormValues = z.infer<typeof sectionDetailsSchema>;

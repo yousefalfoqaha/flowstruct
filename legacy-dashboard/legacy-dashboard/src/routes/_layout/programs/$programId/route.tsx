@@ -1,5 +1,5 @@
 import {createFileRoute, Outlet} from '@tanstack/react-router'
-import {getProgramQuery} from '@/features/program/queries.ts'
+import {ProgramQuery} from '@/features/program/queries.ts'
 import {getProgramDisplayName} from '@/utils/getProgramDisplayName.ts'
 
 export const Route = createFileRoute('/_layout/programs/$programId')({
@@ -8,7 +8,7 @@ export const Route = createFileRoute('/_layout/programs/$programId')({
         const programId = parseInt(params.programId)
 
         const program = await queryClient.ensureQueryData(
-            getProgramQuery(programId),
+            ProgramQuery(programId),
         );
 
         return {

@@ -41,7 +41,7 @@ export type StudyPlan = {
     id: number;
     year: number;
     duration: number;
-    track: string | undefined;
+    track: string | null;
     isPrivate: boolean;
     program: number;
     sections: Section[];

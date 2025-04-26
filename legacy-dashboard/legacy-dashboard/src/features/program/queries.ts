@@ -8,12 +8,12 @@ export const programKeys = {
     detail: (id: number) => [...programKeys.details(), id] as const,
 };
 
-export const getProgramListQuery = queryOptions({
+export const ProgramListQuery = queryOptions({
     queryKey: programKeys.list(),
     queryFn: getProgramList
 });
 
-export const getProgramQuery = (programId: number) => queryOptions({
+export const ProgramQuery = (programId: number) => queryOptions({
     queryKey: programKeys.detail(programId),
     queryFn: () => getProgram(programId)
 });
