@@ -1,14 +1,17 @@
 import {Group, NumberInput, Select, Stack, TextInput} from "@mantine/core";
-import {Control, Controller, FieldErrors, UseFormGetValues} from "react-hook-form";
+import {Controller, UseFormReturn} from "react-hook-form";
 import {SectionLevel, SectionType} from "@/features/study-plan/types.ts";
 import {GraduationCap, Tag, University} from "lucide-react";
-import {SectionDetailsFormValues} from "@/features/study-plan/schemas.ts";
+import {sectionDetailsSchema} from "@/features/study-plan/schemas.ts";
+import {z} from "zod";
 
-export function SectionDetailsFormFields({control, errors, getValues}: {
-    control: Control<SectionDetailsFormValues>;
-    errors: FieldErrors<SectionDetailsFormValues>;
-    getValues: UseFormGetValues<SectionDetailsFormValues>
-}) {
+type Props = {
+    form: UseFormReturn<z.infer<typeof sectionDetailsSchema>>;
+}
+
+export function SectionDetailsFormFields({form}: Props) {
+    const {control, formState: {errors}} = form;
+
     return (
         <Stack gap="md">
             <Group grow>
@@ -72,9 +75,8 @@ export function SectionDetailsFormFields({control, errors, getValues}: {
                         label="Name"
                         description="An optional name for clarity"
                         {...field}
-                        value={field.value ?? ""}
+                        value={field.value ?? undefined}
                         autoComplete="off"
-                        prefix={getValues('level')}
                         error={errors.name?.message}
                     />
                 )}/>

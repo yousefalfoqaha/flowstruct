@@ -1,22 +1,21 @@
-import {useForm} from "react-hook-form";
-import {SectionDetailsFormValues, sectionDetailsSchema} from "@/features/study-plan/schemas.ts";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {Flex, LoadingOverlay, Button} from "@mantine/core";
+import {sectionDetailsSchema} from "@/features/study-plan/schemas.ts";
+import {Button, Flex, LoadingOverlay} from "@mantine/core";
 import {SectionDetailsFormFields} from "@/features/study-plan/components/SectionDetailsFormFields.tsx";
 import {Section} from "@/features/study-plan/types.ts";
 import {useEditSectionDetails} from "@/features/study-plan/hooks/useEditSectionDetails.ts";
 import {modals} from "@mantine/modals";
+import {useAppForm} from "@/shared/hooks/useAppForm.ts";
 
-export function EditSectionDetailsModal({section, studyPlanId}: { section: Section, studyPlanId: number }) {
+type Props = {
+    section: Section;
+    studyPlanId: number;
+};
 
-    const {handleSubmit, control, getValues, formState: {errors}} = useForm<SectionDetailsFormValues>({
-        resolver: zodResolver(sectionDetailsSchema),
-        defaultValues: {...section}
-    });
-
+export function EditSectionDetailsModal({section, studyPlanId}: Props) {
+    const form = useAppForm(sectionDetailsSchema, {...section});
     const editSectionDetails = useEditSectionDetails();
 
-    const onSubmit = (data: SectionDetailsFormValues) => {
+    const onSubmit = form.handleSubmit(data => {
         editSectionDetails.mutate({
             updatedSectionDetails: data,
             sectionId: section.id,
@@ -24,15 +23,15 @@ export function EditSectionDetailsModal({section, studyPlanId}: { section: Secti
         }, {
             onSuccess: () => modals.closeAll()
         });
-    };
+    });
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={onSubmit}>
             <Flex gap="md" direction="column">
                 <LoadingOverlay visible={editSectionDetails.isPending} zIndex={1000}
                                 overlayProps={{radius: "sm", blur: 2}}/>
 
-                <SectionDetailsFormFields control={control} errors={errors} getValues={getValues}/>
+                <SectionDetailsFormFields form={form}/>
 
                 <Button type="submit" fullWidth mt="md">Save Changes</Button>
             </Flex>
