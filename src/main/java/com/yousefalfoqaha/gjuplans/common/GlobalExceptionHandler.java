@@ -70,7 +70,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(
                         HttpStatus.CONFLICT.value(),
-                        "This content has been modified by another user while you were editing. Please refresh to see the latest version.",
+                        exception.getMessage(),
                         new Date()
                 ),
                 HttpStatus.CONFLICT

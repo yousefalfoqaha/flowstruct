@@ -10,8 +10,10 @@ import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryRespon
 import com.yousefalfoqaha.gjuplans.studyplan.exception.*;
 import com.yousefalfoqaha.gjuplans.studyplan.mapper.StudyPlanResponseMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -119,7 +121,7 @@ public class StudyPlanService {
         studyPlanRepository.deleteById(studyPlanId);
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public StudyPlanResponse createSection(long studyPlanId, CreateSectionRequest request) {
         var studyPlan = findStudyPlan(studyPlanId);
 
@@ -471,7 +473,16 @@ public class StudyPlanService {
     }
 
     private <T> T saveAndMapStudyPlan(StudyPlan studyPlan, Function<StudyPlan, T> mapper) {
-        var savedStudyPlan = studyPlanRepository.save(studyPlan);
+        StudyPlan savedStudyPlan;
+
+        try {
+            savedStudyPlan = studyPlanRepository.save(studyPlan);
+        } catch (OptimisticLockingFailureException e) {
+            throw new OptimisticLockingFailureException(
+                    "This study plan has been modified by another user while you were editing. Please refresh to see the latest version."
+            );
+        }
+
         return mapper.apply(savedStudyPlan);
     }
 }
