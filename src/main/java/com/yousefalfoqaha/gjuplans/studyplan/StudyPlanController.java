@@ -5,6 +5,7 @@ import com.yousefalfoqaha.gjuplans.studyplan.domain.MoveDirection;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanWithSequencesResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanCourseService;
 import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,11 @@ public class StudyPlanController {
     @GetMapping("/{studyPlanId}/courses")
     public ResponseEntity<Map<Long, CourseSummaryResponse>> getStudyPlanCourses(@PathVariable long studyPlanId) {
         return new ResponseEntity<>(studyPlanCourseService.getStudyPlanCourses(studyPlanId), HttpStatus.OK);
+    }
+
+    @GetMapping("/{studyPlanId}/with-sequences")
+    public ResponseEntity<StudyPlanWithSequencesResponse> getStudyPlanCoursesWithSequences(@PathVariable long studyPlanId) {
+        return new ResponseEntity<>(studyPlanService.getStudyPlanWithSequences(studyPlanId), HttpStatus.OK);
     }
 
     @GetMapping("/{studyPlanId}")

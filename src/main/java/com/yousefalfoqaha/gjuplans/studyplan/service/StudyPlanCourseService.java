@@ -1,7 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan.service;
 
+import com.yousefalfoqaha.gjuplans.course.CourseService;
 import com.yousefalfoqaha.gjuplans.course.dto.response.CourseSummaryResponse;
-import com.yousefalfoqaha.gjuplans.course.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

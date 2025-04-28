@@ -1,10 +1,11 @@
-package com.yousefalfoqaha.gjuplans.course.service;
+package com.yousefalfoqaha.gjuplans.course;
 
 import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
-import com.yousefalfoqaha.gjuplans.course.CourseRepository;
 import com.yousefalfoqaha.gjuplans.course.domain.Course;
 import com.yousefalfoqaha.gjuplans.course.dto.request.CourseDetailsRequest;
-import com.yousefalfoqaha.gjuplans.course.dto.response.*;
+import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
+import com.yousefalfoqaha.gjuplans.course.dto.response.CourseSummaryResponse;
+import com.yousefalfoqaha.gjuplans.course.dto.response.CoursesPageResponse;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import com.yousefalfoqaha.gjuplans.course.mapper.CourseResponseMapper;
 import com.yousefalfoqaha.gjuplans.course.mapper.CourseSummaryResponseMapper;
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 @Service
 public class CourseService {
     private final CourseRepository courseRepository;
-    //    private final CourseGraphService courseGraphService;
     private final ObjectValidator<CourseDetailsRequest> courseDetailsValidator;
     private final CourseResponseMapper courseResponseMapper;
     private final CourseSummaryResponseMapper courseSummaryResponseMapper;
@@ -52,7 +52,15 @@ public class CourseService {
     public Map<Long, CourseSummaryResponse> getCoursesById(List<Long> courseIds) {
         return courseRepository.findAllById(courseIds)
                 .stream()
-                .collect(Collectors.toMap(Course::getId, courseSummaryResponseMapper));
+                .map(courseSummaryResponseMapper)
+                .collect(Collectors.toMap(CourseSummaryResponse::id, Function.identity()));
+    }
+
+    public Map<Long, CourseResponse> getDetailedCoursesById(List<Long> courseIds) {
+        return courseRepository.findAllById(courseIds)
+                .stream()
+                .map(courseResponseMapper)
+                .collect(Collectors.toMap(CourseResponse::id, Function.identity()));
     }
 
     public CourseResponse getCourse(long courseId) {
@@ -60,33 +68,6 @@ public class CourseService {
 
         return courseResponseMapper.apply(course);
     }
-
-//    public Map<Long, CourseWithSequencesResponse> getCoursesWithSequences(List<Long> courseIds) {
-//        Map<Long, Course> courses = courseRepository.findAllById(courseIds)
-//                .stream()
-//                .collect(Collectors.toMap(Course::getId, course -> course));
-//
-//        Map<Long, CourseSequences> courseSequencesMap = courseGraphService.buildCourseSequences(courses);
-//
-//        return courses.values()
-//                .stream()
-//                .collect(Collectors.toMap(
-//                        Course::getId,
-//                        course -> new CourseWithSequencesResponse(
-//                                courseResponseMapper.apply(course),
-//                                new CourseSequencesResponse(
-//                                        courseSequencesMap.get(course.getId()).getPrerequisiteSequence()
-//                                                .stream()
-//                                                .filter(prereqId -> course.getPrerequisites()
-//                                                        .stream()
-//                                                        .noneMatch(p -> p.getPrerequisite().getId().equals(prereqId)))
-//                                                .collect(Collectors.toSet()),
-//                                        courseSequencesMap.get(course.getId()).getPostrequisiteSequence(),
-//                                        courseSequencesMap.get(course.getId()).getLevel()
-//                                )
-//                        )
-//                ));
-//    }
 
     public CourseResponse editCourseDetails(long courseId, CourseDetailsRequest request) {
         courseDetailsValidator.validate(request);

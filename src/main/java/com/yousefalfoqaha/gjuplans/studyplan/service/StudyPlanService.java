@@ -5,8 +5,10 @@ import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanRepository;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.*;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.CourseSequencesResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanWithSequencesResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.*;
 import com.yousefalfoqaha.gjuplans.studyplan.mapper.StudyPlanResponseMapper;
 import lombok.RequiredArgsConstructor;
@@ -29,18 +31,67 @@ public class StudyPlanService {
     private final ObjectValidator<EditSectionRequest> editSectionRequestValidator;
     private final StudyPlanResponseMapper studyPlanResponseMapper;
     private final ObjectValidator<AddCoursesToSectionRequest> addCoursesToSectionValidator;
+    private final StudyPlanGraphService studyPlanGraphService;
 
     public StudyPlanResponse getStudyPlan(long studyPlanId) {
-        var studyPlan = studyPlanRepository.findById(studyPlanId)
-                .orElseThrow(() -> new StudyPlanNotFoundException(
-                        "Study plan with id " + studyPlanId + " was not found."
-                ));
-
+        var studyPlan = findStudyPlan(studyPlanId);
         return studyPlanResponseMapper.apply(studyPlan);
     }
 
     public List<StudyPlanSummaryResponse> getAllStudyPlans() {
         return studyPlanRepository.findAllStudyPlanSummaries();
+    }
+
+    public StudyPlanWithSequencesResponse getStudyPlanWithSequences(long studyPlanId) {
+        var studyPlan = findStudyPlan(studyPlanId);
+
+        var courseIds = studyPlan.getSections()
+                .stream()
+                .flatMap(s -> s.getCourses().keySet().stream())
+                .toList();
+
+        var studyPlanResponse = studyPlanResponseMapper.apply(studyPlan);
+
+        var courseSequencesMap = studyPlanGraphService.buildStudyPlanSequences(studyPlanResponse.coursePrerequisites(), courseIds);
+
+        var groupedCoursePrerequisites = studyPlan.getCoursePrerequisitesMap();
+
+        var courseSequences = courseSequencesMap.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> {
+                            var sequence = entry.getValue();
+                            return new CourseSequencesResponse(
+                                    sequence.getPrerequisiteSequence()
+                                            .stream()
+                                            .filter(prereqId -> {
+                                                var prerequisites = groupedCoursePrerequisites.get(prereqId);
+                                                if (prerequisites == null) return true;
+                                                return prerequisites
+                                                        .stream()
+                                                        .noneMatch(p -> Objects.equals(p.getPrerequisite().getId(), prereqId));
+                                            })
+                                            .collect(Collectors.toSet()),
+                                    sequence.getPostrequisiteSequence(),
+                                    sequence.getLevel()
+                            );
+                        }
+                ));
+
+        return new StudyPlanWithSequencesResponse(
+                studyPlanResponse.id(),
+                studyPlanResponse.year(),
+                studyPlanResponse.duration(),
+                studyPlanResponse.track(),
+                studyPlanResponse.isPrivate(),
+                studyPlanResponse.program(),
+                studyPlanResponse.sections(),
+                studyPlanResponse.coursePlacements(),
+                studyPlanResponse.coursePrerequisites(),
+                studyPlanResponse.courseCorequisites(),
+                courseSequences
+        );
     }
 
     @Transactional
