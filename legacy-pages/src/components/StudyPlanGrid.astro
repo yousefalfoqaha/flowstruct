@@ -1,20 +1,31 @@
 ---
 import {sortByCourseCode} from "../utils/sortByCourseCode";
-import type {Course} from "../types";
+import type {Course, Program, Section, StudyPlan} from "../types";
 import CourseCard from "./CourseCard.astro";
 import NavigationControls from "./NavigationControls.astro";
 import CourseFilter from "./CourseFilter.astro";
 
-const {sections, courses, program} = Astro.props;
+type Props = {
+    studyPlan: StudyPlan;
+    courses: Record<number, Course>;
+    program: Program;
+}
 
-const requiredCourses = sections
+const {studyPlan, courses, program} = Astro.props;
+
+const courseSequences = studyPlan.courseSequences;
+
+const requiredCourses = studyPlan.sections
     .filter(sec => sec.type === "Requirement")
     .flatMap(sec => sec.courses)
     .map(id => courses[id])
-    .sort((a, b) => a.sequences.level - b.sequences.level);
+    .sort((a, b) => courseSequences[a.id].level - courseSequences[b.id].level);
 
-const minLevel = requiredCourses[0]?.sequences.level;
-const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
+const leastLevelCourse = requiredCourses[0];
+const maxLevelCourse = requiredCourses[requiredCourses.length - 1];
+
+const minLevel = courseSequences[leastLevelCourse.id]?.level;
+const maxLevel = courseSequences[maxLevelCourse.id].level;
 ---
 
 {requiredCourses.length === 0 ? (
@@ -32,7 +43,7 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
 </div>
     ) : (
 <div class="space-y-2 relative">
-    <CourseFilter sections={sections}/>
+    <CourseFilter sections={studyPlan.sections}/>
 
     <NavigationControls/>
 
@@ -56,21 +67,20 @@ const maxLevel = requiredCourses[requiredCourses.length - 1]?.sequences.level;
             <div id="courses-grid" class="flex gap-2 overflow-auto scroll-smooth">
                 {Array.from({length: maxLevel - minLevel + 1}, (_, i) => minLevel + i).map(level => {
                     const levelCourses = requiredCourses
-                        .filter(c => c.sequences.level === level)
+                        .filter(c => courseSequences[c.id].level === level)
                         .sort((a, b) => sortByCourseCode(a, b, program.code));
 
                     if (levelCourses.length === 0) return;
 
                     return (
-                            <div
-                                    class="grid grid-flow-col size-fit gap-2"
-                                    style={
-                                        `grid-template-rows: repeat(${
-                                            levelCourses.length <= 4
-                                                ? levelCourses.length
-                                                : Math.ceil(levelCourses.length / 2)
-                                        }, 1fr);`
-                                    }
+                            <div class="grid grid-flow-col size-fit gap-2"
+                                 style={
+                                     `grid-template-rows: repeat(${
+                                         levelCourses.length <= 4
+                                             ? levelCourses.length
+                                             : Math.ceil(levelCourses.length / 2)
+                                     }, 1fr);`
+                                 }
                             >
                                 {levelCourses.map((course: Course) =>
                                         <CourseCard {...course}/>)}

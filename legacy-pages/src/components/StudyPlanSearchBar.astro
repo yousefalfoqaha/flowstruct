@@ -24,7 +24,7 @@
 </div>
 
 <script>
-    import type {Program, StudyPlanOption} from "../types";
+    import type {Program, StudyPlanSummary} from "../types";
     import {ArrowRight, createElement} from "lucide";
 
     const studyPlanFilter = document.getElementById('study-plan-filter');
@@ -55,7 +55,7 @@
             const queryWords = query.split(/\s+/);
 
             studyPlans.forEach(studyPlan => {
-                const studyPlanData: StudyPlanOption = JSON.parse(studyPlan.dataset.studyPlan || '{}');
+                const studyPlanData: StudyPlanSummary = JSON.parse(studyPlan.dataset.studyPlan || '{}');
                 const programData: Program = JSON.parse(studyPlan.closest('program-accordion')?.dataset.program || '{}');
                 const fullName = `${programData.name} ${programData.code} ${studyPlanData.year} ${studyPlanData.track}`.toUpperCase();
 

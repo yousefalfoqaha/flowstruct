@@ -1,31 +1,33 @@
-export enum DegreeType {
-    BACHELOR = "Bachelors",
-    MASTER = "Masters"
-}
-
-export enum SemesterType {
-    FIRST = "First",
-    SECOND = "Second",
-    SUMMER = "Summer"
-}
+export const Degree = {
+    BSc: "Bachelor of Science",
+    BA: "Bachelor of Arts",
+    MBA: "Master of Business Administration",
+    PHD: "Doctor of Philosophy",
+} as const;
 
 export type Program = {
     id: number;
     code: string;
     name: string;
-    degree: "B.Sc." | "B.A.";
+    degree: string;
+    isPrivate: boolean;
 }
 
-export type CoursePrerequisite = {
-    prerequisite: number;
-    relation: "AND" | "OR";
-    isRemedial: boolean;
+export enum SectionLevel {
+    University = "University",
+    School = "School",
+    Program = "Program"
 }
 
-export type CourseSequences = {
-    prerequisiteSequence: number[];
-    postrequisiteSequence: number[];
-    level: number;
+export enum SectionType {
+    Requirement = "Requirement",
+    Elective = "Elective",
+    Remedial = "Remedial"
+}
+
+export enum CourseRelation {
+    AND = "AND",
+    OR = "OR"
 }
 
 export type Course = {
@@ -36,39 +38,41 @@ export type Course = {
     ects: number;
     lectureHours: number;
     practicalHours: number;
-    type: "F2F" | "BLD" | "OL";
+    type: string;
     isRemedial: boolean;
-    prerequisites: CoursePrerequisite[];
-    corequisites: number[];
-    sequences: CourseSequences;
-}
-
-export type Track = {
-    code: string;
-    name: string;
 }
 
 export type Section = {
     id: number;
-    level: "Program" | "School" | "University";
-    type: "Requirement" | "Elective" | "Remedial";
+    level: SectionLevel;
+    type: SectionType;
     requiredCreditHours: number;
     name: string | null;
+    position: number;
     courses: number[];
+}
+
+export type CourseSequences = {
+    prerequisiteSequence: number[];
+    postrequisiteSequence: number[];
+    level: number;
 }
 
 export type StudyPlan = {
     id: number;
     year: number;
     duration: number;
-    track: Track | null;
-    program: Program;
+    track: string | null;
+    isPrivate: boolean;
+    program: number;
     sections: Section[];
-    courses: Record<number, Course>;
-    otherStudyPlans: StudyPlan[];
+    coursePlacements: Record<number, number>;
+    coursePrerequisites: Record<number, Record<number, CourseRelation>>;
+    courseCorequisites: Record<number, number[]>;
+    courseSequences: Record<number, CourseSequences>;
 }
 
-export type StudyPlanOption = {
+export type StudyPlanSummary = {
     id: number;
     year: number;
     track: string;

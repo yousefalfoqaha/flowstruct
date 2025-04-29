@@ -1,12 +1,14 @@
 ---
 import CourseDialog from "../../components/CourseDialog.astro";
 import StudyPlanGrid from "../../components/StudyPlanGrid.astro";
-import type {StudyPlanOption} from "../../types";
+import type {Course, Program, StudyPlan, StudyPlanSummary} from "../../types";
 import Layout from "../../layouts/Layout.astro";
 import AboutDialog from "../../components/AboutDialog.astro";
 
+const API_BASE_URL = 'http://localhost:8080/api/v1';
+
 export async function getStaticPaths() {
-    const studyPlans: StudyPlanOption[] = await fetch(`http://localhost:8080/api/v1/study-plans`)
+    const studyPlans: StudyPlanSummary[] = await fetch(`http://localhost:8080/api/v1/study-plans`)
         .then(res => res.json());
 
     return studyPlans.map(studyPlan => ({
@@ -14,12 +16,19 @@ export async function getStaticPaths() {
     }));
 }
 
-const studyPlan = await fetch(`http://localhost:8080/api/v1/study-plans/${Astro.params.studyPlanId}`)
-    .then(res => res.json());
+const studyPlan = await fetch(
+    `${API_BASE_URL}/study-plans/${Astro.params.studyPlanId}/with-sequences`
+).then(res => res.json()) as StudyPlan;
+
+const program = await fetch(
+    `${API_BASE_URL}/programs/${studyPlan.program}`
+).then(res => res.json()) as Program
+
+const courses = await fetch(
+    `http://localhost:8080/api/v1/study-plans/${Astro.params.studyPlanId}/courses`
+).then(res => res.json()) as Record<number, Course>;
 
 const {
-    program,
-    courses,
     track,
     year,
     sections
@@ -43,11 +52,11 @@ const {
                     Home
                 </a>
 
-                <AboutDialog />
+                <AboutDialog/>
             </header>
         </section>
 
-        <StudyPlanGrid sections={sections} courses={courses} program={program}/>
+        <StudyPlanGrid studyPlan={studyPlan} courses={courses} program={program}/>
     </div>
 
     <CourseDialog/>
