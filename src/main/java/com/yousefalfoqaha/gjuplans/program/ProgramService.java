@@ -4,13 +4,10 @@ import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.program.domain.Program;
 import com.yousefalfoqaha.gjuplans.program.dto.request.CreateProgramRequest;
 import com.yousefalfoqaha.gjuplans.program.dto.request.UpdateProgramRequest;
-import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramSummaryResponse;
 import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramResponse;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
 import com.yousefalfoqaha.gjuplans.program.mapper.ProgramResponseMapper;
-import com.yousefalfoqaha.gjuplans.program.mapper.ProgramSummaryResponseMapper;
-import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,15 +19,12 @@ import java.util.function.Function;
 @Service
 public class ProgramService {
     private final ProgramRepository programRepository;
+    private final ProgramResponseMapper programResponseMapper;
     private final ObjectValidator<UpdateProgramRequest> updateProgramValidator;
     private final ObjectValidator<CreateProgramRequest> createProgramValidator;
-    private final ProgramSummaryResponseMapper programSummaryResponseMapper;
-    private final ProgramResponseMapper programResponseMapper;
 
-    public List<ProgramSummaryResponse> getAllProgramOptions() {
-        return programRepository.findAllProgramOptions().stream()
-                .map(programSummaryResponseMapper)
-                .toList();
+    public List<ProgramResponse> getAllPrograms() {
+        return programRepository.findAllPrograms();
     }
 
     public ProgramResponse getProgram(long programId) {

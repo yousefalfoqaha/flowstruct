@@ -2,7 +2,6 @@ package com.yousefalfoqaha.gjuplans.program;
 
 import com.yousefalfoqaha.gjuplans.program.dto.request.CreateProgramRequest;
 import com.yousefalfoqaha.gjuplans.program.dto.request.UpdateProgramRequest;
-import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramSummaryResponse;
 import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +18,7 @@ public class ProgramController {
 
     @GetMapping
     public ResponseEntity<List<ProgramSummaryResponse>> getAllPrograms() {
-        return new ResponseEntity<>(programService.getAllProgramOptions(), HttpStatus.OK);
+        return new ResponseEntity<>(programService.getAllPrograms(), HttpStatus.OK);
     }
 
     @GetMapping("/{programId}")

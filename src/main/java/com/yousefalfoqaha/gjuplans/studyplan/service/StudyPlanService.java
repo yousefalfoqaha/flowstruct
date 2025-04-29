@@ -26,12 +26,12 @@ import java.util.stream.Collectors;
 @Service
 public class StudyPlanService {
     private final StudyPlanRepository studyPlanRepository;
+    private final StudyPlanGraphService studyPlanGraphService;
+    private final StudyPlanResponseMapper studyPlanResponseMapper;
     private final ObjectValidator<EditStudyPlanDetailsRequest> editStudyPlanDetailsValidator;
     private final ObjectValidator<AddCoursesToSemesterRequest> addCoursesToSemesterValidator;
     private final ObjectValidator<EditSectionRequest> editSectionRequestValidator;
-    private final StudyPlanResponseMapper studyPlanResponseMapper;
     private final ObjectValidator<AddCoursesToSectionRequest> addCoursesToSectionValidator;
-    private final StudyPlanGraphService studyPlanGraphService;
 
     public StudyPlanResponse getStudyPlan(long studyPlanId) {
         var studyPlan = findStudyPlan(studyPlanId);
@@ -45,14 +45,15 @@ public class StudyPlanService {
     public StudyPlanWithSequencesResponse getStudyPlanWithSequences(long studyPlanId) {
         var studyPlan = findStudyPlan(studyPlanId);
 
-        var courseIds = studyPlan.getSections()
-                .stream()
-                .flatMap(s -> s.getCourses().keySet().stream())
-                .toList();
-
         var studyPlanResponse = studyPlanResponseMapper.apply(studyPlan);
 
-        var courseSequencesMap = studyPlanGraphService.buildStudyPlanSequences(studyPlanResponse.coursePrerequisites(), courseIds);
+        var courseSequencesMap = studyPlanGraphService.buildStudyPlanSequences(
+                studyPlanResponse.coursePrerequisites(),
+                studyPlan.getSections()
+                        .stream()
+                        .flatMap(s -> s.getCourses().keySet().stream())
+                        .toList()
+        );
 
         var groupedCoursePrerequisites = studyPlan.getCoursePrerequisitesMap();
 
