@@ -17,7 +17,7 @@ public class ProgramController {
     private final ProgramService programService;
 
     @GetMapping
-    public ResponseEntity<List<ProgramSummaryResponse>> getAllPrograms() {
+    public ResponseEntity<List<ProgramResponse>> getAllPrograms() {
         return new ResponseEntity<>(programService.getAllPrograms(), HttpStatus.OK);
     }
 
