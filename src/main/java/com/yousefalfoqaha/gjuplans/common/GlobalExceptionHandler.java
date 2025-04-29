@@ -77,6 +77,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(CyclicDependencyException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            CyclicDependencyException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.CONFLICT.value(),
+                        exception.getMessage(),
+                        new Date()
+                ),
+                HttpStatus.CONFLICT
+        );
+    }
+
     @ExceptionHandler(ObjectNotValidException.class)
     public ResponseEntity<ValidationErrorObject> handleException(
             ObjectNotValidException exception

@@ -5,6 +5,7 @@ import com.yousefalfoqaha.gjuplans.studyplan.domain.CoursePrerequisite;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.Relation;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.CoursePrerequisiteRequest;
+import com.yousefalfoqaha.gjuplans.studyplan.exception.CyclicDependencyException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -66,7 +67,7 @@ public class StudyPlanGraphService {
     ) {
         if (visited.contains(prerequisiteId)) return;
 
-        if (originalCourseId == prerequisiteId) throw new RuntimeException("Cycle detected.");
+        if (originalCourseId == prerequisiteId) throw new CyclicDependencyException("Cycle detected.");
 
         var prerequisites = coursePrerequisitesMap.get(prerequisiteId);
 
