@@ -13,51 +13,38 @@ type Props = {
 
 const {studyPlan, courses, program} = Astro.props;
 
-const courseSequences = studyPlan.courseSequences;
+const academicYears = Array.from({length: studyPlan.duration}, (_, i) => i + 1);
+const SEMESTERS_PER_YEAR = 3;
+const semesterTypes = ["First", "Second", "Summer"] as const;
 
-const requiredCourses = studyPlan.sections
-    .filter(sec => sec.type === "Requirement")
-    .flatMap(sec => sec.courses)
-    .map(id => courses[id])
-    .sort((a, b) => courseSequences[a.id].level - courseSequences[b.id].level);
+const coursesBySemester = new Map<number, number[]>(
+    Array.from({length: studyPlan.duration * SEMESTERS_PER_YEAR}, (_, i) => [i + 1, []])
+);
 
-const leastLevelCourse = requiredCourses[0];
-const maxLevelCourse = requiredCourses[requiredCourses.length - 1];
-
-const minLevel = courseSequences[leastLevelCourse.id]?.level;
-const maxLevel = courseSequences[maxLevelCourse.id].level;
+Object.entries(studyPlan.coursePlacements ?? {}).forEach(([courseId, semesterNum]) => {
+    coursesBySemester.get(Number(semesterNum))?.push(Number(courseId));
+});
 ---
 
-{requiredCourses.length === 0 ? (
-<div class="flex min-h-[75vh] w-full items-center justify-center">
-    <div class="flex flex-col gap-1 items-center">
-        <div class="border rounded-lg p-4 text-sm size-fit text-center text-gray-500">
-            No courses were found
-        </div>
-        <a href="/"
-           class="text-sm flex items-center w-full justify-center gap-2 p-2 pr-3 size-fit rounded cursor-pointer transition-all">
-            <i data-lucide="chevron-left" class="size-4"/>
-            <p class="text-nowrap">Back to Main Page</p>
-        </a>
-    </div>
-</div>
-    ) : (
+<!--<div class="flex min-h-[75vh] w-full items-center justify-center">-->
+<!--    <div class="flex flex-col gap-1 items-center">-->
+<!--        <div class="border rounded-lg p-4 text-sm size-fit text-center text-gray-500">-->
+<!--            No courses were found-->
+<!--        </div>-->
+<!--        <a href="/"-->
+<!--           class="text-sm flex items-center w-full justify-center gap-2 p-2 pr-3 size-fit rounded cursor-pointer transition-all">-->
+<!--            <i data-lucide="chevron-left" class="size-4"/>-->
+<!--            <p class="text-nowrap">Back to Main Page</p>-->
+<!--        </a>-->
+<!--    </div>-->
+<!--</div>-->
+
 <div class="space-y-2 relative">
     <CourseFilter sections={studyPlan.sections}/>
 
     <NavigationControls/>
 
     <div class="relative">
-        <div class="flex sm:absolute sm:top-[-1.8rem] text-sm w-full gap-2 justify-between select-none mb-2">
-            <p class="flex opacity-40 gap-1">
-                <i data-lucide="chevron-first" class="size-5"></i> Foundational
-            </p>
-
-            <p class="flex opacity-40 gap-1">
-                Advanced <i data-lucide="chevron-last" class="size-5"></i>
-            </p>
-        </div>
-
         <div class="relative">
             <div id="left-hidden-gradient"
                  class="sm:w-5 pointer-events-none absolute left-0 z-20 w-8 h-full bg-gradient-to-r from-white"/>
@@ -65,34 +52,46 @@ const maxLevel = courseSequences[maxLevelCourse.id].level;
                  class="sm:w-5 pointer-events-none absolute right-0 z-20 w-8 h-full bg-gradient-to-l from-white"/>
 
             <div id="courses-grid" class="flex gap-2 overflow-auto scroll-smooth">
-                {Array.from({length: maxLevel - minLevel + 1}, (_, i) => minLevel + i).map(level => {
-                    const levelCourses = requiredCourses
-                        .filter(c => courseSequences[c.id].level === level)
-                        .sort((a, b) => sortByCourseCode(a, b, program.code));
-
-                    if (levelCourses.length === 0) return;
+                {academicYears.map(year => {
+                    const yearSemesters = semesterTypes.map((_, i) =>
+                        year * SEMESTERS_PER_YEAR - (SEMESTERS_PER_YEAR - i) + 1
+                    );
 
                     return (
-                            <div class="grid grid-flow-col size-fit gap-2"
-                                 style={
-                                     `grid-template-rows: repeat(${
-                                         levelCourses.length <= 4
-                                             ? levelCourses.length
-                                             : Math.ceil(levelCourses.length / 2)
-                                     }, 1fr);`
-                                 }
-                            >
-                                {levelCourses.map((course: Course) =>
-                                        <CourseCard {...course}/>)}
+                            <div>
+                                <p class="opacity-60 text-center mb-2 text-xs">Year {year}</p>
+
+                                <div class="flex gap-2">
+                                    {yearSemesters.map((semesterNumber, index) => {
+                                        const semesterCourses = coursesBySemester.get(semesterNumber);
+                                        const semesterTotalCreditHours = semesterCourses?.reduce((sum, courseId) => sum + (courses[courseId]?.creditHours || 0), 0);
+
+                                        return (
+                                                <div>
+                                                    <p class="opacity-60 text-xs text-center px-2 mb-2 text-nowrap">{semesterTypes[index]} - {semesterTotalCreditHours} Cr.</p>
+
+                                                    <div class="flex flex-col gap-2">
+                                                        {semesterCourses?.map(courseId => {
+                                                            const course = courses[courseId];
+                                                            return <CourseCard {...course}/>;
+                                                        })}
+                                                    </div>
+                                                </div>
+                                        )
+                                    })}
+                                </div>
                             </div>
                     );
+
                 })}
             </div>
         </div>
     </div>
-    <p class="text-center opacity-40 text-sm">Remedial, elective, and department approval courses are not included</p>
+
+    <p class="text-center opacity-40 text-sm">
+        Remedial, elective, and department approval courses are not included
+    </p>
 </div>
-    )}
 
 <style>
     #courses-grid {
