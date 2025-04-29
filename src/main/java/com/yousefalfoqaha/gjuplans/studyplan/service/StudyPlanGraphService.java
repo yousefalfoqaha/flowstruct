@@ -1,7 +1,10 @@
 package com.yousefalfoqaha.gjuplans.studyplan.service;
 
 import com.yousefalfoqaha.gjuplans.course.domain.CourseSequences;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.CoursePrerequisite;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.Relation;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.request.CoursePrerequisiteRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -37,6 +40,45 @@ public class StudyPlanGraphService {
         }
 
         return courseSequencesMap;
+    }
+
+    public void validatePrerequisites(
+            long parentCourseId,
+            StudyPlan studyPlan,
+            List<CoursePrerequisiteRequest> prerequisiteRequests
+    ) {
+        var coursePrerequisitesMap = studyPlan.getCoursePrerequisitesMap();
+
+        Set<Long> visited = new HashSet<>();
+
+        for (var prerequisite : prerequisiteRequests) {
+            if (!visited.contains(prerequisite.prerequisite())) {
+                detectCycle(parentCourseId, prerequisite.prerequisite(), visited, coursePrerequisitesMap);
+            }
+        }
+    }
+
+    private void detectCycle(
+            long originalCourseId,
+            long prerequisiteId,
+            Set<Long> visited,
+            Map<Long, List<CoursePrerequisite>> coursePrerequisitesMap
+    ) {
+        if (visited.contains(prerequisiteId)) return;
+
+        if (originalCourseId == prerequisiteId) throw new RuntimeException("Cycle detected.");
+
+        var prerequisites = coursePrerequisitesMap.get(prerequisiteId);
+
+        if (prerequisites == null) return;
+
+        for (var prerequisite : prerequisites) {
+            if (!visited.contains(prerequisite.getPrerequisite().getId())) {
+                detectCycle(originalCourseId, prerequisite.getPrerequisite().getId(), visited, coursePrerequisitesMap);
+            }
+        }
+
+        visited.add(prerequisiteId);
     }
 
     private void traversePrerequisites(

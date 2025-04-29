@@ -18,8 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.function.Function;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -101,7 +102,7 @@ public class StudyPlanService {
 
         studyPlan.setPrivate(!studyPlan.isPrivate());
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
@@ -138,7 +139,7 @@ public class StudyPlanService {
             );
         }
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
@@ -152,7 +153,7 @@ public class StudyPlanService {
         studyPlan.setTrack(request.track());
         studyPlan.setPrivate(request.isPrivate());
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
@@ -165,7 +166,7 @@ public class StudyPlanService {
         studyPlan.setPrivate(request.isPrivate());
         studyPlan.setProgram(AggregateReference.to(request.program()));
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
@@ -199,7 +200,7 @@ public class StudyPlanService {
 
         studyPlan.getSections().add(newSection);
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
@@ -221,7 +222,7 @@ public class StudyPlanService {
                         }
                 );
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
@@ -266,7 +267,7 @@ public class StudyPlanService {
 
         studyPlan.getSections().remove(section);
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
@@ -308,7 +309,7 @@ public class StudyPlanService {
 
         section.getCourses().putAll(toBeAddedCourses);
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
@@ -329,7 +330,7 @@ public class StudyPlanService {
             studyPlan.getCoursePlacements().remove(courseId);
         }
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
@@ -339,15 +340,10 @@ public class StudyPlanService {
             List<CoursePrerequisiteRequest> prerequisiteRequests
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
-        var coursePrerequisitesMap = studyPlan.getCoursePrerequisitesMap();
 
-        Set<Long> visited = new HashSet<>();
+        studyPlanGraphService.validatePrerequisites(courseId, studyPlan, prerequisiteRequests);
 
         for (var prerequisite : prerequisiteRequests) {
-            if (!visited.contains(prerequisite.prerequisite())) {
-                detectCycle(courseId, prerequisite.prerequisite(), visited, coursePrerequisitesMap);
-            }
-
             studyPlan.getCoursePrerequisites().add(
                     new CoursePrerequisite(
                             AggregateReference.to(courseId),
@@ -357,7 +353,7 @@ public class StudyPlanService {
             );
         }
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
@@ -377,7 +373,7 @@ public class StudyPlanService {
             );
         }
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
@@ -394,7 +390,7 @@ public class StudyPlanService {
 
         if (!removed) throw new CourseNotFoundException("Corequisite not found");
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
@@ -411,7 +407,7 @@ public class StudyPlanService {
 
         if (!removed) throw new CourseNotFoundException("Prerequisite not found");
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
@@ -435,7 +431,7 @@ public class StudyPlanService {
 
         targetSection.getCourses().put(courseId, new SectionCourse(AggregateReference.to(courseId)));
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
@@ -480,7 +476,7 @@ public class StudyPlanService {
         targetSection.setPosition(newPosition);
         swappedSection.setPosition(currentPosition);
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     public StudyPlanResponse removeCoursePlacement(long studyPlanId, long courseId) {
@@ -488,30 +484,7 @@ public class StudyPlanService {
 
         studyPlan.getCoursePlacements().remove(courseId);
 
-        return saveAndMapStudyPlan(studyPlan, studyPlanResponseMapper);
-    }
-
-    private void detectCycle(
-            long originalCourseId,
-            long prerequisiteId,
-            Set<Long> visited,
-            Map<Long, List<CoursePrerequisite>> coursePrerequisitesMap
-    ) {
-        if (visited.contains(prerequisiteId)) return;
-
-        if (originalCourseId == prerequisiteId) throw new RuntimeException("Cycle detected.");
-
-        var prerequisites = coursePrerequisitesMap.get(prerequisiteId);
-
-        if (prerequisites == null) return;
-
-        for (var prerequisite : prerequisites) {
-            if (!visited.contains(prerequisite.getPrerequisite().getId())) {
-                detectCycle(originalCourseId, prerequisite.getPrerequisite().getId(), visited, coursePrerequisitesMap);
-            }
-        }
-
-        visited.add(prerequisiteId);
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     private StudyPlan findStudyPlan(long studyPlanId) {
@@ -519,12 +492,7 @@ public class StudyPlanService {
                 .orElseThrow(() -> new StudyPlanNotFoundException("Study plan with id " + studyPlanId + " was not found."));
     }
 
-    private StudyPlanSummaryResponse findStudyPlanSummary(long studyPlanId) {
-        return studyPlanRepository.findStudyPlanSummary(studyPlanId)
-                .orElseThrow(() -> new StudyPlanNotFoundException("Study plan was not found."));
-    }
-
-    private <T> T saveAndMapStudyPlan(StudyPlan studyPlan, Function<StudyPlan, T> mapper) {
+    private StudyPlanResponse saveAndMapStudyPlan(StudyPlan studyPlan) {
         StudyPlan savedStudyPlan;
 
         try {
@@ -535,6 +503,6 @@ public class StudyPlanService {
             );
         }
 
-        return mapper.apply(savedStudyPlan);
+        return studyPlanResponseMapper.apply(savedStudyPlan);
     }
 }
