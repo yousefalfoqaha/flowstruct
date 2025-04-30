@@ -1,6 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan.service;
 
 import com.yousefalfoqaha.gjuplans.course.CourseService;
+import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
 import com.yousefalfoqaha.gjuplans.course.dto.response.CourseSummaryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,16 @@ public class StudyPlanCourseService {
                 .toList();
 
         return courseService.getCoursesById(courseIds);
+    }
+
+    public Map<Long, CourseResponse> getStudyPlanDetailedCourses(long studyPlanId) {
+        var studyPlan = studyPlanService.getStudyPlan(studyPlanId);
+
+        var courseIds = studyPlan.sections()
+                .stream()
+                .flatMap(s -> s.courses().stream())
+                .toList();
+
+        return courseService.getDetailedCoursesById(courseIds);
     }
 }

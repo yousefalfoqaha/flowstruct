@@ -56,27 +56,26 @@ public class StudyPlanService {
                         .toList()
         );
 
-        var groupedCoursePrerequisites = studyPlan.getCoursePrerequisitesMap();
-
         var courseSequences = courseSequencesMap.entrySet()
                 .stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> {
-                            var sequence = entry.getValue();
+                            var sequences = entry.getValue();
                             return new CourseSequencesResponse(
-                                    sequence.getPrerequisiteSequence()
+                                    sequences.getPrerequisiteSequence()
                                             .stream()
-                                            .filter(prereqId -> {
-                                                var prerequisites = groupedCoursePrerequisites.get(prereqId);
+                                            .filter(prerequisiteSequenceId -> {
+                                                var prerequisites = studyPlanResponse.coursePrerequisites().get(entry.getKey());
                                                 if (prerequisites == null) return true;
-                                                return prerequisites
+
+                                                return prerequisites.keySet()
                                                         .stream()
-                                                        .noneMatch(p -> Objects.equals(p.getPrerequisite().getId(), prereqId));
+                                                        .noneMatch(prerequisiteId -> Objects.equals(prerequisiteId, prerequisiteSequenceId));
                                             })
                                             .collect(Collectors.toSet()),
-                                    sequence.getPostrequisiteSequence(),
-                                    sequence.getLevel()
+                                    sequences.getPostrequisiteSequence(),
+                                    sequences.getLevel()
                             );
                         }
                 ));

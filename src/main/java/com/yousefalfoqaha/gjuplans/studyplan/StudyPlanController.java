@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
+import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
 import com.yousefalfoqaha.gjuplans.course.dto.response.CourseSummaryResponse;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.MoveDirection;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.request.*;
@@ -31,6 +32,11 @@ public class StudyPlanController {
     @GetMapping("/{studyPlanId}/courses")
     public ResponseEntity<Map<Long, CourseSummaryResponse>> getStudyPlanCourses(@PathVariable long studyPlanId) {
         return new ResponseEntity<>(studyPlanCourseService.getStudyPlanCourses(studyPlanId), HttpStatus.OK);
+    }
+
+    @GetMapping("/{studyPlanId}/courses/detailed")
+    public ResponseEntity<Map<Long, CourseResponse>> getStudyPlanDetailedCourses(@PathVariable long studyPlanId) {
+        return new ResponseEntity<>(studyPlanCourseService.getStudyPlanDetailedCourses(studyPlanId), HttpStatus.OK);
     }
 
     @GetMapping("/{studyPlanId}/with-sequences")
