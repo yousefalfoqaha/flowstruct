@@ -1,17 +1,19 @@
 ---
-import {sortByCourseCode} from "../utils/sortByCourseCode";
-import type {Course, Program, Section, StudyPlan} from "../types";
+import type {Course, StudyPlan} from "../types";
 import CourseCard from "./CourseCard.astro";
 import NavigationControls from "./NavigationControls.astro";
 import CourseFilter from "./CourseFilter.astro";
 
-type Props = {
+interface Props {
     studyPlan: StudyPlan;
-    courses: Record<number, Course>;
-    program: Program;
 }
 
-const {studyPlan, courses, program} = Astro.props;
+const {studyPlan} = Astro.props;
+
+const courses = await fetch(
+    `http://localhost:8080/api/v1/study-plans/${Astro.params.studyPlanId}/courses/detailed`
+).then(res => res.json()) as Record<number, Course>;
+
 
 const academicYears = Array.from({length: studyPlan.duration}, (_, i) => i + 1);
 const SEMESTERS_PER_YEAR = 3;
@@ -60,24 +62,36 @@ Object.entries(studyPlan.coursePlacements ?? {}).forEach(([courseId, semesterNum
                     return (
                             <div>
                                 <p class="opacity-60 text-center mb-2 text-xs">Year {year}</p>
-
                                 <div class="flex gap-2">
                                     {yearSemesters.map((semesterNumber, index) => {
                                         const semesterCourses = coursesBySemester.get(semesterNumber);
-                                        const semesterTotalCreditHours = semesterCourses?.reduce((sum, courseId) => sum + (courses[courseId]?.creditHours || 0), 0);
+                                        const semesterTotalCreditHours = semesterCourses?.reduce(
+                                            (sum, courseId) => sum + (courses[courseId]?.creditHours || 0),
+                                            0
+                                        );
 
                                         return (
                                                 <div>
-                                                    <p class="opacity-60 text-xs text-center px-2 mb-2 text-nowrap">{semesterTypes[index]} - {semesterTotalCreditHours} Cr.</p>
-
+                                                    <p class="opacity-60 text-xs text-center px-2 mb-2 text-nowrap">
+                                                        {semesterTypes[index]} - {semesterTotalCreditHours} Cr.
+                                                    </p>
                                                     <div class="flex flex-col gap-2">
                                                         {semesterCourses?.map(courseId => {
                                                             const course = courses[courseId];
-                                                            return <CourseCard {...course}/>;
+                                                            if (!course) return;
+
+                                                            return (
+                                                                    <CourseCard
+                                                                            course={course}
+                                                                            prerequisites={studyPlan.coursePrerequisites[course.id] ?? {}}
+                                                                            corequisites={studyPlan.courseCorequisites[course.id] ?? []}
+                                                                            sequences={studyPlan.courseSequences[course.id] ?? {}}
+                                                                    />
+                                                            );
                                                         })}
                                                     </div>
                                                 </div>
-                                        )
+                                        );
                                     })}
                                 </div>
                             </div>

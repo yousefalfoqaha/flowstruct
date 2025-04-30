@@ -22,17 +22,9 @@ const studyPlan = await fetch(
 
 const program = await fetch(
     `${API_BASE_URL}/programs/${studyPlan.program}`
-).then(res => res.json()) as Program
+).then(res => res.json()) as Program;
 
-const courses = await fetch(
-    `http://localhost:8080/api/v1/study-plans/${Astro.params.studyPlanId}/courses`
-).then(res => res.json()) as Record<number, Course>;
-
-const {
-    track,
-    year,
-    sections
-} = studyPlan;
+const {track, year} = studyPlan;
 ---
 
 <Layout title={`${program.name} ${year}/${year + 1} ${track ? ` - ${track}` : ''} Study Plan`}>
@@ -56,7 +48,7 @@ const {
             </header>
         </section>
 
-        <StudyPlanGrid studyPlan={studyPlan} courses={courses} program={program}/>
+        <StudyPlanGrid studyPlan={studyPlan}/>
     </div>
 
     <CourseDialog/>

@@ -6,8 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="891c91db-02ad-4a51-a6df-792d2f3bc70a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/CourseCard.astro" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CourseCard.astro" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CourseDialog.astro" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CourseDialog.astro" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/StudyPlanGrid.astro" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/StudyPlanGrid.astro" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/study-plans/[studyPlanId].astro" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/study-plans/[studyPlanId].astro" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +38,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/yousefalfoqaha/gjuplans-pages.git&quot;,
-    &quot;accountId&quot;: &quot;7da3922d-a1cb-4fe4-bdac-252b984aba3b&quot;
+    &quot;accountId&quot;: &quot;bf6c1e15-d185-4184-9811-130d8cd20924&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -42,7 +46,6 @@
   &quot;associatedIndex&quot;: 5
 }</component>
   <component name="ProjectId" id="2qt4JgDtgaDXO44urALhbb3CkRI" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="abbreviatePackageNames" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -53,6 +56,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
@@ -64,7 +68,7 @@
     "nodejs_package_manager_path": "npm",
     "npm.dev.executor": "Debug",
     "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
-    "ts.external.directory.path": "C:\\Users\\youse\\AppData\\Local\\Programs\\WebStorm\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.3.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -93,7 +97,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-WS-243.21565.180" />
+        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-WS-251.23774.424" />
       </set>
     </attachedChunks>
   </component>
@@ -132,6 +136,9 @@
       <workItem from="1737812967915" duration="389000" />
       <workItem from="1737814611682" duration="1320000" />
       <workItem from="1738139880095" duration="3737000" />
+      <workItem from="1746015748472" duration="68000" />
+      <workItem from="1746015819646" duration="227000" />
+      <workItem from="1746018535661" duration="3440000" />
     </task>
     <servers />
   </component>

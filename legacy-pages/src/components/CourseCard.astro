@@ -1,13 +1,15 @@
 ---
+import type {Course, CourseRelation, CourseSequences} from "../types";
+
+interface Props {
+    course: Course;
+    prerequisites: Record<number, CourseRelation>;
+    corequisites: number[];
+    sequences: CourseSequences;
+}
+
 const {
-    id,
-    code,
-    name,
-    creditHours,
-    lectureHours,
-    practicalHours,
-    ects,
-    type,
+    course,
     prerequisites,
     corequisites,
     sequences
@@ -15,31 +17,26 @@ const {
 ---
 
 <course-card
-        id={id}
-        data-course={JSON.stringify({
-            id,
-            code,
-            name,
-            creditHours,
-            lectureHours,
-            practicalHours,
-            ects,
-            type,
-            prerequisites,
-            corequisites,
-            sequences
-        })}
+        id={course.id}
+        data-course={
+            JSON.stringify({
+                ...course,
+                prerequisites,
+                corequisites,
+                sequences
+            })
+        }
         class="transition-all duration-300 ease-in-out text-xs lg:text-sm rounded-lg lg:rounded-xl"
 >
     <div class="w-[8rem] h-[6.9rem] lg:w-40 lg:h-[8.6rem] select-none hover:shadow-lg transition-all cursor-pointer relative size-full bg-gray-100 border hover:bg-blue-50 hover:border-blue-200 hover:drop-shadow-sm
                active:bg-blue-100 lg:p-4 lg:py-3 p-3 py-2 group rounded-lg lg:rounded-xl">
-        <h3 class="font-semibold mb-0.5 text-sm lg:text-base">{code}</h3>
-        <p class="line-clamp-3">{name}</p>
+        <h3 class="font-semibold mb-0.5 text-sm lg:text-base">{course.code}</h3>
+        <p class="line-clamp-3">{course.name}</p>
         <p class="absolute lg:bottom-3 lg:left-3 bottom-2 left-2 font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
-            {creditHours} Cr.
+            {course.creditHours} Cr.
         </p>
         <p class="absolute lg:bottom-3 lg:right-3 bottom-2 right-2 font-semibold group-hover:opacity-50 opacity-0 transition-opacity">
-            {type}
+            {course.type}
         </p>
         <button class="info-button z-10 rounded-full pointer-events-none group-hover:pointer-events-auto p-2 opacity-0 group-hover:opacity-60 hover:!opacity-100 absolute lg:top-1 lg:right-1 top-0 right-0 cursor-pointer duration-200">
             <i data-lucide="info" class="size-4 lg:size-5"/>
@@ -77,20 +74,26 @@ const {
 </style>
 
 <script>
-    import type {Course} from "../types";
+    import type {Course, CourseRelation, CourseSequences} from "../types";
     import {
         createElement,
         ArrowBigRightDash,
         ArrowBigLeftDash,
         ArrowBigLeft,
         ArrowBigUp
-        } from "lucide";
+    } from "lucide";
+
+    interface CourseWithRequisites extends Course {
+        prerequisites: Record<number, CourseRelation>;
+        corequisites: number[];
+        sequences: CourseSequences;
+    }
 
     const courseCards = document.querySelectorAll('course-card > div');
     let selectedCourse: number | null = null;
 
     class CourseCard extends HTMLElement {
-        private readonly course: Course;
+        private readonly course: CourseWithRequisites;
 
         constructor() {
             super();
@@ -124,8 +127,8 @@ const {
             // this.querySelector('div')?.classList.remove('opacity-25');
 
             const coursesToHighlight = [
-                ...this.course.prerequisites.map(pr => ({
-                    id: pr.prerequisite,
+                ...Object.keys(this.course.prerequisites).map(id => ({
+                    id: id,
                     className: 'prerequisite',
                     icon: ArrowBigLeft
                 })),
@@ -136,10 +139,10 @@ const {
                 })),
                 ...this.course.sequences.prerequisiteSequence
                     .map(id => ({
-                    id: id,
-                    className: 'prerequisite-sequence',
-                    icon: ArrowBigLeftDash
-                })),
+                        id: id,
+                        className: 'prerequisite-sequence',
+                        icon: ArrowBigLeftDash
+                    })),
                 ...this.course.sequences.postrequisiteSequence.map(id => ({
                     id: id,
                     className: 'postrequisite-sequence',
