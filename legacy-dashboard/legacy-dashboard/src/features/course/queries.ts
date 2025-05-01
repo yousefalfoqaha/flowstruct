@@ -12,10 +12,11 @@ export const courseKeys = {
     detail: (id: number) => [...courseKeys.details(), id] as const,
 };
 
-export const CourseQuery = (courseId: number) => queryOptions({
-    queryKey: courseKeys.detail(courseId),
-    queryFn: () => getCourse(courseId)
-});
+export const CourseQuery = (courseId: number) =>
+    queryOptions({
+        queryKey: courseKeys.detail(courseId),
+        queryFn: () => getCourse(courseId)
+    });
 
 export const PaginatedCourseListQuery = (options: Omit<TableSearchOptions, 'columnFilters'>) =>
     queryOptions({

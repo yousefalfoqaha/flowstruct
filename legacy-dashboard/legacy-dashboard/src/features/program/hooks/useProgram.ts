@@ -1,8 +1,8 @@
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {ProgramQuery} from "@/features/program/queries.ts";
-import {useEntityId} from "@/shared/hooks/useEntityId.ts";
+import {useParamId} from "@/shared/hooks/useParamId.ts";
 
 export const useProgram = (fallbackProgramId?: number) => {
-    const programId = useEntityId({paramKey: 'programId', fallback: fallbackProgramId});
+    const programId = useParamId({paramKey: 'programId', fallback: fallbackProgramId});
     return useSuspenseQuery(ProgramQuery(programId));
 };

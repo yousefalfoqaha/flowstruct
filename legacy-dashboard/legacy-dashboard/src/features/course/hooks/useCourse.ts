@@ -1,8 +1,8 @@
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {CourseQuery} from "@/features/course/queries.ts";
-import {useEntityId} from "@/shared/hooks/useEntityId.ts";
+import {useParamId} from "@/shared/hooks/useParamId.ts";
 
 export const useCourse = (fallbackId?: number) => {
-    const courseId = useEntityId({paramKey: 'courseId', fallback: fallbackId});
+    const courseId = useParamId({paramKey: 'courseId', fallback: fallbackId});
     return useSuspenseQuery(CourseQuery(courseId));
 }

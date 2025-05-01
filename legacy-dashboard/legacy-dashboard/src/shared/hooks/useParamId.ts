@@ -9,7 +9,7 @@ type UseEntityIdProps = {
     fallback?: number;
 };
 
-export const useEntityId = ({paramKey, fallback}: UseEntityIdProps) => {
+export const useParamId = ({paramKey, fallback}: UseEntityIdProps) => {
     const params = useParams({strict: false});
 
     const id = React.useMemo(() => {
