@@ -10,10 +10,8 @@ interface Props {
 
 const {studyPlan} = Astro.props;
 
-const courses = await fetch(
-    `http://localhost:8080/api/v1/study-plans/${Astro.params.studyPlanId}/courses/detailed`
-).then(res => res.json()) as Record<number, Course>;
-
+const courses = await fetch(`http://localhost:8080/api/v1/study-plans/${Astro.params.studyPlanId}/courses/detailed`)
+    .then(res => res.json()) as Record<number, Course>;
 
 const academicYears = Array.from({length: studyPlan.duration}, (_, i) => i + 1);
 const SEMESTERS_PER_YEAR = 3;

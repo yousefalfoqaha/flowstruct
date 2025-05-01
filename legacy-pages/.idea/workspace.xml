@@ -6,9 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="891c91db-02ad-4a51-a6df-792d2f3bc70a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/astro.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/astro.config.mjs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/CourseCard.astro" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CourseCard.astro" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/CourseDialog.astro" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CourseDialog.astro" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/StudyPlanGrid.astro" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/StudyPlanGrid.astro" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/study-plans/[studyPlanId].astro" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/study-plans/[studyPlanId].astro" afterDir="false" />
@@ -66,7 +66,9 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "npm.dashboard.executor": "Run",
     "npm.dev.executor": "Debug",
+    "npm.pages.executor": "Run",
     "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
     "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.3.3\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
@@ -83,7 +85,7 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="dev" type="js.build_tools.npm" nameIsGenerated="true">
+    <configuration name="dev" type="js.build_tools.npm">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
       <scripts>
@@ -138,7 +140,8 @@
       <workItem from="1738139880095" duration="3737000" />
       <workItem from="1746015748472" duration="68000" />
       <workItem from="1746015819646" duration="227000" />
-      <workItem from="1746018535661" duration="3440000" />
+      <workItem from="1746018535661" duration="3807000" />
+      <workItem from="1746085971877" duration="4325000" />
     </task>
     <servers />
   </component>

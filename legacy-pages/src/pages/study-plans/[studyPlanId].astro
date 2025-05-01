@@ -1,7 +1,7 @@
 ---
 import CourseDialog from "../../components/CourseDialog.astro";
 import StudyPlanGrid from "../../components/StudyPlanGrid.astro";
-import type {Course, Program, StudyPlan, StudyPlanSummary} from "../../types";
+import type {Program, StudyPlan, StudyPlanSummary} from "../../types";
 import Layout from "../../layouts/Layout.astro";
 import AboutDialog from "../../components/AboutDialog.astro";
 
@@ -16,13 +16,11 @@ export async function getStaticPaths() {
     }));
 }
 
-const studyPlan = await fetch(
-    `${API_BASE_URL}/study-plans/${Astro.params.studyPlanId}/with-sequences`
-).then(res => res.json()) as StudyPlan;
+const studyPlan = await fetch(`${API_BASE_URL}/study-plans/${Astro.params.studyPlanId}/with-sequences`)
+    .then(res => res.json()) as StudyPlan;
 
-const program = await fetch(
-    `${API_BASE_URL}/programs/${studyPlan.program}`
-).then(res => res.json()) as Program;
+const program = await fetch(`${API_BASE_URL}/programs/${studyPlan.program}`)
+    .then(res => res.json()) as Program;
 
 const {track, year} = studyPlan;
 ---
