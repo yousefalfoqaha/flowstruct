@@ -1,6 +1,10 @@
 spring:
   application:
     name: gjuplans
+  security:
+    user:
+      name: admin
+      password: admin
 
   datasource:
     url: jdbc:postgresql://localhost:5432/gjuplans
