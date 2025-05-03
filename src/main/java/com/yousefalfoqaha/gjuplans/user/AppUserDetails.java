@@ -52,5 +52,4 @@ public class AppUserDetails implements UserDetails, CredentialsContainer {
     public boolean isEnabled() {
         return true;
     }
-
 }

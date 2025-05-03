@@ -1,7 +1,6 @@
 package com.yousefalfoqaha.gjuplans.auth;
 
 import com.yousefalfoqaha.gjuplans.user.AppUserDetailsService;
-import com.yousefalfoqaha.gjuplans.user.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,6 +32,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
+
         String username = jwtService.extractUserName(token);
 
         if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {

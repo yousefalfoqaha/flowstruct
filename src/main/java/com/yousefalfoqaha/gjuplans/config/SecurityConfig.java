@@ -29,7 +29,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("login")
                         .permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest()
+                        .authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session ->
