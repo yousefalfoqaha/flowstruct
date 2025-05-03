@@ -17,7 +17,7 @@ export function EditSectionDetailsModal({section, studyPlanId}: Props) {
 
     const onSubmit = form.handleSubmit(data => {
         editSectionDetails.mutate({
-            updatedSectionDetails: data,
+            sectionDetails: data,
             sectionId: section.id,
             studyPlanId: studyPlanId
         }, {

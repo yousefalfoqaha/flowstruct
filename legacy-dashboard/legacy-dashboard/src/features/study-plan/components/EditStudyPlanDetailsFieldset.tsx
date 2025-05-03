@@ -32,7 +32,7 @@ export function EditStudyPlanDetailsFieldset({studyPlan}: Props) {
     const onSubmit = form.handleSubmit(data => {
         editStudyPlanDetails.mutate({
             studyPlanId: studyPlan.id,
-            updatedStudyPlanDetails: {
+            studyPlanDetails: {
                 ...data,
                 year: data.year.getFullYear(),
                 program: Number(data.program)

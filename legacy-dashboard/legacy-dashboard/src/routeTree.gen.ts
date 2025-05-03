@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as LoginImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout/route'
 import { Route as LayoutStudyPlansRouteImport } from './routes/_layout/study-plans/route'
 import { Route as LayoutProgramsRouteImport } from './routes/_layout/programs/route'
@@ -35,6 +36,12 @@ import { Route as LayoutStudyPlansStudyPlanIdDetailsIndexImport } from './routes
 import { Route as LayoutStudyPlansStudyPlanIdDetailsEditImport } from './routes/_layout/study-plans/$studyPlanId/details/edit'
 
 // Create/Update Routes
+
+const LoginRoute = LoginImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const LayoutRouteRoute = LayoutRouteImport.update({
   id: '/_layout',
@@ -189,6 +196,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof LayoutRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
     '/_layout/courses': {
@@ -481,6 +495,7 @@ const LayoutRouteRouteWithChildren = LayoutRouteRoute._addFileChildren(
 
 export interface FileRoutesByFullPath {
   '': typeof LayoutRouteRouteWithChildren
+  '/login': typeof LoginRoute
   '/courses': typeof LayoutCoursesRouteRouteWithChildren
   '/programs': typeof LayoutProgramsRouteRouteWithChildren
   '/study-plans': typeof LayoutStudyPlansRouteRouteWithChildren
@@ -506,6 +521,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '': typeof LayoutRouteRouteWithChildren
+  '/login': typeof LoginRoute
   '/study-plans/$studyPlanId': typeof LayoutStudyPlansStudyPlanIdRouteRouteWithChildren
   '/courses/new': typeof LayoutCoursesNewRoute
   '/programs/new': typeof LayoutProgramsNewRoute
@@ -526,6 +542,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_layout': typeof LayoutRouteRouteWithChildren
+  '/login': typeof LoginRoute
   '/_layout/courses': typeof LayoutCoursesRouteRouteWithChildren
   '/_layout/programs': typeof LayoutProgramsRouteRouteWithChildren
   '/_layout/study-plans': typeof LayoutStudyPlansRouteRouteWithChildren
@@ -553,6 +570,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | ''
+    | '/login'
     | '/courses'
     | '/programs'
     | '/study-plans'
@@ -577,6 +595,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
+    | '/login'
     | '/study-plans/$studyPlanId'
     | '/courses/new'
     | '/programs/new'
@@ -595,6 +614,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_layout'
+    | '/login'
     | '/_layout/courses'
     | '/_layout/programs'
     | '/_layout/study-plans'
@@ -621,10 +641,12 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   LayoutRouteRoute: typeof LayoutRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   LayoutRouteRoute: LayoutRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 
 export const routeTree = rootRoute
@@ -637,7 +659,8 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_layout"
+        "/_layout",
+        "/login"
       ]
     },
     "/_layout": {
@@ -647,6 +670,9 @@ export const routeTree = rootRoute
         "/_layout/programs",
         "/_layout/study-plans"
       ]
+    },
+    "/login": {
+      "filePath": "login.tsx"
     },
     "/_layout/courses": {
       "filePath": "_layout/courses/route.tsx",

@@ -1,7 +1,7 @@
 import {ActionIcon, Button, Group, MultiSelect, MultiSelectProps, Popover, Stack, Text} from "@mantine/core";
 import {BetweenHorizontalStart, CircleAlert, Plus} from "lucide-react";
 import React from "react";
-import {usePlaceCourses} from "@/features/study-plan/hooks/useAddCoursesToSemester.ts";
+import {usePlaceSemesterCourses} from "@/features/study-plan/hooks/useAddCoursesToSemester.ts";
 import classes from './CoursesMultiSelect.module.css';
 import {getSectionCode} from "@/utils/getSectionCode.ts";
 import {StudyPlan} from "@/features/study-plan/types.ts";
@@ -25,7 +25,7 @@ export function CoursePlacementMultiSelect({semester, studyPlan, courses}: Cours
     const [opened, setOpened] = React.useState(false);
     const [selectedCourses, setSelectedCourses] = React.useState<string[]>([]);
 
-    const placeCourses = usePlaceCourses();
+    const placeCourses = usePlaceSemesterCourses();
 
     const handlePlaceCourses = () => placeCourses.mutate({
         studyPlanId: studyPlan.id,

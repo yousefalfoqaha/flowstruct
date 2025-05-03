@@ -22,7 +22,7 @@ export enum MoveDirection {
     DOWN = "DOWN"
 }
 
-export type CoursePrerequisite = {
+export type Prerequisite = {
     prerequisite: number;
     relation: CourseRelation;
 }

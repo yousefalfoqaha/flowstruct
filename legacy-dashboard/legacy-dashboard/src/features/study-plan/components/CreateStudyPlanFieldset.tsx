@@ -21,7 +21,7 @@ export function CreateStudyPlanFieldset() {
 
     const onSubmit = form.handleSubmit(data => {
         createStudyPlan.mutate({
-            createdStudyPlanDetails: {
+            studyPlanDetails: {
                 ...data,
                 program: Number(data.program),
                 year: data.year.getFullYear()

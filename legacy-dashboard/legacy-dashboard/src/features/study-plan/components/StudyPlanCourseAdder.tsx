@@ -70,7 +70,7 @@ export function StudyPlanCourseAdder({studyPlan}: StudyPlanCourseAdderProps) {
 
         addCoursesToSection.mutate(
             {
-                addedCourses: selectedCourses,
+                courseIds: selectedCourses,
                 sectionId: sectionId,
                 studyPlanId: studyPlan.id
             },
