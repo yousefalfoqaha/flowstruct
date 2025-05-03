@@ -1,6 +1,6 @@
-package com.yousefalfoqaha.gjuplans.studyplan.dto.response;
+package com.yousefalfoqaha.gjuplans.studyplan.dto;
 
-public record StudyPlanSummaryResponse(
+public record StudyPlanSummaryDto(
         long id,
         int year,
         int duration,

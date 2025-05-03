@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.common;
+package com.yousefalfoqaha.gjuplans.common.dto;
 
 import java.util.Date;
 import java.util.Set;

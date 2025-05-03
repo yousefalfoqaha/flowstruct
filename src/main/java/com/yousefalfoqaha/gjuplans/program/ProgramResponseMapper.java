@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.program.mapper;
+package com.yousefalfoqaha.gjuplans.program;
 
 import com.yousefalfoqaha.gjuplans.program.domain.Program;
 import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramResponse;

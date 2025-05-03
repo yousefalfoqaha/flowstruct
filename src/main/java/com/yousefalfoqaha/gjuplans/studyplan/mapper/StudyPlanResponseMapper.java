@@ -4,8 +4,8 @@ import com.yousefalfoqaha.gjuplans.studyplan.domain.Section;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionLevel;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionType;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.response.SectionResponse;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.SectionDto;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDto;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -14,11 +14,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-public class StudyPlanResponseMapper implements Function<StudyPlan, StudyPlanResponse> {
+public class StudyPlanResponseMapper implements Function<StudyPlan, StudyPlanDto> {
 
     @Override
-    public StudyPlanResponse apply(StudyPlan studyPlan) {
-        return new StudyPlanResponse(
+    public StudyPlanDto apply(StudyPlan studyPlan) {
+        return new StudyPlanDto(
                 studyPlan.getId(),
                 studyPlan.getYear(),
                 studyPlan.getDuration(),
@@ -28,7 +28,7 @@ public class StudyPlanResponseMapper implements Function<StudyPlan, StudyPlanRes
                 studyPlan.getSections()
                         .stream()
                         .sorted(Comparator.comparing(this::getSectionCode))
-                        .map(sec -> new SectionResponse(
+                        .map(sec -> new SectionDto(
                                 sec.getId(),
                                 sec.getLevel(),
                                 sec.getType(),

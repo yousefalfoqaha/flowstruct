@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.gjuplans.auth;
 
-import com.yousefalfoqaha.gjuplans.user.AppUserDetailsService;
+import com.yousefalfoqaha.gjuplans.user.service.AppUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

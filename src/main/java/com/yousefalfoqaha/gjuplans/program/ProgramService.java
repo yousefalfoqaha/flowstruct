@@ -7,7 +7,6 @@ import com.yousefalfoqaha.gjuplans.program.dto.request.UpdateProgramRequest;
 import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramResponse;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
-import com.yousefalfoqaha.gjuplans.program.mapper.ProgramResponseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

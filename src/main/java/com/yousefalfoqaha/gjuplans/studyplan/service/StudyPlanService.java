@@ -4,11 +4,7 @@ import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanRepository;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.*;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.request.*;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.response.CourseSequencesResponse;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanResponse;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanSummaryResponse;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.response.StudyPlanWithSequencesResponse;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.*;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.*;
 import com.yousefalfoqaha.gjuplans.studyplan.mapper.StudyPlanResponseMapper;
 import lombok.RequiredArgsConstructor;
@@ -29,21 +25,20 @@ public class StudyPlanService {
     private final StudyPlanRepository studyPlanRepository;
     private final StudyPlanGraphService studyPlanGraphService;
     private final StudyPlanResponseMapper studyPlanResponseMapper;
-    private final ObjectValidator<EditStudyPlanDetailsRequest> editStudyPlanDetailsValidator;
-    private final ObjectValidator<AddCoursesToSemesterRequest> addCoursesToSemesterValidator;
-    private final ObjectValidator<EditSectionRequest> editSectionRequestValidator;
-    private final ObjectValidator<AddCoursesToSectionRequest> addCoursesToSectionValidator;
+    private final ObjectValidator<StudyPlanDetailsDto> studyPlanDetailsValidator;
+    private final ObjectValidator<SemesterCoursesDto> addCoursesToSemesterValidator;
+    private final ObjectValidator<SectionDetailsDto> sectionDetailsValidator;
 
-    public StudyPlanResponse getStudyPlan(long studyPlanId) {
+    public StudyPlanDto getStudyPlan(long studyPlanId) {
         var studyPlan = findStudyPlan(studyPlanId);
         return studyPlanResponseMapper.apply(studyPlan);
     }
 
-    public List<StudyPlanSummaryResponse> getAllStudyPlans() {
+    public List<StudyPlanSummaryDto> getAllStudyPlans() {
         return studyPlanRepository.findAllStudyPlanSummaries();
     }
 
-    public StudyPlanWithSequencesResponse getStudyPlanWithSequences(long studyPlanId) {
+    public StudyPlanWithSequencesDto getStudyPlanWithSequences(long studyPlanId) {
         var studyPlan = findStudyPlan(studyPlanId);
 
         var studyPlanResponse = studyPlanResponseMapper.apply(studyPlan);
@@ -62,7 +57,7 @@ public class StudyPlanService {
                         Map.Entry::getKey,
                         entry -> {
                             var sequences = entry.getValue();
-                            return new CourseSequencesResponse(
+                            return new CourseSequencesDto(
                                     sequences.getPrerequisiteSequence()
                                             .stream()
                                             .filter(prerequisiteSequenceId -> {
@@ -80,7 +75,7 @@ public class StudyPlanService {
                         }
                 ));
 
-        return new StudyPlanWithSequencesResponse(
+        return new StudyPlanWithSequencesDto(
                 studyPlanResponse.id(),
                 studyPlanResponse.year(),
                 studyPlanResponse.duration(),
@@ -96,7 +91,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanResponse toggleVisibility(long studyPlanId) {
+    public StudyPlanDto toggleVisibility(long studyPlanId) {
         var studyPlan = findStudyPlan(studyPlanId);
 
         studyPlan.setPrivate(!studyPlan.isPrivate());
@@ -105,13 +100,13 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanResponse addCoursesToSemester(long studyPlanId, AddCoursesToSemesterRequest request) {
-        addCoursesToSemesterValidator.validate(request);
+    public StudyPlanDto placeSemesterCourses(long studyPlanId, SemesterCoursesDto semesterCourses) {
+        addCoursesToSemesterValidator.validate(semesterCourses);
 
         var studyPlan = findStudyPlan(studyPlanId);
         var coursePrerequisitesMap = studyPlan.getCoursePrerequisitesMap();
 
-        for (var courseId : request.courseIds()) {
+        for (var courseId : semesterCourses.courseIds()) {
             if (studyPlan.getCoursePlacements().containsKey(courseId)) {
                 throw new CourseAlreadyAddedException("A course already exists in the program map.");
             }
@@ -123,7 +118,7 @@ public class StudyPlanService {
 
                     var prerequisitePlacement = studyPlan.getCoursePlacements().get(prerequisite.getPrerequisite().getId());
 
-                    if (prerequisitePlacement == null || prerequisitePlacement.getSemester() >= request.semester()) {
+                    if (prerequisitePlacement == null || prerequisitePlacement.getSemester() >= semesterCourses.semester()) {
                         throw new InvalidCoursePlacement("A course has missing prerequisites or has prerequisites in later semesters.");
                     }
                 });
@@ -133,7 +128,7 @@ public class StudyPlanService {
                     courseId,
                     new CoursePlacement(
                             AggregateReference.to(courseId),
-                            request.semester()
+                            semesterCourses.semester()
                     )
             );
         }
@@ -142,39 +137,39 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanResponse editStudyPlanDetails(long studyPlanId, EditStudyPlanDetailsRequest request) {
-        editStudyPlanDetailsValidator.validate(request);
+    public StudyPlanDto editStudyPlanDetails(long studyPlanId, StudyPlanDetailsDto details) {
+        studyPlanDetailsValidator.validate(details);
 
         var studyPlan = findStudyPlan(studyPlanId);
 
-        studyPlan.setYear(request.year());
-        studyPlan.setDuration(request.duration());
-        studyPlan.setTrack(request.track());
-        studyPlan.setPrivate(request.isPrivate());
+        studyPlan.setYear(details.year());
+        studyPlan.setDuration(details.duration());
+        studyPlan.setTrack(details.track());
+        studyPlan.setPrivate(details.isPrivate());
 
         return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
-    public StudyPlanResponse createStudyPlan(CreateStudyPlanRequest request) {
+    public StudyPlanDto createStudyPlan(StudyPlanDetailsDto details) {
         StudyPlan studyPlan = new StudyPlan();
 
-        studyPlan.setYear(request.year());
-        studyPlan.setDuration(request.duration());
-        studyPlan.setTrack(request.track());
-        studyPlan.setPrivate(request.isPrivate());
-        studyPlan.setProgram(AggregateReference.to(request.program()));
+        studyPlan.setYear(details.year());
+        studyPlan.setDuration(details.duration());
+        studyPlan.setTrack(details.track());
+        studyPlan.setPrivate(details.isPrivate());
+        studyPlan.setProgram(AggregateReference.to(details.program()));
 
         return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional
-    public void deleteStudyPlan(long studyPlanId) {
-        studyPlanRepository.deleteById(studyPlanId);
+    public void deleteStudyPlan(long id) {
+        studyPlanRepository.deleteById(id);
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public StudyPlanResponse createSection(long studyPlanId, CreateSectionRequest request) {
+    public StudyPlanDto createSection(long studyPlanId, SectionDetailsDto request) {
         var studyPlan = findStudyPlan(studyPlanId);
 
         Section newSection = new Section();
@@ -203,8 +198,8 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanResponse editSection(long studyPlanId, long sectionId, EditSectionRequest request) {
-        editSectionRequestValidator.validate(request);
+    public StudyPlanDto editSectionDetails(long studyPlanId, long sectionId, SectionDetailsDto request) {
+        sectionDetailsValidator.validate(request);
 
         var studyPlan = findStudyPlan(studyPlanId);
 
@@ -225,7 +220,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanResponse deleteSection(long studyPlanId, long sectionId) {
+    public StudyPlanDto deleteSection(long studyPlanId, long sectionId) {
         var studyPlan = findStudyPlan(studyPlanId);
 
         var section = studyPlan.getSections().stream()
@@ -270,13 +265,11 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanResponse addCoursesToSection(
+    public StudyPlanDto addSectionCourses(
             long studyPlanId,
             long sectionId,
-            AddCoursesToSectionRequest request
+            List<Long> courseIds
     ) {
-        addCoursesToSectionValidator.validate(request);
-
         var studyPlan = findStudyPlan(studyPlanId);
 
         var section = studyPlan.getSections().stream()
@@ -289,7 +282,7 @@ public class StudyPlanService {
                 .flatMap(s -> s.getCourses().keySet().stream())
                 .collect(Collectors.toSet());
 
-        Map<Long, SectionCourse> toBeAddedCourses = request.courseIds()
+        Map<Long, SectionCourse> toBeAddedCourses = courseIds
                 .stream()
                 .filter(courseId -> {
                     if (studyPlanCourses.contains(courseId)) {
@@ -312,7 +305,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanResponse removeCourseFromSection(long studyPlanId, List<Long> courseIds) {
+    public StudyPlanDto removeStudyPlanCourse(long studyPlanId, List<Long> courseIds) {
         var studyPlan = findStudyPlan(studyPlanId);
 
         for (var courseId : courseIds) {
@@ -333,16 +326,16 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanResponse assignCoursePrerequisites(
+    public StudyPlanDto linkCoursePrerequisites(
             long studyPlanId,
             long courseId,
-            List<CoursePrerequisiteRequest> prerequisiteRequests
+            List<CoursePrerequisiteDto> prerequisites
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
 
-        studyPlanGraphService.validatePrerequisites(courseId, studyPlan, prerequisiteRequests);
+        studyPlanGraphService.validatePrerequisites(courseId, studyPlan, prerequisites);
 
-        for (var prerequisite : prerequisiteRequests) {
+        for (var prerequisite : prerequisites) {
             studyPlan.getCoursePrerequisites().add(
                     new CoursePrerequisite(
                             AggregateReference.to(courseId),
@@ -356,18 +349,18 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanResponse assignCourseCorequisites(
+    public StudyPlanDto linkCourseCorequisites(
             long studyPlanId,
             long courseId,
-            List<Long> corequisites
+            List<Long> corequisiteIds
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
 
-        for (var corequisite : corequisites) {
+        for (var corequisiteId : corequisiteIds) {
             studyPlan.getCourseCorequisites().add(
                     new CourseCorequisite(
                             AggregateReference.to(courseId),
-                            AggregateReference.to(corequisite)
+                            AggregateReference.to(corequisiteId)
                     )
             );
         }
@@ -376,7 +369,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanResponse removeCourseCorequisite(
+    public StudyPlanDto unlinkCourseCorequisites(
             long studyPlanId,
             long courseId,
             long corequisiteId
@@ -393,7 +386,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanResponse removeCoursePrerequisite(
+    public StudyPlanDto unlinkCoursePrerequisites(
             long studyPlanId,
             long courseId,
             long prerequisiteId
@@ -410,7 +403,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanResponse moveCourseSection(
+    public StudyPlanDto moveCourseSection(
             long studyPlanId,
             long courseId,
             long sectionId
@@ -434,7 +427,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanResponse moveSectionPosition(
+    public StudyPlanDto moveSectionPosition(
             long studyPlanId,
             long sectionId,
             MoveDirection direction
@@ -478,7 +471,7 @@ public class StudyPlanService {
         return saveAndMapStudyPlan(studyPlan);
     }
 
-    public StudyPlanResponse removeCoursePlacement(long studyPlanId, long courseId) {
+    public StudyPlanDto removeCoursePlacement(long studyPlanId, long courseId) {
         var studyPlan = findStudyPlan(studyPlanId);
 
         studyPlan.getCoursePlacements().remove(courseId);
@@ -491,7 +484,7 @@ public class StudyPlanService {
                 .orElseThrow(() -> new StudyPlanNotFoundException("Study plan with id " + studyPlanId + " was not found."));
     }
 
-    private StudyPlanResponse saveAndMapStudyPlan(StudyPlan studyPlan) {
+    private StudyPlanDto saveAndMapStudyPlan(StudyPlan studyPlan) {
         StudyPlan savedStudyPlan;
 
         try {

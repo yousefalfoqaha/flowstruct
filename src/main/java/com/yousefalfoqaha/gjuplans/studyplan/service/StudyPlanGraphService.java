@@ -4,7 +4,7 @@ import com.yousefalfoqaha.gjuplans.course.domain.CourseSequences;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.CoursePrerequisite;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.Relation;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.request.CoursePrerequisiteRequest;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.CoursePrerequisiteDto;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.CyclicDependencyException;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +46,7 @@ public class StudyPlanGraphService {
     public void validatePrerequisites(
             long parentCourseId,
             StudyPlan studyPlan,
-            List<CoursePrerequisiteRequest> prerequisiteRequests
+            List<CoursePrerequisiteDto> prerequisiteRequests
     ) {
         var coursePrerequisitesMap = studyPlan.getCoursePrerequisitesMap();
 

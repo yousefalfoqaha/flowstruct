@@ -1,6 +1,7 @@
-package com.yousefalfoqaha.gjuplans.user;
+package com.yousefalfoqaha.gjuplans.user.service;
 
 import com.yousefalfoqaha.gjuplans.auth.JwtService;
+import com.yousefalfoqaha.gjuplans.user.LoginUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;

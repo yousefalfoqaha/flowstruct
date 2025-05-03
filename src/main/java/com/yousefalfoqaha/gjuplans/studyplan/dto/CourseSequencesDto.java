@@ -1,8 +1,8 @@
-package com.yousefalfoqaha.gjuplans.studyplan.dto.response;
+package com.yousefalfoqaha.gjuplans.studyplan.dto;
 
 import java.util.Set;
 
-public record CourseSequencesResponse(
+public record CourseSequencesDto(
         Set<Long> prerequisiteSequence,
         Set<Long> postrequisiteSequence,
         int level

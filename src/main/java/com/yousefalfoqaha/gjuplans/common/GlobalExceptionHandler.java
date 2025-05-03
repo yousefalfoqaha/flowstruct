@@ -1,5 +1,7 @@
 package com.yousefalfoqaha.gjuplans.common;
 
+import com.yousefalfoqaha.gjuplans.common.dto.ErrorObject;
+import com.yousefalfoqaha.gjuplans.common.dto.ValidationErrorObject;
 import com.yousefalfoqaha.gjuplans.program.exception.InvalidDegreeException;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;

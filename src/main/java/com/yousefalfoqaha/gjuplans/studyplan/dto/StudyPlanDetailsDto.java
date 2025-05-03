@@ -1,9 +1,9 @@
-package com.yousefalfoqaha.gjuplans.studyplan.dto.request;
+package com.yousefalfoqaha.gjuplans.studyplan.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-public record CreateStudyPlanRequest (
+public record StudyPlanDetailsDto(
 
     @NotNull(message = "Year cannot be empty.")
     int year,
