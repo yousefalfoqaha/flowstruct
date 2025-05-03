@@ -10,9 +10,6 @@ public class GjuPlansApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(GjuPlansApplication.class, args);
-
-        PasswordEncoder encoder = new BCryptPasswordEncoder();
-        System.out.println(encoder.encode("admin"));
     }
 
 }
