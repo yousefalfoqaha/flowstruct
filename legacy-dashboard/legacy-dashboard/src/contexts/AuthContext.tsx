@@ -1,8 +1,7 @@
 import React, {ReactNode} from "react";
-
-type User = {
-    username: string;
-}
+import {api} from "@/shared/api.ts";
+import {User} from "@/features/auth/types.ts";
+import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 
 type AuthContextType = {
     isAuthenticated: boolean;
@@ -18,6 +17,7 @@ type ProviderProps = {
 }
 
 function AuthProvider({children}: ProviderProps) {
+
 
     return (
         <AuthContext.Provider value={}>
@@ -35,3 +35,5 @@ const useAuth = () => {
 
     return context;
 }
+
+export {AuthContext, AuthProvider, useAuth};
