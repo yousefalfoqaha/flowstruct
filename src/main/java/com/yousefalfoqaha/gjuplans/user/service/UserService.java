@@ -1,7 +1,7 @@
 package com.yousefalfoqaha.gjuplans.user.service;
 
 import com.yousefalfoqaha.gjuplans.auth.JwtService;
-import com.yousefalfoqaha.gjuplans.user.LoginUserRequest;
+import com.yousefalfoqaha.gjuplans.user.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,7 +15,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public String verify(LoginUserRequest request) {
+    public String verify(UserDto request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.username(), request.password()));
 
