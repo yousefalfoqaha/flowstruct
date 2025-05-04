@@ -1,9 +1,9 @@
-package com.yousefalfoqaha.gjuplans.course.dto.response;
+package com.yousefalfoqaha.gjuplans.course.dto;
 
 import java.util.List;
 
-public record CoursesPageResponse(
-        List<CourseSummaryResponse> content,
+public record CoursesPageDto(
+        List<CourseSummaryDto> content,
         int page,
         int size,
         long totalCourses,

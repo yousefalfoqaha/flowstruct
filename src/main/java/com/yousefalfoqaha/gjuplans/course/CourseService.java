@@ -2,10 +2,10 @@ package com.yousefalfoqaha.gjuplans.course;
 
 import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.course.domain.Course;
-import com.yousefalfoqaha.gjuplans.course.dto.request.CourseDetailsRequest;
-import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
-import com.yousefalfoqaha.gjuplans.course.dto.response.CourseSummaryResponse;
-import com.yousefalfoqaha.gjuplans.course.dto.response.CoursesPageResponse;
+import com.yousefalfoqaha.gjuplans.course.dto.CourseDetailsDto;
+import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
+import com.yousefalfoqaha.gjuplans.course.dto.CourseSummaryDto;
+import com.yousefalfoqaha.gjuplans.course.dto.CoursesPageDto;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import com.yousefalfoqaha.gjuplans.course.mapper.CourseResponseMapper;
 import com.yousefalfoqaha.gjuplans.course.mapper.CourseSummaryResponseMapper;
@@ -26,12 +26,12 @@ import java.util.stream.Collectors;
 @Service
 public class CourseService {
     private final CourseRepository courseRepository;
-    private final ObjectValidator<CourseDetailsRequest> courseDetailsValidator;
+    private final ObjectValidator<CourseDetailsDto> courseDetailsValidator;
     private final CourseResponseMapper courseResponseMapper;
     private final CourseSummaryResponseMapper courseSummaryResponseMapper;
     private final CoursesPageResponseMapper coursesPageResponseMapper;
 
-    public CoursesPageResponse getPaginatedCourses(int page, int size, String filter) {
+    public CoursesPageDto getPaginatedCourseList(int page, int size, String filter) {
         Pageable pageable = PageRequest.of(page, size);
         var filterParam = '%' + filter + '%';
 
@@ -49,56 +49,55 @@ public class CourseService {
         return coursesPageResponseMapper.apply(coursesPage);
     }
 
-    public Map<Long, CourseSummaryResponse> getCoursesById(List<Long> courseIds) {
+    public Map<Long, CourseSummaryDto> getCourseList(List<Long> courseIds) {
         return courseRepository.findAllById(courseIds)
                 .stream()
                 .map(courseSummaryResponseMapper)
-                .collect(Collectors.toMap(CourseSummaryResponse::id, Function.identity()));
+                .collect(Collectors.toMap(CourseSummaryDto::id, Function.identity()));
     }
 
-    public Map<Long, CourseResponse> getDetailedCoursesById(List<Long> courseIds) {
+    public Map<Long, CourseDto> getDetailedCourseList(List<Long> courseIds) {
         return courseRepository.findAllById(courseIds)
                 .stream()
                 .map(courseResponseMapper)
-                .collect(Collectors.toMap(CourseResponse::id, Function.identity()));
+                .collect(Collectors.toMap(CourseDto::id, Function.identity()));
     }
 
-    public CourseResponse getCourse(long courseId) {
+    public CourseDto getCourse(long courseId) {
         var course = findCourse(courseId);
-
         return courseResponseMapper.apply(course);
     }
 
-    public CourseResponse editCourseDetails(long courseId, CourseDetailsRequest request) {
-        courseDetailsValidator.validate(request);
+    public CourseDto editCourseDetails(long courseId, CourseDetailsDto details) {
+        courseDetailsValidator.validate(details);
 
         var course = findCourse(courseId);
 
-        course.setCode(request.code());
-        course.setName(request.name());
-        course.setCreditHours(request.creditHours());
-        course.setEcts(request.ects());
-        course.setLectureHours(request.lectureHours());
-        course.setPracticalHours(request.practicalHours());
-        course.setType(request.type());
-        course.setRemedial(request.isRemedial());
+        course.setCode(details.code());
+        course.setName(details.name());
+        course.setCreditHours(details.creditHours());
+        course.setEcts(details.ects());
+        course.setLectureHours(details.lectureHours());
+        course.setPracticalHours(details.practicalHours());
+        course.setType(details.type());
+        course.setRemedial(details.isRemedial());
 
         return saveAndMap(course, courseResponseMapper);
     }
 
-    public CourseResponse createCourse(CourseDetailsRequest request) {
-        courseDetailsValidator.validate(request);
+    public CourseDto createCourse(CourseDetailsDto details) {
+        courseDetailsValidator.validate(details);
 
         var newCourse = new Course(
                 null,
-                request.code(),
-                request.name(),
-                request.creditHours(),
-                request.ects(),
-                request.lectureHours(),
-                request.practicalHours(),
-                request.type(),
-                request.isRemedial(),
+                details.code(),
+                details.name(),
+                details.creditHours(),
+                details.ects(),
+                details.lectureHours(),
+                details.practicalHours(),
+                details.type(),
+                details.isRemedial(),
                 null
         );
 
@@ -106,7 +105,8 @@ public class CourseService {
     }
 
     private Course findCourse(long id) {
-        return courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException("Course with id " + id + " was not found."));
+        return courseRepository.findById(id)
+                .orElseThrow(() -> new CourseNotFoundException("Course with id " + id + " was not found."));
     }
 
     private <T> T saveAndMap(Course course, Function<Course, T> mapper) {

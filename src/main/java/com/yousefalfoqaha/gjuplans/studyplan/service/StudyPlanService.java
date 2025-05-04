@@ -265,7 +265,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto addSectionCourses(
+    public StudyPlanDto addCoursesToStudyPlan(
             long studyPlanId,
             long sectionId,
             List<Long> courseIds
@@ -305,7 +305,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto removeStudyPlanCourses(long studyPlanId, List<Long> courseIds) {
+    public StudyPlanDto removeCoursesFromStudyPlan(long studyPlanId, List<Long> courseIds) {
         var studyPlan = findStudyPlan(studyPlanId);
 
         for (var courseId : courseIds) {
@@ -326,7 +326,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto linkPrerequisites(
+    public StudyPlanDto linkPrerequisitesToCourse(
             long studyPlanId,
             long courseId,
             List<CoursePrerequisiteDto> prerequisites
@@ -349,7 +349,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto linkCorequisites(
+    public StudyPlanDto linkCorequisitesToCourse(
             long studyPlanId,
             long courseId,
             List<Long> corequisiteIds
@@ -369,7 +369,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto unlinkCorequisites(
+    public StudyPlanDto unlinkCorequisitesFromCourse(
             long studyPlanId,
             long courseId,
             long corequisiteId
@@ -386,7 +386,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto unlinkPrerequisites(
+    public StudyPlanDto unlinkPrerequisitesFromCourse(
             long studyPlanId,
             long courseId,
             long prerequisiteId
@@ -403,7 +403,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto moveCourseSection(
+    public StudyPlanDto moveCourseToSection(
             long studyPlanId,
             long courseId,
             long sectionId
@@ -427,7 +427,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto moveSectionPosition(
+    public StudyPlanDto moveSection(
             long studyPlanId,
             long sectionId,
             MoveDirection direction
@@ -471,7 +471,7 @@ public class StudyPlanService {
         return saveAndMapStudyPlan(studyPlan);
     }
 
-    public StudyPlanDto removeCoursePlacement(long studyPlanId, long courseId) {
+    public StudyPlanDto removeCourseFromSemester(long studyPlanId, long courseId) {
         var studyPlan = findStudyPlan(studyPlanId);
 
         studyPlan.getCoursePlacements().remove(courseId);

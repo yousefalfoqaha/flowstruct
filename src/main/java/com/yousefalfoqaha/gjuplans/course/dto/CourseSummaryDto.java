@@ -1,6 +1,6 @@
-package com.yousefalfoqaha.gjuplans.course.dto.response;
+package com.yousefalfoqaha.gjuplans.course.dto;
 
-public record CourseSummaryResponse(
+public record CourseSummaryDto(
         long id,
         String code,
         String name,

@@ -1,7 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
-import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
-import com.yousefalfoqaha.gjuplans.course.dto.response.CourseSummaryResponse;
+import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
+import com.yousefalfoqaha.gjuplans.course.dto.CourseSummaryDto;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.MoveDirection;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.*;
 import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanCourseService;
@@ -27,12 +27,12 @@ public class StudyPlanController {
     }
 
     @GetMapping("/{studyPlanId}/courses")
-    public ResponseEntity<Map<Long, CourseSummaryResponse>> getStudyPlanCourseList(@PathVariable long studyPlanId) {
+    public ResponseEntity<Map<Long, CourseSummaryDto>> getStudyPlanCourseList(@PathVariable long studyPlanId) {
         return new ResponseEntity<>(studyPlanCourseService.getStudyPlanCourseList(studyPlanId), HttpStatus.OK);
     }
 
     @GetMapping("/{studyPlanId}/courses/detailed")
-    public ResponseEntity<Map<Long, CourseResponse>> getStudyPlanDetailedCourseList(@PathVariable long studyPlanId) {
+    public ResponseEntity<Map<Long, CourseDto>> getStudyPlanDetailedCourseList(@PathVariable long studyPlanId) {
         return new ResponseEntity<>(studyPlanCourseService.getStudyPlanDetailedCourseList(studyPlanId), HttpStatus.OK);
     }
 
@@ -104,107 +104,107 @@ public class StudyPlanController {
     }
 
     @PostMapping("/{studyPlanId}/sections/{sectionId}/courses")
-    public ResponseEntity<StudyPlanDto> addSectionCourses(
+    public ResponseEntity<StudyPlanDto> addCoursesToStudyPlan(
             @PathVariable long studyPlanId,
             @PathVariable long sectionId,
             @RequestParam(value = "courses", defaultValue = "") List<Long> courseIds
     ) {
         return new ResponseEntity<>(
-                studyPlanService.addSectionCourses(studyPlanId, sectionId, courseIds),
+                studyPlanService.addCoursesToStudyPlan(studyPlanId, sectionId, courseIds),
                 HttpStatus.OK
         );
     }
 
     @DeleteMapping("/{studyPlanId}/courses")
-    public ResponseEntity<StudyPlanDto> removeStudyPlanCourses(
+    public ResponseEntity<StudyPlanDto> removeCoursesFromStudyPlan(
             @PathVariable long studyPlanId,
             @RequestParam(value = "courses", defaultValue = "") List<Long> courseIds
     ) {
         return new ResponseEntity<>(
-                studyPlanService.removeStudyPlanCourses(studyPlanId, courseIds),
+                studyPlanService.removeCoursesFromStudyPlan(studyPlanId, courseIds),
                 HttpStatus.OK
         );
     }
 
     @PostMapping("/{studyPlanId}/courses/{courseId}/prerequisites")
-    public ResponseEntity<StudyPlanDto> linkPrerequisites(
+    public ResponseEntity<StudyPlanDto> linkPrerequisitesToCourse(
             @PathVariable long studyPlanId,
             @PathVariable long courseId,
             @RequestBody List<CoursePrerequisiteDto> prerequisites
     ) {
         return new ResponseEntity<>(
-                studyPlanService.linkPrerequisites(studyPlanId, courseId, prerequisites),
+                studyPlanService.linkPrerequisitesToCourse(studyPlanId, courseId, prerequisites),
                 HttpStatus.OK
         );
     }
 
     @DeleteMapping("/{studyPlanId}/courses/{courseId}/prerequisites/{prerequisiteId}")
-    public ResponseEntity<StudyPlanDto> unlinkPrerequisites(
+    public ResponseEntity<StudyPlanDto> unlinkPrerequisitesFromCourse(
             @PathVariable long studyPlanId,
             @PathVariable long courseId,
             @PathVariable long prerequisiteId
     ) {
         return new ResponseEntity<>(
-                studyPlanService.unlinkPrerequisites(studyPlanId, courseId, prerequisiteId),
+                studyPlanService.unlinkPrerequisitesFromCourse(studyPlanId, courseId, prerequisiteId),
                 HttpStatus.OK
         );
     }
 
     @PostMapping("/{studyPlanId}/courses/{courseId}/corequisites")
-    public ResponseEntity<StudyPlanDto> linkCorequisites(
+    public ResponseEntity<StudyPlanDto> linkCorequisitesToCourse(
             @PathVariable long studyPlanId,
             @PathVariable long courseId,
             @RequestParam(value = "courses", defaultValue = "") List<Long> corequisiteIds
     ) {
         return new ResponseEntity<>(
-                studyPlanService.linkCorequisites(studyPlanId, courseId, corequisiteIds),
+                studyPlanService.linkCorequisitesToCourse(studyPlanId, courseId, corequisiteIds),
                 HttpStatus.OK
         );
     }
 
     @DeleteMapping("/{studyPlanId}/courses/{courseId}/corequisites/{corequisiteId}")
-    public ResponseEntity<StudyPlanDto> unlinkCorequisites(
+    public ResponseEntity<StudyPlanDto> unlinkCorequisitesFromCourse(
             @PathVariable long studyPlanId,
             @PathVariable long courseId,
             @PathVariable long corequisiteId
     ) {
         return new ResponseEntity<>(
-                studyPlanService.unlinkCorequisites(studyPlanId, courseId, corequisiteId),
+                studyPlanService.unlinkCorequisitesFromCourse(studyPlanId, courseId, corequisiteId),
                 HttpStatus.OK
         );
     }
 
     @PutMapping("/{studyPlanId}/courses/{courseId}/move-to-section/{sectionId}")
-    public ResponseEntity<StudyPlanDto> moveCourseSection(
+    public ResponseEntity<StudyPlanDto> moveCourseToSection(
             @PathVariable long studyPlanId,
             @PathVariable long courseId,
             @PathVariable long sectionId
     ) {
         return new ResponseEntity<>(
-                studyPlanService.moveCourseSection(studyPlanId, courseId, sectionId),
+                studyPlanService.moveCourseToSection(studyPlanId, courseId, sectionId),
                 HttpStatus.OK
         );
     }
 
     @PutMapping("/{studyPlanId}/sections/{sectionId}/move")
-    public ResponseEntity<StudyPlanDto> moveSectionPosition(
+    public ResponseEntity<StudyPlanDto> moveSection(
             @PathVariable long studyPlanId,
             @PathVariable long sectionId,
             @RequestParam(value = "direction", defaultValue = "") MoveDirection direction
     ) {
         return new ResponseEntity<>(
-                studyPlanService.moveSectionPosition(studyPlanId, sectionId, direction),
+                studyPlanService.moveSection(studyPlanId, sectionId, direction),
                 HttpStatus.OK
         );
     }
 
     @DeleteMapping("/{studyPlanId}/course-placements/{courseId}")
-    public ResponseEntity<StudyPlanDto> removeCoursePlacement(
+    public ResponseEntity<StudyPlanDto> removeCourseFromSemester(
             @PathVariable long studyPlanId,
             @PathVariable long courseId
     ) {
         return new ResponseEntity<>(
-                studyPlanService.removeCoursePlacement(studyPlanId, courseId),
+                studyPlanService.removeCourseFromSemester(studyPlanId, courseId),
                 HttpStatus.OK
         );
     }

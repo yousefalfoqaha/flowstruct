@@ -1,8 +1,8 @@
-package com.yousefalfoqaha.gjuplans.course.dto.response;
+package com.yousefalfoqaha.gjuplans.course.dto;
 
 import com.yousefalfoqaha.gjuplans.course.domain.CourseType;
 
-public record CourseResponse(
+public record CourseDto(
         long id,
         String code,
         String name,

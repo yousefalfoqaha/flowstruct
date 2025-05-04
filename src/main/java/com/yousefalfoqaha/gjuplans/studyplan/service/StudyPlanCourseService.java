@@ -1,8 +1,8 @@
 package com.yousefalfoqaha.gjuplans.studyplan.service;
 
 import com.yousefalfoqaha.gjuplans.course.CourseService;
-import com.yousefalfoqaha.gjuplans.course.dto.response.CourseResponse;
-import com.yousefalfoqaha.gjuplans.course.dto.response.CourseSummaryResponse;
+import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
+import com.yousefalfoqaha.gjuplans.course.dto.CourseSummaryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ public class StudyPlanCourseService {
     private final StudyPlanService studyPlanService;
     private final CourseService courseService;
 
-    public Map<Long, CourseSummaryResponse> getStudyPlanCourseList(long studyPlanId) {
+    public Map<Long, CourseSummaryDto> getStudyPlanCourseList(long studyPlanId) {
         var studyPlan = studyPlanService.getStudyPlan(studyPlanId);
 
         var courseIds = studyPlan.sections()
@@ -22,10 +22,10 @@ public class StudyPlanCourseService {
                 .flatMap(s -> s.courses().stream())
                 .toList();
 
-        return courseService.getCoursesById(courseIds);
+        return courseService.getCourseList(courseIds);
     }
 
-    public Map<Long, CourseResponse> getStudyPlanDetailedCourseList(long studyPlanId) {
+    public Map<Long, CourseDto> getStudyPlanDetailedCourseList(long studyPlanId) {
         var studyPlan = studyPlanService.getStudyPlan(studyPlanId);
 
         var courseIds = studyPlan.sections()
@@ -33,6 +33,6 @@ public class StudyPlanCourseService {
                 .flatMap(s -> s.courses().stream())
                 .toList();
 
-        return courseService.getDetailedCoursesById(courseIds);
+        return courseService.getDetailedCourseList(courseIds);
     }
 }

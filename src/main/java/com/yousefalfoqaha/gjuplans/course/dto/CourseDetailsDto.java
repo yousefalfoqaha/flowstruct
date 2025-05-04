@@ -1,11 +1,11 @@
-package com.yousefalfoqaha.gjuplans.course.dto.request;
+package com.yousefalfoqaha.gjuplans.course.dto;
 
 import com.yousefalfoqaha.gjuplans.course.domain.CourseType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-public record CourseDetailsRequest(
+public record CourseDetailsDto(
         @NotEmpty(message="Code cannot be empty")
         String code,
 
