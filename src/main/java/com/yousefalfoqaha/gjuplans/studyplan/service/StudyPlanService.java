@@ -26,7 +26,7 @@ public class StudyPlanService {
     private final StudyPlanGraphService studyPlanGraphService;
     private final StudyPlanResponseMapper studyPlanResponseMapper;
     private final ObjectValidator<StudyPlanDetailsDto> studyPlanDetailsValidator;
-    private final ObjectValidator<SemesterCoursesDto> addCoursesToSemesterValidator;
+    private final ObjectValidator<SemesterCoursesDto> semesterCoursesValidator;
     private final ObjectValidator<SectionDetailsDto> sectionDetailsValidator;
 
     public StudyPlanDto getStudyPlan(long studyPlanId) {
@@ -100,8 +100,8 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto placeSemesterCourses(long studyPlanId, SemesterCoursesDto semesterCourses) {
-        addCoursesToSemesterValidator.validate(semesterCourses);
+    public StudyPlanDto placeCoursesInSemester(long studyPlanId, SemesterCoursesDto semesterCourses) {
+        semesterCoursesValidator.validate(semesterCourses);
 
         var studyPlan = findStudyPlan(studyPlanId);
         var coursePrerequisitesMap = studyPlan.getCoursePrerequisitesMap();
@@ -305,7 +305,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto removeStudyPlanCourse(long studyPlanId, List<Long> courseIds) {
+    public StudyPlanDto removeStudyPlanCourses(long studyPlanId, List<Long> courseIds) {
         var studyPlan = findStudyPlan(studyPlanId);
 
         for (var courseId : courseIds) {
@@ -326,7 +326,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto linkCoursePrerequisites(
+    public StudyPlanDto linkPrerequisites(
             long studyPlanId,
             long courseId,
             List<CoursePrerequisiteDto> prerequisites
@@ -349,7 +349,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto linkCourseCorequisites(
+    public StudyPlanDto linkCorequisites(
             long studyPlanId,
             long courseId,
             List<Long> corequisiteIds
@@ -369,7 +369,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto unlinkCourseCorequisites(
+    public StudyPlanDto unlinkCorequisites(
             long studyPlanId,
             long courseId,
             long corequisiteId
@@ -386,7 +386,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto unlinkCoursePrerequisites(
+    public StudyPlanDto unlinkPrerequisites(
             long studyPlanId,
             long courseId,
             long prerequisiteId

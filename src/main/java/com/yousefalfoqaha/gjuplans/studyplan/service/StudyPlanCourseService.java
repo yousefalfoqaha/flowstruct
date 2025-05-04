@@ -14,7 +14,7 @@ public class StudyPlanCourseService {
     private final StudyPlanService studyPlanService;
     private final CourseService courseService;
 
-    public Map<Long, CourseSummaryResponse> getStudyPlanCourses(long studyPlanId) {
+    public Map<Long, CourseSummaryResponse> getStudyPlanCourseList(long studyPlanId) {
         var studyPlan = studyPlanService.getStudyPlan(studyPlanId);
 
         var courseIds = studyPlan.sections()
@@ -25,7 +25,7 @@ public class StudyPlanCourseService {
         return courseService.getCoursesById(courseIds);
     }
 
-    public Map<Long, CourseResponse> getStudyPlanDetailedCourses(long studyPlanId) {
+    public Map<Long, CourseResponse> getStudyPlanDetailedCourseList(long studyPlanId) {
         var studyPlan = studyPlanService.getStudyPlan(studyPlanId);
 
         var courseIds = studyPlan.sections()
