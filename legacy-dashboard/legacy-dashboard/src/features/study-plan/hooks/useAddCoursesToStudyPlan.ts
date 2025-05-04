@@ -1,12 +1,12 @@
 import {useQueryClient} from "@tanstack/react-query";
-import {addSectionCourses} from "@/features/study-plan/api.ts";
+import {addCoursesToStudyPlan} from "@/features/study-plan/api.ts";
 import {studyPlanKeys} from "@/features/study-plan/queries.ts";
 import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 
-export const useAddSectionCourses = () => {
+export const useAddCoursesToStudyPlan = () => {
     const queryClient = useQueryClient();
 
-    return useAppMutation(addSectionCourses, {
+    return useAppMutation(addCoursesToStudyPlan, {
         onSuccess: (data) => {
             queryClient.setQueryData(studyPlanKeys.detail(data.id), data);
             queryClient.invalidateQueries({queryKey: studyPlanKeys.courseList(data.id)});

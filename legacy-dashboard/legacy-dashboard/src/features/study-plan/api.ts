@@ -38,7 +38,7 @@ export const createSection = ({studyPlanId, sectionDetails}: {
 }) =>
     api.put<StudyPlan>([ENDPOINT, studyPlanId, 'create-section'], {body: sectionDetails});
 
-export const addSectionCourses = ({courseIds, sectionId, studyPlanId}: {
+export const addCoursesToStudyPlan = ({courseIds, sectionId, studyPlanId}: {
     courseIds: number[];
     sectionId: number;
     studyPlanId: number
@@ -58,7 +58,7 @@ export const editSectionDetails = ({sectionDetails, sectionId, studyPlanId}: {
         body: sectionDetails
     });
 
-export const removeStudyPlanCourses = ({courseIds, studyPlanId}: {
+export const removeCoursesFromStudyPlan = ({courseIds, studyPlanId}: {
     courseIds: number[];
     studyPlanId: number
 }) =>
@@ -74,7 +74,7 @@ export const deleteSection = ({studyPlanId, sectionId}: {
 }) =>
     api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'sections', sectionId]);
 
-export const linkPrerequisites = ({studyPlanId, courseId, prerequisites}: {
+export const linkPrerequisitesToCourse = ({studyPlanId, courseId, prerequisites}: {
     studyPlanId: number;
     courseId: number;
     prerequisites: Prerequisite[]
@@ -83,21 +83,21 @@ export const linkPrerequisites = ({studyPlanId, courseId, prerequisites}: {
         body: prerequisites
     });
 
-export const unlinkPrerequisite = ({studyPlanId, courseId, prerequisiteId}: {
+export const unlinkPrerequisiteFromCourse = ({studyPlanId, courseId, prerequisiteId}: {
     studyPlanId: number;
     courseId: number;
     prerequisiteId: number
 }) =>
     api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'prerequisites', prerequisiteId]);
 
-export const linkCorequisites = ({studyPlanId, courseId, corequisites}: {
+export const linkCorequisitesToCourse = ({studyPlanId, courseId, corequisites}: {
     studyPlanId: number;
     courseId: number;
     corequisites: number[]
 }) =>
     api.post<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'corequisites'], {body: corequisites});
 
-export const unlinkCorequisite = ({studyPlanId, courseId, corequisiteId}: {
+export const unlinkCorequisiteFromCourse = ({studyPlanId, courseId, corequisiteId}: {
     studyPlanId: number;
     courseId: number;
     corequisiteId: number

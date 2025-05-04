@@ -1,5 +1,5 @@
 import {AppCard} from "@/shared/components/AppCard.tsx";
-import {usePaginatedCourses} from "@/features/course/hooks/usePaginatedCourses.ts";
+import {usePaginatedCourseList} from "@/features/course/hooks/usePaginatedCourseList.ts";
 import {useDataTable} from "@/shared/hooks/useDataTable.ts";
 import {CourseSummary} from "@/features/course/types.ts";
 import React from "react";
@@ -12,7 +12,7 @@ import {Plus} from "lucide-react";
 import {Link} from "@tanstack/react-router";
 
 export function CoursesTable() {
-    const {data: coursesPage, isFetching, isPending} = usePaginatedCourses();
+    const {data: coursesPage, isFetching, isPending} = usePaginatedCourseList();
 
     const columns = React.useMemo(
         () => getCoursesTableColumns(),

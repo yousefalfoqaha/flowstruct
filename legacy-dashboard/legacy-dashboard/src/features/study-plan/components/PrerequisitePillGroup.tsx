@@ -1,7 +1,7 @@
 import {Flex, Indicator, Loader, Pill} from "@mantine/core";
 import {PrerequisiteMultiSelect} from "@/features/study-plan/components/PrerequisiteMultiSelect.tsx";
-import {useUnlinkPrerequisite} from "@/features/study-plan/hooks/useUnlinkPrerequisite.ts";
-import {useUnlinkCorequisite} from "@/features/study-plan/hooks/useUnlinkCorequisite.ts";
+import {useUnlinkPrerequisiteFromCourse} from "@/features/study-plan/hooks/useUnlinkPrerequisiteFromCourse.ts";
+import {useUnlinkCorequisiteFromCourse} from "@/features/study-plan/hooks/useUnlinkCorequisiteFromCourse.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
 
@@ -10,19 +10,19 @@ type PrerequisitePillGroupProps = {
 }
 
 export function PrerequisitePillGroup({parentCourseId}: PrerequisitePillGroupProps) {
-    const unlinkPrerequisite = useUnlinkPrerequisite();
-    const unlinkCorequisite = useUnlinkCorequisite();
+    const unlinkPrerequisiteFromCourse = useUnlinkPrerequisiteFromCourse();
+    const unlinkCorequisiteFromCourse = useUnlinkCorequisiteFromCourse();
 
     const {data: studyPlan} = useStudyPlan();
     const {data: courses} = useStudyPlanCourses();
 
-    const handleRemovePrerequisite = (prerequisiteId: number) => unlinkPrerequisite.mutate({
+    const handleRemovePrerequisite = (prerequisiteId: number) => unlinkPrerequisiteFromCourse.mutate({
         studyPlanId: studyPlan.id,
         courseId: parentCourseId,
         prerequisiteId: prerequisiteId
     });
 
-    const handleRemoveCorequisite = (corequisiteId: number) => unlinkCorequisite.mutate({
+    const handleRemoveCorequisite = (corequisiteId: number) => unlinkCorequisiteFromCourse.mutate({
         studyPlanId: studyPlan.id,
         courseId: parentCourseId,
         corequisiteId: corequisiteId
@@ -38,9 +38,9 @@ export function PrerequisitePillGroup({parentCourseId}: PrerequisitePillGroupPro
                 if (!prerequisite) return null;
 
                 const isRemovingPrerequisite =
-                    unlinkPrerequisite.isPending &&
-                    unlinkPrerequisite.variables.prerequisiteId === prerequisite.id &&
-                    unlinkPrerequisite.variables.courseId === parentCourseId;
+                    unlinkPrerequisiteFromCourse.isPending &&
+                    unlinkPrerequisiteFromCourse.variables.prerequisiteId === prerequisite.id &&
+                    unlinkPrerequisiteFromCourse.variables.courseId === parentCourseId;
 
                 return (
                     <Pill
@@ -59,9 +59,9 @@ export function PrerequisitePillGroup({parentCourseId}: PrerequisitePillGroupPro
                 if (!corequisite) return null;
 
                 const isRemovingCorequisite =
-                    unlinkCorequisite.isPending &&
-                    unlinkCorequisite.variables.corequisiteId === corequisite.id &&
-                    unlinkCorequisite.variables.courseId === parentCourseId;
+                    unlinkCorequisiteFromCourse.isPending &&
+                    unlinkCorequisiteFromCourse.variables.corequisiteId === corequisite.id &&
+                    unlinkCorequisiteFromCourse.variables.courseId === parentCourseId;
 
                 return (
                     <Indicator
@@ -92,8 +92,8 @@ export function PrerequisitePillGroup({parentCourseId}: PrerequisitePillGroupPro
             <PrerequisiteMultiSelect studyPlan={studyPlan} courses={courses} parentCourseId={parentCourseId}/>
 
             {
-                unlinkPrerequisite.isPending && unlinkPrerequisite.variables.courseId === parentCourseId ||
-                unlinkCorequisite.isPending && unlinkCorequisite.variables.courseId === parentCourseId
+                unlinkPrerequisiteFromCourse.isPending && unlinkPrerequisiteFromCourse.variables.courseId === parentCourseId ||
+                unlinkCorequisiteFromCourse.isPending && unlinkCorequisiteFromCourse.variables.courseId === parentCourseId
                     ? <Loader size={14}/>
                     : null
             }

@@ -2,16 +2,16 @@ import {Button, Text} from "@mantine/core";
 import {openConfirmModal} from "@mantine/modals";
 import {Table} from "@tanstack/react-table";
 import {Trash} from "lucide-react";
-import {useRemoveStudyPlanCourses} from "@/features/study-plan/hooks/useRemoveCourseFromSection.ts";
+import {useRemoveCoursesFromStudyPlan} from "@/features/study-plan/hooks/useRemoveCourseFromSection.ts";
 import {FrameworkCourse, StudyPlan} from "@/features/study-plan/types.ts";
 
-type RemoveStudyPlanCoursesButtonProps = {
+type Props = {
     table: Table<FrameworkCourse>;
     studyPlan: StudyPlan;
 }
 
-export function RemoveStudyPlanCoursesButton({table, studyPlan}: RemoveStudyPlanCoursesButtonProps) {
-    const removeCoursesFromSection = useRemoveStudyPlanCourses();
+export function RemoveCoursesFromStudyPlanButton({table, studyPlan}: Props) {
+    const removeCoursesFromStudyPlan = useRemoveCoursesFromStudyPlan();
     const selectedRows = table.getSelectedRowModel().rows;
 
     return (
@@ -28,14 +28,14 @@ export function RemoveStudyPlanCoursesButton({table, studyPlan}: RemoveStudyPlan
                             </Text>
                         ),
                         labels: {confirm: 'Remove Courses', cancel: 'Cancel'},
-                        onConfirm: () => removeCoursesFromSection.mutate({
+                        onConfirm: () => removeCoursesFromStudyPlan.mutate({
                             studyPlanId: studyPlan.id,
                             courseIds: selectedRows.map(row => row.original.id),
                         }, {onSuccess: () => table.setRowSelection({})})
                     })}
                     color="red"
                     leftSection={<Trash size={18}/>}
-                    loading={removeCoursesFromSection.isPending}
+                    loading={removeCoursesFromStudyPlan.isPending}
                 >
                     Remove ({selectedRows.length})
                 </Button>

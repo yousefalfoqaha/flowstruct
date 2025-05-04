@@ -12,9 +12,9 @@ import {
 import React from "react";
 import {CircleAlert, Link, Plus} from "lucide-react";
 import {useCoursesGraph} from "@/contexts/CoursesGraphContext.tsx";
-import {useLinkPrerequisites} from "@/features/study-plan/hooks/useLinkPrerequisites.ts";
+import {useLinkPrerequisitesToCourse} from "@/features/study-plan/hooks/useLinkPrerequisitesToCourse.ts";
 import {CourseRelation, StudyPlan} from "@/features/study-plan/types.ts";
-import {useLinkCorequisites} from "@/features/study-plan/hooks/useLinkCorequisites.ts";
+import {useLinkCorequisitesToCourse} from "@/features/study-plan/hooks/useLinkCorequisitesToCourse.ts";
 import classes from "@/features/study-plan/components/CoursesMultiSelect.module.css";
 import {getSectionCode} from "@/utils/getSectionCode.ts";
 import {CourseSummary} from "@/features/course/types.ts";
@@ -39,12 +39,12 @@ export function PrerequisiteMultiSelect({parentCourseId, courses, studyPlan}: Pr
 
     const {coursesGraph} = useCoursesGraph();
 
-    const linkPrerequisites = useLinkPrerequisites();
-    const linkCorequisites = useLinkCorequisites();
+    const linkPrerequisitesToCourse = useLinkPrerequisitesToCourse();
+    const linkCorequisitesToCourse = useLinkCorequisitesToCourse();
 
     const handleAssignCourses = () => {
         if (requisiteType === "PRE") {
-            linkPrerequisites.mutate(
+            linkPrerequisitesToCourse.mutate(
                 {
                     courseId: parentCourseId,
                     studyPlanId: studyPlan.id,
@@ -63,7 +63,7 @@ export function PrerequisiteMultiSelect({parentCourseId, courses, studyPlan}: Pr
             return;
         }
 
-        linkCorequisites.mutate(
+        linkCorequisitesToCourse.mutate(
             {
                 courseId: parentCourseId,
                 studyPlanId: studyPlan.id,
@@ -167,7 +167,7 @@ export function PrerequisiteMultiSelect({parentCourseId, courses, studyPlan}: Pr
                         <Button
                             disabled={!canAddRequisites}
                             leftSection={<Link size={14}/>}
-                            loading={linkPrerequisites.isPending || linkCorequisites.isPending}
+                            loading={linkPrerequisitesToCourse.isPending || linkCorequisitesToCourse.isPending}
                             onClick={handleAssignCourses}
                         >
                             Assign {requisiteType === 'PRE' ? 'Prerequisites' : 'Corequisites'}

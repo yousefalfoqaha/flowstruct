@@ -4,7 +4,7 @@ import {SectionsTree} from "@/features/study-plan/components/SectionsTree.tsx";
 import {StudyPlanCourseAdder} from "@/features/study-plan/components/StudyPlanCourseAdder.tsx";
 import {useDataTable} from "@/shared/hooks/useDataTable.ts";
 import {DataTablePagination} from "@/shared/components/DataTablePagination.tsx";
-import {RemoveStudyPlanCoursesButton} from "@/features/study-plan/components/RemoveStudyPlanCoursesButton.tsx";
+import {RemoveCoursesFromStudyPlanButton} from "@/features/study-plan/components/RemoveCoursesFromStudyPlanButton.tsx";
 import {DataTableSearch} from "@/shared/components/DataTableSearch.tsx";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {FilteredSectionIndicator} from "@/features/study-plan/components/FilteredSectionIndicator.tsx";
@@ -57,7 +57,7 @@ export function FrameworkCoursesTable() {
                         <FilteredSectionIndicator table={table}/>
                     </Group>
 
-                    <RemoveStudyPlanCoursesButton studyPlan={studyPlan} table={table}/>
+                    <RemoveCoursesFromStudyPlanButton studyPlan={studyPlan} table={table}/>
                 </Group>
 
                 <AppCard

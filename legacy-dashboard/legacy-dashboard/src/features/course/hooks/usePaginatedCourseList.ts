@@ -3,7 +3,7 @@ import {PaginatedCourseListQuery} from "@/features/course/queries.ts";
 import {useSearch} from "@tanstack/react-router";
 import {TableSearchSchema} from "@/shared/schemas.ts";
 
-export const usePaginatedCourses = () => {
+export const usePaginatedCourseList = () => {
     const parsedParams = TableSearchSchema.safeParse(useSearch({strict: false}));
 
     if (!parsedParams.success) {

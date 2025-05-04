@@ -1,12 +1,11 @@
 import {useQueryClient} from "@tanstack/react-query";
-import {linkCorequisites} from "@/features/study-plan/api.ts";
+import {unlinkPrerequisiteFromCourse} from "@/features/study-plan/api.ts";
 import {studyPlanKeys} from "@/features/study-plan/queries.ts";
 import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 
-export const useLinkCorequisites = () => {
+export const useUnlinkPrerequisiteFromCourse = () => {
     const queryClient = useQueryClient();
-
-    return useAppMutation(linkCorequisites, {
+    return useAppMutation(unlinkPrerequisiteFromCourse, {
         onSuccess: (data) => queryClient.setQueryData(studyPlanKeys.detail(data.id), data)
     });
 }
