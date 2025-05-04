@@ -1,17 +1,17 @@
 package com.yousefalfoqaha.gjuplans.program;
 
 import com.yousefalfoqaha.gjuplans.program.domain.Program;
-import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramResponse;
+import com.yousefalfoqaha.gjuplans.program.dto.ProgramDto;
 import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 
 @Service
-public class ProgramResponseMapper implements Function<Program, ProgramResponse> {
+public class ProgramResponseMapper implements Function<Program, ProgramDto> {
 
     @Override
-    public ProgramResponse apply(Program program) {
-        return new ProgramResponse(
+    public ProgramDto apply(Program program) {
+        return new ProgramDto(
                 program.getId(),
                 program.getCode(),
                 program.getName(),

@@ -1,6 +1,6 @@
-package com.yousefalfoqaha.gjuplans.program.dto.response;
+package com.yousefalfoqaha.gjuplans.program.dto;
 
-public record ProgramResponse(
+public record ProgramDto(
         long id,
         String code,
         String name,

@@ -1,8 +1,7 @@
 package com.yousefalfoqaha.gjuplans.program;
 
-import com.yousefalfoqaha.gjuplans.program.dto.request.CreateProgramRequest;
-import com.yousefalfoqaha.gjuplans.program.dto.request.UpdateProgramRequest;
-import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramResponse;
+import com.yousefalfoqaha.gjuplans.program.dto.ProgramDetailsDto;
+import com.yousefalfoqaha.gjuplans.program.dto.ProgramDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,30 +16,30 @@ public class ProgramController {
     private final ProgramService programService;
 
     @GetMapping
-    public ResponseEntity<List<ProgramResponse>> getAllPrograms() {
+    public ResponseEntity<List<ProgramDto>> getAllPrograms() {
         return new ResponseEntity<>(programService.getAllPrograms(), HttpStatus.OK);
     }
 
     @GetMapping("/{programId}")
-    public ResponseEntity<ProgramResponse> getProgram(@PathVariable long programId) {
+    public ResponseEntity<ProgramDto> getProgram(@PathVariable long programId) {
         return new ResponseEntity<>(programService.getProgram(programId), HttpStatus.OK);
     }
 
     @PutMapping("/{programId}")
-    public ResponseEntity<ProgramResponse> updateProgram(
+    public ResponseEntity<ProgramDto> updateProgram(
             @PathVariable long programId,
-            @RequestBody UpdateProgramRequest request
+            @RequestBody ProgramDetailsDto request
     ) {
         return new ResponseEntity<>(programService.editProgramDetails(programId, request), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<ProgramResponse> createProgram(@RequestBody CreateProgramRequest request) {
-        return new ResponseEntity<>(programService.createProgram(request), HttpStatus.CREATED);
+    public ResponseEntity<ProgramDto> createProgram(@RequestBody ProgramDetailsDto programDetails) {
+        return new ResponseEntity<>(programService.createProgram(programDetails), HttpStatus.CREATED);
     }
 
     @PutMapping("/{programId}/toggle-visibility")
-    public ResponseEntity<ProgramResponse> toggleProgramVisibility(
+    public ResponseEntity<ProgramDto> toggleProgramVisibility(
             @PathVariable long programId
     ) {
         return new ResponseEntity<>(programService.toggleVisibility(programId), HttpStatus.OK);

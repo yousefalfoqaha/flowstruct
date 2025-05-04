@@ -2,9 +2,8 @@ package com.yousefalfoqaha.gjuplans.program;
 
 import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.program.domain.Program;
-import com.yousefalfoqaha.gjuplans.program.dto.request.CreateProgramRequest;
-import com.yousefalfoqaha.gjuplans.program.dto.request.UpdateProgramRequest;
-import com.yousefalfoqaha.gjuplans.program.dto.response.ProgramResponse;
+import com.yousefalfoqaha.gjuplans.program.dto.ProgramDetailsDto;
+import com.yousefalfoqaha.gjuplans.program.dto.ProgramDto;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +18,14 @@ import java.util.function.Function;
 public class ProgramService {
     private final ProgramRepository programRepository;
     private final ProgramResponseMapper programResponseMapper;
-    private final ObjectValidator<UpdateProgramRequest> updateProgramValidator;
-    private final ObjectValidator<CreateProgramRequest> createProgramValidator;
+    private final ObjectValidator<ProgramDetailsDto> updateProgramValidator;
+    private final ObjectValidator<ProgramDetailsDto> programDetailsValidator;
 
-    public List<ProgramResponse> getAllPrograms() {
+    public List<ProgramDto> getAllPrograms() {
         return programRepository.findAllPrograms();
     }
 
-    public ProgramResponse getProgram(long programId) {
+    public ProgramDto getProgram(long programId) {
         var program = programRepository.findById(programId)
                 .orElseThrow(() -> new ProgramNotFoundException(
                         "Program with id " + programId + " was not found."
@@ -36,7 +35,7 @@ public class ProgramService {
     }
 
     @Transactional
-    public ProgramResponse editProgramDetails(long programId, UpdateProgramRequest request) {
+    public ProgramDto editProgramDetails(long programId, ProgramDetailsDto request) {
         updateProgramValidator.validate(request);
 
         Program program = programRepository.findById(programId)
@@ -57,19 +56,19 @@ public class ProgramService {
     }
 
     @Transactional
-    public ProgramResponse createProgram(CreateProgramRequest request) {
-        createProgramValidator.validate(request);
+    public ProgramDto createProgram(ProgramDetailsDto details) {
+        programDetailsValidator.validate(details);
 
-        if (programRepository.existsByCodeIgnoreCase(request.code())) {
-            throw new UniqueProgramException("Program with code " + request.code() + " already exists.");
+        if (programRepository.existsByCodeIgnoreCase(details.code())) {
+            throw new UniqueProgramException("Program with code " + details.code() + " already exists.");
         }
 
         var newProgram = new Program();
 
-        newProgram.setCode(request.code());
-        newProgram.setName(request.name());
-        newProgram.setDegree(request.degree());
-        newProgram.setPrivate(request.isPrivate());
+        newProgram.setCode(details.code());
+        newProgram.setName(details.name());
+        newProgram.setDegree(details.degree());
+        newProgram.setPrivate(details.isPrivate());
 
         return saveAndMapProgram(newProgram, programResponseMapper);
     }
@@ -80,7 +79,7 @@ public class ProgramService {
     }
 
     @Transactional
-    public ProgramResponse toggleVisibility(long programId) {
+    public ProgramDto toggleVisibility(long programId) {
         var program = findProgram(programId);
 
         program.setPrivate(!program.isPrivate());
