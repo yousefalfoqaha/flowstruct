@@ -26,7 +26,7 @@ export const deleteStudyPlan = (studyPlanId: number) =>
 export const getStudyPlanCourseList = (studyPlanId: number) =>
     api.get<Record<number, CourseSummary>>([ENDPOINT, studyPlanId, 'courses']);
 
-export const updateStudyPlanDetails = ({studyPlanId, studyPlanDetails}: {
+export const editStudyPlanDetails = ({studyPlanId, studyPlanDetails}: {
     studyPlanId: number;
     studyPlanDetails: Partial<StudyPlan>
 }) =>
@@ -38,7 +38,7 @@ export const createSection = ({studyPlanId, sectionDetails}: {
 }) =>
     api.put<StudyPlan>([ENDPOINT, studyPlanId, 'create-section'], {body: sectionDetails});
 
-export const addCoursesToSection = ({courseIds, sectionId, studyPlanId}: {
+export const addSectionCourses = ({courseIds, sectionId, studyPlanId}: {
     courseIds: number[];
     sectionId: number;
     studyPlanId: number
@@ -58,11 +58,11 @@ export const editSectionDetails = ({sectionDetails, sectionId, studyPlanId}: {
         body: sectionDetails
     });
 
-export const removeCoursesFromSection = ({courseIds, studyPlanId}: {
+export const removeStudyPlanCourses = ({courseIds, studyPlanId}: {
     courseIds: number[];
     studyPlanId: number
 }) =>
-    api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'courses', 'by-ids'], {
+    api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'courses'], {
         params: {
             courses: courseIds
         }
@@ -74,7 +74,7 @@ export const deleteSection = ({studyPlanId, sectionId}: {
 }) =>
     api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'sections', sectionId]);
 
-export const assignCoursePrerequisites = ({studyPlanId, courseId, prerequisites}: {
+export const linkPrerequisites = ({studyPlanId, courseId, prerequisites}: {
     studyPlanId: number;
     courseId: number;
     prerequisites: Prerequisite[]
@@ -83,28 +83,28 @@ export const assignCoursePrerequisites = ({studyPlanId, courseId, prerequisites}
         body: prerequisites
     });
 
-export const removeCoursePrerequisite = ({studyPlanId, courseId, prerequisiteId}: {
+export const unlinkPrerequisite = ({studyPlanId, courseId, prerequisiteId}: {
     studyPlanId: number;
     courseId: number;
     prerequisiteId: number
 }) =>
     api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'prerequisites', prerequisiteId]);
 
-export const assignCourseCorequisites = ({studyPlanId, courseId, corequisites}: {
+export const linkCorequisites = ({studyPlanId, courseId, corequisites}: {
     studyPlanId: number;
     courseId: number;
     corequisites: number[]
 }) =>
     api.post<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'corequisites'], {body: corequisites});
 
-export const removeCourseCorequisite = ({studyPlanId, courseId, corequisiteId}: {
+export const unlinkCorequisite = ({studyPlanId, courseId, corequisiteId}: {
     studyPlanId: number;
     courseId: number;
     corequisiteId: number
 }) =>
     api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'corequisites', corequisiteId]);
 
-export const moveCourseSection = ({studyPlanId, courseId, sectionId}: {
+export const moveCourseToSection = ({studyPlanId, courseId, sectionId}: {
     studyPlanId: number;
     courseId: number;
     sectionId: number
@@ -118,7 +118,7 @@ export const moveSection = ({studyPlanId, sectionId, direction}: {
 }) =>
     api.put<StudyPlan>([ENDPOINT, studyPlanId, 'sections', sectionId, 'move'], {params: {direction}});
 
-export const placeSemesterCourses = ({studyPlanId, semester, courseIds}: {
+export const placeCoursesInSemester = ({studyPlanId, semester, courseIds}: {
     studyPlanId: number;
     semester: number;
     courseIds: number[]
@@ -127,5 +127,5 @@ export const placeSemesterCourses = ({studyPlanId, semester, courseIds}: {
         body: {semester, courseIds}
     });
 
-export const removeCoursePlacement = ({studyPlanId, courseId}: { studyPlanId: number; courseId: number }) =>
+export const removeCourseFromSemester = ({studyPlanId, courseId}: { studyPlanId: number; courseId: number }) =>
     api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'course-placements', courseId]);

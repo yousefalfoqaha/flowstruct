@@ -1,5 +1,5 @@
 import {Combobox, Group, InputBase, Loader, ScrollArea, Text, useCombobox} from "@mantine/core";
-import {useMoveCourseSection} from "@/features/study-plan/hooks/useMoveCourseSection.ts";
+import {useMoveCourseToSection} from "@/features/study-plan/hooks/useMoveCourseToSection.ts";
 import {getSectionCode} from "@/utils/getSectionCode.ts";
 import {Check} from "lucide-react";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
@@ -12,7 +12,7 @@ type SectionsComboboxProps = {
 
 export function SectionsCombobox({courseId, sectionId, courseSectionCode}: SectionsComboboxProps) {
     const combobox = useCombobox();
-    const moveCourseSection = useMoveCourseSection();
+    const moveCourseToSection = useMoveCourseToSection();
 
     const {data: studyPlan} = useStudyPlan();
 
@@ -34,7 +34,7 @@ export function SectionsCombobox({courseId, sectionId, courseSectionCode}: Secti
             );
         });
 
-    const handleChangeCourseSection = (sectionId: string) => moveCourseSection.mutate({
+    const handleChangeCourseSection = (sectionId: string) => moveCourseToSection.mutate({
             studyPlanId: studyPlan.id,
             courseId: courseId,
             sectionId: parseInt(sectionId)
@@ -56,7 +56,7 @@ export function SectionsCombobox({courseId, sectionId, courseSectionCode}: Secti
                     type="button"
                     pointer
                     size="xs"
-                    rightSection={moveCourseSection.isPending ? <Loader size="xs" color="gray"/> : <Combobox.Chevron/>}
+                    rightSection={moveCourseToSection.isPending ? <Loader size="xs" color="gray"/> : <Combobox.Chevron/>}
                     rightSectionPointerEvents="none"
                     onClick={() => combobox.toggleDropdown()}
                 >

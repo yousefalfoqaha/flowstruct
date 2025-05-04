@@ -17,7 +17,7 @@ import React from "react";
 import {Plus} from "lucide-react";
 import {useDebouncedValue} from "@mantine/hooks";
 import {Course} from "@/features/course/types.ts";
-import {useAddCoursesToSection} from "@/features/study-plan/hooks/useAddCoursesToSection.ts";
+import {useAddSectionCourses} from "@/features/study-plan/hooks/useAddSectionCourses.ts";
 import {CreateCourseModal} from "@/features/course/components/CreateCourseModal.tsx";
 import {getSectionCode} from "@/utils/getSectionCode.ts";
 import {StudyPlan} from "@/features/study-plan/types.ts";
@@ -47,7 +47,7 @@ export function StudyPlanCourseAdder({studyPlan}: StudyPlanCourseAdderProps) {
         hasNextPage
     } = useInfiniteCourses(debouncedSearch);
 
-    const addCoursesToSection = useAddCoursesToSection();
+    const addSectionCourses = useAddSectionCourses();
 
     const handleCourseSelect = (courseString: string) => {
         const course: Course = JSON.parse(courseString);
@@ -68,7 +68,7 @@ export function StudyPlanCourseAdder({studyPlan}: StudyPlanCourseAdderProps) {
         const sectionId = parseInt(selectedSection ?? "");
         if (!sectionId) return;
 
-        addCoursesToSection.mutate(
+        addSectionCourses.mutate(
             {
                 courseIds: selectedCourses,
                 sectionId: sectionId,
@@ -168,7 +168,7 @@ export function StudyPlanCourseAdder({studyPlan}: StudyPlanCourseAdderProps) {
                         <Button
                             leftSection={<Plus size={14}/>}
                             onClick={handleAddCourses}
-                            loading={addCoursesToSection.isPending}
+                            loading={addSectionCourses.isPending}
                             disabled={selectedCourses.length <= 0 || !selectedSection}
                         >
                             Add To Study Plan

@@ -2,7 +2,7 @@ import {Button, Text} from "@mantine/core";
 import {openConfirmModal} from "@mantine/modals";
 import {Table} from "@tanstack/react-table";
 import {Trash} from "lucide-react";
-import {useRemoveCoursesFromSection} from "@/features/study-plan/hooks/useRemoveCourseFromSection.ts";
+import {useRemoveStudyPlanCourses} from "@/features/study-plan/hooks/useRemoveCourseFromSection.ts";
 import {FrameworkCourse, StudyPlan} from "@/features/study-plan/types.ts";
 
 type RemoveStudyPlanCoursesButtonProps = {
@@ -11,7 +11,7 @@ type RemoveStudyPlanCoursesButtonProps = {
 }
 
 export function RemoveStudyPlanCoursesButton({table, studyPlan}: RemoveStudyPlanCoursesButtonProps) {
-    const removeCoursesFromSection = useRemoveCoursesFromSection();
+    const removeCoursesFromSection = useRemoveStudyPlanCourses();
     const selectedRows = table.getSelectedRowModel().rows;
 
     return (

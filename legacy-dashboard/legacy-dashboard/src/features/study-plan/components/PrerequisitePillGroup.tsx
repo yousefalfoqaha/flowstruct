@@ -1,7 +1,7 @@
 import {Flex, Indicator, Loader, Pill} from "@mantine/core";
 import {PrerequisiteMultiSelect} from "@/features/study-plan/components/PrerequisiteMultiSelect.tsx";
-import {useRemoveCoursePrerequisite} from "@/features/study-plan/hooks/useRemoveCoursePrerequisite.ts";
-import {useRemoveCourseCorequisite} from "@/features/study-plan/hooks/useRemoveCourseCorequisite.ts";
+import {useUnlinkPrerequisite} from "@/features/study-plan/hooks/useUnlinkPrerequisite.ts";
+import {useUnlinkCorequisite} from "@/features/study-plan/hooks/useUnlinkCorequisite.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
 
@@ -10,19 +10,19 @@ type PrerequisitePillGroupProps = {
 }
 
 export function PrerequisitePillGroup({parentCourseId}: PrerequisitePillGroupProps) {
-    const removePrerequisite = useRemoveCoursePrerequisite();
-    const removeCorequisite = useRemoveCourseCorequisite();
+    const unlinkPrerequisite = useUnlinkPrerequisite();
+    const unlinkCorequisite = useUnlinkCorequisite();
 
     const {data: studyPlan} = useStudyPlan();
     const {data: courses} = useStudyPlanCourses();
 
-    const handleRemovePrerequisite = (prerequisiteId: number) => removePrerequisite.mutate({
+    const handleRemovePrerequisite = (prerequisiteId: number) => unlinkPrerequisite.mutate({
         studyPlanId: studyPlan.id,
         courseId: parentCourseId,
         prerequisiteId: prerequisiteId
     });
 
-    const handleRemoveCorequisite = (corequisiteId: number) => removeCorequisite.mutate({
+    const handleRemoveCorequisite = (corequisiteId: number) => unlinkCorequisite.mutate({
         studyPlanId: studyPlan.id,
         courseId: parentCourseId,
         corequisiteId: corequisiteId
@@ -38,9 +38,9 @@ export function PrerequisitePillGroup({parentCourseId}: PrerequisitePillGroupPro
                 if (!prerequisite) return null;
 
                 const isRemovingPrerequisite =
-                    removePrerequisite.isPending &&
-                    removePrerequisite.variables.prerequisiteId === prerequisite.id &&
-                    removePrerequisite.variables.courseId === parentCourseId;
+                    unlinkPrerequisite.isPending &&
+                    unlinkPrerequisite.variables.prerequisiteId === prerequisite.id &&
+                    unlinkPrerequisite.variables.courseId === parentCourseId;
 
                 return (
                     <Pill
@@ -59,9 +59,9 @@ export function PrerequisitePillGroup({parentCourseId}: PrerequisitePillGroupPro
                 if (!corequisite) return null;
 
                 const isRemovingCorequisite =
-                    removeCorequisite.isPending &&
-                    removeCorequisite.variables.corequisiteId === corequisite.id &&
-                    removeCorequisite.variables.courseId === parentCourseId;
+                    unlinkCorequisite.isPending &&
+                    unlinkCorequisite.variables.corequisiteId === corequisite.id &&
+                    unlinkCorequisite.variables.courseId === parentCourseId;
 
                 return (
                     <Indicator
@@ -92,8 +92,8 @@ export function PrerequisitePillGroup({parentCourseId}: PrerequisitePillGroupPro
             <PrerequisiteMultiSelect studyPlan={studyPlan} courses={courses} parentCourseId={parentCourseId}/>
 
             {
-                removePrerequisite.isPending && removePrerequisite.variables.courseId === parentCourseId ||
-                removeCorequisite.isPending && removeCorequisite.variables.courseId === parentCourseId
+                unlinkPrerequisite.isPending && unlinkPrerequisite.variables.courseId === parentCourseId ||
+                unlinkCorequisite.isPending && unlinkCorequisite.variables.courseId === parentCourseId
                     ? <Loader size={14}/>
                     : null
             }
