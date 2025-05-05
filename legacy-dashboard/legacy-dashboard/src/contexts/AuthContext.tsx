@@ -1,13 +1,8 @@
 import React, {ReactNode} from "react";
-import {api} from "@/shared/api.ts";
-import {User} from "@/features/auth/types.ts";
-import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
+import Cookies from "js-cookie";
 
 type AuthContextType = {
     isAuthenticated: boolean;
-    login: () => void;
-    logout: () => void;
-    user: User;
 }
 
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
@@ -17,10 +12,10 @@ type ProviderProps = {
 }
 
 function AuthProvider({children}: ProviderProps) {
-
+    const isAuthenticated = !!Cookies.get('token');
 
     return (
-        <AuthContext.Provider value={}>
+        <AuthContext.Provider value={{isAuthenticated}}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,7 +1,10 @@
 import {api} from "@/shared/api.ts";
-import {LoginResponse, User} from "@/features/auth/types.ts";
+import {User} from "@/features/auth/types.ts";
 
-export const loginUser = (user: User) =>
-    api.post<LoginResponse>('/login', {
+export const loginUser = (user: Partial<User>) =>
+    api.post<string>('/login', {
         body: user
     });
+
+export const getUser = (id: number) =>
+    api.get<User>(`/users/${id}`);

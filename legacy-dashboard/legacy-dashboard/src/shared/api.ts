@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 const API_BASE_URL = "http://localhost:8080/api/v1";
 
 type RequestOptions = {
@@ -20,8 +22,11 @@ export const api = {
 
         const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}${searchParams.size ? `?${searchParams}` : ''}`;
 
+        const token = Cookies.get('token');
+
         const requestHeaders: Record<string, string> = {
-            ...headers
+            ...headers,
+            Authorization: `Bearer ${token}`
         };
 
         if (body && !headers["Content-Type"]) {
@@ -32,6 +37,7 @@ export const api = {
             method,
             headers: requestHeaders,
             body: body ? JSON.stringify(body) : undefined,
+            credentials: 'include'
         };
 
         const response = await fetch(url, config);

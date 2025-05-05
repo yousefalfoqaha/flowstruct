@@ -1,14 +1,28 @@
-import {Button, Container, Paper, PasswordInput, TextInput, Title} from "@mantine/core";
+import {Button, Container, Paper, PasswordInput, Stack, TextInput, Title} from "@mantine/core";
 import classes from "./LoginForm.module.css";
 import {useAppForm} from "@/shared/hooks/useAppForm.ts";
 import {UserSchema} from "@/features/auth/schemas.ts";
+import {useLoginUser} from "@/features/auth/hooks/useLoginUser.ts";
+import {useNavigate} from "@tanstack/react-router";
+import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
+import {Hash} from "lucide-react";
+import {Controller} from "react-hook-form";
 
 export function LoginForm() {
     const form = useAppForm(UserSchema);
-    const {login} = useAuth;
+    const login = useLoginUser();
+    const navigate = useNavigate();
 
     const onSubmit = form.handleSubmit(data => {
-        console.log(data);
+        login.mutate(
+            data,
+            {
+                onSuccess: () => navigate({
+                    to: '/programs',
+                    search: getDefaultSearchValues()
+                })
+            }
+        );
     });
 
     return (
@@ -19,11 +33,39 @@ export function LoginForm() {
 
             <Paper withBorder shadow="md" p={30} mt={30} radius="md">
                 <form onSubmit={onSubmit}>
-                    <TextInput label="Username" placeholder="Your username" required/>
+                    <Stack>
+                        <Controller
+                            name="username"
+                            control={form.control}
+                            render={({field}) => (
+                                <TextInput
+                                    label="Username"
+                                    placeholder="Your username"
+                                    {...field}
+                                    error={form.formState.errors.username?.message}
+                                    autoComplete="off"
+                                    withAsterisk
+                                />
+                            )}
+                        />
 
-                    <PasswordInput label="Password" placeholder="Your password" required mt="md"/>
+                        <Controller
+                            name="password"
+                            control={form.control}
+                            render={({field}) => (
+                                <PasswordInput
+                                    label="Password"
+                                    placeholder="Your password"
+                                    {...field}
+                                    error={form.formState.errors.password?.message}
+                                    autoComplete="off"
+                                    withAsterisk
+                                />
+                            )}
+                        />
+                    </Stack>
 
-                    <Button fullWidth mt="xl">
+                    <Button type="submit" fullWidth mt="xl">
                         Sign in
                     </Button>
                 </form>
