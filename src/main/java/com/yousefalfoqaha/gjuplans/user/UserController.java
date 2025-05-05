@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/login")
+    @PostMapping("/api/v1/login")
     public ResponseEntity<String> loginUser(@RequestBody UserDto request) {
         return new ResponseEntity<>(userService.verify(request), HttpStatus.OK);
     }
