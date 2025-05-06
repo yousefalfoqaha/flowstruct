@@ -1,15 +1,14 @@
 import {Button, Container, Paper, PasswordInput, Stack, TextInput, Title} from "@mantine/core";
 import classes from "./LoginForm.module.css";
 import {useAppForm} from "@/shared/hooks/useAppForm.ts";
-import {UserSchema} from "@/features/auth/schemas.ts";
+import {LoginSchema} from "@/features/auth/schemas.ts";
 import {useLoginUser} from "@/features/auth/hooks/useLoginUser.ts";
 import {useNavigate} from "@tanstack/react-router";
 import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
-import {Hash} from "lucide-react";
 import {Controller} from "react-hook-form";
 
 export function LoginForm() {
-    const form = useAppForm(UserSchema);
+    const form = useAppForm(LoginSchema);
     const login = useLoginUser();
     const navigate = useNavigate();
 

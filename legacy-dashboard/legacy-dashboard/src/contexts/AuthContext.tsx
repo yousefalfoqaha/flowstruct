@@ -1,8 +1,11 @@
 import React, {ReactNode} from "react";
 import Cookies from "js-cookie";
+import {useQueryClient} from "@tanstack/react-query";
+import {MeQuery, userKeys} from "@/features/auth/queries.ts";
 
 type AuthContextType = {
-    isAuthenticated: boolean;
+    login: (loginDetails: string) => void;
+    logout: () => void;
 }
 
 const AuthContext = React.createContext<AuthContextType | undefined>(undefined);
@@ -12,10 +15,20 @@ type ProviderProps = {
 }
 
 function AuthProvider({children}: ProviderProps) {
-    const isAuthenticated = !!Cookies.get('token');
+    const queryClient = useQueryClient();
+
+    const login = async (token: string) => {
+        Cookies.set('token', token);
+        await queryClient.ensureQueryData(MeQuery);
+    };
+
+    const logout = () => {
+        Cookies.remove('token');
+        queryClient.removeQueries({queryKey: userKeys.me()});
+    }
 
     return (
-        <AuthContext.Provider value={{isAuthenticated}}>
+        <AuthContext.Provider value={{login, logout}}>
             {children}
         </AuthContext.Provider>
     );

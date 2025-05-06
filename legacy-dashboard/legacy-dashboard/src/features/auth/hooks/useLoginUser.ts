@@ -1,11 +1,13 @@
 import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 import {loginUser} from "@/features/auth/api.ts";
-import Cookies from "js-cookie";
+import {useAuth} from "@/contexts/AuthContext.tsx";
 
 export const useLoginUser = () => {
+    const {login} = useAuth();
+
     return useAppMutation(loginUser, {
         onSuccess: (data) => {
-            Cookies.set('token', data);
+            login(data);
         }
     });
 }

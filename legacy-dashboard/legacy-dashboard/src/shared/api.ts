@@ -26,7 +26,7 @@ export const api = {
 
         const requestHeaders: Record<string, string> = {
             ...headers,
-            Authorization: `Bearer ${token}`
+            ...(token ? {Authorization: `Bearer ${token}`} : {})
         };
 
         if (body && !headers["Content-Type"]) {
@@ -51,7 +51,13 @@ export const api = {
             return {} as T;
         }
 
-        return await response.json() as T;
+        const contentType = response.headers.get("content-type");
+
+        if (contentType && contentType.includes("application/json")) {
+            return await response.json() as T;
+        }
+
+        return await response.text() as T;
     },
 
     get<T>(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, "method" | "body">) {
