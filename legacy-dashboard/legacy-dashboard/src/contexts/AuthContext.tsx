@@ -15,16 +15,12 @@ type ProviderProps = {
 }
 
 function AuthProvider({children}: ProviderProps) {
-    const queryClient = useQueryClient();
-
     const login = async (token: string) => {
         Cookies.set('token', token);
-        await queryClient.ensureQueryData(MeQuery);
     };
 
     const logout = () => {
         Cookies.remove('token');
-        queryClient.removeQueries({queryKey: userKeys.me()});
     }
 
     return (

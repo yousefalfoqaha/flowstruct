@@ -1,6 +1,7 @@
 import {createFileRoute, Outlet, redirect} from '@tanstack/react-router'
 import {AppLayout} from '@/shared/components/AppLayout.tsx'
 import Cookies from "js-cookie";
+import {MeQuery} from "@/features/auth/queries.ts";
 
 export const Route = createFileRoute('/_layout')({
     beforeLoad: async ({location}) => {
@@ -13,6 +14,9 @@ export const Route = createFileRoute('/_layout')({
                 },
             })
         }
+    },
+    loader: async ({context: {queryClient}}) => {
+        await queryClient.ensureQueryData(MeQuery);
     },
     component: RouteComponent,
 });
