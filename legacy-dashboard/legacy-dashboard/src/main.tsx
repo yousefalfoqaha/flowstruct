@@ -10,7 +10,7 @@ import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {MantineProvider} from "@mantine/core";
 import {ModalsProvider} from "@mantine/modals";
 import {Notifications} from "@mantine/notifications";
-import {AuthProvider} from "@/contexts/AuthContext.tsx";
+import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -37,14 +37,13 @@ declare module '@tanstack/react-router' {
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-                <MantineProvider>
-                    <ModalsProvider>
-                        <RouterProvider router={router}/>
-                    </ModalsProvider>
-                    <Notifications/>
-                </MantineProvider>
-            </AuthProvider>
+            <MantineProvider>
+                <ModalsProvider>
+                    <RouterProvider router={router}/>
+                </ModalsProvider>
+                <Notifications/>
+            </MantineProvider>
+            <ReactQueryDevtools/>
         </QueryClientProvider>
     </StrictMode>
 );

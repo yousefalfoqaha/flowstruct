@@ -1,11 +1,9 @@
-import Cookies from "js-cookie";
-
 const API_BASE_URL = "http://localhost:8080/api/v1";
 
 type RequestOptions = {
-    method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
-    body?: any;
-    params?: Record<string, any>;
+    method?: "GET" | "POST" | "PUT" | "DELETE";
+    body?: unknown;
+    params?: Record<string, unknown>;
     headers?: Record<string, string>;
 };
 
@@ -18,32 +16,30 @@ export const api = {
         const {method = "GET", params = {}, body, headers = {}} = options;
 
         const searchParams = new URLSearchParams();
-        Object.entries(params)?.forEach(([param, value]) => searchParams.append(param, value));
+        Object.entries(params)?.forEach(([param, value]) => searchParams.append(param, String(value)));
 
         const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}${searchParams.size ? `?${searchParams}` : ''}`;
 
-        const token = Cookies.get('token');
-
-        const requestHeaders: Record<string, string> = {
-            ...headers,
-            ...(token ? {Authorization: `Bearer ${token}`} : {})
-        };
-
         if (body && !headers["Content-Type"]) {
-            requestHeaders["Content-Type"] = "application/json";
+            headers["Content-Type"] = "application/json";
         }
 
         const config: RequestInit = {
             method,
-            headers: requestHeaders,
+            headers,
             body: body ? JSON.stringify(body) : undefined,
             credentials: 'include'
         };
 
         const response = await fetch(url, config);
 
+        if (response.status === 403 || response.status === 401) {
+            window.location.href = '/login';
+            return Promise.reject();
+        }
+
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({message: "An unknown error occurred."}));
+            const errorData = await response.json();
             throw new Error(errorData.message || `Request failed with status ${response.status}`);
         }
 
@@ -51,13 +47,7 @@ export const api = {
             return {} as T;
         }
 
-        const contentType = response.headers.get("content-type");
-
-        if (contentType && contentType.includes("application/json")) {
-            return await response.json() as T;
-        }
-
-        return await response.text() as T;
+        return await response.json() as T;
     },
 
     get<T>(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, "method" | "body">) {
