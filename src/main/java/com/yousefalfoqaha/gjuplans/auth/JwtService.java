@@ -3,6 +3,7 @@ package com.yousefalfoqaha.gjuplans.auth;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,9 @@ import java.util.function.Function;
 @Getter
 public class JwtService {
     private final SecretKey secretKey;
-    private static final int EXPIRATION_TIME_MILLIS = 1000 * 60 * 30;
+
+    @Value("${jwt.cookieExpiry}")
+    private int cookieExpiry;
 
     public JwtService() {
         try {
@@ -35,7 +38,7 @@ public class JwtService {
                 .add(new HashMap<>())
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_MILLIS))
+                .expiration(new Date(System.currentTimeMillis() + cookieExpiry * 1000L))
                 .and()
                 .signWith(getSecretKey())
                 .compact();
