@@ -6,6 +6,7 @@ import com.yousefalfoqaha.gjuplans.program.exception.InvalidDegreeException;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.*;
+import com.yousefalfoqaha.gjuplans.user.InvalidCredentialsException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,20 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(HttpStatus.NOT_FOUND.value(), exception.getMessage(), new Date()),
                 HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            InvalidCredentialsException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.UNAUTHORIZED.value(),
+                        exception.getMessage(),
+                        new Date()
+                ),
+                HttpStatus.UNAUTHORIZED
         );
     }
 

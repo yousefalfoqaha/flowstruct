@@ -1,15 +1,16 @@
 package com.yousefalfoqaha.gjuplans.user.service;
 
 import com.yousefalfoqaha.gjuplans.auth.JwtService;
+import com.yousefalfoqaha.gjuplans.user.InvalidCredentialsException;
 import com.yousefalfoqaha.gjuplans.user.User;
 import com.yousefalfoqaha.gjuplans.user.UserRepository;
 import com.yousefalfoqaha.gjuplans.user.dto.LoginDetailsDto;
 import com.yousefalfoqaha.gjuplans.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -22,14 +23,15 @@ public class UserService {
     private final UserRepository userRepository;
 
     public String verify(LoginDetailsDto details) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(details.username(), details.password()));
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(details.username(), details.password())
+            );
 
-        if (!authentication.isAuthenticated()) {
-            throw new AccessDeniedException("Access denied.");
+            return jwtService.generateToken(authentication.getName());
+        } catch (AuthenticationException e) {
+            throw new InvalidCredentialsException("Wrong username or password.");
         }
-
-        return jwtService.generateToken(authentication.getName());
     }
 
     public UserDto getMe() {

@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.studyplan.mapper;
+package com.yousefalfoqaha.gjuplans.studyplan;
 
 import com.yousefalfoqaha.gjuplans.studyplan.domain.Section;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionLevel;
@@ -14,7 +14,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-public class StudyPlanResponseMapper implements Function<StudyPlan, StudyPlanDto> {
+public class StudyPlanDtoMapper implements Function<StudyPlan, StudyPlanDto> {
 
     @Override
     public StudyPlanDto apply(StudyPlan studyPlan) {

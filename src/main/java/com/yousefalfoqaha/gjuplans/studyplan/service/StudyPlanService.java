@@ -6,7 +6,7 @@ import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanRepository;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.*;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.*;
-import com.yousefalfoqaha.gjuplans.studyplan.mapper.StudyPlanResponseMapper;
+import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
@@ -24,14 +24,14 @@ import java.util.stream.Collectors;
 public class StudyPlanService {
     private final StudyPlanRepository studyPlanRepository;
     private final StudyPlanGraphService studyPlanGraphService;
-    private final StudyPlanResponseMapper studyPlanResponseMapper;
+    private final StudyPlanDtoMapper studyPlanDtoMapper;
     private final ObjectValidator<StudyPlanDetailsDto> studyPlanDetailsValidator;
     private final ObjectValidator<SemesterCoursesDto> semesterCoursesValidator;
     private final ObjectValidator<SectionDetailsDto> sectionDetailsValidator;
 
     public StudyPlanDto getStudyPlan(long studyPlanId) {
         var studyPlan = findStudyPlan(studyPlanId);
-        return studyPlanResponseMapper.apply(studyPlan);
+        return studyPlanDtoMapper.apply(studyPlan);
     }
 
     public List<StudyPlanSummaryDto> getAllStudyPlans() {
@@ -41,7 +41,7 @@ public class StudyPlanService {
     public StudyPlanWithSequencesDto getStudyPlanWithSequences(long studyPlanId) {
         var studyPlan = findStudyPlan(studyPlanId);
 
-        var studyPlanResponse = studyPlanResponseMapper.apply(studyPlan);
+        var studyPlanResponse = studyPlanDtoMapper.apply(studyPlan);
 
         var courseSequencesMap = studyPlanGraphService.buildStudyPlanSequences(
                 studyPlanResponse.coursePrerequisites(),
@@ -169,14 +169,14 @@ public class StudyPlanService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public StudyPlanDto createSection(long studyPlanId, SectionDetailsDto request) {
+    public StudyPlanDto createSection(long studyPlanId, SectionDetailsDto details) {
         var studyPlan = findStudyPlan(studyPlanId);
 
         Section newSection = new Section();
-        newSection.setLevel(request.level());
-        newSection.setType(request.type());
-        newSection.setRequiredCreditHours(request.requiredCreditHours());
-        newSection.setName(request.name());
+        newSection.setLevel(details.level());
+        newSection.setType(details.type());
+        newSection.setRequiredCreditHours(details.requiredCreditHours());
+        newSection.setName(details.name());
 
         var sectionSiblings = studyPlan.getSections()
                 .stream()
@@ -495,6 +495,6 @@ public class StudyPlanService {
             );
         }
 
-        return studyPlanResponseMapper.apply(savedStudyPlan);
+        return studyPlanDtoMapper.apply(savedStudyPlan);
     }
 }
