@@ -1,6 +1,8 @@
-import {ActionIcon, Avatar, Burger, Button, Group, MantineSize} from "@mantine/core";
-import {LogOut, Upload} from "lucide-react";
+import {ActionIcon, Avatar, Burger, Group, MantineSize} from "@mantine/core";
+import {LogOut} from "lucide-react";
 import {AppBreadcrumbs} from "@/shared/components/AppBreadcrumbs.tsx";
+import Cookies from "js-cookie";
+import {useNavigate} from "@tanstack/react-router";
 
 type AppHeaderProps = {
     toggleSidebar: () => void;
@@ -8,6 +10,13 @@ type AppHeaderProps = {
 }
 
 export function AppHeader({toggleSidebar, mobileBreakpoint}: AppHeaderProps) {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        Cookies.remove('accessToken');
+        navigate({to: '/login'});
+    }
+
     return (
         <Group style={{height: '100%'}} px="lg" justify="space-between">
             <Group gap="xl">
@@ -21,14 +30,6 @@ export function AppHeader({toggleSidebar, mobileBreakpoint}: AppHeaderProps) {
             </Group>
 
             <Group gap="lg">
-                <Button
-                    size="xs"
-                    radius="xl"
-                    variant="default"
-                    leftSection={<Upload size={14}/>}
-                >
-                    Last Update: 2 weeks ago
-                </Button>
                 <Avatar
                     color="blue"
                     variant="transparent"
@@ -38,6 +39,7 @@ export function AppHeader({toggleSidebar, mobileBreakpoint}: AppHeaderProps) {
                 <ActionIcon
                     size="sm"
                     variant="transparent"
+                    onClick={handleLogout}
                 >
                     <LogOut/>
                 </ActionIcon>

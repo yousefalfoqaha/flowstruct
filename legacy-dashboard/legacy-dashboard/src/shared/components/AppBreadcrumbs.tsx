@@ -1,6 +1,7 @@
 import {ChevronRight, Home} from "lucide-react";
 import {isMatch, Link, useMatches} from "@tanstack/react-router";
 import {ActionIcon, Breadcrumbs, Button} from "@mantine/core";
+import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
 
 export function AppBreadcrumbs() {
     const matches = useMatches()
@@ -13,7 +14,7 @@ export function AppBreadcrumbs() {
 
     return (
         <Breadcrumbs separator={<ChevronRight size={14}/>} separatorMargin={5}>
-            <Link to="/dashboard">
+            <Link to="/programs" search={getDefaultSearchValues()}>
                 <ActionIcon mr="xs" size="compact-md" color="gray" variant="transparent">
                     <Home size={18}/>
                 </ActionIcon>

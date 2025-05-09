@@ -30,5 +30,3 @@ export const sectionDetailsSchema = z.interface({
         .nullable()
         .transform(val => val === '' ? null : val)
 });
-
-export type SectionDetailsFormValues = z.infer<typeof sectionDetailsSchema>;

@@ -1,9 +1,10 @@
 import {ActionIcon, Group, Title} from "@mantine/core";
 import {Link, LinkProps} from "@tanstack/react-router";
 import {ArrowLeft} from "lucide-react";
+import {ReactNode} from "react";
 
 type Props = {
-    title: string;
+    title: string | ReactNode;
     linkProps: LinkProps;
 };
 
@@ -15,9 +16,14 @@ export function PageHeaderWithBack({title, linkProps}: Props) {
                     <ArrowLeft size={18}/>
                 </ActionIcon>
             </Link>
-            <Title order={2} fw={600}>
-                {title}
-            </Title>
+            {typeof title === 'string'
+                ? (
+                    <Title order={2} fw={600}>
+                        {title}
+                    </Title>
+                )
+                : title
+            }
         </Group>
     );
 }

@@ -1,4 +1,4 @@
-import {Flex, Group} from "@mantine/core";
+import {Flex, Group, Paper, Stack, Title} from "@mantine/core";
 import {DataTable} from "@/shared/components/DataTable.tsx";
 import {SectionsTree} from "@/features/study-plan/components/SectionsTree.tsx";
 import {StudyPlanCourseAdder} from "@/features/study-plan/components/StudyPlanCourseAdder.tsx";
@@ -14,6 +14,8 @@ import {getSectionCode} from "@/utils/getSectionCode.ts";
 import {FrameworkCourse} from "@/features/study-plan/types.ts";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
+import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
+import {ListPlus} from "lucide-react";
 
 export function FrameworkCoursesTable() {
     const {data: studyPlan} = useStudyPlan();
@@ -45,6 +47,24 @@ export function FrameworkCoursesTable() {
     );
 
     const table = useDataTable<FrameworkCourse>({data, columns});
+
+    if (studyPlan.sections.length === 0) {
+        return (
+            <Paper withBorder shadow="sm">
+                <Stack align="center" gap="xs" my={32}>
+                    <ListPlus size={32}/>
+                    <Title
+                        mb="sm"
+                        order={2}
+                        fw={600}
+                    >
+                        Create New Section
+                    </Title>
+                    <CreateSectionModal studyPlanId={studyPlan.id}/>
+                </Stack>
+            </Paper>
+        );
+    }
 
     return (
         <Flex gap="lg">

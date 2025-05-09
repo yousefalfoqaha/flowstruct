@@ -5,14 +5,14 @@ import {CourseSummary} from "@/features/course/types.ts";
 import React from "react";
 import {getCoursesTableColumns} from "@/features/course/components/CoursesTableColumns.tsx";
 import {DataTable} from "@/shared/components/DataTable.tsx";
-import {Button, Group, Loader, LoadingOverlay, Stack} from "@mantine/core";
+import {Button, LoadingOverlay, Stack} from "@mantine/core";
 import {DataTablePagination} from "@/shared/components/DataTablePagination.tsx";
 import {DataTableSearch} from "@/shared/components/DataTableSearch.tsx";
 import {Plus} from "lucide-react";
 import {Link} from "@tanstack/react-router";
 
 export function CoursesTable() {
-    const {data: coursesPage, isFetching, isPending} = usePaginatedCourseList();
+    const {data: coursesPage, isPending} = usePaginatedCourseList();
 
     const columns = React.useMemo(
         () => getCoursesTableColumns(),
@@ -35,10 +35,7 @@ export function CoursesTable() {
 
     return (
         <Stack>
-            <Group justify="space-between">
-                <DataTableSearch table={table} debounce={750}/>
-                <Loader mr="lg" size={18} opacity={isFetching ? 100 : 0}/>
-            </Group>
+            <DataTableSearch table={table} debounce={750}/>
 
             <AppCard
                 title="All Courses"

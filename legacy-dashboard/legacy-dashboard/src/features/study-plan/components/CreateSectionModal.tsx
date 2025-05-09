@@ -1,8 +1,6 @@
 import {useCreateSection} from "@/features/study-plan/hooks/useCreateSection.ts";
-import {useForm} from "react-hook-form";
-import {SectionDetailsFormValues, sectionDetailsSchema} from "@/features/study-plan/schemas.ts";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {Flex, LoadingOverlay, Modal, Button} from "@mantine/core";
+import {sectionDetailsSchema} from "@/features/study-plan/schemas.ts";
+import {Button, Flex, LoadingOverlay, Modal} from "@mantine/core";
 import {SectionDetailsFormFields} from "@/features/study-plan/components/SectionDetailsFormFields.tsx";
 import {useDisclosure} from "@mantine/hooks";
 import {Plus} from "lucide-react";
@@ -28,7 +26,7 @@ export function CreateSectionModal({studyPlanId}: Props) {
     const onSubmit = form.handleSubmit(data => {
         createSection.mutate({
                 studyPlanId: studyPlanId,
-                newSectionDetails: data
+                sectionDetails: data
             }, {
                 onSuccess: handleClose
             }

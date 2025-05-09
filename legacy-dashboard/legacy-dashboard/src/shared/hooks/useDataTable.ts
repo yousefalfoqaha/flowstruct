@@ -24,7 +24,6 @@ type useDataTableProps<TData> = Omit<
 
 export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
     const parsedParams = TableSearchSchema.safeParse(useSearch({strict: false}));
-
     if (!parsedParams.success) {
         throw new Error("useDataTable hook must be used in a route with table search validation");
     }

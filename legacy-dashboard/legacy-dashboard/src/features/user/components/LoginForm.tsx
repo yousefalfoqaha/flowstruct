@@ -6,9 +6,13 @@ import {useLogin} from "@/features/user/hooks/useLogin.ts";
 import {useNavigate} from "@tanstack/react-router";
 import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
 import {Controller} from "react-hook-form";
+import {LogIn} from "lucide-react";
 
 export function LoginForm() {
-    const form = useAppForm(LoginSchema);
+    const form = useAppForm(LoginSchema, {
+        username: '',
+        password: ''
+    });
     const login = useLogin();
     const navigate = useNavigate();
 
@@ -27,10 +31,10 @@ export function LoginForm() {
     return (
         <Container size={420} my={40}>
             <Title ta="center" className={classes.title}>
-                GJUPlans Dashboard
+                GJUPlans Admin
             </Title>
 
-            <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+            <Paper withBorder shadow="md" p={30} mt={30} radius="sm">
                 <form onSubmit={onSubmit}>
                     <Stack>
                         <Controller
@@ -64,7 +68,7 @@ export function LoginForm() {
                         />
                     </Stack>
 
-                    <Button type="submit" fullWidth mt="xl">
+                    <Button leftSection={<LogIn size={18} />} loading={login.isPending} type="submit" fullWidth mt="xl">
                         Sign in
                     </Button>
                 </form>

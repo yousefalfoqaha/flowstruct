@@ -17,7 +17,7 @@ export function StudyPlanOptionsMenu({studyPlan}: Props) {
     return (
         <Menu>
             <Menu.Target>
-                <ActionIcon variant="transparent" color="gray">
+                <ActionIcon loading={deleteStudyPlan.isPending || toggleVisibility.isPending} variant="transparent" color="gray">
                     <Ellipsis size={14}/>
                 </ActionIcon>
             </Menu.Target>

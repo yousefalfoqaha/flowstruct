@@ -34,8 +34,14 @@ export const api = {
         const response = await fetch(url, config);
 
         if (response.status === 403 || response.status === 401) {
-            window.location.href = '/login';
-            return Promise.reject();
+            const currentLocation = window.location.pathname;
+
+            if (currentLocation !== '/login') {
+                window.location.href = '/login';
+            }
+
+            const errorData = await response.json();
+            throw new Error(errorData.message || `Request failed with status ${response.status}`);
         }
 
         if (!response.ok) {

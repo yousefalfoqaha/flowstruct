@@ -1,7 +1,7 @@
 import {Link} from "@tanstack/react-router";
 import classes from "@/shared/components/AppSidebar.module.css";
-import {ActionIcon, Text, Title} from "@mantine/core";
-import {BookOpen, GraduationCap, ScrollText, Settings, X} from "lucide-react";
+import {ActionIcon, Group, Image, Paper, Text, Title} from "@mantine/core";
+import {BookOpen, GraduationCap, History, ScrollText, X} from "lucide-react";
 import {SidebarLink} from "@/shared/types.ts";
 import {Route as ProgramsRoute} from "@/routes/_layout/programs/route.tsx";
 import {Route as StudyPlansRoute} from "@/routes/_layout/study-plans/route.tsx";
@@ -46,23 +46,30 @@ export function AppSidebar({closeSidebar}: Props) {
             </ActionIcon>
 
             <div className={classes.header}>
-                <Title order={3} fw={600} pb={8}>
-                    GJUPlans Admin Dashboard
-                </Title>
-                <Text size="sm" c="dimmed">
-                    Last update: 2 weeks ago
-                </Text>
+                <Image
+                    src="https://www.localized.world/_next/image?url=https%3A%2F%2Fcdn.localized.world%2Forganizations%2F6%2F3207769b-3b1c-4344-b5fd-048ce05c454a.png&w=2440&q=75"
+                    h={75}
+                    w={75}
+                    mb={5}
+                    mx="auto"
+                />
+
+                <Paper>
+                    <Title ta="center" order={3} fw={600} pb={8}>
+                        GJUPlans Admin
+                    </Title>
+
+                    <Group gap={8} justify="center">
+                        <History size={14} color="gray" />
+                        <Text c="dimmed" size="sm">
+                            Last Publish: 2 weeks ago
+                        </Text>
+                    </Group>
+                </Paper>
             </div>
 
             <div className={classes.navbarMain}>
                 {links}
-            </div>
-
-            <div className={classes.footer}>
-                <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
-                    <Settings className={classes.linkIcon} strokeWidth="1.5"/>
-                    <span>Settings</span>
-                </a>
             </div>
         </nav>
     );

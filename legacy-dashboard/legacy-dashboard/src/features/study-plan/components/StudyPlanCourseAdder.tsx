@@ -42,7 +42,7 @@ export function StudyPlanCourseAdder({studyPlan}: StudyPlanCourseAdderProps) {
     const {
         data,
         isFetching,
-        isFetched,
+        isSuccess,
         fetchNextPage,
         hasNextPage
     } = useInfiniteCourses(debouncedSearch);
@@ -51,14 +51,13 @@ export function StudyPlanCourseAdder({studyPlan}: StudyPlanCourseAdderProps) {
 
     const handleCourseSelect = (courseString: string) => {
         const course: Course = JSON.parse(courseString);
-
         setSelectedCourses((current) =>
             current.some(c => c.id === course.id)
                 ? current.filter(c => c.id !== course.id)
                 : [...current, course]
         );
+
         setSearch("");
-        combobox.closeDropdown();
     };
 
     const handleCourseRemove = (courseId: number) =>
@@ -216,11 +215,11 @@ export function StudyPlanCourseAdder({studyPlan}: StudyPlanCourseAdderProps) {
                                 </Combobox.Target>
                             </FocusTrap>
 
-                            {debouncedSearch !== "" && isFetched && (
+                            {isSuccess && (
                                 <Combobox.Dropdown>
                                     <>
-                                        <Combobox.Header>
-                                            {debouncedSearch.trim().length > 0 && (
+                                        {debouncedSearch.trim().length > 0 && (
+                                            <Combobox.Header>
                                                 <Button
                                                     variant="transparent"
                                                     fullWidth
@@ -232,13 +231,15 @@ export function StudyPlanCourseAdder({studyPlan}: StudyPlanCourseAdderProps) {
                                                 >
                                                     Create "{debouncedSearch}"
                                                 </Button>
-                                            )}
-                                        </Combobox.Header>
+                                            </Combobox.Header>
+                                        )}
 
                                         <Combobox.Options>
                                             <ScrollArea.Autosize mah={250} type="scroll" scrollbarSize={6}>
-                                                {options.length > 0 ? options :
-                                                    <Combobox.Empty>Nothing found</Combobox.Empty>}
+                                                {options.length > 0
+                                                    ? options
+                                                    : <Combobox.Empty>Nothing found</Combobox.Empty>
+                                                }
                                             </ScrollArea.Autosize>
                                         </Combobox.Options>
 

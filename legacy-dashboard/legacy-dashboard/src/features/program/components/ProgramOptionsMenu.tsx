@@ -18,7 +18,7 @@ export function ProgramOptionsMenu({program}: ProgramOptionsMenuProps) {
     return (
         <Menu shadow="md">
             <Menu.Target>
-                <ActionIcon variant="transparent" color="gray">
+                <ActionIcon loading={deleteProgram.isPending || toggleVisibility.isPending} variant="transparent" color="gray">
                     <Ellipsis size={14}/>
                 </ActionIcon>
             </Menu.Target>

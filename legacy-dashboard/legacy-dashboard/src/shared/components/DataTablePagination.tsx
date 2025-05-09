@@ -1,5 +1,5 @@
-import {Divider, Group, Pagination, Select, Text} from "@mantine/core";
 import {ListEnd} from "lucide-react";
+import {Divider, Group, Pagination, Select, Text} from "@mantine/core";
 import {Table} from "@tanstack/react-table";
 
 type Props<TData> = {
