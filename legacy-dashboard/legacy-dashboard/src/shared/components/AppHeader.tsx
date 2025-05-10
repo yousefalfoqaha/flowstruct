@@ -1,49 +1,26 @@
-import {ActionIcon, Avatar, Burger, Group, MantineSize} from "@mantine/core";
-import {LogOut} from "lucide-react";
+import {Divider, Group, Image} from "@mantine/core";
 import {AppBreadcrumbs} from "@/shared/components/AppBreadcrumbs.tsx";
-import Cookies from "js-cookie";
-import {useNavigate} from "@tanstack/react-router";
+import {ReactElement} from "react";
 
 type AppHeaderProps = {
-    toggleSidebar: () => void;
-    mobileBreakpoint: MantineSize;
+    burger: ReactElement;
+
 }
 
-export function AppHeader({toggleSidebar, mobileBreakpoint}: AppHeaderProps) {
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        Cookies.remove('accessToken');
-        navigate({to: '/login'});
-    }
-
+export function AppHeader({burger}: AppHeaderProps) {
     return (
-        <Group style={{height: '100%'}} px="lg" justify="space-between">
-            <Group gap="xl">
-                <Burger
-                    onClick={toggleSidebar}
-                    hiddenFrom={mobileBreakpoint}
-                    size="sm"
-                />
-
-                <AppBreadcrumbs/>
+        <Group justify="space-between" style={{height: '100%'}}>
+            <Group gap="xl" wrap="nowrap">
+                {burger}
+                <Divider orientation="vertical" mx={-10}/>
+                    <AppBreadcrumbs/>
             </Group>
-
-            <Group gap="lg">
-                <Avatar
-                    color="blue"
-                    variant="transparent"
-                    radius="xl"
-                />
-
-                <ActionIcon
-                    size="sm"
-                    variant="transparent"
-                    onClick={handleLogout}
-                >
-                    <LogOut/>
-                </ActionIcon>
-            </Group>
+            <Image
+                src="https://www.localized.world/_next/image?url=https%3A%2F%2Fcdn.localized.world%2Forganizations%2F6%2F3207769b-3b1c-4344-b5fd-048ce05c454a.png&w=2440&q=75"
+                h={40}
+                w={40}
+                mt={4}
+            />
         </Group>
     );
 }

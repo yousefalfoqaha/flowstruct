@@ -33,9 +33,9 @@ export function StudyPlanTabs() {
                 to: val ?? '',
                 params: {studyPlanId: studyPlanId}
             })}
-            variant="outline"
+            variant="pills"
         >
-            <Tabs.List>
+            <Tabs.List grow justify="center">
                 {tabs.map(tab => (
                     <Tabs.Tab
                         key={tab.path}

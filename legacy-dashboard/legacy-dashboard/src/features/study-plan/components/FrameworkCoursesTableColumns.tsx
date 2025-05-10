@@ -1,4 +1,4 @@
-import {ActionIcon, Checkbox, Group} from "@mantine/core";
+import {ActionIcon, Badge, Checkbox, Group} from "@mantine/core";
 import {ArrowDownUp} from "lucide-react";
 import {SectionsCombobox} from "@/features/study-plan/components/SectionsCombobox.tsx";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
@@ -37,7 +37,7 @@ export function getFrameworkCoursesTableColumns(): ColumnDef<FrameworkCourse>[] 
             ),
             sortingFn: 'alphanumeric',
             cell: ({row}) => (
-                <p>{row.original.code}</p>
+                <Badge variant="default">{row.original.code}</Badge>
             ),
         }) as ColumnDef<FrameworkCourse>,
         columnHelper.accessor("name", {

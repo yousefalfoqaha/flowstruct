@@ -3,6 +3,6 @@ import {loginUser} from "@/features/user/api.ts";
 
 export const useLogin = () => {
     return useAppMutation(loginUser, {
-        successNotification: {message: 'You are logged in.'}
+        successNotification: {message: 'You are logged in. Redirecting...'}
     });
 }

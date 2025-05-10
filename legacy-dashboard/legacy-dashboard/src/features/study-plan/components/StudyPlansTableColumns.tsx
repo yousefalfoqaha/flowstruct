@@ -18,13 +18,13 @@ export function getStudyPlansTableColumns() {
             enableColumnFilter: true,
             filterFn: "equals"
         }),
-        accessor('track', {
-            header: 'Track',
-            cell: ({row}) => row.getValue('track') ?? '---'
-        }),
         accessor('duration', {
             header: () => <p className="text-nowrap">Duration</p>,
             cell: ({row}) => <p>{row.original.duration ?? 0} Years</p>
+        }),
+        accessor('track', {
+            header: 'Track',
+            cell: ({row}) => row.getValue('track') ?? '---'
         }),
         accessor('isPrivate', {
             header: 'Status',

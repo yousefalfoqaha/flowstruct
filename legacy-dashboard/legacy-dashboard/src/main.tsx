@@ -7,12 +7,13 @@ import {createRouter, RouterProvider} from '@tanstack/react-router';
 import {routeTree} from './routeTree.gen';
 import '@mantine/core/styles.css';
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import {MantineProvider} from "@mantine/core";
+import {createTheme, MantineColorsTuple, MantineProvider} from "@mantine/core";
 import {ModalsProvider} from "@mantine/modals";
 import {Notifications} from "@mantine/notifications";
-import classes from "@/shared/components/NavigationProgress.module.css";
+import navigationProgressClasses from "@/shared/components/NavigationProgress.module.css";
 import {NavigationProgress} from "@mantine/nprogress";
 import {NotFoundPage} from "@/shared/components/NotFoundPage.tsx";
+import themeClasses from './theme.module.css';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -28,7 +29,7 @@ export const router = createRouter({
     defaultPreload: 'intent',
     defaultPreloadStaleTime: 0,
     scrollRestoration: true,
-    defaultNotFoundComponent: () => <NotFoundPage />
+    defaultNotFoundComponent: () => <NotFoundPage/>
 });
 
 declare module '@tanstack/react-router' {
@@ -37,11 +38,34 @@ declare module '@tanstack/react-router' {
     }
 }
 
+const gjuColors: MantineColorsTuple = [
+    '#e9f6ff',
+    '#d7e8f8',
+    '#aecfed',
+    '#81b4e3',
+    '#5d9edb',
+    '#4790d6',
+    '#3989d5',
+    '#2b76bd',
+    '#206bae',
+    '#055a97'
+];
+
+const theme = createTheme({
+    fontFamily: 'Inter, sans-serif',
+    primaryColor: 'gju',
+    colors: {
+        'gju': gjuColors
+    },
+    activeClassName: themeClasses.active,
+    defaultRadius: 'md'
+});
+
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <QueryClientProvider client={queryClient}>
-            <MantineProvider>
-                <NavigationProgress className={classes.progress}/>
+            <MantineProvider theme={theme}>
+                <NavigationProgress className={navigationProgressClasses.progress}/>
                 <ModalsProvider>
                     <RouterProvider router={router}/>
                 </ModalsProvider>

@@ -1,0 +1,10 @@
+.header {
+    height: 100%;
+    display: flex;
+    gap: var(--mantine-spacing-md);
+    padding: var(--mantine-spacing-md);
+    align-items: center;
+    flex-wrap: nowrap;
+    z-index: 40000;
+    box-shadow: var(--mantine-shadow-sm);
+}

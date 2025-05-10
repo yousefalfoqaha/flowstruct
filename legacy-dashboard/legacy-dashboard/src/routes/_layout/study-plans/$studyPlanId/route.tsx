@@ -4,7 +4,7 @@ import {getStudyPlanDisplayName} from "@/utils/getStudyPlanDisplayName.ts";
 import {ProgramQuery} from "@/features/program/queries.ts";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useProgram} from "@/features/program/hooks/useProgram.ts";
-import {Button, Group, Stack, Text, Title} from "@mantine/core";
+import {Button, Divider, Group, Stack, Text, Title} from "@mantine/core";
 import {PageHeaderWithBack} from "@/shared/components/PageHeaderWithBack.tsx";
 import {getProgramDisplayName} from "@/utils/getProgramDisplayName.ts";
 import {visibilityBadge} from "@/shared/components/VisibilityBadge.tsx";
@@ -50,7 +50,7 @@ function RouteComponent() {
             <Button
                 leftSection={<Upload size={18}/>}
                 radius="xl"
-                variant="default"
+                variant="outline"
                 mb="auto"
                 ml="auto"
             >
@@ -62,6 +62,7 @@ function RouteComponent() {
     return (
         <PageLayout header={header}>
             <StudyPlanTabs/>
+            <Divider my={0} />
             <Outlet/>
         </PageLayout>
     );

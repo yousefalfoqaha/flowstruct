@@ -66,7 +66,7 @@ export function CreateSectionModal({studyPlanId}: Props) {
                 leftSection={<Plus size={14}/>}
                 variant="transparent"
             >
-                Create
+                Create Section
             </Button>
         </>
     );

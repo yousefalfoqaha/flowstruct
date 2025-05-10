@@ -1,11 +1,13 @@
 import {Link} from "@tanstack/react-router";
 import classes from "@/shared/components/AppSidebar.module.css";
-import {ActionIcon, Group, Image, Paper, Text, Title} from "@mantine/core";
-import {BookOpen, GraduationCap, History, ScrollText, X} from "lucide-react";
+import {ActionIcon, Avatar, Divider, Group, Stack, Text, Title, Tooltip} from "@mantine/core";
+import {BookOpen, GraduationCap, History, LogOut, ScrollText} from "lucide-react";
 import {SidebarLink} from "@/shared/types.ts";
 import {Route as ProgramsRoute} from "@/routes/_layout/programs/route.tsx";
 import {Route as StudyPlansRoute} from "@/routes/_layout/study-plans/route.tsx";
 import {Route as CoursesRoute} from "@/routes/_layout/courses";
+import {useMe} from "@/features/user/hooks/useMe.ts";
+import {useLogout} from "@/features/user/hooks/useLogout.ts";
 
 const data: SidebarLink[] = [
     {label: 'Programs', icon: GraduationCap, route: ProgramsRoute.to},
@@ -13,11 +15,12 @@ const data: SidebarLink[] = [
     {label: 'Courses', icon: BookOpen, route: CoursesRoute.to},
 ];
 
-type Props = {
-    closeSidebar: () => void;
-};
 
-export function AppSidebar({closeSidebar}: Props) {
+export function AppSidebar() {
+    const {data: user} = useMe();
+    const logout = useLogout();
+
+
     const links = data.map((item) => {
         const Icon = item.icon;
         return (
@@ -35,41 +38,46 @@ export function AppSidebar({closeSidebar}: Props) {
 
     return (
         <nav className={classes.navbar}>
-            <ActionIcon
-                hiddenFrom="xl"
-                onClick={closeSidebar}
-                variant="white"
-                color="black"
-                className={classes.close}
-            >
-                <X strokeWidth={1.5}/>
-            </ActionIcon>
+            <Stack align="center" gap={5}>
+                <Title ta="center" order={3} fw={600} pb={8}>
+                    GJUPlans Admin
+                </Title>
 
-            <div className={classes.header}>
-                <Image
-                    src="https://www.localized.world/_next/image?url=https%3A%2F%2Fcdn.localized.world%2Forganizations%2F6%2F3207769b-3b1c-4344-b5fd-048ce05c454a.png&w=2440&q=75"
-                    h={75}
-                    w={75}
-                    mb={5}
-                    mx="auto"
-                />
+                <Group gap="xs">
+                    <History size={14} color="gray"/>
+                    <Text c="dimmed" size="xs">
+                        Last Publish: 2 weeks ago
+                    </Text>
+                </Group>
+            </Stack>
 
-                <Paper>
-                    <Title ta="center" order={3} fw={600} pb={8}>
-                        GJUPlans Admin
-                    </Title>
-
-                    <Group gap={8} justify="center">
-                        <History size={14} color="gray" />
-                        <Text c="dimmed" size="sm">
-                            Last Publish: 2 weeks ago
-                        </Text>
-                    </Group>
-                </Paper>
-            </div>
+            <Divider my="md"/>
 
             <div className={classes.navbarMain}>
                 {links}
+            </div>
+
+            <div className={classes.footer}>
+                <Divider mb="md"/>
+                <Group justify="space-between">
+                    <Group>
+                        <Avatar/>
+                        <Stack gap={5}>
+                            <Text>{user.username}</Text>
+                            <Text c="dimmed" size="xs">Administrator</Text>
+                        </Stack>
+                    </Group>
+
+                    <Tooltip label="Log out">
+                        <ActionIcon
+                            variant="transparent"
+                            onClick={() => logout.mutate()}
+                            loading={logout.isPending}
+                        >
+                            <LogOut size={18}/>
+                        </ActionIcon>
+                    </Tooltip>
+                </Group>
             </div>
         </nav>
     );

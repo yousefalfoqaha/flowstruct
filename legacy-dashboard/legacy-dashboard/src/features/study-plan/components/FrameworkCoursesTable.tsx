@@ -67,13 +67,13 @@ export function FrameworkCoursesTable() {
     }
 
     return (
-        <Flex gap="lg">
+        <Flex direction={{base: 'column', lg: 'row'}} gap="lg">
             <SectionsTree table={table} studyPlan={studyPlan}/>
 
             <Flex direction="column" style={{flex: 1}} gap="md">
                 <Group justify="space-between">
-                    <Group justify="space-between">
-                        <DataTableSearch placeholder="Search courses..." table={table}/>
+                    <Group >
+                        <DataTableSearch width="" placeholder="Search courses..." table={table}/>
                         <FilteredSectionIndicator table={table}/>
                     </Group>
 

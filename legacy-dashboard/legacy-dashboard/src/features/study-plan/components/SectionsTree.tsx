@@ -1,15 +1,18 @@
 import {
-    ActionIcon, Badge,
-    Box, Button,
+    ActionIcon,
+    Badge,
+    Box,
+    Button,
     Flex,
-    Group, Indicator,
+    Group,
+    Indicator,
     RenderTreeNodePayload,
     Text,
     Tree,
     TreeNodeData
 } from "@mantine/core";
 import {FrameworkCourse, SectionLevel, SectionType, StudyPlan} from "@/features/study-plan/types.ts";
-import {ChevronDown, Filter, List} from "lucide-react";
+import {ChevronDown, Filter} from "lucide-react";
 import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
 import {SectionOptionsMenu} from "@/features/study-plan/components/SectionOptionsMenu.tsx";
 import classes from './SectionsTree.module.css';
@@ -124,7 +127,7 @@ export function SectionsTree({studyPlan, table}: SectionsTreeProps) {
 
     return (
         <Flex direction="column" gap={8}>
-            <Group style={{borderBottom: "1px solid #dee2e6"}} pb={10} justify="space-between">
+            <Group justify="space-between">
                 <Text fw={500}>All Sections</Text>
 
                 <Group>

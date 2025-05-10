@@ -12,3 +12,5 @@ export const loginUser = (loginDetails: z.infer<typeof LoginSchema>) =>
 
 export const getMe = () =>
     api.get<User>([ENDPOINT, 'me']);
+
+export const logoutUser = () => api.post([ENDPOINT, 'logout']);

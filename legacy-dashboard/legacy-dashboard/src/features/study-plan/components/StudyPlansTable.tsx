@@ -48,8 +48,8 @@ export function StudyPlansTable() {
             </Group>
 
             <AppCard
-                title="All Study Plans"
-                subtitle={`Manage university study plans - ${studyPlans.length} study plan${studyPlans.length > 1 && 's'} total`}
+                title="Manage Study Plans"
+                subtitle={`Total study plans: ${studyPlans.length}`}
                 headerAction={
                     <Link to="/study-plans/new">
                         <Button leftSection={<Plus size={18}/>}>Create New Study Plan</Button>

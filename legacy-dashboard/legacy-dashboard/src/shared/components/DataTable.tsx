@@ -1,7 +1,6 @@
 import {Table as TanStackTable} from "@tanstack/table-core";
 import {flexRender} from "@tanstack/react-table";
 import {Table, Text} from "@mantine/core";
-import classes from "./DataTable.module.css";
 
 type DataTableProps<TData> = {
     table: TanStackTable<TData>;
@@ -9,12 +8,9 @@ type DataTableProps<TData> = {
 
 export function DataTable<TData>({table}: DataTableProps<TData>) {
     return (
-        <div>
+        <Table.ScrollContainer minWidth={250}>
             <Table
-                horizontalSpacing="sm"
-                classNames={{
-                    table: classes.table
-                }}
+                horizontalSpacing="md"
                 verticalSpacing="sm"
             >
                 <Table.Thead>
@@ -33,7 +29,10 @@ export function DataTable<TData>({table}: DataTableProps<TData>) {
                 <Table.Tbody>
                     {table.getRowModel().rows.length ? (
                         table.getRowModel().rows.map((row) => (
-                            <Table.Tr key={row.id}>
+                            <Table.Tr
+                                key={row.id}
+                                bg={row.getIsSelected() ? 'var(--mantine-primary-color-light)' : undefined}
+                            >
                                 {row.getVisibleCells().map((cell) => (
                                     <Table.Td key={cell.id}>
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -50,7 +49,6 @@ export function DataTable<TData>({table}: DataTableProps<TData>) {
                     )}
                 </Table.Tbody>
             </Table>
-
-        </div>
+        </Table.ScrollContainer>
     );
 }

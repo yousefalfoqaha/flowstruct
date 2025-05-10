@@ -7,7 +7,7 @@ export const Route = createFileRoute('/_layout')({
         try {
             await queryClient.ensureQueryData(MeQuery);
         } catch {
-            throw redirect({ to: '/login' });
+            throw redirect({to: '/login'});
         }
     },
     component: RouteComponent,

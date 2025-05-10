@@ -13,19 +13,21 @@ export function AppBreadcrumbs() {
     );
 
     return (
-        <Breadcrumbs separator={<ChevronRight size={14}/>} separatorMargin={5}>
-            <Link to="/programs" search={getDefaultSearchValues()}>
-                <ActionIcon mr="xs" size="compact-md" color="gray" variant="transparent">
-                    <Home size={18}/>
-                </ActionIcon>
-            </Link>
-            {breadcrumbs.map((crumb, i) => (
-                <Link key={i} to={crumb.pathname || "/"}>
-                    <Button size="compact-sm" variant="transparent">
-                        {crumb.loaderData?.crumb}
-                    </Button>
+        <>
+            <Breadcrumbs visibleFrom="md" separator={<ChevronRight size={14}/>} separatorMargin={5}>
+                <Link to="/programs" search={getDefaultSearchValues()}>
+                    <ActionIcon mr="xs" size="compact-md" color="gray" variant="transparent">
+                        <Home size={18}/>
+                    </ActionIcon>
                 </Link>
-            ))}
-        </Breadcrumbs>
+                {breadcrumbs.map((crumb, i) => (
+                    <Link key={i} to={crumb.pathname || "/"}>
+                        <Button size="compact-sm" variant="transparent">
+                            {crumb.loaderData?.crumb}
+                        </Button>
+                    </Link>
+                ))}
+            </Breadcrumbs>
+        </>
     );
 }

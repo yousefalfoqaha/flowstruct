@@ -21,7 +21,7 @@ export function LoginForm() {
             data,
             {
                 onSuccess: () => navigate({
-                    to: '/programs',
+                    to: '/',
                     search: getDefaultSearchValues()
                 })
             }
@@ -34,7 +34,7 @@ export function LoginForm() {
                 GJUPlans Admin
             </Title>
 
-            <Paper withBorder shadow="md" p={30} mt={30} radius="sm">
+            <Paper withBorder shadow="md" p={30} mt={30}>
                 <form onSubmit={onSubmit}>
                     <Stack>
                         <Controller
@@ -69,7 +69,7 @@ export function LoginForm() {
                     </Stack>
 
                     <Button leftSection={<LogIn size={18} />} loading={login.isPending} type="submit" fullWidth mt="xl">
-                        Sign in
+                        Log In
                     </Button>
                 </form>
             </Paper>
