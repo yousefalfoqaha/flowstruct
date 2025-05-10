@@ -5,6 +5,7 @@ import com.yousefalfoqaha.gjuplans.user.dto.UserDto;
 import com.yousefalfoqaha.gjuplans.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -19,18 +20,35 @@ import java.time.Duration;
 public class UserController {
     private final UserService userService;
 
+    @Value("${jwt.cookieExpiry}")
+    private int cookieExpiry;
+
     @PostMapping("/login")
     public ResponseEntity<Void> loginUser(@RequestBody LoginDetailsDto loginDetails, HttpServletResponse response) {
         String jwtToken = userService.verify(loginDetails);
 
-        ResponseCookie cookie = ResponseCookie.from("accessToken", jwtToken)
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", jwtToken)
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
-                .maxAge(Duration.ofHours(1))
+                .maxAge(Duration.ofSeconds(cookieExpiry))
                 .build();
 
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logoutUser(HttpServletResponse response) {
+        ResponseCookie emptyCookie = ResponseCookie.from("accessToken")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, emptyCookie.toString());
 
         return ResponseEntity.noContent().build();
     }
