@@ -1,4 +1,4 @@
-import {Prerequisite, MoveDirection, Section, StudyPlan, StudyPlanSummary} from "@/features/study-plan/types.ts";
+import {MoveDirection, Prerequisite, Section, StudyPlan, StudyPlanSummary} from "@/features/study-plan/types.ts";
 import {CourseSummary} from "@/features/course/types.ts";
 import {api} from "@/shared/api.ts";
 
@@ -90,12 +90,16 @@ export const unlinkPrerequisiteFromCourse = ({studyPlanId, courseId, prerequisit
 }) =>
     api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'prerequisites', prerequisiteId]);
 
-export const linkCorequisitesToCourse = ({studyPlanId, courseId, corequisites}: {
+export const linkCorequisitesToCourse = ({studyPlanId, courseId, corequisiteIds}: {
     studyPlanId: number;
     courseId: number;
-    corequisites: number[]
+    corequisiteIds: number[]
 }) =>
-    api.post<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'corequisites'], {body: corequisites});
+    api.post<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'corequisites'], {
+        params: {
+            courses: corequisiteIds
+        }
+    });
 
 export const unlinkCorequisiteFromCourse = ({studyPlanId, courseId, corequisiteId}: {
     studyPlanId: number;

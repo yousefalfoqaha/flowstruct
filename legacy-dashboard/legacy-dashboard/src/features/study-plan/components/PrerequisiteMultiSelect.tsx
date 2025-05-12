@@ -67,7 +67,7 @@ export function PrerequisiteMultiSelect({parentCourseId, courses, studyPlan}: Pr
             {
                 courseId: parentCourseId,
                 studyPlanId: studyPlan.id,
-                corequisites: selectedCourses.map(id => parseInt(id))
+                corequisiteIds: selectedCourses.map(id => parseInt(id))
             },
             {
                 onSuccess: () => {
