@@ -7,6 +7,7 @@ import {DataTablePagination} from "@/shared/components/DataTablePagination.tsx";
 import {RemoveCoursesFromStudyPlanButton} from "@/features/study-plan/components/RemoveCoursesFromStudyPlanButton.tsx";
 import {DataTableSearch} from "@/shared/components/DataTableSearch.tsx";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
+import {FilteredSectionIndicator} from "@/features/study-plan/components/FilteredSectionIndicator.tsx";
 import React from "react";
 import {getFrameworkCoursesTableColumns} from "@/features/study-plan/components/FrameworkCoursesTableColumns.tsx";
 import {getSectionCode} from "@/utils/getSectionCode.ts";
@@ -15,7 +16,6 @@ import {AppCard} from "@/shared/components/AppCard.tsx";
 import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
 import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
 import {ListPlus} from "lucide-react";
-import {SectionColumnFilter} from "@/features/study-plan/components/SectionColumnFilter.tsx";
 
 export function FrameworkCoursesTable() {
     const {data: studyPlan} = useStudyPlan();
@@ -74,7 +74,7 @@ export function FrameworkCoursesTable() {
                 <Group justify="space-between">
                     <Group>
                         <DataTableSearch width="" placeholder="Search courses..." table={table}/>
-                        <SectionColumnFilter/>
+                        <FilteredSectionIndicator table={table}/>
                     </Group>
 
                     <RemoveCoursesFromStudyPlanButton studyPlan={studyPlan} table={table}/>
