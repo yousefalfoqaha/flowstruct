@@ -1,6 +1,6 @@
 import {createFileRoute} from '@tanstack/react-router'
 import {PageHeaderWithBack} from "@/shared/components/PageHeaderWithBack.tsx";
-import {useCourse} from "@/features/course/hooks/useCourse.ts";
+import {useRouteCourse} from "@/features/course/hooks/useRouteCourse.ts";
 import {getCourseDisplayName} from "@/utils/getCourseDisplayName.ts";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {PageLayout} from "@/shared/components/PageLayout.tsx";
@@ -12,7 +12,7 @@ export const Route = createFileRoute('/_layout/courses/$courseId/edit')({
 });
 
 function RouteComponent() {
-    const {data: course} = useCourse();
+    const {data: course} = useRouteCourse();
 
     return (
         <PageLayout

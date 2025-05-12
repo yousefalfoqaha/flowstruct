@@ -1,20 +1,19 @@
-import {createFileRoute} from '@tanstack/react-router'
-import {Group} from "@mantine/core";
+import {createFileRoute, useLoaderData} from '@tanstack/react-router'
 import {PageHeaderWithBack} from "@/shared/components/PageHeaderWithBack.tsx";
-import {useCourse} from "@/features/course/hooks/useCourse.ts";
 import {getCourseDisplayName} from "@/utils/getCourseDisplayName.ts";
+import {PageLayout} from "@/shared/components/PageLayout.tsx";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {EditDetailsButton} from "@/shared/components/EditDetailsButton.tsx";
+import {Group} from "@mantine/core";
 import {InfoItem} from "@/shared/components/InfoItem.tsx";
 import {CourseType} from "@/features/course/types.ts";
-import {PageLayout} from "@/shared/components/PageLayout.tsx";
 
 export const Route = createFileRoute('/_layout/courses/$courseId/')({
     component: RouteComponent,
 })
 
 function RouteComponent() {
-    const {data: course} = useCourse();
+    const {course} = useLoaderData({from: '/_layout/courses/$courseId'});
 
     return (
         <PageLayout header={<PageHeaderWithBack title={getCourseDisplayName(course)} linkProps={{to: '/courses'}}/>}

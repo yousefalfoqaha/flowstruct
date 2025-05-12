@@ -1,9 +1,9 @@
 import {ActionIcon, Badge, Checkbox, Group} from "@mantine/core";
 import {ArrowDownUp} from "lucide-react";
-import {SectionsCombobox} from "@/features/study-plan/components/SectionsCombobox.tsx";
 import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import {FrameworkCourse} from "@/features/study-plan/types.ts";
 import {PrerequisitePillGroup} from "@/features/study-plan/components/PrerequisitePillGroup.tsx";
+import {FrameworkCourseOptionsMenu} from "@/features/study-plan/components/FrameworkCourseOptionsMenu.tsx";
 
 export function getFrameworkCoursesTableColumns(): ColumnDef<FrameworkCourse>[] {
     const columnHelper = createColumnHelper<FrameworkCourse>();
@@ -68,22 +68,20 @@ export function getFrameworkCoursesTableColumns(): ColumnDef<FrameworkCourse>[] 
                 <PrerequisitePillGroup parentCourseId={row.original.id}/>
             ),
         }),
+        columnHelper.accessor('sectionCode', {
+            header: 'Section',
+            sortingFn: 'alphanumeric',
+            enableColumnFilter: true
+        }) as ColumnDef<FrameworkCourse>,
         columnHelper.display({
-            id: "section",
-            header: "Section",
-            enableColumnFilter: true,
-            cell: ({row}) => {
-                return (
-                    <SectionsCombobox
-                        sectionId={row.original.section}
-                        courseId={row.original.id}
-                        courseSectionCode={row.original.sectionCode}
-                    />
-                );
-            },
-            filterFn: (row, _, filterValue: number) => {
-                return row.original.section === filterValue
-            },
+            id: "actions",
+            header: "Actions",
+            cell: ({row}) => (
+                <FrameworkCourseOptionsMenu
+                    course={row.original}
+                    sectionId={row.original.section}
+                />
+            ),
         }),
     ];
 }

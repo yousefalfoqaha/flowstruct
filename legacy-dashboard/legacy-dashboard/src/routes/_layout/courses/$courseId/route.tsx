@@ -9,7 +9,8 @@ export const Route = createFileRoute('/_layout/courses/$courseId')({
         const course = await queryClient.ensureQueryData(CourseQuery(courseId));
 
         return {
-            crumb: getCourseDisplayName(course)
+            crumb: getCourseDisplayName(course),
+            course
         };
     }
 });

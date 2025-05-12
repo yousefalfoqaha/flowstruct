@@ -79,36 +79,38 @@ export function PrerequisiteMultiSelect({parentCourseId, courses, studyPlan}: Pr
         );
     }
 
-    const data = studyPlan.sections.map(section => {
-        const sectionCode = getSectionCode(section);
-        const displayName = section.name
-            ? `- ${section.name}`
-            : (sectionCode.split('.').length > 2 ? "- General" : "");
+    const data = React.useMemo(() => {
+        return studyPlan.sections.map(section => {
+            const sectionCode = getSectionCode(section);
+            const displayName = section.name
+                ? `- ${section.name}`
+                : (sectionCode.split('.').length > 2 ? "- General" : "");
 
-        return {
-            group: `${sectionCode}: ${section.level} ${section.type} ${displayName}`,
-            items: section.courses
-                .map(id => {
-                    const course = courses[id];
-                    if (!course) return null;
+            return {
+                group: `${sectionCode}: ${section.level} ${section.type} ${displayName}`,
+                items: section.courses
+                    .map(id => {
+                        const course = courses[id];
+                        if (!course) return null;
 
-                    const prerequisites = studyPlan.coursePrerequisites[parentCourseId] ?? {};
+                        const prerequisites = studyPlan.coursePrerequisites[parentCourseId] ?? {};
 
-                    if (prerequisites[id] !== undefined) return null;
-                    if (parentCourseId === id) return null;
+                        if (prerequisites[id] !== undefined) return null;
+                        if (parentCourseId === id) return null;
 
-                    const createsCycle = coursesGraph.get(parentCourseId)?.postrequisiteSequence.has(id);
+                        const createsCycle = coursesGraph.get(parentCourseId)?.postrequisiteSequence.has(id);
 
-                    return {
-                        value: id.toString(),
-                        label: `${course.code}: ${course.name}`,
-                        disabled: createsCycle,
-                        createsCycle: createsCycle
-                    } as CourseOption;
-                })
-                .filter((option): option is CourseOption => option !== null)
-        };
-    });
+                        return {
+                            value: id.toString(),
+                            label: `${course.code}: ${course.name}`,
+                            disabled: createsCycle,
+                            createsCycle: createsCycle
+                        } as CourseOption;
+                    })
+                    .filter((option): option is CourseOption => option !== null)
+            };
+        });
+    }, [courses, coursesGraph, parentCourseId, studyPlan.coursePrerequisites, studyPlan.sections]);
 
     const renderOption: MultiSelectProps['renderOption'] = ({option}) => {
         const courseOption = option as unknown as CourseOption;
