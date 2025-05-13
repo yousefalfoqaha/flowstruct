@@ -57,7 +57,6 @@ function CoursesGraphProvider({children}: { children: ReactNode }) {
             const postCourses = new Set(currentSeq.postrequisiteSequence);
 
             for (const postId of postCourses) {
-
                 if (!visited.has(postId)) {
                     traversePostrequisites(postId, visited, graph);
                 }

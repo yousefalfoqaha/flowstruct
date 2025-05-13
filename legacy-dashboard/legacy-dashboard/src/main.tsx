@@ -14,7 +14,6 @@ import navigationProgressClasses from "@/shared/components/NavigationProgress.mo
 import {NavigationProgress} from "@mantine/nprogress";
 import {NotFoundPage} from "@/shared/components/NotFoundPage.tsx";
 import themeClasses from './theme.module.css';
-import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -72,7 +71,6 @@ createRoot(document.getElementById('root')!).render(
                 </ModalsProvider>
                 <Notifications/>
             </MantineProvider>
-            <ReactQueryDevtools />
         </QueryClientProvider>
     </StrictMode>
 );

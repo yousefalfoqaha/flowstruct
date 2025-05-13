@@ -1,4 +1,4 @@
-import {Flex, Group, Paper, Stack, Title} from "@mantine/core";
+import {Affix, Button, Flex, Group, Paper, Stack, Title, Transition} from "@mantine/core";
 import {DataTable} from "@/shared/components/DataTable.tsx";
 import {SectionsTree} from "@/features/study-plan/components/SectionsTree.tsx";
 import {StudyPlanCourseAdder} from "@/features/study-plan/components/StudyPlanCourseAdder.tsx";
@@ -15,7 +15,7 @@ import {FrameworkCourse} from "@/features/study-plan/types.ts";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
 import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
-import {ListPlus} from "lucide-react";
+import {ArrowUp, ListPlus} from "lucide-react";
 
 export function FrameworkCoursesTable() {
     const {data: studyPlan} = useStudyPlan();
@@ -66,30 +66,46 @@ export function FrameworkCoursesTable() {
         );
     }
 
-    return (
-        <Flex direction={{base: 'column', lg: 'row'}} gap="lg">
-            <SectionsTree table={table} studyPlan={studyPlan}/>
+    const selectedRows = table.getSelectedRowModel().rows.length;
 
-            <Flex direction="column" style={{flex: 1}} gap="md">
-                <Group justify="space-between">
-                    <Group>
-                        <DataTableSearch width="" placeholder="Search courses..." table={table}/>
-                        <FilteredSectionIndicator table={table}/>
+    return (
+        <>
+            <Affix position={{ bottom: 20, right: 20}}>
+                <Transition transition="slide-up" mounted={selectedRows > 0}>
+                    {(transitionStyles) => (
+                        <Button
+                            leftSection={<ArrowUp size={16} />}
+                            style={transitionStyles}
+                        >
+                            ({selectedRows}) selected
+                        </Button>
+                    )}
+                </Transition>
+            </Affix>
+            <Flex direction={{base: 'column', lg: 'row'}} gap="lg">
+                <SectionsTree table={table} studyPlan={studyPlan}/>
+
+                <Flex direction="column" style={{flex: 1}} gap="md">
+                    <Group justify="space-between">
+                        <Group>
+                            <DataTableSearch width="" placeholder="Search courses..." table={table}/>
+                            <FilteredSectionIndicator table={table}/>
+                        </Group>
+
+                        <RemoveCoursesFromStudyPlanButton studyPlan={studyPlan} table={table}/>
                     </Group>
 
-                    <RemoveCoursesFromStudyPlanButton studyPlan={studyPlan} table={table}/>
-                </Group>
+                    <AppCard
+                        title="Framework Courses"
+                        subtitle="Manage all study plan courses"
+                        headerAction={<StudyPlanCourseAdder studyPlan={studyPlan}/>}
+                    >
+                        <DataTable table={table}/>
+                    </AppCard>
 
-                <AppCard
-                    title="Framework Courses"
-                    subtitle="Manage all study plan courses"
-                    headerAction={<StudyPlanCourseAdder studyPlan={studyPlan}/>}
-                >
-                    <DataTable table={table}/>
-                </AppCard>
-
-                <DataTablePagination table={table}/>
+                    <DataTablePagination table={table}/>
+                </Flex>
             </Flex>
-        </Flex>
+        </>
     );
 }
