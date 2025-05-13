@@ -35,13 +35,13 @@ export function FrameworkCourseOptionsMenu({course, sectionId}: Props) {
                         centered: true
                     })}
                 >
-                    View Details
+                    View details
                 </Menu.Item>
 
                 <Menu.Sub>
                     <Menu.Sub.Target>
                         <Menu.Sub.Item leftSection={<ArrowLeftRight size={14}/>}>
-                            Change Section
+                            Change section
                         </Menu.Sub.Item>
                     </Menu.Sub.Target>
 

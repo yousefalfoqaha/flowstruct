@@ -1,8 +1,8 @@
 import {Group, Loader, Menu, ScrollArea, Text} from "@mantine/core";
-import {useMoveCourseToSection} from "@/features/study-plan/hooks/useMoveCourseToSection.ts";
-import {getSectionCode} from "@/utils/getSectionCode.ts";
+import {useMoveCoursesToSection} from "@/features/study-plan/hooks/useMoveCoursesToSection.ts";
 import {Check} from "lucide-react";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
+import {getSectionDisplayName} from "@/utils/getSectionDisplayName.ts";
 
 type SectionsComboboxProps = {
     courseId: number;
@@ -10,23 +10,19 @@ type SectionsComboboxProps = {
 }
 
 export function SectionsMenuItems({courseId, sectionId}: SectionsComboboxProps) {
-    const moveCourseToSection = useMoveCourseToSection();
+    const moveCourseToSection = useMoveCoursesToSection();
     const {data: studyPlan} = useStudyPlan();
 
     const handleChangeCourseSection = (sectionId: number) => {
         moveCourseToSection.mutate({
             studyPlanId: studyPlan.id,
-            courseId: courseId,
-            sectionId: sectionId
+            courseIds: [courseId],
+            targetSectionId: sectionId
         });
     };
 
     const options = studyPlan.sections
         .map((section) => {
-            const sectionCode = getSectionCode(section);
-            const displayName = section.name
-                ? `- ${section.name}`
-                : (sectionCode.split('.').length > 2 ? "- General" : "");
             const isSelected = section.id === sectionId;
 
             return (
@@ -36,7 +32,7 @@ export function SectionsMenuItems({courseId, sectionId}: SectionsComboboxProps) 
                             ? <Loader size={14} color="gray"/>
                             : isSelected && (<Check color="gray" size={14}/>)
                         }
-                        <Text size="sm">{sectionCode}: {section.level} {section.type} {displayName}</Text>
+                        <Text size="sm">{getSectionDisplayName(section)}</Text>
                     </Group>
                 </Menu.Item>
             );

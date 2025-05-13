@@ -30,7 +30,7 @@ export function CoursesTable() {
         manualPagination: true,
         manualFiltering: true,
         pageCount: coursesPage?.totalPages,
-        rowCount: coursesPage?.totalCourses
+        rowCount: coursesPage?.totalCourses,
     });
 
     return (

@@ -6,8 +6,6 @@ import {
     getPaginationRowModel,
     getSortedRowModel,
     PaginationState,
-    RowSelectionState,
-    SortingState,
     TableOptions,
     Updater,
     useReactTable
@@ -32,9 +30,6 @@ export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
     const navigate = useNavigate();
     const params = parsedParams.data;
 
-    const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
-
     const onGlobalFilterChange = React.useCallback(
         (updaterOrValue: Updater<string>) => {
             const newVal = typeof updaterOrValue === "function"
@@ -48,7 +43,8 @@ export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
                     page: prev.filter !== newVal && newVal !== '' ? 0 : prev.page
                 }),
                 to: location.pathname
-            }).then(() => {});
+            }).then(() => {
+            });
         },
         [location.pathname, navigate, params.filter]
     );
@@ -62,7 +58,8 @@ export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
             navigate({
                 search: (prev) => ({...prev, columnFilters: newVal}),
                 to: location.pathname
-            }).then(() => {});
+            }).then(() => {
+            });
         },
         [location.pathname, navigate, params.columnFilters]
     );
@@ -82,8 +79,10 @@ export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
                     page: newVal.pageIndex,
                     size: newVal.pageSize
                 }),
+                resetScroll: false,
                 to: location.pathname
-            }).then(() => {});
+            }).then(() => {
+            });
         },
         [location.pathname, navigate, params.page, params.size]
     );
@@ -94,18 +93,14 @@ export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
-        onRowSelectionChange: setRowSelection,
         state: {
             pagination: {pageIndex: params.page, pageSize: params.size},
-            sorting,
-            rowSelection,
             globalFilter: params.filter,
             columnFilters: params.columnFilters
         },
         onColumnFiltersChange: onColumnFilterChange,
         onGlobalFilterChange: onGlobalFilterChange,
         onPaginationChange: onPaginationChange,
-        onSortingChange: setSorting,
         autoResetPageIndex: false
     });
 }

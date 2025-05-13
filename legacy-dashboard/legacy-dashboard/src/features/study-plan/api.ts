@@ -108,12 +108,16 @@ export const unlinkCorequisiteFromCourse = ({studyPlanId, courseId, corequisiteI
 }) =>
     api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'corequisites', corequisiteId]);
 
-export const moveCourseToSection = ({studyPlanId, courseId, sectionId}: {
+export const moveCoursesToSection = ({studyPlanId, courseIds, targetSectionId}: {
     studyPlanId: number;
-    courseId: number;
-    sectionId: number
+    courseIds: number[];
+    targetSectionId: number
 }) =>
-    api.put<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'move-to-section', sectionId]);
+    api.put<StudyPlan>([ENDPOINT, studyPlanId, 'sections', targetSectionId, 'move-courses'], {
+        params: {
+            courses: courseIds
+        }
+    });
 
 export const moveSection = ({studyPlanId, sectionId, direction}: {
     studyPlanId: number;

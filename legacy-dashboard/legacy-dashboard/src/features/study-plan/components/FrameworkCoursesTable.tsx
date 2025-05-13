@@ -1,10 +1,9 @@
-import {Affix, Button, Flex, Group, Paper, Stack, Title, Transition} from "@mantine/core";
+import {Flex, Group, Paper, Stack, Title} from "@mantine/core";
 import {DataTable} from "@/shared/components/DataTable.tsx";
 import {SectionsTree} from "@/features/study-plan/components/SectionsTree.tsx";
 import {StudyPlanCourseAdder} from "@/features/study-plan/components/StudyPlanCourseAdder.tsx";
 import {useDataTable} from "@/shared/hooks/useDataTable.ts";
 import {DataTablePagination} from "@/shared/components/DataTablePagination.tsx";
-import {RemoveCoursesFromStudyPlanButton} from "@/features/study-plan/components/RemoveCoursesFromStudyPlanButton.tsx";
 import {DataTableSearch} from "@/shared/components/DataTableSearch.tsx";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {FilteredSectionIndicator} from "@/features/study-plan/components/FilteredSectionIndicator.tsx";
@@ -15,7 +14,8 @@ import {FrameworkCourse} from "@/features/study-plan/types.ts";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
 import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
-import {ArrowUp, ListPlus} from "lucide-react";
+import {ListPlus} from "lucide-react";
+import {SelectedCoursesToolbar} from "@/features/study-plan/components/SelectedCoursesToolbar.tsx";
 
 export function FrameworkCoursesTable() {
     const {data: studyPlan} = useStudyPlan();
@@ -46,7 +46,19 @@ export function FrameworkCoursesTable() {
         []
     );
 
-    const table = useDataTable<FrameworkCourse>({data, columns});
+    const table = useDataTable<FrameworkCourse>({
+        data,
+        columns,
+        getRowId: (originalRow) => String(originalRow.id),
+        initialState: {
+            sorting: [
+                {
+                    id: 'code',
+                    desc: false
+                }
+            ]
+        }
+    });
 
     if (studyPlan.sections.length === 0) {
         return (
@@ -66,33 +78,19 @@ export function FrameworkCoursesTable() {
         );
     }
 
-    const selectedRows = table.getSelectedRowModel().rows.length;
-
     return (
         <>
-            <Affix position={{ bottom: 20, right: 20}}>
-                <Transition transition="slide-up" mounted={selectedRows > 0}>
-                    {(transitionStyles) => (
-                        <Button
-                            leftSection={<ArrowUp size={16} />}
-                            style={transitionStyles}
-                        >
-                            ({selectedRows}) selected
-                        </Button>
-                    )}
-                </Transition>
-            </Affix>
+            <SelectedCoursesToolbar
+                table={table}
+                studyPlan={studyPlan}
+            />
             <Flex direction={{base: 'column', lg: 'row'}} gap="lg">
                 <SectionsTree table={table} studyPlan={studyPlan}/>
 
                 <Flex direction="column" style={{flex: 1}} gap="md">
-                    <Group justify="space-between">
-                        <Group>
-                            <DataTableSearch width="" placeholder="Search courses..." table={table}/>
-                            <FilteredSectionIndicator table={table}/>
-                        </Group>
-
-                        <RemoveCoursesFromStudyPlanButton studyPlan={studyPlan} table={table}/>
+                    <Group>
+                        <DataTableSearch width="" placeholder="Search courses..." table={table}/>
+                        <FilteredSectionIndicator table={table}/>
                     </Group>
 
                     <AppCard
