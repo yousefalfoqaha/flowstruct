@@ -2,11 +2,11 @@ package com.yousefalfoqaha.gjuplans.studyplan.service;
 
 import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
+import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanDtoMapper;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanRepository;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.*;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.*;
-import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanDtoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
@@ -405,23 +405,25 @@ public class StudyPlanService {
     @Transactional
     public StudyPlanDto moveCourseToSection(
             long studyPlanId,
-            long courseId,
-            long sectionId
+            List<Long> courseIds,
+            long targetSectionId
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
 
-        studyPlan.getSections().forEach(section -> section.getCourses().remove(courseId));
-
         var targetSection = studyPlan.getSections().stream()
-                .filter(section -> section.getId() == sectionId)
+                .filter(section -> section.getId() == targetSectionId)
                 .findFirst()
                 .orElseThrow(() -> new SectionNotFoundException("Target section not found"));
 
-        if (targetSection.getType() == SectionType.Elective || targetSection.getType() == SectionType.Remedial) {
-            studyPlan.getCoursePlacements().remove(courseId);
-        }
+        for (long courseId : courseIds) {
+            studyPlan.getSections().forEach(section -> section.getCourses().remove(courseId));
 
-        targetSection.getCourses().put(courseId, new SectionCourse(AggregateReference.to(courseId)));
+            if (targetSection.getType() == SectionType.Elective || targetSection.getType() == SectionType.Remedial) {
+                studyPlan.getCoursePlacements().remove(courseId);
+            }
+
+            targetSection.getCourses().put(courseId, new SectionCourse(AggregateReference.to(courseId)));
+        }
 
         return saveAndMapStudyPlan(studyPlan);
     }

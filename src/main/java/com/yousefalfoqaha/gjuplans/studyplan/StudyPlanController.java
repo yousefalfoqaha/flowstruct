@@ -174,14 +174,14 @@ public class StudyPlanController {
         );
     }
 
-    @PutMapping("/{studyPlanId}/courses/{courseId}/move-to-section/{sectionId}")
+    @PutMapping("/{studyPlanId}/sections/{targetSectionId}/move-courses")
     public ResponseEntity<StudyPlanDto> moveCourseToSection(
             @PathVariable long studyPlanId,
-            @PathVariable long courseId,
-            @PathVariable long sectionId
+            @RequestParam(value = "courses") List<Long> courseIds,
+            @PathVariable long targetSectionId
     ) {
         return new ResponseEntity<>(
-                studyPlanService.moveCourseToSection(studyPlanId, courseId, sectionId),
+                studyPlanService.moveCourseToSection(studyPlanId, courseIds, targetSectionId),
                 HttpStatus.OK
         );
     }
