@@ -23,32 +23,50 @@ public class StudyPlanController {
 
     @GetMapping
     public ResponseEntity<List<StudyPlanSummaryDto>> getAllStudyPlans() {
-        return new ResponseEntity<>(studyPlanService.getAllStudyPlans(), HttpStatus.OK);
+        return new ResponseEntity<>(
+                studyPlanService.getAllStudyPlans(),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping("/{studyPlanId}/courses")
     public ResponseEntity<Map<Long, CourseSummaryDto>> getStudyPlanCourseList(@PathVariable long studyPlanId) {
-        return new ResponseEntity<>(studyPlanCourseService.getStudyPlanCourseList(studyPlanId), HttpStatus.OK);
+        return new ResponseEntity<>(
+                studyPlanCourseService.getStudyPlanCourseList(studyPlanId),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping("/{studyPlanId}/courses/detailed")
     public ResponseEntity<Map<Long, CourseDto>> getStudyPlanDetailedCourseList(@PathVariable long studyPlanId) {
-        return new ResponseEntity<>(studyPlanCourseService.getStudyPlanDetailedCourseList(studyPlanId), HttpStatus.OK);
+        return new ResponseEntity<>(
+                studyPlanCourseService.getStudyPlanDetailedCourseList(studyPlanId),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping("/{studyPlanId}/with-sequences")
     public ResponseEntity<StudyPlanWithSequencesDto> getStudyPlanCoursesWithSequences(@PathVariable long studyPlanId) {
-        return new ResponseEntity<>(studyPlanService.getStudyPlanWithSequences(studyPlanId), HttpStatus.OK);
+        return new ResponseEntity<>(
+                studyPlanService.getStudyPlanWithSequences(studyPlanId),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping("/{studyPlanId}")
     public ResponseEntity<StudyPlanDto> getStudyPlan(@PathVariable long studyPlanId) {
-        return new ResponseEntity<>(studyPlanService.getStudyPlan(studyPlanId), HttpStatus.OK);
+        return new ResponseEntity<>(
+                studyPlanService.getStudyPlan(studyPlanId),
+                HttpStatus.OK
+        );
     }
 
     @PutMapping("/{studyPlanId}/toggle-visibility")
     public ResponseEntity<StudyPlanDto> toggleVisibility(@PathVariable long studyPlanId) {
-        return new ResponseEntity<>(studyPlanService.toggleVisibility(studyPlanId), HttpStatus.OK);
+        return new ResponseEntity<>(
+                studyPlanService.toggleVisibility(studyPlanId),
+                HttpStatus.OK
+        );
     }
 
     @PutMapping("/{studyPlanId}")
@@ -56,12 +74,18 @@ public class StudyPlanController {
             @PathVariable long studyPlanId,
             @RequestBody StudyPlanDetailsDto studyPlanDetails
     ) {
-        return new ResponseEntity<>(studyPlanService.editStudyPlanDetails(studyPlanId, studyPlanDetails), HttpStatus.OK);
+        return new ResponseEntity<>(
+                studyPlanService.editStudyPlanDetails(studyPlanId, studyPlanDetails),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping
     public ResponseEntity<StudyPlanDto> createStudyPlan(@RequestBody StudyPlanDetailsDto studyPlanDetails) {
-        return new ResponseEntity<>(studyPlanService.createStudyPlan(studyPlanDetails), HttpStatus.OK);
+        return new ResponseEntity<>(
+                studyPlanService.createStudyPlan(studyPlanDetails),
+                HttpStatus.OK
+        );
     }
 
     @DeleteMapping("/{studyPlanId}")
@@ -75,24 +99,33 @@ public class StudyPlanController {
             @PathVariable long studyPlanId,
             @RequestBody SemesterCoursesDto semesterCourses
     ) {
-        return new ResponseEntity<>(studyPlanService.placeCoursesInSemester(studyPlanId, semesterCourses), HttpStatus.OK);
+        return new ResponseEntity<>(
+                studyPlanService.placeCoursesInSemester(studyPlanId, semesterCourses),
+                HttpStatus.OK
+        );
     }
 
     @PutMapping("/{studyPlanId}/create-section")
     public ResponseEntity<StudyPlanDto> createSection(
             @PathVariable long studyPlanId,
-            @RequestBody SectionDetailsDto request
+            @RequestBody SectionDetailsDto sectionDetails
     ) {
-        return new ResponseEntity<>(studyPlanService.createSection(studyPlanId, request), HttpStatus.OK);
+        return new ResponseEntity<>(
+                studyPlanService.createSection(studyPlanId, sectionDetails),
+                HttpStatus.OK
+        );
     }
 
     @PutMapping("/{studyPlanId}/sections/{sectionId}")
     public ResponseEntity<StudyPlanDto> editSectionDetails(
             @PathVariable long studyPlanId,
             @PathVariable long sectionId,
-            @RequestBody SectionDetailsDto request
+            @RequestBody SectionDetailsDto sectionDetails
     ) {
-        return new ResponseEntity<>(studyPlanService.editSectionDetails(studyPlanId, sectionId, request), HttpStatus.OK);
+        return new ResponseEntity<>(
+                studyPlanService.editSectionDetails(studyPlanId, sectionId, sectionDetails),
+                HttpStatus.OK
+        );
     }
 
     @DeleteMapping("/{studyPlanId}/sections/{sectionId}")
@@ -100,7 +133,10 @@ public class StudyPlanController {
             @PathVariable long studyPlanId,
             @PathVariable long sectionId
     ) {
-        return new ResponseEntity<>(studyPlanService.deleteSection(studyPlanId, sectionId), HttpStatus.OK);
+        return new ResponseEntity<>(
+                studyPlanService.deleteSection(studyPlanId, sectionId),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping("/{studyPlanId}/sections/{sectionId}/courses")

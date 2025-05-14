@@ -144,7 +144,7 @@ public class StudyPlanService {
 
         studyPlan.setYear(details.year());
         studyPlan.setDuration(details.duration());
-        studyPlan.setTrack(details.track());
+        studyPlan.setTrack(details.track().trim().isEmpty() ? null : details.track());
         studyPlan.setPrivate(details.isPrivate());
 
         return saveAndMapStudyPlan(studyPlan);
@@ -156,7 +156,7 @@ public class StudyPlanService {
 
         studyPlan.setYear(details.year());
         studyPlan.setDuration(details.duration());
-        studyPlan.setTrack(details.track());
+        studyPlan.setTrack(details.track().trim().isEmpty() ? null : details.track());
         studyPlan.setPrivate(details.isPrivate());
         studyPlan.setProgram(AggregateReference.to(details.program()));
 
@@ -176,7 +176,7 @@ public class StudyPlanService {
         newSection.setLevel(details.level());
         newSection.setType(details.type());
         newSection.setRequiredCreditHours(details.requiredCreditHours());
-        newSection.setName(details.name());
+        newSection.setName(details.name().trim().isEmpty() ? null : details.name());
 
         var sectionSiblings = studyPlan.getSections()
                 .stream()
@@ -198,8 +198,8 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto editSectionDetails(long studyPlanId, long sectionId, SectionDetailsDto request) {
-        sectionDetailsValidator.validate(request);
+    public StudyPlanDto editSectionDetails(long studyPlanId, long sectionId, SectionDetailsDto details) {
+        sectionDetailsValidator.validate(details);
 
         var studyPlan = findStudyPlan(studyPlanId);
 
@@ -207,10 +207,10 @@ public class StudyPlanService {
                 .filter(s -> s.getId() == sectionId)
                 .findFirst()
                 .ifPresentOrElse(section -> {
-                            section.setLevel(request.level());
-                            section.setType(request.type());
-                            section.setRequiredCreditHours(request.requiredCreditHours());
-                            section.setName(request.name());
+                            section.setLevel(details.level());
+                            section.setType(details.type());
+                            section.setRequiredCreditHours(details.requiredCreditHours());
+                            section.setName(details.name().trim().isEmpty() ? null : details.name());
                         }, () -> {
                             throw new SectionNotFoundException("Section was not found");
                         }
