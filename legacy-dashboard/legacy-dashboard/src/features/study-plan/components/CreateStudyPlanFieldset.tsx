@@ -11,7 +11,7 @@ import {Plus, X} from "lucide-react";
 export function CreateStudyPlanFieldset() {
     const form = useAppForm(studyPlanDetailsSchema, {
         isPrivate: true,
-        year: new Date(),
+        year: new Date().toISOString(),
         track: '',
         duration: 4
     });
@@ -23,8 +23,8 @@ export function CreateStudyPlanFieldset() {
         createStudyPlan.mutate({
             studyPlanDetails: {
                 ...data,
-                program: Number(data.program),
-                year: data.year.getFullYear()
+                year: Number(data.year.split('-')[0]),
+                program: Number(data.program)
             },
         }, {
             onSuccess: () => {

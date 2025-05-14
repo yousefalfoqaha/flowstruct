@@ -18,7 +18,7 @@ type Props = {
 export function EditStudyPlanDetailsFieldset({studyPlan}: Props) {
     const form = useAppForm(studyPlanDetailsSchema, {
         program: String(studyPlan.program),
-        year: new Date(studyPlan.year, 0, 1),
+        year: new Date(studyPlan.year, 0, 1).toISOString(),
         duration: studyPlan.duration,
         track: studyPlan.track,
         isPrivate: studyPlan.isPrivate
@@ -34,7 +34,7 @@ export function EditStudyPlanDetailsFieldset({studyPlan}: Props) {
             studyPlanId: studyPlan.id,
             studyPlanDetails: {
                 ...data,
-                year: data.year.getFullYear(),
+                year: Number(data.year.split('-')[0]),
                 program: Number(data.program)
             }
         }, {

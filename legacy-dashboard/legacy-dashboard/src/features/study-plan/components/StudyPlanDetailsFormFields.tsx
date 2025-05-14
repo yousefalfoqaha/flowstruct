@@ -25,7 +25,11 @@ export function StudyPlanDetailsFormFields({form, disableProgramSelect = false}:
                     <Select
                         placeholder="Pick a program"
                         label="Program"
-                        data={programs.map(p => ({value: String(p.id), label: getProgramDisplayName(p)}))}
+                        data={programs.map(p => ({
+                                value: String(p.id),
+                                label: getProgramDisplayName(p)
+                            })
+                        )}
                         withAsterisk
                         {...field}
                         w="100%"

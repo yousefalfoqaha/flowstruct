@@ -26,11 +26,10 @@ type Props = {
 
 export function SelectedCoursesToolbar({table, studyPlan}: Props) {
     const combobox = useCombobox();
-
-    const selectedRows = table.getSelectedRowModel().rows;
-
     const removeCoursesFromStudyPlan = useRemoveCoursesFromStudyPlan();
     const moveCoursesToSection = useMoveCoursesToSection();
+
+    const selectedRows = table.getSelectedRowModel().rows;
 
     const handleRemoveCourses = () => removeCoursesFromStudyPlan.mutate({
         courseIds: selectedRows.map(row => row.original.id),

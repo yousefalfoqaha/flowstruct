@@ -1,4 +1,4 @@
-import {Flex, Group, Paper, Stack, Title} from "@mantine/core";
+import {Button, Flex, Group, Paper, Stack, Title} from "@mantine/core";
 import {DataTable} from "@/shared/components/DataTable.tsx";
 import {SectionsTree} from "@/features/study-plan/components/SectionsTree.tsx";
 import {StudyPlanCourseAdder} from "@/features/study-plan/components/StudyPlanCourseAdder.tsx";
@@ -6,7 +6,6 @@ import {useDataTable} from "@/shared/hooks/useDataTable.ts";
 import {DataTablePagination} from "@/shared/components/DataTablePagination.tsx";
 import {DataTableSearch} from "@/shared/components/DataTableSearch.tsx";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
-import {FilteredSectionIndicator} from "@/features/study-plan/components/FilteredSectionIndicator.tsx";
 import React from "react";
 import {getFrameworkCoursesTableColumns} from "@/features/study-plan/components/FrameworkCoursesTableColumns.tsx";
 import {getSectionCode} from "@/utils/getSectionCode.ts";
@@ -14,8 +13,9 @@ import {FrameworkCourse} from "@/features/study-plan/types.ts";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
 import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
-import {ListPlus} from "lucide-react";
+import {ListPlus, X} from "lucide-react";
 import {SelectedCoursesToolbar} from "@/features/study-plan/components/SelectedCoursesToolbar.tsx";
+import {SectionColumnFilter} from "@/features/study-plan/components/SectionColumnFilter.tsx";
 
 export function FrameworkCoursesTable() {
     const {data: studyPlan} = useStudyPlan();
@@ -56,7 +56,8 @@ export function FrameworkCoursesTable() {
                     id: 'code',
                     desc: false
                 }
-            ]
+            ],
+            globalFilter: ''
         }
     });
 
@@ -90,7 +91,24 @@ export function FrameworkCoursesTable() {
                 <Flex direction="column" style={{flex: 1}} gap="md">
                     <Group>
                         <DataTableSearch width="" placeholder="Search courses..." table={table}/>
-                        <FilteredSectionIndicator table={table}/>
+
+                        <SectionColumnFilter
+                            table={table}
+                            sections={studyPlan.sections}
+                        />
+
+                        {table.getPreFilteredRowModel().rows.length !== table.getFilteredRowModel().rows.length && (
+                            <Button
+                                leftSection={<X size={14}/>}
+                                variant="subtle"
+                                onClick={() => {
+                                    table.resetColumnFilters();
+                                    table.resetGlobalFilter();
+                                }}
+                            >
+                                Clear
+                            </Button>
+                        )}
                     </Group>
 
                     <AppCard

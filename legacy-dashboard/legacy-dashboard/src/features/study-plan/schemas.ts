@@ -2,10 +2,11 @@ import {z} from "zod";
 import {SectionLevel, SectionType} from "@/features/study-plan/types.ts";
 
 export const studyPlanDetailsSchema = z.interface({
-    program: z.string(),
+    program: z
+        .string(),
     year: z
-        .date()
-        .default(new Date()),
+        .iso.date()
+        .default(new Date().toISOString()),
     duration: z
         .number()
         .min(1, {error: "Must be at least 1 year"})

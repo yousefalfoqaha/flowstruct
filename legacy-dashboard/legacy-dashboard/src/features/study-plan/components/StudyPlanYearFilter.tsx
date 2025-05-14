@@ -1,4 +1,4 @@
-import {DateValue, YearPickerInput} from "@mantine/dates";
+import {YearPickerInput} from "@mantine/dates";
 import {Calendar} from "lucide-react";
 import {Table} from "@tanstack/react-table";
 import {StudyPlanRow} from "@/features/study-plan/types.ts";
@@ -9,17 +9,22 @@ type Props = {
 }
 
 export function StudyPlanYearFilter({table}: Props) {
-    const yearColumn = React.useMemo(() => table.getColumn('year'), [table]);
+    const yearColumn = React.useMemo(
+        () => table.getColumn('year'),
+        [table]
+    );
     if (!yearColumn) return null;
 
     const filteredYear = yearColumn.getFilterValue() as number | undefined;
 
-    const handleFilter = (val: DateValue | null) => {
+    const handleFilter = (val: string) => {
         if (!val) {
-            yearColumn.setFilterValue(null);
+            yearColumn.setFilterValue(undefined);
             return;
         }
-        yearColumn.setFilterValue(val.getFullYear());
+
+        const year = Number(val.split('-')[0]);
+        yearColumn.setFilterValue(year);
     }
 
     return (

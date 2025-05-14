@@ -26,6 +26,7 @@ export function getFrameworkCoursesTableColumns(): ColumnDef<FrameworkCourse>[] 
                 />
             ),
         }),
+
         columnHelper.accessor("code", {
             header: ({column}) => (
                 <Group wrap="nowrap">
@@ -40,6 +41,7 @@ export function getFrameworkCoursesTableColumns(): ColumnDef<FrameworkCourse>[] 
                 <Badge variant="default">{row.original.code}</Badge>
             ),
         }) as ColumnDef<FrameworkCourse>,
+
         columnHelper.accessor("name", {
             header: ({column}) => (
                 <Group wrap="nowrap">
@@ -68,11 +70,17 @@ export function getFrameworkCoursesTableColumns(): ColumnDef<FrameworkCourse>[] 
                 <PrerequisitePillGroup parentCourseId={row.original.id}/>
             ),
         }),
-        columnHelper.accessor('sectionCode', {
+
+        columnHelper.accessor('section', {
             header: 'Section',
+            cell: ({row}) => row.original.sectionCode,
             sortingFn: 'alphanumeric',
-            enableColumnFilter: true
+            enableColumnFilter: true,
+            filterFn: (row, _, filterValue: number[]) => {
+                return filterValue.includes(row.original.section);
+            }
         }) as ColumnDef<FrameworkCourse>,
+
         columnHelper.display({
             id: "actions",
             header: "Actions",
