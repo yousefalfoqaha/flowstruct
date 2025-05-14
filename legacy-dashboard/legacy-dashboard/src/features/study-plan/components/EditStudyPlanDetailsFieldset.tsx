@@ -20,7 +20,7 @@ export function EditStudyPlanDetailsFieldset({studyPlan}: Props) {
         program: String(studyPlan.program),
         year: new Date(studyPlan.year, 0, 1).toISOString(),
         duration: studyPlan.duration,
-        track: studyPlan.track,
+        track: studyPlan.track ?? '',
         isPrivate: studyPlan.isPrivate
     });
 

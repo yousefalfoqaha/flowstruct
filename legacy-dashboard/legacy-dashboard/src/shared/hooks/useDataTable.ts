@@ -8,10 +8,10 @@ import {
     PaginationState,
     TableOptions,
     Updater,
-    useReactTable
+    useReactTable,
 } from "@tanstack/react-table";
 import {useLocation, useNavigate, useSearch} from "@tanstack/react-router";
-import {TableSearchSchema} from "@/shared/schemas.ts";
+import {TableSearchSchema,} from "@/shared/schemas";
 
 type useDataTableProps<TData> = Omit<
     TableOptions<TData>,
@@ -20,30 +20,35 @@ type useDataTableProps<TData> = Omit<
     | "autoResetPageIndex"
 >;
 
-export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
-    const parsedParams = TableSearchSchema.safeParse(useSearch({strict: false}));
-    if (!parsedParams.success) {
-        throw new Error("useDataTable hook must be used in a route with table search validation");
+export const useDataTable = <TData>(
+    props: useDataTableProps<TData>,
+    searchSchema = TableSearchSchema
+) => {
+    const rawSearch = useSearch({strict: false});
+    const parsed = searchSchema.safeParse(rawSearch);
+    if (!parsed.success) {
+        throw new Error(
+            "useDataTable hook must be used in a route with a compatible table‑search schema"
+        );
     }
+    const params = parsed.data;
 
     const location = useLocation();
     const navigate = useNavigate();
-    const params = parsedParams.data;
 
     const onGlobalFilterChange = React.useCallback(
         (updaterOrValue: Updater<string>) => {
-            const newVal = typeof updaterOrValue === "function"
+            const next = typeof updaterOrValue === "function"
                 ? (updaterOrValue as (prev: string) => string)(params.filter)
                 : updaterOrValue;
 
             navigate({
+                to: location.pathname,
                 search: (prev) => ({
                     ...prev,
-                    filter: newVal,
-                    page: prev.filter !== newVal && newVal !== '' ? 0 : prev.page
+                    filter: next,
+                    page: prev.filter !== next && next !== "" ? 0 : prev.page,
                 }),
-                to: location.pathname
-            }).then(() => {
             });
         },
         [location.pathname, navigate, params.filter]
@@ -51,14 +56,18 @@ export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
 
     const onColumnFilterChange = React.useCallback(
         (updaterOrValue: Updater<ColumnFiltersState>) => {
-            const newVal = typeof updaterOrValue === "function"
-                ? (updaterOrValue as (prev: ColumnFiltersState) => ColumnFiltersState)(params.columnFilters)
+            const next = typeof updaterOrValue === "function"
+                ? (updaterOrValue as (prev: ColumnFiltersState) => ColumnFiltersState)(
+                    params.columnFilters
+                )
                 : updaterOrValue;
 
             navigate({
-                search: (prev) => ({...prev, columnFilters: newVal}),
-                to: location.pathname
-            }).then(() => {
+                to: location.pathname,
+                search: (prev) => ({
+                    ...prev,
+                    columnFilters: next,
+                }),
             });
         },
         [location.pathname, navigate, params.columnFilters]
@@ -66,22 +75,22 @@ export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
 
     const onPaginationChange = React.useCallback(
         (updaterOrValue: Updater<PaginationState>) => {
-            const newVal = typeof updaterOrValue === 'function'
-                ? (updaterOrValue as (prev: PaginationState) => PaginationState)({
-                    pageIndex: params.page,
-                    pageSize: params.size
-                })
-                : updaterOrValue;
+            const next =
+                typeof updaterOrValue === "function"
+                    ? (updaterOrValue as (prev: PaginationState) => PaginationState)({
+                        pageIndex: params.page,
+                        pageSize: params.size,
+                    })
+                    : updaterOrValue;
 
             navigate({
+                to: location.pathname,
                 search: (prev) => ({
                     ...prev,
-                    page: newVal.pageIndex,
-                    size: newVal.pageSize
+                    page: next.pageIndex,
+                    size: next.pageSize,
                 }),
                 resetScroll: false,
-                to: location.pathname
-            }).then(() => {
             });
         },
         [location.pathname, navigate, params.page, params.size]
@@ -90,17 +99,20 @@ export const useDataTable = <TData>(props: useDataTableProps<TData>) => {
     return useReactTable({
         ...props,
         getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
         state: {
-            pagination: {pageIndex: params.page, pageSize: params.size},
             globalFilter: params.filter,
-            columnFilters: params.columnFilters
+            columnFilters: params.columnFilters,
+            pagination: {
+                pageIndex: params.page,
+                pageSize: params.size,
+            },
         },
+        onGlobalFilterChange,
         onColumnFiltersChange: onColumnFilterChange,
-        onGlobalFilterChange: onGlobalFilterChange,
-        onPaginationChange: onPaginationChange,
-        autoResetPageIndex: false
+        onPaginationChange,
+        autoResetPageIndex: false,
     });
 }

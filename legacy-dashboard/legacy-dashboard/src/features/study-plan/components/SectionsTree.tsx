@@ -70,7 +70,7 @@ export function SectionsTree({studyPlan}: SectionsTreeProps) {
 
                 <Group gap="xs" justify="space-between">
                     {section && (
-                        <Badge size="xs" variant="default">{section.requiredCreditHours} Cr. Required</Badge>
+                        <Badge size="xs" variant="default">{section.requiredCreditHours} Cr. Req</Badge>
                     )}
 
                     <Group gap="xs">

@@ -16,6 +16,7 @@ import {CreateSectionModal} from "@/features/study-plan/components/CreateSection
 import {ListPlus, X} from "lucide-react";
 import {SelectedCoursesToolbar} from "@/features/study-plan/components/SelectedCoursesToolbar.tsx";
 import {SectionColumnFilter} from "@/features/study-plan/components/SectionColumnFilter.tsx";
+import {FrameworkCoursesTableSearchSchema} from "@/shared/schemas.ts";
 
 export function FrameworkCoursesTable() {
     const {data: studyPlan} = useStudyPlan();
@@ -47,19 +48,20 @@ export function FrameworkCoursesTable() {
     );
 
     const table = useDataTable<FrameworkCourse>({
-        data,
-        columns,
-        getRowId: (originalRow) => String(originalRow.id),
-        initialState: {
-            sorting: [
-                {
-                    id: 'code',
-                    desc: false
-                }
-            ],
-            globalFilter: ''
-        }
-    });
+            data,
+            columns,
+            getRowId: (originalRow) => String(originalRow.id),
+            initialState: {
+                sorting: [
+                    {
+                        id: 'code',
+                        desc: false
+                    }
+                ],
+                globalFilter: ''
+            }
+        }, FrameworkCoursesTableSearchSchema
+    );
 
     if (studyPlan.sections.length === 0) {
         return (

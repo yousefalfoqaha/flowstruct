@@ -14,3 +14,7 @@ export const TableSearchSchema = z.interface({
         })
     ).catch(defaultValues.columnFilters)
 });
+
+export const FrameworkCoursesTableSearchSchema = TableSearchSchema.extend({
+    size: z.number().catch(7),
+});

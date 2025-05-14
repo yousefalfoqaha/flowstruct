@@ -12,7 +12,11 @@ type Props = {
 };
 
 export function EditSectionDetailsModal({section, studyPlanId}: Props) {
-    const form = useAppForm(sectionDetailsSchema, {...section});
+    const form = useAppForm(sectionDetailsSchema, {
+        ...section,
+        name: section.name ?? ''
+    });
+
     const editSectionDetails = useEditSectionDetails();
 
     const onSubmit = form.handleSubmit(data => {

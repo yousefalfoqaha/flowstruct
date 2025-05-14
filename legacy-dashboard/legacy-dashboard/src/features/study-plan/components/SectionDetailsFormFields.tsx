@@ -75,7 +75,6 @@ export function SectionDetailsFormFields({form}: Props) {
                         label="Name"
                         description="An optional name for clarity"
                         {...field}
-                        value={field.value ?? undefined}
                         autoComplete="off"
                         error={errors.name?.message}
                     />

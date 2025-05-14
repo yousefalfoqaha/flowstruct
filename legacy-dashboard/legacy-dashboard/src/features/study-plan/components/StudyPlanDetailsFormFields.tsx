@@ -44,17 +44,19 @@ export function StudyPlanDetailsFormFields({form, disableProgramSelect = false}:
                 <Controller
                     name="year"
                     control={control}
-                    render={({field}) => (
-                        <YearPickerInput
-                            label="Year"
-                            placeholder={new Date().getFullYear().toString()}
-                            {...field}
-                            error={errors.year?.message}
-                            leftSection={<Calendar size={18}/>}
-                            withAsterisk
-                            w="100%"
-                        />
-                    )}
+                    render={({field}) => {
+                        return (
+                            <YearPickerInput
+                                label="Year"
+                                placeholder={new Date().getFullYear().toString()}
+                                {...field}
+                                error={errors.year?.message}
+                                leftSection={<Calendar size={18}/>}
+                                withAsterisk
+                                w="100%"
+                            />
+                        );
+                    }}
                 />
 
                 <Controller
