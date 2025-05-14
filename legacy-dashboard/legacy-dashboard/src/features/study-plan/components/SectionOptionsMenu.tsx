@@ -1,33 +1,21 @@
 import {ActionIcon, Menu, Text} from "@mantine/core";
-import {EllipsisVertical, Pencil, Trash} from "lucide-react";
+import {Ellipsis, Pencil, Trash} from "lucide-react";
 import {Section} from "@/features/study-plan/types.ts";
 import {modals} from "@mantine/modals";
 import {EditSectionDetailsModal} from "@/features/study-plan/components/EditSectionDetailsModal.tsx";
 import {useDeleteSection} from "@/features/study-plan/hooks/useDeleteSection.ts";
 
-type SectionOptionsMenuProps = {
+type Props = {
     studyPlanId: number;
     section: Section;
-    selectedSection: Section | null;
-    resetSelectedSection: () => void;
 }
 
-export function SectionOptionsMenu({
-                                       section,
-                                       selectedSection,
-                                       resetSelectedSection,
-                                       studyPlanId
-                                   }: SectionOptionsMenuProps) {
+export function SectionOptionsMenu({section, studyPlanId}: Props) {
     const deleteSection = useDeleteSection();
 
     const handleConfirm = () => deleteSection.mutate({
         studyPlanId: studyPlanId,
         sectionId: section.id
-    }, {
-        onSuccess: () => {
-            if (section.id !== selectedSection?.id) return;
-            resetSelectedSection();
-        }
     });
 
     if (!section) return;
@@ -38,9 +26,9 @@ export function SectionOptionsMenu({
                 <ActionIcon
                     loading={deleteSection.isPending}
                     variant="transparent"
-                    color="black"
+                    color="gray"
                 >
-                    <EllipsisVertical size={14}/>
+                    <Ellipsis size={14}/>
                 </ActionIcon>
             </Menu.Target>
 

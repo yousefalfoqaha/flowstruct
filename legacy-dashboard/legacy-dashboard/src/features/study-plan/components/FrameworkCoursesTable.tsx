@@ -86,7 +86,7 @@ export function FrameworkCoursesTable() {
                 studyPlan={studyPlan}
             />
             <Flex direction={{base: 'column', lg: 'row'}} gap="lg">
-                <SectionsTree table={table} studyPlan={studyPlan}/>
+                <SectionsTree studyPlan={studyPlan}/>
 
                 <Flex direction="column" style={{flex: 1}} gap="md">
                     <Group>

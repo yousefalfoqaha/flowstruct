@@ -1,35 +1,18 @@
-import {
-    ActionIcon,
-    Badge,
-    Box,
-    Button,
-    Flex,
-    Group,
-    Indicator,
-    RenderTreeNodePayload,
-    Text,
-    Tree,
-    TreeNodeData
-} from "@mantine/core";
-import {FrameworkCourse, SectionLevel, SectionType, StudyPlan} from "@/features/study-plan/types.ts";
-import {ChevronDown, Filter} from "lucide-react";
+import {Badge, Box, Flex, Group, RenderTreeNodePayload, Text, Tree, TreeNodeData} from "@mantine/core";
+import {SectionLevel, SectionType, StudyPlan} from "@/features/study-plan/types.ts";
+import {ChevronDown} from "lucide-react";
 import {CreateSectionModal} from "@/features/study-plan/components/CreateSectionModal.tsx";
-import {SectionOptionsMenu} from "@/features/study-plan/components/SectionOptionsMenu.tsx";
 import classes from './SectionsTree.module.css';
 import React from "react";
 import {MoveSectionMenu} from "@/features/study-plan/components/MoveSectionMenu.tsx";
 import {getSectionCode, getSectionLevelCode, getSectionTypeCode} from "@/utils/getSectionCode.ts";
-import {useSelectedSection} from "@/features/study-plan/hooks/useSelectedSection.ts";
-import {Table} from "@tanstack/react-table";
+import {SectionOptionsMenu} from "@/features/study-plan/components/SectionOptionsMenu.tsx";
 
 type SectionsTreeProps = {
     studyPlan: StudyPlan;
-    table: Table<FrameworkCourse>;
 }
 
-export function SectionsTree({studyPlan, table}: SectionsTreeProps) {
-    const {selectedSection, setSelectedSection} = useSelectedSection(table);
-
+export function SectionsTree({studyPlan}: SectionsTreeProps) {
     const data: TreeNodeData[] = React.useMemo(() => {
         return Object.values(SectionLevel).flatMap(level => {
             const levelCode = getSectionLevelCode(level);
@@ -71,18 +54,9 @@ export function SectionsTree({studyPlan, table}: SectionsTreeProps) {
     const Leaf = ({node, level, expanded, hasChildren, elementProps}: RenderTreeNodePayload) => {
         const section = studyPlan.sections.find(s => s.id.toString() === node.value);
 
-        const isSelected = Number(node.value) === selectedSection?.id;
-
-        const handleFilter = () => {
-            if (!isSelected) {
-                setSelectedSection(Number(node.value));
-                return;
-            }
-            setSelectedSection(null);
-        }
-
         return (
             <Box {...elementProps} w={250}>
+
                 <Group gap={10} py={5}>
                     {hasChildren && (
                         <ChevronDown
@@ -91,36 +65,26 @@ export function SectionsTree({studyPlan, table}: SectionsTreeProps) {
                         />
                     )}
 
-                    <Indicator position="middle-start" offset={-20} disabled={!isSelected}>
-                        <span style={{
-                            marginRight: 8,
-                            fontWeight: isSelected ? 600 : 'normal'
-                        }}>
-                            {node.label}
-                        </span>
-
-                        {section && (
-                            <Badge size="xs" variant="default">{section.requiredCreditHours} Cr. Req</Badge>
-                        )}
-                    </Indicator>
+                    <span>{node.label}</span>
                 </Group>
 
-                {section && (
-                    <Group gap={5}>
-                        {level > 2 && <MoveSectionMenu studyPlan={studyPlan} section={section}/>}
+                <Group gap="xs" justify="space-between">
+                    {section && (
+                        <Badge size="xs" variant="default">{section.requiredCreditHours} Cr. Required</Badge>
+                    )}
 
-                        <ActionIcon onClick={handleFilter} variant="transparent">
-                            <Filter size={14}/>
-                        </ActionIcon>
+                    <Group gap="xs">
+                        {level > 2 && section && <MoveSectionMenu studyPlan={studyPlan} section={section}/>}
 
-                        <SectionOptionsMenu
-                            selectedSection={selectedSection}
-                            resetSelectedSection={() => setSelectedSection(null)}
-                            section={section}
-                            studyPlanId={studyPlan.id}
-                        />
+                        {section && (
+                            <SectionOptionsMenu
+                                section={section}
+                                studyPlanId={studyPlan.id}
+                            />
+                        )}
                     </Group>
-                )}
+                </Group>
+
             </Box>
         );
     };
@@ -129,23 +93,7 @@ export function SectionsTree({studyPlan, table}: SectionsTreeProps) {
         <Flex direction="column" gap={8}>
             <Group justify="space-between">
                 <Text fw={500}>All Sections</Text>
-
-                <Group>
-                    {selectedSection && (
-                        <Button
-                            onClick={() => setSelectedSection(null)}
-                            size="compact-sm"
-                            p={0}
-                            leftSection={<Filter size={14}/>}
-                            color="gray"
-                            variant="transparent"
-                        >
-                            Clear
-                        </Button>
-                    )}
-
-                    <CreateSectionModal studyPlanId={studyPlan.id}/>
-                </Group>
+                <CreateSectionModal studyPlanId={studyPlan.id}/>
             </Group>
 
             <Tree
