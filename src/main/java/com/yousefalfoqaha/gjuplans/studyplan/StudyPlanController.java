@@ -128,6 +128,18 @@ public class StudyPlanController {
         );
     }
 
+    @PutMapping("/{studyPlanId}/course-placements/{courseId}")
+    public ResponseEntity<StudyPlanDto> moveCourseToSemester(
+            @PathVariable long studyPlanId,
+            @PathVariable long courseId,
+            @RequestParam(value = "targetSemester") int targetSemester
+    ) {
+        return new ResponseEntity<>(
+                studyPlanService.moveCourseToSemester(studyPlanId, courseId, targetSemester),
+                HttpStatus.OK
+        );
+    }
+
     @DeleteMapping("/{studyPlanId}/sections/{sectionId}")
     public ResponseEntity<StudyPlanDto> deleteSection(
             @PathVariable long studyPlanId,

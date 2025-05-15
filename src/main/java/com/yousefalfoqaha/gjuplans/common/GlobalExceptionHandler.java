@@ -28,6 +28,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(CourseNotPlacedException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            CourseNotPlacedException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.NOT_FOUND.value(),
+                        exception.getMessage(),
+                        new Date()
+                ),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ErrorObject> handleException(
             InvalidCredentialsException exception

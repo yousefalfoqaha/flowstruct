@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -99,6 +97,49 @@ public class StudyPlanService {
         return saveAndMapStudyPlan(studyPlan);
     }
 
+
+    @Transactional
+    public StudyPlanDto moveCourseToSemester(long studyPlanId, long courseId, int targetSemester) {
+        var studyPlan = findStudyPlan(studyPlanId);
+
+        if (studyPlan.getCoursePlacements().get(courseId) == null) {
+            throw new CourseNotPlacedException("Course was not already placed in the program map.");
+        }
+
+        studyPlan.getCoursePlacements().remove(courseId);
+
+        Set<Long> postrequisites = new HashSet<>();
+
+        var prerequisites = studyPlan.getCoursePrerequisites()
+                .stream()
+                .filter(coursePrerequisite -> coursePrerequisite.getCourse().getId() == courseId)
+                .map(coursePrerequisite -> coursePrerequisite.getPrerequisite().getId())
+                .toList();
+
+        for (long prerequisite : prerequisites) {
+            var prerequisitePlacement = studyPlan.getCoursePlacements().get(prerequisite);
+
+            if (prerequisitePlacement == null) {
+                continue;
+            }
+
+            if (prerequisitePlacement.getSemester() >= targetSemester) {
+                throw new InvalidCoursePlacement("Unable to move course into a semester with a prerequisite.");
+            }
+        }
+
+        studyPlan.getCoursePlacements().put(
+                courseId,
+                new CoursePlacement(
+                        AggregateReference.to(courseId),
+                        targetSemester
+                )
+        );
+
+        return saveAndMapStudyPlan(studyPlan);
+    }
+
+
     @Transactional
     public StudyPlanDto placeCoursesInSemester(long studyPlanId, SemesterCoursesDto semesterCourses) {
         semesterCoursesValidator.validate(semesterCourses);
@@ -115,7 +156,6 @@ public class StudyPlanService {
 
             if (prerequisites != null) {
                 prerequisites.forEach(prerequisite -> {
-
                     var prerequisitePlacement = studyPlan.getCoursePlacements().get(prerequisite.getPrerequisite().getId());
 
                     if (prerequisitePlacement == null || prerequisitePlacement.getSemester() >= semesterCourses.semester()) {
