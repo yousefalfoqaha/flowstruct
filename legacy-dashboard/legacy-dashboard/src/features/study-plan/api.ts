@@ -17,6 +17,17 @@ export const createStudyPlan = ({studyPlanDetails}: {
         body: {...studyPlanDetails}
     });
 
+export const moveCourseToSemester = ({studyPlanId, courseId, targetSemester}: {
+    studyPlanId: number,
+    courseId: number,
+    targetSemester: number
+}) =>
+    api.put<StudyPlan>([ENDPOINT, studyPlanId, 'course-placements', courseId], {
+        params: {
+            targetSemester
+        }
+    });
+
 export const toggleStudyPlanVisibility = (studyPlanId: number) =>
     api.put<StudyPlan>([ENDPOINT, studyPlanId, 'toggle-visibility']);
 

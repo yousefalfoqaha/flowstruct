@@ -4,6 +4,7 @@ import {ActionIcon, Indicator, Popover, Text} from "@mantine/core";
 import {CircleMinus} from "lucide-react";
 import {useRemoveCoursePlacement} from "@/features/study-plan/hooks/useRemoveCoursePlacement.ts";
 import {useDisclosure} from "@mantine/hooks";
+import {useDrag} from "react-dnd";
 
 type CourseCardProps = {
     course: CourseSummary;
@@ -13,6 +14,14 @@ type CourseCardProps = {
 
 export function CourseCard({course, missingPrerequisites, studyPlanId}: CourseCardProps) {
     const removeCoursePlacement = useRemoveCoursePlacement();
+
+    const [{isDragging}, drag] = useDrag(() => ({
+        type: 'COURSE',
+        item: {id: course.id},
+        collect: monitor => ({
+            isDragging: monitor.isDragging()
+        })
+    }));
 
     const [opened, {close, open}] = useDisclosure(false);
 
@@ -36,7 +45,14 @@ export function CourseCard({course, missingPrerequisites, studyPlanId}: CourseCa
                 shadow="md"
             >
                 <Popover.Target>
-                    <div onMouseEnter={open} onMouseLeave={close} className={classes.container}>
+                    <div
+                        role="handle"
+                        ref={drag}
+                        style={{opacity: isDragging ? 0.5 : 1}}
+                        onMouseEnter={open}
+                        onMouseLeave={close}
+                        className={classes.container}
+                    >
                         <div className={classes.header}>
                             <p className={classes.code}>{course.code}</p>
                             <p className={classes.name}>{course.name}</p>

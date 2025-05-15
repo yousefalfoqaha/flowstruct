@@ -1,4 +1,3 @@
-import {handleLogout} from "@/utils/handleLogout";
 import {logoutUser} from "@/features/user/api.ts";
 
 const API_BASE_URL = "http://localhost:8080/api/v1";
@@ -39,7 +38,12 @@ export const api = {
         if (!response.ok) {
             if (response.status === 403 || response.status === 401) {
                 await logoutUser();
-                handleLogout().then();
+
+                if (window.location.pathname !== '/login') {
+                    window.location.href = '/login';
+                }
+
+                await Promise.reject();
             }
 
             const errorData = await response.json();

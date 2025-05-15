@@ -6,7 +6,6 @@ import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
 import {PageHeader} from "@/shared/components/PageHeader.tsx";
 import {PageLayout} from "@/shared/components/PageLayout.tsx";
 import {Suspense} from "react";
-import {Skeleton} from "@mantine/core";
 
 export const Route = createFileRoute('/_layout/programs/')({
     component: RouteComponent,
