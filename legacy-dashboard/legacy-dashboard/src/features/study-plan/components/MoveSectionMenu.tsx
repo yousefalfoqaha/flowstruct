@@ -1,5 +1,5 @@
 import {ActionIcon, Menu} from "@mantine/core";
-import {ArrowDown, ArrowUp, ChevronsUpDown} from "lucide-react";
+import {ArrowDown, ArrowUp, ArrowUpDown} from "lucide-react";
 import {MoveDirection, Section, StudyPlan} from "@/features/study-plan/types.ts";
 import {useMoveSection} from "@/features/study-plan/hooks/useMoveSection.ts";
 
@@ -27,9 +27,8 @@ export function MoveSectionMenu({section, studyPlan}: MoveSectionMenuProps) {
                 <ActionIcon
                     loading={isPending}
                     variant="transparent"
-                    color="black"
                 >
-                    <ChevronsUpDown size={14}/>
+                    <ArrowUpDown size={14}/>
                 </ActionIcon>
             </Menu.Target>
 

@@ -1,10 +1,11 @@
 import {Course, CourseSummary} from "@/features/course/types.ts";
 import classes from "./CourseCard.module.css";
 import {ActionIcon, Indicator, Popover, Text} from "@mantine/core";
-import {CircleMinus} from "lucide-react";
 import {useRemoveCoursePlacement} from "@/features/study-plan/hooks/useRemoveCoursePlacement.ts";
 import {useDisclosure} from "@mantine/hooks";
-import {useDrag} from "react-dnd";
+import {ProgramMapCourseOptions} from "@/features/study-plan/components/ProgramMapCourseOptions.tsx";
+import {ArrowLeftRight} from "lucide-react";
+import {useProgramMap} from "@/contexts/ProgramMapContext.tsx";
 
 type CourseCardProps = {
     course: CourseSummary;
@@ -15,13 +16,7 @@ type CourseCardProps = {
 export function CourseCard({course, missingPrerequisites, studyPlanId}: CourseCardProps) {
     const removeCoursePlacement = useRemoveCoursePlacement();
 
-    const [{isDragging}, drag] = useDrag(() => ({
-        type: 'COURSE',
-        item: {id: course.id},
-        collect: monitor => ({
-            isDragging: monitor.isDragging()
-        })
-    }));
+    const {moveCourse} = useProgramMap();
 
     const [opened, {close, open}] = useDisclosure(false);
 
@@ -46,9 +41,6 @@ export function CourseCard({course, missingPrerequisites, studyPlanId}: CourseCa
             >
                 <Popover.Target>
                     <div
-                        role="handle"
-                        ref={drag}
-                        style={{opacity: isDragging ? 0.5 : 1}}
                         onMouseEnter={open}
                         onMouseLeave={close}
                         className={classes.container}
@@ -58,22 +50,18 @@ export function CourseCard({course, missingPrerequisites, studyPlanId}: CourseCa
                             <p className={classes.name}>{course.name}</p>
                         </div>
 
-                        <ActionIcon
-                            onClick={() => removeCoursePlacement.mutate({
-                                courseId: course.id,
-                                studyPlanId: studyPlanId
-                            })}
-                            loading={removeCoursePlacement.isPending}
-                            variant="white"
-                            color="red"
-                            className={classes.removeButton}
-                        >
-                            <CircleMinus size={18}/>
-                        </ActionIcon>
+                        <div className={classes.removeButton}>
+                            <ProgramMapCourseOptions course={course} studyPlanId={studyPlanId}/>
+                        </div>
 
                         <div className={classes.footer}>
                             <p>{course.creditHours} Cr.</p>
-                            <p>{course.type}</p>
+                            <ActionIcon
+                                onClick={() => moveCourse(course.id)}
+                                variant="transparent"
+                            >
+                                <ArrowLeftRight size={14}/>
+                            </ActionIcon>
                         </div>
                     </div>
                 </Popover.Target>

@@ -19,84 +19,86 @@ function CoursesGraphProvider({children}: { children: ReactNode }) {
     const {data: studyPlan} = useStudyPlan();
 
     React.useEffect(() => {
-        if (!studyPlan) return;
+            if (!studyPlan) return;
 
-        const traversePrerequisites = (
-            courseId: number,
-            coursePrerequisitesMap: Record<number, Record<number, CourseRelation>>,
-            visited: Set<number>,
-            graph: Map<number, CourseRequisites>
-        ) => {
-            const prerequisites = coursePrerequisitesMap[courseId];
-            if (!prerequisites) return;
+            const traversePrerequisites = (
+                courseId: number,
+                coursePrerequisitesMap: Record<number, Record<number, CourseRelation>>,
+                visited: Set<number>,
+                graph: Map<number, CourseRequisites>
+            ) => {
+                const prerequisites = coursePrerequisitesMap[courseId];
+                if (!prerequisites) return;
 
-            for (const prereq in prerequisites) {
-                const prereqId = Number(prereq);
+                for (const prereq in prerequisites) {
+                    const prereqId = Number(prereq);
 
-                if (!visited.has(prereqId)) {
-                    traversePrerequisites(prereqId, coursePrerequisitesMap, visited, graph);
+                    if (!visited.has(prereqId)) {
+                        traversePrerequisites(prereqId, coursePrerequisitesMap, visited, graph);
+                    }
+
+                    const currentSeq = graph.get(courseId)!;
+                    const prereqSeq = graph.get(prereqId)!;
+
+                    prereqSeq.prerequisiteSequence.forEach((id) => currentSeq.prerequisiteSequence.add(id));
+                    currentSeq.prerequisiteSequence.add(prereqId);
+
+                    prereqSeq.postrequisiteSequence.add(courseId);
                 }
+                visited.add(courseId);
+            };
 
+            const traversePostrequisites = (
+                courseId: number,
+                visited: Set<number>,
+                graph: Map<number, CourseRequisites>
+            ) => {
                 const currentSeq = graph.get(courseId)!;
-                const prereqSeq = graph.get(prereqId)!;
+                const postCourses = new Set(currentSeq.postrequisiteSequence);
 
-                prereqSeq.prerequisiteSequence.forEach((id) => currentSeq.prerequisiteSequence.add(id));
-                currentSeq.prerequisiteSequence.add(prereqId);
+                for (const postId of postCourses) {
+                    if (!visited.has(postId)) {
+                        traversePostrequisites(postId, visited, graph);
+                    }
 
-                prereqSeq.postrequisiteSequence.add(courseId);
-            }
-            visited.add(courseId);
-        };
+                    const postSeq = graph.get(postId)!;
 
-        const traversePostrequisites = (
-            courseId: number,
-            visited: Set<number>,
-            graph: Map<number, CourseRequisites>
-        ) => {
-            const currentSeq = graph.get(courseId)!;
-            const postCourses = new Set(currentSeq.postrequisiteSequence);
-
-            for (const postId of postCourses) {
-                if (!visited.has(postId)) {
-                    traversePostrequisites(postId, visited, graph);
+                    currentSeq.postrequisiteSequence.add(postId);
+                    postSeq.postrequisiteSequence.forEach((id) => currentSeq.postrequisiteSequence.add(id));
                 }
+                visited.add(courseId);
+            };
 
-                const postSeq = graph.get(postId)!;
+            const buildCoursesGraph = (courses: number[]): Map<number, CourseRequisites> => {
+                const visited = new Set<number>();
+                const graph = new Map<number, CourseRequisites>();
 
-                currentSeq.postrequisiteSequence.add(postId);
-                postSeq.postrequisiteSequence.forEach((id) => currentSeq.postrequisiteSequence.add(id));
-            }
-            visited.add(courseId);
-        };
+                courses.forEach((courseId) => {
+                    graph.set(courseId, {prerequisiteSequence: new Set(), postrequisiteSequence: new Set()});
+                });
 
-        const buildCoursesGraph = (courses: number[]): Map<number, CourseRequisites> => {
-            const visited = new Set<number>();
-            const graph = new Map<number, CourseRequisites>();
+                courses.forEach((courseId) => {
+                    if (!visited.has(courseId)) {
+                        traversePrerequisites(courseId, studyPlan.coursePrerequisites, visited, graph);
+                    }
+                });
 
-            courses.forEach((courseId) => {
-                graph.set(courseId, {prerequisiteSequence: new Set(), postrequisiteSequence: new Set()});
-            });
+                visited.clear();
 
-            courses.forEach((courseId) => {
-                if (!visited.has(courseId)) {
-                    traversePrerequisites(courseId, studyPlan.coursePrerequisites, visited, graph);
-                }
-            });
+                courses.forEach((courseId) => {
+                    if (!visited.has(courseId)) {
+                        traversePostrequisites(courseId, visited, graph);
+                    }
+                });
 
-            visited.clear();
+                return graph;
+            };
 
-            courses.forEach((courseId) => {
-                if (!visited.has(courseId)) {
-                    traversePostrequisites(courseId, visited, graph);
-                }
-            });
-
-            return graph;
-        };
-
-        const newGraph = buildCoursesGraph(studyPlan.sections.flatMap(section => section.courses));
-        setCoursesGraph(newGraph);
-    }, [studyPlan, studyPlan?.sections]);
+            const newGraph = buildCoursesGraph(studyPlan.sections.flatMap(section => section.courses));
+            setCoursesGraph(newGraph);
+        },
+        [studyPlan]
+    );
 
     return (
         <CoursesGraphContext.Provider value={{coursesGraph}}>

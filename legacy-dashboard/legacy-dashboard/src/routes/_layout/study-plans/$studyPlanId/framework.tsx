@@ -1,5 +1,4 @@
 import {createFileRoute, stripSearchParams} from '@tanstack/react-router'
-import {CoursesGraphProvider} from "@/contexts/CoursesGraphContext.tsx";
 import {FrameworkCoursesTable} from "@/features/study-plan/components/FrameworkCoursesTable.tsx";
 import {FrameworkCoursesTableSearchSchema} from "@/shared/schemas.ts";
 import {getDefaultFrameworkCoursesSearchValues} from "@/utils/getDefaultFrameworkCoursesSearchValues.ts";
@@ -19,8 +18,6 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
     return (
-        <CoursesGraphProvider>
-            <FrameworkCoursesTable/>
-        </CoursesGraphProvider>
+        <FrameworkCoursesTable/>
     );
 }

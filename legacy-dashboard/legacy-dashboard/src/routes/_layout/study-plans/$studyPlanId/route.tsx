@@ -11,6 +11,7 @@ import {visibilityBadge} from "@/shared/components/VisibilityBadge.tsx";
 import {PageLayout} from "@/shared/components/PageLayout.tsx";
 import {StudyPlanTabs} from "@/features/study-plan/components/StudyPlanTabs.tsx";
 import {Upload} from "lucide-react";
+import {CoursesGraphProvider} from '@/contexts/CoursesGraphContext';
 
 export const Route = createFileRoute('/_layout/study-plans/$studyPlanId')({
     loader: async ({context: {queryClient}, params}) => {
@@ -62,8 +63,10 @@ function RouteComponent() {
     return (
         <PageLayout header={header}>
             <StudyPlanTabs/>
-            <Divider my={0} />
-            <Outlet/>
+            <Divider my={0}/>
+            <CoursesGraphProvider>
+                <Outlet/>
+            </CoursesGraphProvider>
         </PageLayout>
     );
 }

@@ -2,9 +2,8 @@ import {Divider, Flex, ScrollArea, Stack, Text} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {CoursePlacementMultiSelect} from "@/features/study-plan/components/CoursePlacementMultiSelect.tsx";
 import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
-import {DndProvider} from "react-dnd";
-import {HTML5Backend} from "react-dnd-html5-backend";
 import {SemesterCoursesContainer} from "@/features/study-plan/components/SemesterCoursesContainer.tsx";
+import {ProgramMapProvider} from "@/contexts/ProgramMapContext.tsx";
 
 export function ProgramMap() {
     const {data: studyPlan} = useStudyPlan();
@@ -23,7 +22,7 @@ export function ProgramMap() {
     });
 
     return (
-        <DndProvider backend={HTML5Backend}>
+        <ProgramMapProvider>
             <ScrollArea offsetScrollbars type="never">
                 <Flex gap="xs" wrap="nowrap">
                     {academicYears.map((year) => {
@@ -80,6 +79,6 @@ export function ProgramMap() {
                     })}
                 </Flex>
             </ScrollArea>
-        </DndProvider>
+        </ProgramMapProvider>
     );
 }
