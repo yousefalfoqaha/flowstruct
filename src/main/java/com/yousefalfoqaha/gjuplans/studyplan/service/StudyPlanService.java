@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -97,7 +99,6 @@ public class StudyPlanService {
         return saveAndMapStudyPlan(studyPlan);
     }
 
-
     @Transactional
     public StudyPlanDto moveCourseToSemester(long studyPlanId, long courseId, int targetSemester) {
         var studyPlan = findStudyPlan(studyPlanId);
@@ -106,27 +107,14 @@ public class StudyPlanService {
             throw new CourseNotPlacedException("Course was not already placed in the program map.");
         }
 
-        studyPlan.getCoursePlacements().remove(courseId);
+        int highestAllowedSemester = calculateHighestAllowedSemester(studyPlan, courseId);
+        int lowestAllowedSemester = calculateLowestAllowedSemester(studyPlan, courseId);
 
-        Set<Long> postrequisites = new HashSet<>();
-
-        var prerequisites = studyPlan.getCoursePrerequisites()
-                .stream()
-                .filter(coursePrerequisite -> coursePrerequisite.getCourse().getId() == courseId)
-                .map(coursePrerequisite -> coursePrerequisite.getPrerequisite().getId())
-                .toList();
-
-        for (long prerequisite : prerequisites) {
-            var prerequisitePlacement = studyPlan.getCoursePlacements().get(prerequisite);
-
-            if (prerequisitePlacement == null) {
-                continue;
-            }
-
-            if (prerequisitePlacement.getSemester() >= targetSemester) {
-                throw new InvalidCoursePlacement("Unable to move course into a semester with a prerequisite.");
-            }
+        if (targetSemester < lowestAllowedSemester || targetSemester > highestAllowedSemester) {
+            throw new InvalidCoursePlacement("Unable to move course into a semester with a pre-requisite or post-requisite.");
         }
+
+        studyPlan.getCoursePlacements().remove(courseId);
 
         studyPlan.getCoursePlacements().put(
                 courseId,
@@ -138,6 +126,30 @@ public class StudyPlanService {
 
         return saveAndMapStudyPlan(studyPlan);
     }
+
+    private int calculateHighestAllowedSemester(StudyPlan studyPlan, long courseId) {
+        return studyPlan.getCoursePrerequisites()
+                .stream()
+                .filter(cp -> Objects.equals(cp.getPrerequisite().getId(), courseId))
+                .map(cp -> {
+                    var placement = studyPlan.getCoursePlacements().get(cp.getCourse().getId());
+                    return placement != null ? placement.getSemester() : Integer.MAX_VALUE;
+                })
+                .min(Integer::compareTo)
+                .orElse(Integer.MAX_VALUE) - 1;
+    }
+
+    private int calculateLowestAllowedSemester(StudyPlan studyPlan, long courseId) {
+        return studyPlan.getCoursePrerequisites()
+                .stream()
+                .filter(cp -> Objects.equals(cp.getCourse().getId(), courseId))
+                .map(cp -> {
+                    var placement = studyPlan.getCoursePlacements().get(cp.getPrerequisite().getId());
+                    return placement != null ? placement.getSemester() : Integer.MIN_VALUE;
+                })
+                .max(Integer::compareTo)
+                .orElse(Integer.MIN_VALUE) + 1;
+    };
 
 
     @Transactional
