@@ -1,9 +1,8 @@
 import {Divider, Flex, ScrollArea, Stack, Text} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
-import {CoursePlacementMultiSelect} from "@/features/study-plan/components/CoursePlacementMultiSelect.tsx";
 import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
 import {SemesterCoursesContainer} from "@/features/study-plan/components/SemesterCoursesContainer.tsx";
-import {ProgramMapProvider} from "@/contexts/ProgramMapContext.tsx";
+import {useProgramMap} from "@/contexts/ProgramMapContext.tsx";
 
 export function ProgramMap() {
     const {data: studyPlan} = useStudyPlan();
@@ -21,64 +20,51 @@ export function ProgramMap() {
         coursesBySemester.get(Number(semesterNum))?.push(Number(courseId));
     });
 
+    const {allowedSemesters, movingCourse} = useProgramMap()
+
     return (
-        <ProgramMapProvider>
-            <ScrollArea offsetScrollbars type="never">
-                <Flex gap="xs" wrap="nowrap">
-                    {academicYears.map((year) => {
-                        const yearSemesters = semesterTypes.map((_, i) =>
-                            year * SEMESTERS_PER_YEAR - (SEMESTERS_PER_YEAR - i) + 1
-                        );
+        <ScrollArea offsetScrollbars type="never">
+            <Flex gap="xs" wrap="nowrap">
+                {academicYears.map((year) => {
+                    const yearSemesters = semesterTypes.map((_, i) =>
+                        year * SEMESTERS_PER_YEAR - (SEMESTERS_PER_YEAR - i) + 1
+                    );
 
-                        return (
-                            <Stack align="center" gap="xs" key={year}>
-                                <Divider
-                                    w="100%"
-                                    labelPosition="center"
-                                    variant="dashed"
-                                    label={
-                                        <>
-                                            <Text size="xs">Year {year}</Text>
-                                        </>
-                                    }
-                                />
+                    return (
+                        <Stack align="center" gap="xs" key={year}>
+                            <Divider
+                                w="100%"
+                                labelPosition="center"
+                                variant="dashed"
+                                label={
+                                    <>
+                                        <Text size="xs">Year {year}</Text>
+                                    </>
+                                }
+                            />
 
-                                <Flex gap="xs" wrap="nowrap">
-                                    {yearSemesters.map((semesterNumber, index) => {
-                                        const semesterCourses = coursesBySemester.get(semesterNumber);
-                                        const semesterTotalCreditHours = semesterCourses?.reduce((sum, courseId) => sum + (courses[courseId]?.creditHours || 0), 0);
+                            <Flex h="100%" gap="xs" wrap="nowrap">
+                                {yearSemesters.map((semesterNumber, index) => {
+                                    const semesterCourses = coursesBySemester.get(semesterNumber);
+                                    const semesterTotalCreditHours = semesterCourses?.reduce((sum, courseId) => sum + (courses[courseId]?.creditHours || 0), 0);
 
-                                        return (
-                                            <Stack miw={100} gap="sm" key={semesterNumber}>
-                                                <Text
-                                                    size="xs"
-                                                    ta="center"
-                                                    c="dimmed"
-                                                >
-                                                    {semesterTypes[index]} - {semesterTotalCreditHours} Cr.
-                                                </Text>
+                                    const title = `${semesterTypes[index]} - ${semesterTotalCreditHours} Cr.`;
 
-                                                <SemesterCoursesContainer
-                                                    semesterNumber={semesterNumber}
-                                                    semesterCourses={semesterCourses ?? []}
-                                                    courses={courses}
-                                                    studyPlan={studyPlan}
-                                                />
-
-                                                <CoursePlacementMultiSelect
-                                                    courses={courses}
-                                                    studyPlan={studyPlan}
-                                                    semester={semesterNumber}
-                                                />
-                                            </Stack>
-                                        );
-                                    })}
-                                </Flex>
-                            </Stack>
-                        );
-                    })}
-                </Flex>
-            </ScrollArea>
-        </ProgramMapProvider>
+                                    return (
+                                        <SemesterCoursesContainer
+                                            semesterNumber={semesterNumber}
+                                            semesterCourses={semesterCourses ?? []}
+                                            courses={courses}
+                                            studyPlan={studyPlan}
+                                            title={title}
+                                        />
+                                    );
+                                })}
+                            </Flex>
+                        </Stack>
+                    );
+                })}
+            </Flex>
+        </ScrollArea>
     );
 }

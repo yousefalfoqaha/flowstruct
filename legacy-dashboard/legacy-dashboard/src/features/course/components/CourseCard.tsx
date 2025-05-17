@@ -1,7 +1,6 @@
 import {Course, CourseSummary} from "@/features/course/types.ts";
 import classes from "./CourseCard.module.css";
 import {ActionIcon, Indicator, Popover, Text} from "@mantine/core";
-import {useRemoveCoursePlacement} from "@/features/study-plan/hooks/useRemoveCoursePlacement.ts";
 import {useDisclosure} from "@mantine/hooks";
 import {ProgramMapCourseOptions} from "@/features/study-plan/components/ProgramMapCourseOptions.tsx";
 import {ArrowLeftRight} from "lucide-react";
@@ -14,9 +13,7 @@ type CourseCardProps = {
 }
 
 export function CourseCard({course, missingPrerequisites, studyPlanId}: CourseCardProps) {
-    const removeCoursePlacement = useRemoveCoursePlacement();
-
-    const {moveCourse} = useProgramMap();
+    const {moveCourse, movingCourse} = useProgramMap();
 
     const [opened, {close, open}] = useDisclosure(false);
 
@@ -43,9 +40,10 @@ export function CourseCard({course, missingPrerequisites, studyPlanId}: CourseCa
                     <div
                         onMouseEnter={open}
                         onMouseLeave={close}
-                        className={classes.container}
+                        className={`${classes.container} ${movingCourse === course.id ? classes.moving : ""}`}
                     >
-                        <div className={classes.header}>
+
+                    <div className={classes.header}>
                             <p className={classes.code}>{course.code}</p>
                             <p className={classes.name}>{course.name}</p>
                         </div>

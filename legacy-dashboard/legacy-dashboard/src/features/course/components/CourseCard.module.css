@@ -10,8 +10,8 @@
     flex-direction: column;
     position: relative;
     overflow: hidden;
+    transition:  0.2s ease;
 }
-
 
 .header {
     font-size: var(--mantine-font-size-xs);
@@ -25,8 +25,17 @@
     margin-top: 0;
 }
 
+.moving {
+    background-color: var(--mantine-primary-color-light);
+    border: 1px solid var(--mantine-primary-color-filled);
+    box-shadow: 0 0 0 2px var(--mantine-primary-color-light);
+    z-index: 3;
+    pointer-events: auto;
+}
+
 .name {
     margin-top: 0;
+    line-clamp: 3;
 }
 
 .removeButton {

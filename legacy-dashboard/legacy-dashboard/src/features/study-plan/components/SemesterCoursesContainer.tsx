@@ -1,51 +1,111 @@
 import {CourseSummary} from "@/features/course/types.ts";
 import {StudyPlan} from "@/features/study-plan/types.ts";
-import {Flex} from "@mantine/core";
+import {Flex, Stack, Text} from "@mantine/core";
 import {CourseCard} from "@/features/course/components/CourseCard.tsx";
 import {useMoveCourseToSemester} from "@/features/study-plan/hooks/useMoveCourseToSemester.ts";
 import {useProgramMap} from "@/contexts/ProgramMapContext.tsx";
+import classes from "./SemesterCoursesContainer.module.css";
+import {CoursePlacementMultiSelect} from "@/features/study-plan/components/CoursePlacementMultiSelect.tsx";
+import {ArrowLeftRight} from "lucide-react";
 
 type Props = {
     semesterNumber: number;
     semesterCourses: number[];
     courses: Record<number, CourseSummary>;
     studyPlan: StudyPlan;
-}
+    title: string;
+};
 
-export function SemesterCoursesContainer({semesterNumber, semesterCourses, courses, studyPlan}: Props) {
+export function SemesterCoursesContainer({
+                                             semesterNumber,
+                                             semesterCourses,
+                                             courses,
+                                             studyPlan,
+                                             title
+                                         }: Props) {
     const moveCourseToSemester = useMoveCourseToSemester();
+    const {allowedSemesters, movingCourse, moveCourse} = useProgramMap();
 
-    const {allowedSemesters} = useProgramMap();
+    const movingCourseInSemester = movingCourse && studyPlan.coursePlacements[movingCourse] === semesterNumber;
+
+    const handleMoveCourse = () => {
+        if (!movingCourse || !allowedSemesters.has(semesterNumber)) return;
+
+        moveCourseToSemester.mutate({
+            studyPlanId: studyPlan.id,
+            targetSemester: semesterNumber,
+            courseId: movingCourse
+        });
+
+        moveCourse(null);
+    }
+
+    const getContainerClass = () => {
+        if (!movingCourse) {
+            return classes.semesterContainer;
+        }
+
+        return allowedSemesters.has(semesterNumber)
+            ? classes.containerEnabled
+            : classes.containerDisabled;
+    };
+
     return (
-        <Flex direction="column" gap="xs">
-            {allowedSemesters.has(semesterNumber) ? 'yes' : 'no'}
-            {semesterCourses?.map((courseId) => {
-                const course = courses[courseId];
-                const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
+        <Stack
+            className={classes.content}
+            style={{
+                pointerEvents: movingCourseInSemester ? 'none' : 'all'
+            }}
+            miw={100}
+            gap="sm" key={semesterNumber}
+        >
+            <Text size="xs" ta="center" c="dimmed">
+                {title}
+            </Text>
 
-                const unmetPrerequisite = (prerequisiteId: string) => {
-                    const placement = studyPlan.coursePlacements[Number(prerequisiteId)];
-                    return placement === undefined || placement >= semesterNumber;
-                };
+            <Flex direction="column" gap="xs">
+                {semesterCourses?.map((courseId) => {
+                    const course = courses[courseId];
+                    const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
 
-                const missingPrerequisites = Object.keys(prerequisites)
-                    .filter(unmetPrerequisite)
-                    .map(prerequisiteId => ({
-                        id: Number(prerequisiteId),
-                        code: courses[Number(prerequisiteId)].code
-                    }));
+                    const unmetPrerequisite = (prerequisiteId: string) => {
+                        const placement = studyPlan.coursePlacements[Number(prerequisiteId)];
+                        return placement === undefined || placement >= semesterNumber;
+                    };
 
-                if (!course) return;
+                    const missingPrerequisites = Object.keys(prerequisites)
+                        .filter(unmetPrerequisite)
+                        .map(prerequisiteId => ({
+                            id: Number(prerequisiteId),
+                            code: courses[Number(prerequisiteId)].code
+                        }));
 
-                return (
-                    <CourseCard
-                        key={courseId}
-                        studyPlanId={studyPlan.id}
-                        missingPrerequisites={missingPrerequisites}
-                        course={course}
-                    />
-                );
-            })}
-        </Flex>
+                    if (!course) return null;
+
+                    return (
+                        <CourseCard
+                            key={courseId}
+                            studyPlanId={studyPlan.id}
+                            missingPrerequisites={missingPrerequisites}
+                            course={course}
+                        />
+                    );
+                })}
+            </Flex>
+
+            <div onClick={handleMoveCourse} className={getContainerClass()}>
+                {getContainerClass() === classes.containerEnabled && (
+                    <Text className={classes.moveHereText}>
+                        <ArrowLeftRight size={32}/>
+                    </Text>
+                )}
+            </div>
+
+            <CoursePlacementMultiSelect
+                courses={courses}
+                studyPlan={studyPlan}
+                semester={semesterNumber}
+            />
+        </Stack>
     );
 }

@@ -4,7 +4,7 @@ import {useCoursesGraph} from "@/contexts/CoursesGraphContext.tsx";
 
 type ProgramMapContextType = {
     movingCourse: number | null;
-    moveCourse: (courseId: number) => void;
+    moveCourse: (courseId: number | null) => void;
     allowedSemesters: Set<number>;
 };
 
@@ -49,6 +49,7 @@ function ProgramMapProvider({children}: { children: ReactNode }) {
         for (let i = minSemester; i <= maxSemester; i++) {
             semesters.add(i);
         }
+        semesters.delete(studyPlan.coursePlacements[movingCourse]);
 
         return semesters;
     }, [movingCourse, coursesGraph, studyPlan]);
