@@ -111,7 +111,7 @@ public class StudyPlanService {
         int lowestAllowedSemester = calculateLowestAllowedSemester(studyPlan, courseId);
 
         if (targetSemester < lowestAllowedSemester || targetSemester > highestAllowedSemester) {
-            throw new InvalidCoursePlacement("Unable to move course into a semester with a pre-requisite or post-requisite.");
+            throw new InvalidCoursePlacement("Unable to move course into the same semester as a pre/post-requisite.");
         }
 
         studyPlan.getCoursePlacements().remove(courseId);
