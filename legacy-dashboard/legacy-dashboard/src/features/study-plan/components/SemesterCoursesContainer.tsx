@@ -45,6 +45,10 @@ export function SemesterCoursesContainer({
             return classes.semesterContainer;
         }
 
+        if (studyPlan.coursePlacements[movingCourse] === semesterNumber) {
+            return classes.containerMoving;
+        }
+
         return allowedSemesters.has(semesterNumber)
             ? classes.containerEnabled
             : classes.containerDisabled;
@@ -85,6 +89,7 @@ export function SemesterCoursesContainer({
                     return (
                         <CourseCard
                             key={courseId}
+                            semesterNumber={semesterNumber}
                             studyPlanId={studyPlan.id}
                             missingPrerequisites={missingPrerequisites}
                             course={course}

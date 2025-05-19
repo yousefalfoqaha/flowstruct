@@ -16,7 +16,7 @@ function ProgramMapProvider({children}: { children: ReactNode }) {
     const {coursesGraph} = useCoursesGraph();
     const SEMESTERS_PER_YEAR = 3;
 
-    const moveCourse = (courseId: number) => {
+    const moveCourse = (courseId: number | null) => {
         setMovingCourse(prev => (prev === courseId ? null : courseId));
     };
 
@@ -49,7 +49,6 @@ function ProgramMapProvider({children}: { children: ReactNode }) {
         for (let i = minSemester; i <= maxSemester; i++) {
             semesters.add(i);
         }
-        semesters.delete(studyPlan.coursePlacements[movingCourse]);
 
         return semesters;
     }, [movingCourse, coursesGraph, studyPlan]);

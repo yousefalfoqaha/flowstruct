@@ -20,9 +20,12 @@
 
 .containerDisabled {
     composes: semesterContainer;
-    background-color: rgba(255, 255, 255, 0.7);
     cursor: not-allowed;
     pointer-events: auto;
+}
+
+.containerMoving {
+    composes: semesterContainer;
 }
 
 .containerEnabled {
@@ -41,7 +44,7 @@
     opacity: 0;
     color: var(--mantine-primary-color-filled);
     font-weight: var(--mantine-heading-font-weight);
-    transition: opacity 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
 }
 
 .containerEnabled:hover .moveHereText {

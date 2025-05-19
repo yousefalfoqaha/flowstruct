@@ -10,7 +10,7 @@
     flex-direction: column;
     position: relative;
     overflow: hidden;
-    transition:  0.2s ease;
+    transition: 0.2s ease;
 }
 
 .header {
@@ -25,7 +25,21 @@
     margin-top: 0;
 }
 
+.conflict {
+    composes: container;
+    background-color: var(--mantine-color-red-light);
+    border: 1px solid var(--mantine-color-red-filled);
+    z-index: 3;
+    pointer-events: none;
+}
+
+.disabled {
+    composes: container;
+    opacity: 0.4;
+}
+
 .moving {
+    composes: container;
     background-color: var(--mantine-primary-color-light);
     border: 1px solid var(--mantine-primary-color-filled);
     box-shadow: 0 0 0 2px var(--mantine-primary-color-light);
