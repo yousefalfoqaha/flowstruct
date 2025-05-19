@@ -107,6 +107,10 @@ public class StudyPlanService {
             throw new CourseNotPlacedException("Course was not already placed in the program map.");
         }
 
+        if (studyPlan.getCoursePlacements().get(courseId).getSemester() == targetSemester) {
+            throw new InvalidCoursePlacement("Course is already in semester " + targetSemester);
+        }
+            
         int highestAllowedSemester = calculateHighestAllowedSemester(studyPlan, courseId);
         int lowestAllowedSemester = calculateLowestAllowedSemester(studyPlan, courseId);
 
