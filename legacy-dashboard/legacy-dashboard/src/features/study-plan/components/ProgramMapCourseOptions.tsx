@@ -3,6 +3,7 @@ import {EllipsisVertical, Folder, Trash} from "lucide-react";
 import {Link} from "@tanstack/react-router";
 import {getDefaultFrameworkCoursesSearchValues} from "@/utils/getDefaultFrameworkCoursesSearchValues.ts";
 import {CourseSummary} from "@/features/course/types.ts";
+import {useRemoveCoursePlacement} from "@/features/study-plan/hooks/useRemoveCoursePlacement.ts";
 
 type Props = {
     studyPlanId: number;
@@ -10,10 +11,21 @@ type Props = {
 }
 
 export function ProgramMapCourseOptions({course, studyPlanId}: Props) {
+    const removeCoursePlacement = useRemoveCoursePlacement();
+
+    const handleRemoveCoursePlacement = () => removeCoursePlacement.mutate({
+        studyPlanId: studyPlanId,
+        courseId: course.id
+    });
+
     return (
         <Menu>
             <Menu.Target>
-                <ActionIcon color="gray" variant="transparent">
+                <ActionIcon
+                    color="gray"
+                    variant="transparent"
+                    loading={removeCoursePlacement.isPending}
+                >
                     <EllipsisVertical size={14}/>
                 </ActionIcon>
             </Menu.Target>
@@ -39,6 +51,7 @@ export function ProgramMapCourseOptions({course, studyPlanId}: Props) {
                 <Menu.Item
                     color="red"
                     leftSection={<Trash size={14}/>}
+                    onClick={handleRemoveCoursePlacement}
                 >
                     Remove
                 </Menu.Item>

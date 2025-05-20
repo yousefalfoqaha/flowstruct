@@ -1,12 +1,14 @@
-import {Divider, Flex, ScrollArea, Stack, Text} from "@mantine/core";
+import {Affix, Button, Divider, Flex, ScrollArea, Stack, Text, Transition} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
 import {SemesterCoursesContainer} from "@/features/study-plan/components/SemesterCoursesContainer.tsx";
 import {useProgramMap} from "@/contexts/ProgramMapContext.tsx";
+import {X} from "lucide-react";
 
 export function ProgramMap() {
     const {data: studyPlan} = useStudyPlan();
     const {data: courses} = useStudyPlanCourses();
+    const {movingCourse, moveCourse} = useProgramMap();
 
     const academicYears = Array.from({length: studyPlan.duration}, (_, i) => i + 1);
     const SEMESTERS_PER_YEAR = 3;
@@ -20,51 +22,68 @@ export function ProgramMap() {
         coursesBySemester.get(Number(semesterNum))?.push(Number(courseId));
     });
 
-    const {allowedSemesters, movingCourse} = useProgramMap()
-
     return (
-        <ScrollArea offsetScrollbars type="never">
-            <Flex gap="xs" wrap="nowrap">
-                {academicYears.map((year) => {
-                    const yearSemesters = semesterTypes.map((_, i) =>
-                        year * SEMESTERS_PER_YEAR - (SEMESTERS_PER_YEAR - i) + 1
-                    );
+        <>
+            <Affix position={{ bottom: 20, right: 20 }}>
+                <Transition transition="slide-left" mounted={!!movingCourse} keepMounted>
+                    {(transitionStyles) => {
+                        const course = courses[movingCourse ?? -1];
+                        return (
+                            <Button
+                                leftSection={<X size={16} />}
+                                style={transitionStyles}
+                                onClick={() => moveCourse(null)}
+                            >
+                                Moving {course?.code || ''}
+                            </Button>
+                        );
+                    }}
+                </Transition>
+            </Affix>
 
-                    return (
-                        <Stack align="center" gap="xs" key={year}>
-                            <Divider
-                                w="100%"
-                                labelPosition="center"
-                                variant="dashed"
-                                label={
-                                    <>
-                                        <Text size="xs">Year {year}</Text>
-                                    </>
-                                }
-                            />
+            <ScrollArea offsetScrollbars type="never">
+                <Flex gap="xs" wrap="nowrap">
+                    {academicYears.map((year) => {
+                        const yearSemesters = semesterTypes.map((_, i) =>
+                            year * SEMESTERS_PER_YEAR - (SEMESTERS_PER_YEAR - i) + 1
+                        );
 
-                            <Flex h="100%" gap="xs" wrap="nowrap">
-                                {yearSemesters.map((semesterNumber, index) => {
-                                    const semesterCourses = coursesBySemester.get(semesterNumber);
-                                    const semesterTotalCreditHours = semesterCourses?.reduce((sum, courseId) => sum + (courses[courseId]?.creditHours || 0), 0);
+                        return (
+                            <Stack align="center" gap="xs" key={year}>
+                                <Divider
+                                    w="100%"
+                                    labelPosition="center"
+                                    variant="dashed"
+                                    label={
+                                        <>
+                                            <Text size="xs">Year {year}</Text>
+                                        </>
+                                    }
+                                />
 
-                                    const title = `${semesterTypes[index]} - ${semesterTotalCreditHours} Cr.`;
+                                <Flex h="100%" gap="xs" wrap="nowrap">
+                                    {yearSemesters.map((semesterNumber, index) => {
+                                        const semesterCourses = coursesBySemester.get(semesterNumber);
+                                        const semesterTotalCreditHours = semesterCourses?.reduce((sum, courseId) => sum + (courses[courseId]?.creditHours || 0), 0);
 
-                                    return (
-                                        <SemesterCoursesContainer
-                                            semesterNumber={semesterNumber}
-                                            semesterCourses={semesterCourses ?? []}
-                                            courses={courses}
-                                            studyPlan={studyPlan}
-                                            title={title}
-                                        />
-                                    );
-                                })}
-                            </Flex>
-                        </Stack>
-                    );
-                })}
-            </Flex>
-        </ScrollArea>
+                                        const title = `${semesterTypes[index]} - ${semesterTotalCreditHours} Cr.`;
+
+                                        return (
+                                            <SemesterCoursesContainer
+                                                semesterNumber={semesterNumber}
+                                                semesterCourses={semesterCourses ?? []}
+                                                courses={courses}
+                                                studyPlan={studyPlan}
+                                                title={title}
+                                            />
+                                        );
+                                    })}
+                                </Flex>
+                            </Stack>
+                        );
+                    })}
+                </Flex>
+            </ScrollArea>
+        </>
     );
 }

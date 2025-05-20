@@ -1,6 +1,6 @@
 import {Course, CourseSummary} from "@/features/course/types.ts";
 import classes from "./CourseCard.module.css";
-import {ActionIcon, Indicator, Popover, Text} from "@mantine/core";
+import {ActionIcon, Indicator, Popover, Text, Tooltip} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
 import {ProgramMapCourseOptions} from "@/features/study-plan/components/ProgramMapCourseOptions.tsx";
 import {ArrowLeftRight} from "lucide-react";
@@ -16,9 +16,7 @@ type CourseCardProps = {
 
 export function CourseCard({course, missingPrerequisites, studyPlanId, semesterNumber}: CourseCardProps) {
     const {moveCourse, movingCourse, allowedSemesters} = useProgramMap();
-
     const {coursesGraph} = useCoursesGraph();
-
     const [opened, {close, open}] = useDisclosure(false);
 
     const getContainerClass = () => {
@@ -42,13 +40,12 @@ export function CourseCard({course, missingPrerequisites, studyPlanId, semesterN
 
     return (
         <Indicator
-            inline
             label="!"
             color="red"
-            radius="lg"
             size={18}
             disabled={missingPrerequisites.length === 0}
             offset={3}
+            processing
         >
             <Popover
                 disabled={missingPrerequisites.length === 0}
@@ -77,12 +74,14 @@ export function CourseCard({course, missingPrerequisites, studyPlanId, semesterN
 
                         <div className={classes.footer}>
                             <p>{course.creditHours} Cr.</p>
-                            <ActionIcon
-                                onClick={() => moveCourse(course.id)}
-                                variant="transparent"
-                            >
-                                <ArrowLeftRight size={14}/>
-                            </ActionIcon>
+                            <Tooltip label="Move">
+                                <ActionIcon
+                                    onClick={() => moveCourse(course.id)}
+                                    variant="transparent"
+                                >
+                                    <ArrowLeftRight size={16}/>
+                                </ActionIcon>
+                            </Tooltip>
                         </div>
                     </div>
                 </Popover.Target>
