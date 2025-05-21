@@ -97,10 +97,11 @@ public class StudyPlanController {
     @PostMapping("/{studyPlanId}/course-placements")
     public ResponseEntity<StudyPlanDto> placeCoursesInSemester(
             @PathVariable long studyPlanId,
-            @RequestBody SemesterCoursesDto semesterCourses
+            @RequestParam(value = "courses", defaultValue = "") List<Long> courseIds,
+            @RequestBody CoursePlacementDto targetPlacement
     ) {
         return new ResponseEntity<>(
-                studyPlanService.placeCoursesInSemester(studyPlanId, semesterCourses),
+                studyPlanService.placeCoursesInSemester(studyPlanId, courseIds, targetPlacement),
                 HttpStatus.OK
         );
     }
@@ -132,10 +133,10 @@ public class StudyPlanController {
     public ResponseEntity<StudyPlanDto> moveCourseToSemester(
             @PathVariable long studyPlanId,
             @PathVariable long courseId,
-            @RequestParam(value = "targetSemester") int targetSemester
+            @RequestBody CoursePlacementDto targetPlacement
     ) {
         return new ResponseEntity<>(
-                studyPlanService.moveCourseToSemester(studyPlanId, courseId, targetSemester),
+                studyPlanService.moveCourseToSemester(studyPlanId, courseId, targetPlacement),
                 HttpStatus.OK
         );
     }
@@ -225,7 +226,7 @@ public class StudyPlanController {
     @PutMapping("/{studyPlanId}/sections/{targetSectionId}/move-courses")
     public ResponseEntity<StudyPlanDto> moveCourseToSection(
             @PathVariable long studyPlanId,
-            @RequestParam(value = "courses") List<Long> courseIds,
+            @RequestParam(value = "courses", defaultValue = "") List<Long> courseIds,
             @PathVariable long targetSectionId
     ) {
         return new ResponseEntity<>(

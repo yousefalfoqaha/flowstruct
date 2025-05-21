@@ -14,7 +14,7 @@ public record StudyPlanDto(
         boolean isPrivate,
         long program,
         List<SectionDto> sections,
-        Map<Long, Integer> coursePlacements,
+        Map<Long, CoursePlacementDto> coursePlacements,
         Map<Long, Map<Long, Relation>> coursePrerequisites,
         Map<Long, Set<Long>> courseCorequisites
 ) {

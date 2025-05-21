@@ -100,93 +100,105 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto moveCourseToSemester(long studyPlanId, long courseId, int targetSemester) {
+    public StudyPlanDto moveCourseToSemester(
+            long studyPlanId,
+            long courseId,
+            CoursePlacementDto targetPlacement
+    ) {
         var studyPlan = findStudyPlan(studyPlanId);
 
-        if (studyPlan.getCoursePlacements().get(courseId) == null) {
+        var oldPlacement = studyPlan.getCoursePlacements().get(courseId);
+
+        var newPlacement = new CoursePlacement(
+                AggregateReference.to(courseId),
+                targetPlacement.year(),
+                targetPlacement.semester(),
+                targetPlacement.row()
+        )
+
+        if (oldPlacement == null) {
             throw new CourseNotPlacedException("Course was not already placed in the program map.");
         }
 
-        if (studyPlan.getCoursePlacements().get(courseId).getSemester() == targetSemester) {
-            throw new InvalidCoursePlacement("Course is already in semester " + targetSemester);
-        }
-            
-        int highestAllowedSemester = calculateHighestAllowedSemester(studyPlan, courseId);
-        int lowestAllowedSemester = calculateLowestAllowedSemester(studyPlan, courseId);
 
-        if (targetSemester < lowestAllowedSemester || targetSemester > highestAllowedSemester) {
-            throw new InvalidCoursePlacement("Unable to move course into the same semester as a pre/post-requisite.");
+        if (comparePlacement(oldPlacement, newPlacement) == 0 && oldPlacement.getRow() == newPlacement.getRow()) {
+            throw new InvalidCoursePlacement("Course is already in the same place");
+        }
+
+        boolean prerequisitesFulfilled = studyPlan.getCoursePrerequisites()
+                .stream()
+                .filter(cp -> Objects.equals(cp.getCourse().getId(), courseId))
+                .allMatch(cp -> {
+                    var prerequisitePlacement = studyPlan.getCoursePlacements().get(cp.getPrerequisite().getId());
+                    return prerequisitePlacement != null
+                            && (comparePlacement(prerequisitePlacement, newPlacement) < 0);
+                });
+
+        if (!prerequisitesFulfilled) {
+            throw new InvalidCoursePlacement("Prerequisites must be placed before target placement.");
         }
 
         studyPlan.getCoursePlacements().remove(courseId);
 
-        studyPlan.getCoursePlacements().put(
-                courseId,
-                new CoursePlacement(
-                        AggregateReference.to(courseId),
-                        targetSemester
-                )
-        );
+        shiftRows(studyPlan, oldPlacement, -1);
+        shiftRows(studyPlan, newPlacement, +1);
+
+        studyPlan.getCoursePlacements().put(courseId, newPlacement);
 
         return saveAndMapStudyPlan(studyPlan);
     }
 
-    private int calculateHighestAllowedSemester(StudyPlan studyPlan, long courseId) {
-        return studyPlan.getCoursePrerequisites()
-                .stream()
-                .filter(cp -> Objects.equals(cp.getPrerequisite().getId(), courseId))
-                .map(cp -> {
-                    var placement = studyPlan.getCoursePlacements().get(cp.getCourse().getId());
-                    return placement != null ? placement.getSemester() : Integer.MAX_VALUE;
-                })
-                .min(Integer::compareTo)
-                .orElse(Integer.MAX_VALUE) - 1;
+    private int comparePlacement(CoursePlacement p1, CoursePlacement p2) {
+        if (p1.getYear() != p2.getYear()) {
+            return Integer.compare(p1.getYear(), p2.getYear());
+        }
+        return Integer.compare(p1.getSemester(), p2.getSemester());
     }
 
-    private int calculateLowestAllowedSemester(StudyPlan studyPlan, long courseId) {
-        return studyPlan.getCoursePrerequisites()
+    private void shiftRows(StudyPlan studyPlan, CoursePlacement placement, int delta) {
+        studyPlan.getCoursePlacements().values()
                 .stream()
-                .filter(cp -> Objects.equals(cp.getCourse().getId(), courseId))
-                .map(cp -> {
-                    var placement = studyPlan.getCoursePlacements().get(cp.getPrerequisite().getId());
-                    return placement != null ? placement.getSemester() : Integer.MIN_VALUE;
-                })
-                .max(Integer::compareTo)
-                .orElse(Integer.MIN_VALUE) + 1;
-    };
-
+                .filter(p ->
+                        p.getYear() == placement.getYear() &&
+                                p.getSemester() == placement.getSemester() &&
+                                p.getRow() >= placement.getRow()
+                )
+                .forEach(p -> p.setRow(p.getRow() + delta));
+    }
 
     @Transactional
-    public StudyPlanDto placeCoursesInSemester(long studyPlanId, SemesterCoursesDto semesterCourses) {
-        semesterCoursesValidator.validate(semesterCourses);
-
+    public StudyPlanDto placeCoursesInSemester(long studyPlanId, List<Long> courseIds, CoursePlacementDto targetPlacement) {
         var studyPlan = findStudyPlan(studyPlanId);
+
         var coursePrerequisitesMap = studyPlan.getCoursePrerequisitesMap();
 
-        for (var courseId : semesterCourses.courseIds()) {
+        for (var courseId : courseIds) {
             if (studyPlan.getCoursePlacements().containsKey(courseId)) {
                 throw new CourseAlreadyAddedException("A course already exists in the program map.");
             }
 
             var prerequisites = coursePrerequisitesMap.get(courseId);
 
+            var coursePlacement = new CoursePlacement(
+                    AggregateReference.to(courseId),
+                    targetPlacement.year(),
+                    targetPlacement.semester(),
+                    targetPlacement.row()
+            );
+
             if (prerequisites != null) {
                 prerequisites.forEach(prerequisite -> {
                     var prerequisitePlacement = studyPlan.getCoursePlacements().get(prerequisite.getPrerequisite().getId());
 
-                    if (prerequisitePlacement == null || prerequisitePlacement.getSemester() >= semesterCourses.semester()) {
+                    if (prerequisitePlacement == null
+                            || comparePlacement(prerequisitePlacement, coursePlacement) >= 0
+                    ) {
                         throw new InvalidCoursePlacement("A course has missing prerequisites or has prerequisites in later semesters.");
                     }
                 });
             }
 
-            studyPlan.getCoursePlacements().put(
-                    courseId,
-                    new CoursePlacement(
-                            AggregateReference.to(courseId),
-                            semesterCourses.semester()
-                    )
-            );
+            studyPlan.getCoursePlacements().put(courseId, coursePlacement);
         }
 
         return saveAndMapStudyPlan(studyPlan);
@@ -368,11 +380,13 @@ public class StudyPlanService {
             studyPlan.getSections().forEach(section -> section.getCourses().remove(courseId));
 
             studyPlan.getCoursePrerequisites().removeIf(coursePrerequisite ->
-                    Objects.equals(coursePrerequisite.getCourse().getId(), courseId) || Objects.equals(coursePrerequisite.getPrerequisite().getId(), courseId)
+                    Objects.equals(coursePrerequisite.getCourse().getId(), courseId)
+                            || Objects.equals(coursePrerequisite.getPrerequisite().getId(), courseId)
             );
 
             studyPlan.getCourseCorequisites().removeIf(coursePrerequisite ->
-                    Objects.equals(coursePrerequisite.getCourse().getId(), courseId) || Objects.equals(coursePrerequisite.getCorequisite().getId(), courseId)
+                    Objects.equals(coursePrerequisite.getCourse().getId(), courseId)
+                            || Objects.equals(coursePrerequisite.getCorequisite().getId(), courseId)
             );
 
             studyPlan.getCoursePlacements().remove(courseId);

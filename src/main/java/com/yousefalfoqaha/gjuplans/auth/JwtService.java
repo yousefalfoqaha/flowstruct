@@ -36,7 +36,7 @@ public class JwtService {
         return Jwts.builder()
                 .claims()
                 .add(new HashMap<>())
-                .subject(username)
+                   .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + cookieExpiry * 1000L))
                 .and()

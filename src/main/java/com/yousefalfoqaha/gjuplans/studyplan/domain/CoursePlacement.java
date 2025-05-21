@@ -17,5 +17,9 @@ public class CoursePlacement {
 
     private AggregateReference<Course, Long> course;
 
+    private int year;
+
     private int semester;
+
+    private int row;
 }
