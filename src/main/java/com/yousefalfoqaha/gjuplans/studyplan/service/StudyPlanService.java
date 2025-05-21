@@ -26,7 +26,6 @@ public class StudyPlanService {
     private final StudyPlanGraphService studyPlanGraphService;
     private final StudyPlanDtoMapper studyPlanDtoMapper;
     private final ObjectValidator<StudyPlanDetailsDto> studyPlanDetailsValidator;
-    private final ObjectValidator<SemesterCoursesDto> semesterCoursesValidator;
     private final ObjectValidator<SectionDetailsDto> sectionDetailsValidator;
 
     public StudyPlanDto getStudyPlan(long studyPlanId) {
@@ -114,12 +113,11 @@ public class StudyPlanService {
                 targetPlacement.year(),
                 targetPlacement.semester(),
                 targetPlacement.row()
-        )
+        );
 
         if (oldPlacement == null) {
             throw new CourseNotPlacedException("Course was not already placed in the program map.");
         }
-
 
         if (comparePlacement(oldPlacement, newPlacement) == 0 && oldPlacement.getRow() == newPlacement.getRow()) {
             throw new InvalidCoursePlacement("Course is already in the same place");
