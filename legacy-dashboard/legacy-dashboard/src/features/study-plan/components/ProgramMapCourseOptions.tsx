@@ -1,20 +1,21 @@
 import {ActionIcon, Menu} from "@mantine/core";
 import {EllipsisVertical, Folder, Trash} from "lucide-react";
-import {Link} from "@tanstack/react-router";
+import {Link, useParams} from "@tanstack/react-router";
 import {getDefaultFrameworkCoursesSearchValues} from "@/utils/getDefaultFrameworkCoursesSearchValues.ts";
 import {CourseSummary} from "@/features/course/types.ts";
 import {useRemoveCoursePlacement} from "@/features/study-plan/hooks/useRemoveCoursePlacement.ts";
 
 type Props = {
-    studyPlanId: number;
     course: CourseSummary;
 }
 
-export function ProgramMapCourseOptions({course, studyPlanId}: Props) {
+export function ProgramMapCourseOptions({course}: Props) {
+    const {studyPlanId} = useParams({from: '/_layout/study-plans/$studyPlanId'});
+
     const removeCoursePlacement = useRemoveCoursePlacement();
 
     const handleRemoveCoursePlacement = () => removeCoursePlacement.mutate({
-        studyPlanId: studyPlanId,
+        studyPlanId: Number(studyPlanId),
         courseId: course.id
     });
 

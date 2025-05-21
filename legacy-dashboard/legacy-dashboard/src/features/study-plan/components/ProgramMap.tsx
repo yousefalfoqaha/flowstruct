@@ -1,9 +1,10 @@
-import {Affix, Button, Divider, Flex, ScrollArea, Stack, Text, Transition} from "@mantine/core";
+import {Affix, Button, ScrollArea, Transition} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
-import {SemesterCoursesContainer} from "@/features/study-plan/components/SemesterCoursesContainer.tsx";
 import {useProgramMap} from "@/contexts/ProgramMapContext.tsx";
 import {X} from "lucide-react";
+import classes from "./ProgramMap.module.css";
+import {CourseCard} from "@/features/course/components/CourseCard.tsx";
 
 export function ProgramMap() {
     const {data: studyPlan} = useStudyPlan();
@@ -14,23 +15,15 @@ export function ProgramMap() {
     const SEMESTERS_PER_YEAR = 3;
     const semesterTypes = ["First", "Second", "Summer"] as const;
 
-    const coursesBySemester = new Map<number, number[]>(
-        Array.from({length: studyPlan.duration * SEMESTERS_PER_YEAR}, (_, i) => [i + 1, []])
-    );
-
-    Object.entries(studyPlan.coursePlacements ?? {}).forEach(([courseId, semesterNum]) => {
-        coursesBySemester.get(Number(semesterNum))?.push(Number(courseId));
-    });
-
     return (
         <>
-            <Affix position={{ bottom: 20, right: 20 }}>
+            <Affix position={{bottom: 20, right: 20}}>
                 <Transition transition="slide-left" mounted={!!movingCourse} keepMounted>
                     {(transitionStyles) => {
                         const course = courses[movingCourse ?? -1];
                         return (
                             <Button
-                                leftSection={<X size={16} />}
+                                leftSection={<X size={16}/>}
                                 style={transitionStyles}
                                 onClick={() => moveCourse(null)}
                             >
@@ -42,47 +35,17 @@ export function ProgramMap() {
             </Affix>
 
             <ScrollArea offsetScrollbars type="never">
-                <Flex gap="xs" wrap="nowrap">
-                    {academicYears.map((year) => {
-                        const yearSemesters = semesterTypes.map((_, i) =>
-                            year * SEMESTERS_PER_YEAR - (SEMESTERS_PER_YEAR - i) + 1
-                        );
-
-                        return (
-                            <Stack align="center" gap="xs" key={year}>
-                                <Divider
-                                    w="100%"
-                                    labelPosition="center"
-                                    variant="dashed"
-                                    label={
-                                        <>
-                                            <Text size="xs">Year {year}</Text>
-                                        </>
-                                    }
-                                />
-
-                                <Flex h="100%" gap="xs" wrap="nowrap">
-                                    {yearSemesters.map((semesterNumber, index) => {
-                                        const semesterCourses = coursesBySemester.get(semesterNumber);
-                                        const semesterTotalCreditHours = semesterCourses?.reduce((sum, courseId) => sum + (courses[courseId]?.creditHours || 0), 0);
-
-                                        const title = `${semesterTypes[index]} - ${semesterTotalCreditHours} Cr.`;
-
-                                        return (
-                                            <SemesterCoursesContainer
-                                                semesterNumber={semesterNumber}
-                                                semesterCourses={semesterCourses ?? []}
-                                                courses={courses}
-                                                studyPlan={studyPlan}
-                                                title={title}
-                                            />
-                                        );
-                                    })}
-                                </Flex>
-                            </Stack>
-                        );
-                    })}
-                </Flex>
+                <div
+                    style={{
+                        gridTemplateColumns: `repeat(${studyPlan.duration * semesterTypes.length}, 1fr)`,
+                        gridTemplateRows: `repeat(${})`
+                    }}
+                    className={classes.programMap}
+                >
+                    <div style={{gridColumn: 1, gridRow: 7}}>
+                        <CourseCard course={courses[45]} />
+                    </div>
+                </div>
             </ScrollArea>
         </>
     );

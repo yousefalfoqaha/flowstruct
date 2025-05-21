@@ -91,7 +91,6 @@ export function SemesterCoursesContainer({
                             key={courseId}
                             semesterNumber={semesterNumber}
                             studyPlanId={studyPlan.id}
-                            missingPrerequisites={missingPrerequisites}
                             course={course}
                         />
                     );
