@@ -22,4 +22,6 @@ public class CoursePlacement {
     private int semester;
 
     private int row;
+
+    private int span;
 }
