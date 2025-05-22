@@ -41,6 +41,7 @@ export type CoursePlacement = {
     year: number;
     semester: number;
     row: number;
+    span: number;
 }
 
 export type StudyPlan = {

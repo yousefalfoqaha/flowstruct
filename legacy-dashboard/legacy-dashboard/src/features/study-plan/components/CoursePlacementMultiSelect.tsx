@@ -4,13 +4,13 @@ import React from "react";
 import {usePlaceCoursesInSemester} from "@/features/study-plan/hooks/useAddCoursesToSemester.ts";
 import classes from './CoursesMultiSelect.module.css';
 import {getSectionCode} from "@/utils/getSectionCode.ts";
-import {StudyPlan} from "@/features/study-plan/types.ts";
-import {CourseSummary} from "@/features/course/types.ts";
+import {CoursePlacement} from "@/features/study-plan/types.ts";
+import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
+import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
+import {comparePlacement} from "@/utils/comparePlacement.ts";
 
 type CoursePlacementMultiSelectProps = {
-    semester: number;
-    studyPlan: StudyPlan;
-    courses: Record<number, CourseSummary>;
+    placement: Pick<CoursePlacement, 'year' | 'semester'>;
 }
 
 interface CourseOption {
@@ -21,15 +21,17 @@ interface CourseOption {
     unmetPrerequisites: string[];
 }
 
-export function CoursePlacementMultiSelect({semester, studyPlan, courses}: CoursePlacementMultiSelectProps) {
+export function CoursePlacementMultiSelect({placement}: CoursePlacementMultiSelectProps) {
     const [opened, setOpened] = React.useState(false);
     const [selectedCourses, setSelectedCourses] = React.useState<string[]>([]);
+    const {data: studyPlan} = useStudyPlan();
+    const {data: courses} = useStudyPlanCourses();
 
     const placeCourses = usePlaceCoursesInSemester();
 
     const handlePlaceCourses = () => placeCourses.mutate({
         studyPlanId: studyPlan.id,
-        semester: semester,
+        targetPlacement: placement,
         courseIds: selectedCourses.map(id => Number(id))
     }, {
         onSuccess: () => {
@@ -38,7 +40,7 @@ export function CoursePlacementMultiSelect({semester, studyPlan, courses}: Cours
         }
     });
 
-    if (!semester) return null;
+    if (!placement) return null;
 
     const data = studyPlan.sections
         .map(section => {
@@ -56,8 +58,8 @@ export function CoursePlacementMultiSelect({semester, studyPlan, courses}: Cours
                     const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
                     const unmetPrerequisites = Object.keys(prerequisites)
                         .filter((prerequisiteId) => {
-                            const placement = studyPlan.coursePlacements[Number(prerequisiteId)];
-                            return placement === undefined || placement >= semester;
+                            const prerequisitePlacement = studyPlan.coursePlacements[Number(prerequisiteId)];
+                            return prerequisitePlacement === undefined || comparePlacement(prerequisitePlacement, placement) >= 0;
                         });
 
                     if (studyPlan.coursePlacements[courseId] !== undefined) return null;
@@ -136,7 +138,7 @@ export function CoursePlacementMultiSelect({semester, studyPlan, courses}: Cours
                         data={data}
                         value={selectedCourses}
                         onChange={setSelectedCourses}
-                        label={`Add courses to semester ${semester}`}
+                        label={`Add courses to year ${placement.year}, semester ${placement.semester}`}
                         placeholder="Search framework courses"
                         searchable
                         hidePickedOptions

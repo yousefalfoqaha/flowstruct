@@ -1,4 +1,11 @@
-import {MoveDirection, Prerequisite, Section, StudyPlan, StudyPlanSummary} from "@/features/study-plan/types.ts";
+import {
+    CoursePlacement,
+    MoveDirection,
+    Prerequisite,
+    Section,
+    StudyPlan,
+    StudyPlanSummary
+} from "@/features/study-plan/types.ts";
 import {CourseSummary} from "@/features/course/types.ts";
 import {api} from "@/shared/api.ts";
 
@@ -137,13 +144,14 @@ export const moveSection = ({studyPlanId, sectionId, direction}: {
 }) =>
     api.put<StudyPlan>([ENDPOINT, studyPlanId, 'sections', sectionId, 'move'], {params: {direction}});
 
-export const placeCoursesInSemester = ({studyPlanId, semester, courseIds}: {
+export const placeCoursesInSemester = ({studyPlanId, targetPlacement, courseIds}: {
     studyPlanId: number;
-    semester: number;
+    targetPlacement: Pick<CoursePlacement, 'year' | 'semester'>;
     courseIds: number[]
 }) =>
     api.post<StudyPlan>([ENDPOINT, studyPlanId, 'course-placements'], {
-        body: {semester, courseIds}
+        params: {courses: courseIds},
+        body: {...targetPlacement, row: 1, span: 1}
     });
 
 export const removeCourseFromSemester = ({studyPlanId, courseId}: { studyPlanId: number; courseId: number }) =>

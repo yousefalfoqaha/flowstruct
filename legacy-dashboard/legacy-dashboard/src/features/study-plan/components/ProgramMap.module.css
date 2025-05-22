@@ -1,3 +1,5 @@
 .programMap {
     display: grid;
+    gap: var(--mantine-spacing-xs);
+    justify-items: center;
 }
