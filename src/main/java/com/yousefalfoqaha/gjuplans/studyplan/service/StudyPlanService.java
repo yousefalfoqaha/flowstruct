@@ -409,7 +409,7 @@ public class StudyPlanService {
                             || Objects.equals(coursePrerequisite.getCorequisite().getId(), courseId)
             );
 
-            studyPlan.getCoursePlacements().remove(courseId);
+            deleteCoursePlacement(studyPlan, studyPlan.getCoursePlacements().get(courseId));
         }
 
         return saveAndMapStudyPlan(studyPlan);
