@@ -141,8 +141,6 @@ public class StudyPlanService {
             throw new InvalidCoursePlacement("Prerequisites must be placed before target placement.");
         }
 
-        studyPlan.getCoursePlacements().remove(courseId);
-
         deleteCoursePlacement(studyPlan, oldPlacement);
         addCoursePlacement(studyPlan, newPlacement);
 
@@ -190,9 +188,8 @@ public class StudyPlanService {
                                 currentCoursePlacement
                         ) == 0
                 )
-                .toArray().length;
-
-        System.out.println(rowCount);
+                .mapToInt(CoursePlacement::getSpan)
+                .sum();
 
         for (var courseId : courseIds) {
             if (studyPlan.getCoursePlacements().containsKey(courseId)) {
@@ -417,12 +414,12 @@ public class StudyPlanService {
 
     private void addCoursePlacement(StudyPlan studyPlan, CoursePlacement placement) {
         studyPlan.getCoursePlacements().put(placement.getCourse().getId(), placement);
-        shiftRows(studyPlan, placement, +1);
+        shiftRows(studyPlan, placement, +placement.getSpan());
     }
 
     private void deleteCoursePlacement(StudyPlan studyPlan, CoursePlacement placement) {
         studyPlan.getCoursePlacements().remove(placement.getCourse().getId());
-        shiftRows(studyPlan, placement, -1);
+        shiftRows(studyPlan, placement, -placement.getSpan());
     }
 
     @Transactional
