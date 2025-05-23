@@ -106,13 +106,14 @@ export function CoursePlacementMultiSelect({placement}: CoursePlacementMultiSele
             width={360}
         >
             <Popover.Target>
-                <ActionIcon
+                <Button
                     variant="transparent"
                     size="compact-xs"
                     onClick={() => setOpened((o) => !o)}
+                    leftSection={<Plus size={14}/>}
                 >
-                    <Plus size={18}/>
-                </ActionIcon>
+                    Add
+                </Button>
             </Popover.Target>
 
             <Popover.Dropdown>

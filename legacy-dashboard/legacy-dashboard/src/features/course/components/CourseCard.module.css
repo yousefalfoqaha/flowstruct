@@ -2,7 +2,9 @@
     background-color: var(--mantine-color-gray-0);
     user-select: none;
     width: 9rem;
-    height: 8rem;
+    /* Remove height: 8rem */
+    min-height: 8rem; /* optional: allows grid row to stretch if span > 1 */
+    height: 100%; /* makes it fill the spanned grid row height */
     border-radius: var(--mantine-radius-md);
     border: 1px solid var(--mantine-color-gray-3);
     padding: var(--mantine-spacing-md);
@@ -11,6 +13,11 @@
     position: relative;
     overflow: hidden;
     transition: 0.2s ease;
+}
+
+.cell {
+    position: relative;
+    width: 100%;
 }
 
 .header {
@@ -65,12 +72,12 @@
     align-items: center;
     justify-content: space-between;
     position: absolute;
-    bottom: 0.4rem;
+    bottom: 0.5rem;
     left: 0;
-    right: -0.4rem;
+    right: 0;
     padding-right: var(--mantine-spacing-sm);
     padding-left: var(--mantine-spacing-sm);
-    transform: translateY(100%);
+    transform: translateY(125%);
     transition: transform 0.2s ease;
 }
 

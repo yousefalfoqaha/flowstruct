@@ -24,12 +24,12 @@ export function SemesterCoursesContainer({
                                              title
                                          }: Props) {
     const moveCourseToSemester = useMoveCourseToSemester();
-    const {allowedSemesters, movingCourse, moveCourse} = useProgramMap();
+    const {allowedPlacements, movingCourse, moveCourse} = useProgramMap();
 
     const movingCourseInSemester = movingCourse && studyPlan.coursePlacements[movingCourse] === semesterNumber;
 
     const handleMoveCourse = () => {
-        if (!movingCourse || !allowedSemesters.has(semesterNumber)) return;
+        if (!movingCourse || !allowedPlacements.has(semesterNumber)) return;
 
         moveCourseToSemester.mutate({
             studyPlanId: studyPlan.id,
@@ -49,7 +49,7 @@ export function SemesterCoursesContainer({
             return classes.containerMoving;
         }
 
-        return allowedSemesters.has(semesterNumber)
+        return allowedPlacements.has(semesterNumber)
             ? classes.containerEnabled
             : classes.containerDisabled;
     };

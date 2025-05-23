@@ -1,17 +1,18 @@
-import {Affix, Button, ScrollArea, Transition} from "@mantine/core";
+import {ScrollArea} from "@mantine/core";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
 import {useProgramMap} from "@/contexts/ProgramMapContext.tsx";
-import {X} from "lucide-react";
 import classes from "./ProgramMap.module.css";
 import {CourseCard} from "@/features/course/components/CourseCard.tsx";
 import {CoursePlacementMultiSelect} from "@/features/study-plan/components/CoursePlacementMultiSelect.tsx";
 import {getPlacementFromTermIndex} from "@/utils/getPlacementFromTermIndex.ts";
+import {getTermIndexFromPlacement} from "@/utils/getTermIndexFromPlacement.ts";
+import {DropIndicator} from "@/features/study-plan/components/DropIndicator.tsx";
 
 export function ProgramMap() {
     const {data: studyPlan} = useStudyPlan();
     const {data: courses} = useStudyPlanCourses();
-    const {movingCourse, moveCourse} = useProgramMap();
+    const {dragHandlers} = useProgramMap();
 
     const semesterTypes = ["First", "Second", "Summer"] as const;
     const SEMESTERS_PER_YEAR = 3;
@@ -19,61 +20,59 @@ export function ProgramMap() {
     const semesterLengths: number[] = Array(studyPlan.duration * SEMESTERS_PER_YEAR).fill(1);
 
     Object.values(studyPlan.coursePlacements).map(placement => {
-        const termIndex = (placement.year - 1) * SEMESTERS_PER_YEAR + (placement.semester - 1);
+        const termIndex = getTermIndexFromPlacement(placement);
         semesterLengths[termIndex] += placement.span;
     });
 
     const programMapRows = Math.max(...semesterLengths);
 
     return (
-        <>
-            <Affix position={{bottom: 20, right: 20}}>
-                <Transition transition="slide-left" mounted={!!movingCourse} keepMounted>
-                    {(transitionStyles) => {
-                        const course = courses[movingCourse ?? -1];
-                        return (
-                            <Button
-                                leftSection={<X size={16}/>}
-                                style={transitionStyles}
-                                onClick={() => moveCourse(null)}
-                            >
-                                Moving {course?.code || ''}
-                            </Button>
-                        );
-                    }}
-                </Transition>
-            </Affix>
+        <ScrollArea offsetScrollbars type="never">
+            <div
+                onDragOver={dragHandlers.onDragOver}
+                onDragLeave={dragHandlers.onDragLeave}
+                style={{
+                    gridTemplateColumns: `repeat(${studyPlan.duration * semesterTypes.length}, 1fr)`,
+                    gridTemplateRows: `repeat(${programMapRows}, 1fr)`
+                }}
+                className={classes.programMap}
+            >
+                {Object.entries(studyPlan.coursePlacements).map(([courseId, placement]) => {
+                    const course = courses[Number(courseId)];
+                    if (!course) return;
 
-            <ScrollArea offsetScrollbars type="never">
-                <div
-                    style={{
-                        gridTemplateColumns: `repeat(${studyPlan.duration * semesterTypes.length}, 1fr)`,
-                        gridTemplateRows: `repeat(${programMapRows}, 1fr)`
-                    }}
-                    className={classes.programMap}
-                >
-                    {Object.entries(studyPlan.coursePlacements).map(([courseId, placement]) => {
-                        const course = courses[Number(courseId)];
-                        if (!course) return;
+                    const termIndex = getTermIndexFromPlacement(placement);
 
-                        const termIndex = (placement.year - 1) * SEMESTERS_PER_YEAR + (placement.semester - 1);
+                    return (
+                        <div
+                            key={courseId}
+                            className={classes.cell}
+                            style={{
+                                gridColumn: termIndex + 1,
+                                gridRow: `${placement.row} / span ${placement.span}`
+                            }}
+                        >
+                            <CourseCard
+                                course={course}
+                                placement={placement}
+                            />
+                        </div>
+                    );
+                })}
 
-                        return (
-                            <div key={courseId} style={{gridColumn: termIndex + 1, gridRow: placement.row}}>
-                                <CourseCard course={course}/>
-                            </div>
-                        );
-                    })}
-
-                    {semesterLengths.map((semesterLength, termIndex) => {
-                        return (
-                            <div key={termIndex} style={{gridColumn: termIndex + 1, gridRow: semesterLength}}>
-                                <CoursePlacementMultiSelect placement={getPlacementFromTermIndex(termIndex)}/>
-                            </div>
-                        );
-                    })}
-                </div>
-            </ScrollArea>
-        </>
+                {semesterLengths.map((semesterLength, termIndex) => {
+                    return (
+                        <div
+                            key={termIndex}
+                            className={classes.cell}
+                            style={{gridColumn: termIndex + 1, gridRow: semesterLength}}
+                        >
+                            <DropIndicator placement={getPlacementFromTermIndex(termIndex)} />
+                            <CoursePlacementMultiSelect placement={getPlacementFromTermIndex(termIndex)}/>
+                        </div>
+                    );
+                })}
+            </div>
+        </ScrollArea>
     );
 }

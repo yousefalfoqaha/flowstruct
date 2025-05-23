@@ -1,11 +1,24 @@
-import React, {ReactNode, useMemo} from "react";
+import React, {DragEvent, ReactNode, useCallback, useMemo} from "react";
 import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
 import {useCoursesGraph} from "@/contexts/CoursesGraphContext.tsx";
+import {getTermIndexFromPlacement} from "@/utils/getTermIndexFromPlacement.ts";
+import {comparePlacement} from "@/utils/comparePlacement.ts";
+import {CoursePlacement} from "@/features/study-plan/types.ts";
+import {getPlacementFromTermIndex} from "@/utils/getPlacementFromTermIndex";
+import classes from "@/features/study-plan/components/ProgramMap.module.css";
+
+type DragHandlers = {
+    onDragStart: (e: DragEvent<HTMLDivElement>, courseId: number) => void;
+    onDragEnd: (e: DragEvent<HTMLDivElement>) => void;
+    onDragOver: (e: DragEvent<HTMLDivElement>) => void;
+    onDragLeave: (e: DragEvent<HTMLDivElement>) => void;
+};
 
 type ProgramMapContextType = {
     movingCourse: number | null;
     moveCourse: (courseId: number | null) => void;
-    allowedSemesters: Set<number>;
+    isPlacementAllowed: (placement: Pick<CoursePlacement, "year" | "semester">) => boolean;
+    dragHandlers: DragHandlers;
 };
 
 const ProgramMapContext = React.createContext<ProgramMapContextType | undefined>(undefined);
@@ -16,26 +29,106 @@ function ProgramMapProvider({children}: { children: ReactNode }) {
     const {coursesGraph} = useCoursesGraph();
     const SEMESTERS_PER_YEAR = 3;
 
-    const moveCourse = (courseId: number | null) => {
-        setMovingCourse(prev => (prev === courseId ? null : courseId));
-    };
+    const moveCourse = useCallback((courseId: number | null) => {
+        setMovingCourse((prev) => (prev === courseId ? null : courseId));
+    }, []);
 
-    const allowedSemesters = useMemo(() => {
-        if (!movingCourse || !coursesGraph || !studyPlan) return new Set<number>();
+    const clearAllIndicators = useCallback(() => {
+        const indicators = document.querySelectorAll(`.${classes.dropIndicator}`);
+        indicators.forEach((indicator) => {
+            (indicator as HTMLElement).style.opacity = '0';
+        });
+    }, []);
+
+    const getNearestIndicator = useCallback((e: DragEvent<HTMLDivElement>): Element | null => {
+        const indicators = document.querySelectorAll(`.${classes.dropIndicator}`);
+
+        let closest: {
+            distance: number;
+            element: Element | null;
+        } = {
+            distance: Infinity,
+            element: null,
+        };
+
+        indicators.forEach((indicator) => {
+            const rect = indicator.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            const distance = Math.sqrt(
+                Math.pow(e.clientX - centerX, 2) +
+                Math.pow(e.clientY - centerY, 2)
+            );
+
+            if (distance < closest.distance) {
+                closest = {
+                    distance,
+                    element: indicator,
+                };
+            }
+        });
+
+        return closest.element;
+    }, []);
+
+    const dragHandlers: DragHandlers = useMemo(() => ({
+        onDragStart: (e: DragEvent<HTMLDivElement>, courseId: number) => {
+            e.dataTransfer.setData("courseId", String(courseId));
+            moveCourse(courseId);
+        },
+
+        onDragEnd: (e: DragEvent<HTMLDivElement>) => {
+            moveCourse(null);
+            clearAllIndicators();
+        },
+
+        onDragOver: (e: DragEvent<HTMLDivElement>) => {
+
+            e.preventDefault();
+
+            clearAllIndicators();
+
+            const nearestIndicator = getNearestIndicator(e);
+            if (nearestIndicator) {
+                (nearestIndicator as HTMLElement).style.opacity = '1';
+            }
+        },
+
+        onDragLeave: (e: DragEvent<HTMLDivElement>) => {
+            if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                clearAllIndicators();
+            }
+        },
+    }), [moveCourse, clearAllIndicators, getNearestIndicator]);
+
+    const {minPlacement, maxPlacement} = useMemo(() => {
+        if (!movingCourse || !coursesGraph || !studyPlan) {
+            return {minPlacement: null, maxPlacement: null};
+        }
 
         const requisites = coursesGraph.get(movingCourse);
-        if (!requisites) return new Set<number>();
+        if (!requisites) {
+            return {minPlacement: null, maxPlacement: null};
+        }
 
         const prerequisitePlacements = Array.from(requisites.prerequisiteSequence ?? [])
-            .map(pr => studyPlan.coursePlacements[pr])
+            .map((pr) => studyPlan.coursePlacements[pr])
             .filter(Boolean);
 
         const postrequisitePlacements = Array.from(requisites.postrequisiteSequence ?? [])
-            .map(pr => studyPlan.coursePlacements[pr])
+            .map((pr) => studyPlan.coursePlacements[pr])
             .filter(Boolean);
 
-        let minSemester = Math.max(...prerequisitePlacements) + 1;
-        let maxSemester = Math.min(...postrequisitePlacements) - 1;
+        const prerequisiteTermIndexes = prerequisitePlacements.map((placement) =>
+            getTermIndexFromPlacement(placement)
+        );
+        const postrequisiteTermIndexes = postrequisitePlacements.map((placement) =>
+            getTermIndexFromPlacement(placement)
+        );
+
+        let minSemester = Math.max(...prerequisiteTermIndexes) + 1;
+        let maxSemester = Math.min(...postrequisiteTermIndexes) - 1;
 
         if (!Number.isFinite(minSemester)) {
             minSemester = 0;
@@ -45,16 +138,27 @@ function ProgramMapProvider({children}: { children: ReactNode }) {
             maxSemester = studyPlan.duration * SEMESTERS_PER_YEAR;
         }
 
-        const semesters = new Set<number>();
-        for (let i = minSemester; i <= maxSemester; i++) {
-            semesters.add(i);
-        }
-
-        return semesters;
+        return {
+            minPlacement: getPlacementFromTermIndex(minSemester),
+            maxPlacement: getPlacementFromTermIndex(maxSemester),
+        };
     }, [movingCourse, coursesGraph, studyPlan]);
 
+    const isPlacementAllowed = useCallback((placement: Pick<CoursePlacement, "year" | "semester">) => {
+        if (!minPlacement || !maxPlacement) return false;
+        return (
+            comparePlacement(placement, minPlacement) >= 0 &&
+            comparePlacement(placement, maxPlacement) <= 0
+        );
+    }, [minPlacement, maxPlacement]);
+
     return (
-        <ProgramMapContext.Provider value={{movingCourse, moveCourse, allowedSemesters}}>
+        <ProgramMapContext.Provider value={{
+            movingCourse,
+            moveCourse,
+            isPlacementAllowed,
+            dragHandlers
+        }}>
             {children}
         </ProgramMapContext.Provider>
     );

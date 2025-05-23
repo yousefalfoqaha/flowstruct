@@ -9,3 +9,4 @@ export const comparePlacement = (
 
     return index1 - index2;
 };
+
