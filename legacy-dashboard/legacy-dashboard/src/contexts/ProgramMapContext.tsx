@@ -6,6 +6,7 @@ import {comparePlacement} from "@/utils/comparePlacement.ts";
 import {CoursePlacement} from "@/features/study-plan/types.ts";
 import {getPlacementFromTermIndex} from "@/utils/getPlacementFromTermIndex";
 import classes from "@/features/study-plan/components/ProgramMap.module.css";
+import {useMoveCourseToSemester} from "@/features/study-plan/hooks/useMoveCourseToSemester.ts";
 
 type DragHandlers = {
     onDragStart: (e: DragEvent<HTMLDivElement>, courseId: number) => void;
@@ -27,6 +28,8 @@ function ProgramMapProvider({children}: { children: ReactNode }) {
     const [movingCourse, setMovingCourse] = React.useState<number | null>(null);
     const {data: studyPlan} = useStudyPlan();
     const {coursesGraph} = useCoursesGraph();
+    const moveCourseToSemester = useMoveCourseToSemester();
+
     const SEMESTERS_PER_YEAR = 3;
 
     const moveCourse = useCallback((courseId: number | null) => {
@@ -40,7 +43,7 @@ function ProgramMapProvider({children}: { children: ReactNode }) {
         });
     }, []);
 
-    const getNearestIndicator = useCallback((e: DragEvent<HTMLDivElement>): Element | null => {
+    const getNearestIndicator = useCallback((e: DragEvent<HTMLDivElement>) => {
         const indicators = document.querySelectorAll(`.${classes.dropIndicator}`);
 
         let closest: {
@@ -69,7 +72,7 @@ function ProgramMapProvider({children}: { children: ReactNode }) {
             }
         });
 
-        return closest.element;
+        return closest.element as HTMLDivElement | null;
     }, []);
 
     const dragHandlers: DragHandlers = useMemo(() => ({
@@ -79,14 +82,39 @@ function ProgramMapProvider({children}: { children: ReactNode }) {
         },
 
         onDragEnd: (e: DragEvent<HTMLDivElement>) => {
-            moveCourse(null);
             clearAllIndicators();
+
+            if (!movingCourse) return;
+
+            const nearestIndicator = getNearestIndicator(e);
+
+            if (!nearestIndicator) {
+                setMovingCourse(null);
+                return;
+            }
+
+            const targetPlacement = JSON.parse(nearestIndicator.dataset.placement ?? '') as CoursePlacement | null;
+
+            const oldPlacement = studyPlan.coursePlacements[movingCourse];
+
+            if (!targetPlacement ||
+                !oldPlacement ||
+                (targetPlacement.position === oldPlacement.position && comparePlacement(oldPlacement, targetPlacement) === 0)) {
+                setMovingCourse(null);
+                return;
+            }
+
+            moveCourseToSemester.mutate({
+                studyPlanId: studyPlan.id,
+                courseId: movingCourse,
+                targetPlacement
+            });
+
+            setMovingCourse(null);
         },
 
         onDragOver: (e: DragEvent<HTMLDivElement>) => {
-
             e.preventDefault();
-
             clearAllIndicators();
 
             const nearestIndicator = getNearestIndicator(e);
@@ -100,7 +128,7 @@ function ProgramMapProvider({children}: { children: ReactNode }) {
                 clearAllIndicators();
             }
         },
-    }), [moveCourse, clearAllIndicators, getNearestIndicator]);
+    }), [moveCourse, clearAllIndicators, movingCourse, getNearestIndicator, studyPlan.coursePlacements, studyPlan.id, moveCourseToSemester]);
 
     const {minPlacement, maxPlacement} = useMemo(() => {
         if (!movingCourse || !coursesGraph || !studyPlan) {

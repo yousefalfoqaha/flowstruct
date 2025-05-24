@@ -21,18 +21,16 @@ export const createStudyPlan = ({studyPlanDetails}: {
     studyPlanDetails: Partial<StudyPlan>
 }) =>
     api.post<StudyPlan>(ENDPOINT, {
-        body: {...studyPlanDetails}
+        body: studyPlanDetails
     });
 
-export const moveCourseToSemester = ({studyPlanId, courseId, targetSemester}: {
+export const moveCourseToSemester = ({studyPlanId, courseId, targetPlacement}: {
     studyPlanId: number,
     courseId: number,
-    targetSemester: number
+    targetPlacement: CoursePlacement
 }) =>
     api.put<StudyPlan>([ENDPOINT, studyPlanId, 'course-placements', courseId], {
-        params: {
-            targetSemester
-        }
+        body: targetPlacement
     });
 
 export const toggleStudyPlanVisibility = (studyPlanId: number) =>
@@ -146,12 +144,12 @@ export const moveSection = ({studyPlanId, sectionId, direction}: {
 
 export const placeCoursesInSemester = ({studyPlanId, targetPlacement, courseIds}: {
     studyPlanId: number;
-    targetPlacement: Pick<CoursePlacement, 'year' | 'semester'>;
+    targetPlacement: CoursePlacement;
     courseIds: number[]
 }) =>
     api.post<StudyPlan>([ENDPOINT, studyPlanId, 'course-placements'], {
         params: {courses: courseIds},
-        body: {...targetPlacement, row: 1, span: 1}
+        body: targetPlacement
     });
 
 export const removeCourseFromSemester = ({studyPlanId, courseId}: { studyPlanId: number; courseId: number }) =>

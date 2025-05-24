@@ -12,6 +12,7 @@
     width: 100%;
     background-color: var(--mantine-primary-color-3);
     opacity: 0;
+    box-shadow: var(--mantine-shadow-md);
     position: absolute;
 }
 

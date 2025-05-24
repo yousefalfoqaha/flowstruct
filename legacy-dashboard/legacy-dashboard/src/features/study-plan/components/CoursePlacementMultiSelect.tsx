@@ -1,4 +1,4 @@
-import {ActionIcon, Button, Group, MultiSelect, MultiSelectProps, Popover, Stack, Text} from "@mantine/core";
+import {Button, Group, MultiSelect, MultiSelectProps, Popover, Stack, Text} from "@mantine/core";
 import {BetweenHorizontalStart, CircleAlert, Plus} from "lucide-react";
 import React from "react";
 import {usePlaceCoursesInSemester} from "@/features/study-plan/hooks/useAddCoursesToSemester.ts";
@@ -10,7 +10,7 @@ import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCours
 import {comparePlacement} from "@/utils/comparePlacement.ts";
 
 type CoursePlacementMultiSelectProps = {
-    placement: Pick<CoursePlacement, 'year' | 'semester'>;
+    placement: CoursePlacement;
 }
 
 interface CourseOption {
@@ -31,7 +31,7 @@ export function CoursePlacementMultiSelect({placement}: CoursePlacementMultiSele
 
     const handlePlaceCourses = () => placeCourses.mutate({
         studyPlanId: studyPlan.id,
-        targetPlacement: placement,
+        targetPlacement: {...placement, position: placement.position + 1},
         courseIds: selectedCourses.map(id => Number(id))
     }, {
         onSuccess: () => {

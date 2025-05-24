@@ -6,25 +6,20 @@ import classes from "./ProgramMap.module.css";
 import {CourseCard} from "@/features/course/components/CourseCard.tsx";
 import {CoursePlacementMultiSelect} from "@/features/study-plan/components/CoursePlacementMultiSelect.tsx";
 import {getPlacementFromTermIndex} from "@/utils/getPlacementFromTermIndex.ts";
-import {getTermIndexFromPlacement} from "@/utils/getTermIndexFromPlacement.ts";
 import {DropIndicator} from "@/features/study-plan/components/DropIndicator.tsx";
+import {createCourseGridCellMap} from "@/utils/createCourseGridCellMap.ts";
+import React from "react";
+import {CoursePlacement} from "@/features/study-plan/types.ts";
 
 export function ProgramMap() {
     const {data: studyPlan} = useStudyPlan();
     const {data: courses} = useStudyPlanCourses();
     const {dragHandlers} = useProgramMap();
 
-    const semesterTypes = ["First", "Second", "Summer"] as const;
-    const SEMESTERS_PER_YEAR = 3;
-
-    const semesterLengths: number[] = Array(studyPlan.duration * SEMESTERS_PER_YEAR).fill(1);
-
-    Object.values(studyPlan.coursePlacements).map(placement => {
-        const termIndex = getTermIndexFromPlacement(placement);
-        semesterLengths[termIndex] += placement.span;
-    });
-
-    const programMapRows = Math.max(...semesterLengths);
+    const {courseGridMap, gridWidth, gridHeight, coursesByTermIndex} = React.useMemo(
+        () => createCourseGridCellMap(studyPlan),
+        [studyPlan]
+    );
 
     return (
         <ScrollArea offsetScrollbars type="never">
@@ -32,43 +27,46 @@ export function ProgramMap() {
                 onDragOver={dragHandlers.onDragOver}
                 onDragLeave={dragHandlers.onDragLeave}
                 style={{
-                    gridTemplateColumns: `repeat(${studyPlan.duration * semesterTypes.length}, 1fr)`,
-                    gridTemplateRows: `repeat(${programMapRows}, 1fr)`
+                    gridTemplateColumns: `repeat(${gridWidth}, 1fr)`,
+                    gridTemplateRows: `repeat(${gridHeight}, 1fr)`
                 }}
                 className={classes.programMap}
             >
-                {Object.entries(studyPlan.coursePlacements).map(([courseId, placement]) => {
-                    const course = courses[Number(courseId)];
-                    if (!course) return;
-
-                    const termIndex = getTermIndexFromPlacement(placement);
+                {Array.from(courseGridMap.entries()).map(([courseId, gridCell]) => {
+                    const course = courses[courseId];
+                    if (!course) return null;
 
                     return (
                         <div
                             key={courseId}
                             className={classes.cell}
                             style={{
-                                gridColumn: termIndex + 1,
-                                gridRow: `${placement.row} / span ${placement.span}`
+                                gridColumn: gridCell.column,
+                                gridRow: `${gridCell.row} / span ${gridCell.span}`
                             }}
                         >
                             <CourseCard
                                 course={course}
-                                placement={placement}
+                                placement={studyPlan.coursePlacements[course.id]}
                             />
                         </div>
                     );
                 })}
 
-                {semesterLengths.map((semesterLength, termIndex) => {
+                {Array.from(coursesByTermIndex.entries()).map(([termIndex, termCourses]) => {
+                    const placement = {...getPlacementFromTermIndex(termIndex), position: termCourses.length || 1, span: 1} as CoursePlacement;
+
                     return (
                         <div
-                            key={termIndex}
+                            key={`drop-${termIndex}`}
                             className={classes.cell}
-                            style={{gridColumn: termIndex + 1, gridRow: semesterLength}}
+                            style={{
+                                gridColumn: termIndex,
+                                gridRow: termCourses.length + 1
+                            }}
                         >
-                            <DropIndicator placement={getPlacementFromTermIndex(termIndex)} />
-                            <CoursePlacementMultiSelect placement={getPlacementFromTermIndex(termIndex)}/>
+                            <DropIndicator placement={placement}/>
+                            <CoursePlacementMultiSelect placement={placement}/>
                         </div>
                     );
                 })}
