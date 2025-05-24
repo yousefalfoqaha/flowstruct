@@ -46,7 +46,7 @@ public class StudyPlanDtoMapper implements Function<StudyPlan, StudyPlanDto> {
                                 entry -> new CoursePlacementDto(
                                         entry.getValue().getYear(),
                                         entry.getValue().getSemester(),
-                                        entry.getValue().getRow(),
+                                        entry.getValue().getPosition(),
                                         entry.getValue().getSpan()
                                 )
                         )),

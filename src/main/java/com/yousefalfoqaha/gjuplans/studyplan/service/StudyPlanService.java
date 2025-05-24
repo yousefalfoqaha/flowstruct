@@ -111,12 +111,11 @@ public class StudyPlanService {
         }
 
         var oldPlacement = studyPlan.getCoursePlacements().get(courseId);
-
         var newPlacement = new CoursePlacement(
                 AggregateReference.to(courseId),
                 targetPlacement.year(),
                 targetPlacement.semester(),
-                targetPlacement.row(),
+                targetPlacement.position(),
                 targetPlacement.span()
         );
 
@@ -124,7 +123,7 @@ public class StudyPlanService {
             throw new CourseNotPlacedException("Course was not already placed in the program map.");
         }
 
-        if (comparePlacement(oldPlacement, newPlacement) == 0 && oldPlacement.getRow() == newPlacement.getRow()) {
+        if (comparePlacement(oldPlacement, newPlacement) == 0 && oldPlacement.getPosition() == newPlacement.getPosition()) {
             throw new InvalidCoursePlacement("Course is already in the same place");
         }
 
@@ -133,16 +132,37 @@ public class StudyPlanService {
                 .filter(cp -> Objects.equals(cp.getCourse().getId(), courseId))
                 .allMatch(cp -> {
                     var prerequisitePlacement = studyPlan.getCoursePlacements().get(cp.getPrerequisite().getId());
-                    return prerequisitePlacement != null
-                            && (comparePlacement(prerequisitePlacement, newPlacement) < 0);
+
+                    if (prerequisitePlacement == null) {
+                        return true;
+                    }
+
+                    return comparePlacement(prerequisitePlacement, newPlacement) < 0;
                 });
 
         if (!prerequisitesFulfilled) {
-            throw new InvalidCoursePlacement("Prerequisites must be placed before target placement.");
+            throw new InvalidCoursePlacement("Cannot place a course in the same or earlier term as its prerequisite");
+        }
+
+        boolean postrequisitesFulfilled = studyPlan.getCoursePrerequisites()
+                .stream()
+                .filter(cp -> Objects.equals(cp.getPrerequisite().getId(), courseId))
+                .allMatch(cp -> {
+                    var postrequisitePlacement = studyPlan.getCoursePlacements().get(cp.getCourse().getId());
+
+                    if (postrequisitePlacement == null) {
+                        return true;
+                    }
+
+                    return comparePlacement(postrequisitePlacement, newPlacement) > 0;
+                });
+
+        if (!postrequisitesFulfilled) {
+            throw new InvalidCoursePlacement("Cannot place a course in the same or later term as its postrequisite");
         }
 
         deleteCoursePlacement(studyPlan, oldPlacement);
-        addCoursePlacement(studyPlan, newPlacement);
+        insertCoursePlacement(studyPlan, newPlacement);
 
         return saveAndMapStudyPlan(studyPlan);
     }
@@ -160,9 +180,9 @@ public class StudyPlanService {
                 .filter(p ->
                         p.getYear() == placement.getYear() &&
                                 p.getSemester() == placement.getSemester() &&
-                                p.getRow() >= placement.getRow()
+                                p.getPosition() >= placement.getPosition()
                 )
-                .forEach(p -> p.setRow(p.getRow() + delta));
+                .forEach(p -> p.setPosition(p.getPosition() + delta));
     }
 
     @Transactional
@@ -174,7 +194,7 @@ public class StudyPlanService {
             throw new OutOfBoundsPositionException("Out of bounds year");
         }
 
-        int rowCount = studyPlan.getCoursePlacements().values()
+        int lastPosition = studyPlan.getCoursePlacements().values()
                 .stream()
                 .filter(currentCoursePlacement ->
                         comparePlacement(
@@ -182,14 +202,15 @@ public class StudyPlanService {
                                         null,
                                         targetPlacement.year(),
                                         targetPlacement.semester(),
-                                        0,
+                                        1,
                                         1
                                 ),
                                 currentCoursePlacement
                         ) == 0
                 )
-                .mapToInt(CoursePlacement::getSpan)
-                .sum();
+                .mapToInt(CoursePlacement::getPosition)
+                .max()
+                .orElse(0);
 
         for (var courseId : courseIds) {
             if (studyPlan.getCoursePlacements().containsKey(courseId)) {
@@ -200,7 +221,7 @@ public class StudyPlanService {
                     AggregateReference.to(courseId),
                     targetPlacement.year(),
                     targetPlacement.semester(),
-                    ++rowCount,
+                    ++lastPosition,
                     1
             );
 
@@ -412,14 +433,14 @@ public class StudyPlanService {
         return saveAndMapStudyPlan(studyPlan);
     }
 
-    private void addCoursePlacement(StudyPlan studyPlan, CoursePlacement placement) {
+    private void insertCoursePlacement(StudyPlan studyPlan, CoursePlacement placement) {
+        shiftRows(studyPlan, placement, +1);
         studyPlan.getCoursePlacements().put(placement.getCourse().getId(), placement);
-        shiftRows(studyPlan, placement, +placement.getSpan());
     }
 
     private void deleteCoursePlacement(StudyPlan studyPlan, CoursePlacement placement) {
         studyPlan.getCoursePlacements().remove(placement.getCourse().getId());
-        shiftRows(studyPlan, placement, -placement.getSpan());
+        shiftRows(studyPlan, placement, -1);
     }
 
     @Transactional
