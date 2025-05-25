@@ -247,6 +247,18 @@ public class StudyPlanController {
         );
     }
 
+    @PutMapping("/{studyPlanId}/course-placements/{courseId}/resize")
+    public ResponseEntity<StudyPlanDto> resizeCoursePlacement(
+            @PathVariable long studyPlanId,
+            @PathVariable long courseId,
+            @RequestParam(value = "span", defaultValue = "1") int span
+    ) {
+        return new ResponseEntity<>(
+                studyPlanService.resizeCoursePlacement(studyPlanId, courseId, span),
+                HttpStatus.OK
+        );
+    }
+
     @DeleteMapping("/{studyPlanId}/course-placements/{courseId}")
     public ResponseEntity<StudyPlanDto> removeCourseFromSemester(
             @PathVariable long studyPlanId,

@@ -42,6 +42,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(InvalidSpanException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            InvalidSpanException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.BAD_REQUEST.value(),
+                        exception.getMessage(),
+                        new Date()
+                ),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ErrorObject> handleException(
             InvalidCredentialsException exception

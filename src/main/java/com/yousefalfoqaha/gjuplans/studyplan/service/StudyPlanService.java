@@ -592,6 +592,26 @@ public class StudyPlanService {
         return saveAndMapStudyPlan(studyPlan);
     }
 
+    @Transactional
+    public StudyPlanDto resizeCoursePlacement(long studyPlanId, long courseId, int span) {
+        if (span < 1 || span > 5) {
+            throw new InvalidSpanException("A course cannot span less than 1 or larger than 5 courses.");
+        }
+
+        var studyPlan = findStudyPlan(studyPlanId);
+
+        var coursePlacement = studyPlan.getCoursePlacements().get(courseId);
+
+        if (coursePlacement == null) {
+            throw new CourseNotPlacedException("Course not placed in a term");
+        }
+
+        coursePlacement.setSpan(span);
+
+        return saveAndMapStudyPlan(studyPlan);
+    }
+
+    @Transactional
     public StudyPlanDto removeCourseFromSemester(long studyPlanId, long courseId) {
         var studyPlan = findStudyPlan(studyPlanId);
 
