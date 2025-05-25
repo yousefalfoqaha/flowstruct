@@ -4,23 +4,18 @@ import StudyPlanGrid from "../../components/StudyPlanGrid.astro";
 import type {Program, StudyPlan, StudyPlanSummary} from "../../types";
 import Layout from "../../layouts/Layout.astro";
 import AboutDialog from "../../components/AboutDialog.astro";
-
-const API_BASE_URL = 'http://localhost:8080/api/v1';
+import {api} from "../../utils/api";
 
 export async function getStaticPaths() {
-    const studyPlans: StudyPlanSummary[] = await fetch(`http://localhost:8080/api/v1/study-plans`)
-        .then(res => res.json());
+    const studyPlans = await api<StudyPlanSummary[]>('/study-plans');
 
     return studyPlans.map(studyPlan => ({
         params: {studyPlanId: studyPlan.id.toString()}
     }));
 }
 
-const studyPlan = await fetch(`${API_BASE_URL}/study-plans/${Astro.params.studyPlanId}/with-sequences`)
-    .then(res => res.json()) as StudyPlan;
-
-const program = await fetch(`${API_BASE_URL}/programs/${studyPlan.program}`)
-    .then(res => res.json()) as Program;
+const studyPlan = await api<StudyPlan>(`/study-plans/${Astro.params.studyPlanId}/with-sequences`);
+const program = await api<Program>(`/programs/${studyPlan.program}`);
 
 const {track, year} = studyPlan;
 ---

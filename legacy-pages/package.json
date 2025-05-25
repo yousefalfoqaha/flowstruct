@@ -9,7 +9,6 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.5.2",
     "@astrojs/tailwind": "^6.0.2",
     "astro": "^5.7.10",
     "lucide": "^0.468.0",

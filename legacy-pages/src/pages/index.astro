@@ -5,9 +5,9 @@ import VisitedStudyPlanCard from "../components/VisitedStudyPlanCard.astro";
 import StudyPlanSearchBar from "../components/StudyPlanSearchBar.astro";
 import AboutDialog from "../components/AboutDialog.astro";
 import AllProgramsDialog from "../components/AllProgramsDialog.astro";
+import {api} from "../utils/api";
 
-const programs: Program[] = await fetch(`http://localhost:8080/api/v1/programs`)
-    .then(res => res.json());
+const programs = await api<Program[]>('/programs');
 
 const date = new Date();
 ---
@@ -15,7 +15,7 @@ const date = new Date();
 <Layout title="GJUPlans">
     <div class="flex flex-col gap-6 p-6 min-h-screen border text-gray-800">
         <header class="flex items-center gap-6 pb-6 w-full justify-center relative">
-            <AboutDialog />
+            <AboutDialog/>
         </header>
 
         <div class="flex flex-col gap-6 items-center my-auto">
@@ -25,12 +25,12 @@ const date = new Date();
             </header>
 
             <div class="flex flex-col-reverse gap-2  md:flex-row">
-                <StudyPlanSearchBar programs={programs} />
+                <StudyPlanSearchBar programs={programs}/>
 
-                <AllProgramsDialog programs={programs} />
+                <AllProgramsDialog programs={programs}/>
             </div>
 
-            <VisitedStudyPlanCard />
+            <VisitedStudyPlanCard/>
         </div>
 
         <footer class="w-full text-xs text-center opacity-60 mt-auto">
