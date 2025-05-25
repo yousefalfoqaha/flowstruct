@@ -142,6 +142,17 @@ export const moveSection = ({studyPlanId, sectionId, direction}: {
 }) =>
     api.put<StudyPlan>([ENDPOINT, studyPlanId, 'sections', sectionId, 'move'], {params: {direction}});
 
+export const resizeCoursePlacement = ({studyPlanId, courseId, span}: {
+    studyPlanId: number;
+    courseId: number;
+    span: number;
+}) =>
+    api.put<StudyPlan>([ENDPOINT, studyPlanId, 'course-placements', courseId, 'resize'], {
+        params: {
+            span
+        }
+    });
+
 export const placeCoursesInSemester = ({studyPlanId, targetPlacement, courseIds}: {
     studyPlanId: number;
     targetPlacement: CoursePlacement;

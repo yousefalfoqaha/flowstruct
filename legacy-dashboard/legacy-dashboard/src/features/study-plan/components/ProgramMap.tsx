@@ -16,7 +16,7 @@ export function ProgramMap() {
     const {data: courses} = useStudyPlanCourses();
     const {dragHandlers} = useProgramMap();
 
-    const {courseGridMap, gridWidth, gridHeight, coursesByTermIndex} = React.useMemo(
+    const {courseGridMap, gridWidth, gridHeight, coursesByTermIndex, columnHeights} = React.useMemo(
         () => createCourseGridCellMap(studyPlan),
         [studyPlan]
     );
@@ -55,6 +55,7 @@ export function ProgramMap() {
 
                 {Array.from(coursesByTermIndex.entries()).map(([termIndex, termCourses]) => {
                     const placement = {...getPlacementFromTermIndex(termIndex), position: termCourses.length || 1, span: 1} as CoursePlacement;
+                    const columnHeight = columnHeights.get(termIndex) || 1;
 
                     return (
                         <div
@@ -62,7 +63,7 @@ export function ProgramMap() {
                             className={classes.cell}
                             style={{
                                 gridColumn: termIndex,
-                                gridRow: termCourses.length + 1
+                                gridRow: columnHeight
                             }}
                         >
                             <DropIndicator placement={placement}/>

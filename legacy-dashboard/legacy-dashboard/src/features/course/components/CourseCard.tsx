@@ -49,7 +49,7 @@ export function CourseCard({course, placement}: CourseCardProps) {
                 </div>
 
                 <div className={classes.removeButton}>
-                    <ProgramMapCourseOptions course={course}/>
+                    <ProgramMapCourseOptions course={course} placement={placement}/>
                 </div>
 
                 <div className={classes.footer}>

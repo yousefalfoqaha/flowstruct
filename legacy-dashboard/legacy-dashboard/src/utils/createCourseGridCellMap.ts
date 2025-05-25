@@ -52,7 +52,8 @@ function createCourseGridCellMap(studyPlan: StudyPlan) {
         courseGridMap,
         gridHeight,
         gridWidth,
-        coursesByTermIndex
+        coursesByTermIndex,
+        columnHeights
     };
 }
 

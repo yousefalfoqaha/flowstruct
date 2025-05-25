@@ -95,6 +95,7 @@ function ProgramMapProvider({children}: { children: ReactNode }) {
 
             const targetPlacement = JSON.parse(nearestIndicator.dataset.placement ?? '') as CoursePlacement | null;
 
+
             const oldPlacement = studyPlan.coursePlacements[movingCourse];
 
             if (!targetPlacement ||
@@ -107,7 +108,12 @@ function ProgramMapProvider({children}: { children: ReactNode }) {
             moveCourseToSemester.mutate({
                 studyPlanId: studyPlan.id,
                 courseId: movingCourse,
-                targetPlacement
+                targetPlacement: {
+                    ...oldPlacement,
+                    year: targetPlacement.year,
+                    semester: targetPlacement.semester,
+                    position: targetPlacement.position
+                }
             });
 
             setMovingCourse(null);
