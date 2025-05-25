@@ -434,11 +434,13 @@ public class StudyPlanService {
     }
 
     private void insertCoursePlacement(StudyPlan studyPlan, CoursePlacement placement) {
+        if (placement == null) return;
         shiftRows(studyPlan, placement, +1);
         studyPlan.getCoursePlacements().put(placement.getCourse().getId(), placement);
     }
 
     private void deleteCoursePlacement(StudyPlan studyPlan, CoursePlacement placement) {
+        if (placement == null) return;
         studyPlan.getCoursePlacements().remove(placement.getCourse().getId());
         shiftRows(studyPlan, placement, -1);
     }

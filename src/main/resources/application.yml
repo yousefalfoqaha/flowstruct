@@ -11,3 +11,6 @@ spring:
     password: admin
 jwt:
   cookieExpiry: 1800
+backend:
+  api:
+    key: ${BACKEND_API_KEY}

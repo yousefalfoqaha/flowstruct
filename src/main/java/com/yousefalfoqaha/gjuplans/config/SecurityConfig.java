@@ -1,6 +1,7 @@
 package com.yousefalfoqaha.gjuplans.config;
 
 import com.yousefalfoqaha.gjuplans.auth.JwtFilter;
+import com.yousefalfoqaha.gjuplans.auth.SiteGeneratorFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtFilter jwtFilter;
+    private final SiteGeneratorFilter siteGeneratorFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -28,7 +30,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/v1/users/login", "/api/v1/users/logout")
+                        .requestMatchers(
+                                "/api/v1/users/login",
+                                "/api/v1/users/logout"
+                        )
                         .permitAll()
                         .anyRequest()
                         .authenticated()
@@ -37,7 +42,7 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                // filter before jwtFilter to check publish study plan pipeline requests with secret key
+                .addFilterBefore(siteGeneratorFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
