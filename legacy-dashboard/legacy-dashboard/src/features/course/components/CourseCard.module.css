@@ -1,8 +1,6 @@
 .container {
     background-color: var(--mantine-color-gray-0);
-    user-select: none;
-    width: 9rem;
-    /* Remove height: 8rem */
+    user-select: none;    /* Remove height: 8rem */
     min-height: 8rem; /* optional: allows grid row to stretch if span > 1 */
     height: 100%; /* makes it fill the spanned grid row height */
     border-radius: var(--mantine-radius-md);

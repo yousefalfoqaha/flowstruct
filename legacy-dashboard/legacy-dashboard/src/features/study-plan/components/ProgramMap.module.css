@@ -18,5 +18,33 @@
 
 .cell {
     position: relative;
-    width: 100%;
+    width: 9rem;
+}
+
+.headerGrid {
+    display: grid;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background-color: var(--mantine-color-body);
+    grid-auto-rows: auto;
+    gap: var(--mantine-spacing-xs);
+}
+
+.headerCell {
+    width: 9rem;
+    font-size: var(--mantine-font-size-xs);
+    font-weight: 600;
+    color: var(--mantine-color-dimmed);
+    text-align: center;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.yearHeader {
+    grid-row: 1;
+}
+
+.semesterHeader {
+    grid-row: 2;
 }

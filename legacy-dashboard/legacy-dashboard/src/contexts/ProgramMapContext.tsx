@@ -76,65 +76,75 @@ function ProgramMapProvider({children}: { children: ReactNode }) {
     }, []);
 
     const dragHandlers: DragHandlers = useMemo(() => ({
-        onDragStart: (e: DragEvent<HTMLDivElement>, courseId: number) => {
-            e.dataTransfer.setData("courseId", String(courseId));
-            moveCourse(courseId);
-        },
+            onDragStart: (e: DragEvent<HTMLDivElement>, courseId: number) => {
+                e.dataTransfer.setData("courseId", String(courseId));
+                moveCourse(courseId);
+            },
 
-        onDragEnd: (e: DragEvent<HTMLDivElement>) => {
-            clearAllIndicators();
-
-            if (!movingCourse) return;
-
-            const nearestIndicator = getNearestIndicator(e);
-
-            if (!nearestIndicator) {
-                setMovingCourse(null);
-                return;
-            }
-
-            const targetPlacement = JSON.parse(nearestIndicator.dataset.placement ?? '') as CoursePlacement | null;
-
-
-            const oldPlacement = studyPlan.coursePlacements[movingCourse];
-
-            if (!targetPlacement ||
-                !oldPlacement ||
-                (targetPlacement.position === oldPlacement.position && comparePlacement(oldPlacement, targetPlacement) === 0)) {
-                setMovingCourse(null);
-                return;
-            }
-
-            moveCourseToSemester.mutate({
-                studyPlanId: studyPlan.id,
-                courseId: movingCourse,
-                targetPlacement: {
-                    ...oldPlacement,
-                    year: targetPlacement.year,
-                    semester: targetPlacement.semester,
-                    position: targetPlacement.position
-                }
-            });
-
-            setMovingCourse(null);
-        },
-
-        onDragOver: (e: DragEvent<HTMLDivElement>) => {
-            e.preventDefault();
-            clearAllIndicators();
-
-            const nearestIndicator = getNearestIndicator(e);
-            if (nearestIndicator) {
-                (nearestIndicator as HTMLElement).style.opacity = '1';
-            }
-        },
-
-        onDragLeave: (e: DragEvent<HTMLDivElement>) => {
-            if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+            onDragEnd: (e: DragEvent<HTMLDivElement>) => {
                 clearAllIndicators();
-            }
-        },
-    }), [moveCourse, clearAllIndicators, movingCourse, getNearestIndicator, studyPlan.coursePlacements, studyPlan.id, moveCourseToSemester]);
+
+                if (!movingCourse) return;
+
+                const nearestIndicator = getNearestIndicator(e);
+
+                if (!nearestIndicator) {
+                    setMovingCourse(null);
+                    return;
+                }
+
+                const targetPlacement = JSON.parse(nearestIndicator.dataset.placement ?? '') as CoursePlacement | null;
+
+
+                const oldPlacement = studyPlan.coursePlacements[movingCourse];
+
+                if (!targetPlacement ||
+                    !oldPlacement ||
+                    (targetPlacement.position === oldPlacement.position && comparePlacement(oldPlacement, targetPlacement) === 0)) {
+                    setMovingCourse(null);
+                    return;
+                }
+
+                moveCourseToSemester.mutate({
+                    studyPlanId: studyPlan.id,
+                    courseId: movingCourse,
+                    targetPlacement: {
+                        ...oldPlacement,
+                        year: targetPlacement.year,
+                        semester: targetPlacement.semester,
+                        position: targetPlacement.position
+                    }
+                });
+
+                setMovingCourse(null);
+            },
+
+            onDragOver: (e: DragEvent<HTMLDivElement>) => {
+                e.preventDefault();
+                clearAllIndicators();
+
+                const nearestIndicator = getNearestIndicator(e);
+                if (nearestIndicator) {
+                    (nearestIndicator as HTMLElement).style.opacity = '1';
+                }
+            },
+
+            onDragLeave: (e: DragEvent<HTMLDivElement>) => {
+                if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                    clearAllIndicators();
+                }
+            },
+        }),
+        [
+            moveCourse,
+            clearAllIndicators,
+            movingCourse,
+            getNearestIndicator,
+            studyPlan.coursePlacements,
+            studyPlan.id,
+            moveCourseToSemester
+        ]
+    );
 
     const {minPlacement, maxPlacement} = useMemo(() => {
         if (!movingCourse || !coursesGraph || !studyPlan) {

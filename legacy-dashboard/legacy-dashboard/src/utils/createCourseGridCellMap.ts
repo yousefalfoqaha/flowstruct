@@ -34,7 +34,7 @@ function createCourseGridCellMap(studyPlan: StudyPlan) {
             const placement = studyPlan.coursePlacements[courseId];
 
             courseGridMap.set(courseId, {
-                column: termIndex,
+                column: termIndex + 1,
                 row: currentGridRow,
                 span: placement.span
             });
