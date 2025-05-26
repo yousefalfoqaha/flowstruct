@@ -1,43 +1,55 @@
 ---
 import type {Course, StudyPlan} from "../types";
-import CourseCard from "./CourseCard.astro";
 import NavigationControls from "./NavigationControls.astro";
 import CourseFilter from "./CourseFilter.astro";
 import {api} from "../utils/api";
+import {getPlacementFromTermIndex} from "../utils/getPlacementFromTermIndex";
+import CourseCard from "./CourseCard.astro";
+import {createCourseGridCellMap} from "../utils/createCourseGridMap";
 
 interface Props {
     studyPlan: StudyPlan;
 }
+type YearIndexBucket = { year: number; terms: number[] };
 
 const {studyPlan} = Astro.props;
 
-const courses = await api<Record<number, Course>>(`/study-plans/${Astro.params.studyPlanId}/courses/detailed`);
-
-const academicYears = Array.from({length: studyPlan.duration}, (_, i) => i + 1);
-const SEMESTERS_PER_YEAR = 3;
-const semesterTypes = ["First", "Second", "Summer"] as const;
-
-const coursesBySemester = new Map<number, number[]>(
-    Array.from({length: studyPlan.duration * SEMESTERS_PER_YEAR}, (_, i) => [i + 1, []])
+const courses = await api<Record<number, Course>>(
+    `/study-plans/${Astro.params.studyPlanId}/courses/detailed`
 );
 
-Object.entries(studyPlan.coursePlacements ?? {}).forEach(([courseId, semesterNum]) => {
-    coursesBySemester.get(Number(semesterNum))?.push(Number(courseId));
-});
----
+const semesterTypes = ["First", "Second", "Summer"] as const;
 
-<!--<div class="flex min-h-[75vh] w-full items-center justify-center">-->
-<!--    <div class="flex flex-col gap-1 items-center">-->
-<!--        <div class="border rounded-lg p-4 text-sm size-fit text-center text-gray-500">-->
-<!--            No courses were found-->
-<!--        </div>-->
-<!--        <a href="/"-->
-<!--           class="text-sm flex items-center w-full justify-center gap-2 p-2 pr-3 size-fit rounded cursor-pointer transition-all">-->
-<!--            <i data-lucide="chevron-left" class="size-4"/>-->
-<!--            <p class="text-nowrap">Back to Main Page</p>-->
-<!--        </a>-->
-<!--    </div>-->
-<!--</div>-->
+const {
+    courseGridMap,
+    gridWidth,
+    gridHeight,
+    filteredTermIndices,
+    coursesByTermIndex
+} = createCourseGridCellMap(studyPlan);
+
+const totalCredits = new Map<number, number>();
+filteredTermIndices.forEach(termIndex => {
+    const sum = coursesByTermIndex.get(termIndex)!.reduce((acc, id) => acc + (courses[id]?.creditHours || 0), 0);
+    totalCredits.set(termIndex, sum);
+});
+
+const yearIndexBuckets: YearIndexBucket[] = Array.from(filteredTermIndices
+    .reduce(
+        (acc, termIndex) => {
+            const year = Math.floor(termIndex / 3);
+            if (!acc.has(year)) acc.set(year, []);
+            acc.get(year)!.push(termIndex);
+            return acc;
+        },
+        new Map<number, number[]>()
+    ))
+    .map(([year, terms]) => ({
+            year,
+            terms: terms.sort((a, b) => a - b)
+        })
+    );
+---
 
 <div class="space-y-2 relative">
     <CourseFilter sections={studyPlan.sections}/>
@@ -45,56 +57,73 @@ Object.entries(studyPlan.coursePlacements ?? {}).forEach(([courseId, semesterNum
     <NavigationControls/>
 
     <div class="relative">
-        <div class="relative">
-            <div id="left-hidden-gradient"
-                 class="sm:w-5 pointer-events-none absolute left-0 z-20 w-8 h-full bg-gradient-to-r from-white"/>
-            <div id="right-hidden-gradient"
-                 class="sm:w-5 pointer-events-none absolute right-0 z-20 w-8 h-full bg-gradient-to-l from-white"/>
+        <div
+                id="left-hidden-gradient"
+                class="pointer-events-none absolute z-20 w-8 sm:w-5 h-full bg-gradient-to-r from-white"
+        ></div>
+        <div
+                id="right-hidden-gradient"
+                class="pointer-events-none absolute right-0 z-20 w-8 sm:w-5 h-full bg-gradient-to-l from-white"
+        ></div>
 
-            <div id="courses-grid" class="flex gap-2 overflow-auto scroll-smooth">
-                {academicYears.map(year => {
-                    const yearSemesters = semesterTypes.map((_, i) =>
-                        year * SEMESTERS_PER_YEAR - (SEMESTERS_PER_YEAR - i) + 1
-                    );
-
+        <div class="overflow-auto px-0.5" id="courses-grid">
+            <div
+                    class="grid grid-rows-2 gap-2"
+                    style={{
+                        gridTemplateColumns: `repeat(${gridWidth})`,
+                    }}
+            >
+                {yearIndexBuckets.map((yearIndexBucket) => {
+                    const year = studyPlan.year + yearIndexBucket.year;
                     return (
-                            <div>
-                                <p class="opacity-60 text-center mb-2 text-xs">Year {year}</p>
-                                <div class="flex gap-2">
-                                    {yearSemesters.map((semesterNumber, index) => {
-                                        const semesterCourses = coursesBySemester.get(semesterNumber);
-                                        const semesterTotalCreditHours = semesterCourses?.reduce(
-                                            (sum, courseId) => sum + (courses[courseId]?.creditHours || 0),
-                                            0
-                                        );
-
-                                        return (
-                                                <div>
-                                                    <p class="opacity-60 text-xs text-center px-2 mb-2 text-nowrap">
-                                                        {semesterTypes[index]} - {semesterTotalCreditHours} Cr.
-                                                    </p>
-                                                    <div class="flex flex-col gap-2">
-                                                        {semesterCourses?.map(courseId => {
-                                                            const course = courses[courseId];
-                                                            if (!course) return;
-
-                                                            return (
-                                                                    <CourseCard
-                                                                            course={course}
-                                                                            prerequisites={studyPlan.coursePrerequisites[course.id] ?? {}}
-                                                                            corequisites={studyPlan.courseCorequisites[course.id] ?? []}
-                                                                            sequences={studyPlan.courseSequences[course.id] ?? {}}
-                                                                    />
-                                                            );
-                                                        })}
-                                                    </div>
-                                                </div>
-                                        );
-                                    })}
-                                </div>
+                            <div
+                                    class="text-xs opacity-60 row-start-1 text-center select-none whitespace-nowrap"
+                                    style={{
+                                        gridColumn: `span ${yearIndexBucket.terms.length}`,
+                                    }}
+                            >
+                                {year} / {year + 1}
                             </div>
                     );
+                })}
 
+                {filteredTermIndices.map((termIndex) => {
+                    const {semester} = getPlacementFromTermIndex(termIndex);
+                    const semesterName = semesterTypes[semester - 1];
+                    return (
+                            <div class="w-[8rem] row-start-2 lg:w-40 text-xs opacity-60 text-center select-none whitespace-nowrap">
+                                {semesterName}
+                                - {totalCredits.get(termIndex)} Cr.
+                            </div>
+                    );
+                })}
+            </div>
+
+            <div
+                    class="mt-2 grid gap-2"
+                    style={{
+                        gridTemplateColumns: `repeat(${gridWidth})`,
+                        gridTemplateRows: `repeat(${gridHeight})`,
+                    }}
+            >
+                {Array.from(courseGridMap.entries()).map(([courseId, gridCell]) => {
+                    const course = courses[courseId];
+                    return (
+                            <div
+                                    class="min-h-[6.9rem] lg:min-h-[8.6rem] w-[8rem] lg:w-40"
+                                    style={{
+                                        gridColumn: `${gridCell.column}`,
+                                        gridRow: `${gridCell.row} / span ${gridCell.span}`,
+                                    }}
+                            >
+                                <CourseCard
+                                        course={course}
+                                        prerequisites={studyPlan.coursePrerequisites[course.id] ?? {}}
+                                        corequisites={studyPlan.courseCorequisites[course.id] ?? []}
+                                        sequences={studyPlan.courseSequences[course.id] ?? {}}
+                                />
+                            </div>
+                    );
                 })}
             </div>
         </div>
@@ -109,6 +138,7 @@ Object.entries(studyPlan.coursePlacements ?? {}).forEach(([courseId, semesterNum
     #courses-grid {
         -ms-overflow-style: none;
         scrollbar-width: none;
+        scroll-behavior: smooth;
     }
 
     #courses-grid::-webkit-scrollbar {

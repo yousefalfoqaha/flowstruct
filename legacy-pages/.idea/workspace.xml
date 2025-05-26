@@ -6,13 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="891c91db-02ad-4a51-a6df-792d2f3bc70a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/astro.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/astro.config.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/AllProgramsDialog.astro" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AllProgramsDialog.astro" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CourseCard.astro" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CourseCard.astro" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/NavigationControls.astro" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/NavigationControls.astro" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/StudyPlanGrid.astro" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/StudyPlanGrid.astro" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/index.astro" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/index.astro" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/study-plans/[studyPlanId].astro" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/study-plans/[studyPlanId].astro" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -144,6 +141,7 @@
       <workItem from="1746018535661" duration="3807000" />
       <workItem from="1746085971877" duration="4365000" />
       <workItem from="1748172979297" duration="7721000" />
+      <workItem from="1748261254311" duration="14946000" />
     </task>
     <servers />
   </component>

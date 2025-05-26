@@ -58,6 +58,13 @@ export type CourseSequences = {
     level: number;
 }
 
+export type CoursePlacement = {
+    year: number;
+    semester: number;
+    position: number;
+    span: number;
+}
+
 export type StudyPlan = {
     id: number;
     year: number;
@@ -66,7 +73,7 @@ export type StudyPlan = {
     isPrivate: boolean;
     program: number;
     sections: Section[];
-    coursePlacements: Record<number, number>;
+    coursePlacements: Record<number, CoursePlacement>;
     coursePrerequisites: Record<number, Record<number, CourseRelation>>;
     courseCorequisites: Record<number, number[]>;
     courseSequences: Record<number, CourseSequences>;
