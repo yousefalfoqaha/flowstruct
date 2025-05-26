@@ -27,25 +27,35 @@ export function ProgramMap() {
         columnHeights,
     } = React.useMemo(() => createCourseGridCellMap(studyPlan), [studyPlan]);
 
+    const totalCredits = new Map<number, number>();
+    Array.from(coursesByTermIndex.keys()).forEach(termIndex => {
+        const sum = coursesByTermIndex.get(termIndex)!.reduce((acc, id) => acc + (courses[id]?.creditHours || 0), 0);
+        totalCredits.set(termIndex, sum);
+    });
+
     return (
         <ScrollArea offsetScrollbars type="never">
             <div
                 className={classes.headerGrid}
                 style={{
-                    gridTemplateColumns: `repeat(${gridWidth}, 9rem)`,
+                    gridTemplateColumns: `repeat(${gridWidth}, 1fr)`,
                 }}
             >
-                {Array.from({length: studyPlan.duration}, (_, i) => (
-                    <div
-                        key={`year-${i + 1}`}
-                        className={`${classes.headerCell} ${classes.yearHeader}`}
-                        style={{
-                            gridColumn: `span ${SEMESTERS_PER_YEAR}`,
-                        }}
-                    >
-                        Year {i + 1}
-                    </div>
-                ))}
+                {Array.from({length: studyPlan.duration}, (_, yearIndex) => {
+                    const year = studyPlan.year + yearIndex;
+
+                    return (
+                        <div
+                            key={`year-${yearIndex + 1}`}
+                            className={`${classes.headerCell} ${classes.yearHeader}`}
+                            style={{
+                                gridColumn: `span ${SEMESTERS_PER_YEAR}`,
+                            }}
+                        >
+                            {year} / {year + 1}
+                        </div>
+                    );
+                })}
 
                 {Array.from(coursesByTermIndex.keys()).map((termIndex) => {
                     const semester = semesterTypes[getPlacementFromTermIndex(termIndex).semester - 1];
@@ -58,7 +68,7 @@ export function ProgramMap() {
                                 gridColumn: termIndex + 1,
                             }}
                         >
-                            {semester}
+                            {semester} - {totalCredits.get(termIndex)} Cr.
                         </div>
                     );
                 })}
@@ -73,7 +83,6 @@ export function ProgramMap() {
                     gridTemplateRows: `repeat(${gridHeight}, 1fr)`,
                 }}
             >
-                {/* Course Cards */}
                 {Array.from(courseGridMap.entries()).map(
                     ([courseId, gridCell]) => {
                         const course = courses[courseId];

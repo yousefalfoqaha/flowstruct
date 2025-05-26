@@ -107,7 +107,8 @@ export function CoursePlacementMultiSelect({placement}: CoursePlacementMultiSele
         >
             <Popover.Target>
                 <Button
-                    variant="transparent"
+                    fullWidth
+                    variant="subtle"
                     size="compact-xs"
                     onClick={() => setOpened((o) => !o)}
                     leftSection={<Plus size={14}/>}
