@@ -10,6 +10,7 @@ import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
 import {useEditStudyPlanDetails} from "@/features/study-plan/hooks/useEditStudyPlanDetails.ts";
 import {useDeleteStudyPlan} from "@/features/study-plan/hooks/useDeleteStudyPlan.ts";
 import {modals} from "@mantine/modals";
+import dayjs from "dayjs";
 
 type Props = {
     studyPlan: StudyPlan;
@@ -18,7 +19,7 @@ type Props = {
 export function EditStudyPlanDetailsFieldset({studyPlan}: Props) {
     const form = useAppForm(studyPlanDetailsSchema, {
         program: String(studyPlan.program),
-        year: new Date(studyPlan.year, 0, 1).toISOString(),
+        year: dayjs().year(studyPlan.year).toISOString(),
         duration: studyPlan.duration,
         track: studyPlan.track ?? '',
         isPrivate: studyPlan.isPrivate
@@ -76,7 +77,7 @@ export function EditStudyPlanDetailsFieldset({studyPlan}: Props) {
                     })}
                 loading={deleteStudyPlan.isPending}
             >
-                Delete Study plan
+                    Delete Study Plan
             </Button>
 
             <Button

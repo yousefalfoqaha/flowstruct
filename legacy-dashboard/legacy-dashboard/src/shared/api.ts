@@ -1,5 +1,3 @@
-import {logoutUser} from "@/features/user/api.ts";
-
 const API_BASE_URL = "http://localhost:8080/api/v1";
 
 type RequestOptions = {
@@ -37,8 +35,6 @@ export const api = {
 
         if (!response.ok) {
             if (response.status === 403 || response.status === 401) {
-                await logoutUser();
-
                 if (window.location.pathname !== '/login') {
                     window.location.href = '/login';
                 }

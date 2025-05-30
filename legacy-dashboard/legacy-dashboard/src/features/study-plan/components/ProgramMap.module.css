@@ -6,7 +6,7 @@
 }
 
 .dropIndicator {
-    top: -0.45rem;
+    top: -0.4rem;
     height: 0.25rem;
     border-radius: var(--mantine-radius-default);
     width: 100%;
