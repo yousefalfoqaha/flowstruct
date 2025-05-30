@@ -1,12 +1,15 @@
 package com.yousefalfoqaha.gjuplans.auth;
 
 import com.yousefalfoqaha.gjuplans.user.service.AppUserDetailsService;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,14 +27,16 @@ public class JwtFilter extends OncePerRequestFilter {
     private final AppUserDetailsService appUserDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
         if (request.getCookies() == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String token = Arrays.stream(request.getCookies())
-                .filter(c -> "accessToken" .equals(c.getName()))
+                .filter(c -> "accessToken".equals(c.getName()))
                 .findFirst()
                 .map(Cookie::getValue)
                 .orElse(null);
@@ -41,7 +46,21 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        String username = jwtService.extractUserName(token);
+        String username;
+        try {
+            username = jwtService.extractUserName(token);
+        } catch (JwtException e) {
+            ResponseCookie emptyCookie = ResponseCookie.from("accessToken")
+                    .httpOnly(true)
+                    .secure(false)
+                    .path("/")
+                    .maxAge(0)
+                    .build();
+            response.addHeader(HttpHeaders.SET_COOKIE, emptyCookie.toString());
+
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {
             filterChain.doFilter(request, response);
@@ -51,6 +70,15 @@ public class JwtFilter extends OncePerRequestFilter {
         UserDetails userDetails = appUserDetailsService.loadUserByUsername(username);
 
         if (!jwtService.validateToken(token, userDetails)) {
+            ResponseCookie emptyCookie = ResponseCookie.from("accessToken")
+                    .httpOnly(true)
+                    .secure(false)
+                    .path("/")
+                    .maxAge(0)
+                    .build();
+
+            response.addHeader(HttpHeaders.SET_COOKIE, emptyCookie.toString());
+
             filterChain.doFilter(request, response);
             return;
         }
