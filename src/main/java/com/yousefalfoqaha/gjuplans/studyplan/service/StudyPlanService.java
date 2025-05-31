@@ -174,7 +174,7 @@ public class StudyPlanService {
         return Integer.compare(p1.getSemester(), p2.getSemester());
     }
 
-    private void shiftRows(StudyPlan studyPlan, CoursePlacement placement, int delta) {
+    private void shiftPositions(StudyPlan studyPlan, CoursePlacement placement, int delta) {
         studyPlan.getCoursePlacements().values()
                 .stream()
                 .filter(p ->
@@ -435,14 +435,14 @@ public class StudyPlanService {
 
     private void insertCoursePlacement(StudyPlan studyPlan, CoursePlacement placement) {
         if (placement == null) return;
-        shiftRows(studyPlan, placement, +1);
+        shiftPositions(studyPlan, placement, +1);
         studyPlan.getCoursePlacements().put(placement.getCourse().getId(), placement);
     }
 
     private void deleteCoursePlacement(StudyPlan studyPlan, CoursePlacement placement) {
         if (placement == null) return;
         studyPlan.getCoursePlacements().remove(placement.getCourse().getId());
-        shiftRows(studyPlan, placement, -1);
+        shiftPositions(studyPlan, placement, -1);
     }
 
     @Transactional

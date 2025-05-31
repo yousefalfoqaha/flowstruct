@@ -10,6 +10,7 @@ import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import com.yousefalfoqaha.gjuplans.course.mapper.CourseResponseMapper;
 import com.yousefalfoqaha.gjuplans.course.mapper.CourseSummaryResponseMapper;
 import com.yousefalfoqaha.gjuplans.course.mapper.CoursesPageResponseMapper;
+import com.yousefalfoqaha.gjuplans.studyplan.exception.CourseExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -73,6 +74,10 @@ public class CourseService {
 
         var course = findCourse(courseId);
 
+        if (courseRepository.existsByCodeIgnoreCase(course.getCode()) && !course.getCode().equalsIgnoreCase(details.code())) {
+            throw new CourseExistsException("Course with code " + details.code() + " already exists.");
+        }
+
         course.setCode(details.code());
         course.setName(details.name());
         course.setCreditHours(details.creditHours());
@@ -87,6 +92,10 @@ public class CourseService {
 
     public CourseDto createCourse(CourseDetailsDto details) {
         courseDetailsValidator.validate(details);
+
+        if (courseRepository.existsByCodeIgnoreCase(details.code())) {
+            throw new CourseExistsException("Course with code " + details.code() + " already exists.");
+        }
 
         var newCourse = new Course(
                 null,

@@ -41,9 +41,11 @@ public class ProgramService {
         Program program = programRepository.findById(programId)
                 .orElseThrow(() -> new ProgramNotFoundException("Program does not exist."));
 
-
-        if (programRepository.existsByCodeIgnoreCase(request.code()) && !program.getCode().equalsIgnoreCase(request.code())) {
-            throw new UniqueProgramException("Program with code " + request.code() + " already exists.");
+        if (
+                programRepository.existsByCodeAndDegree(request.code(), request.degree().name()) &&
+                        !(program.getCode().equalsIgnoreCase(request.code()) && program.getDegree().equals(request.degree()))
+        ) {
+            throw new UniqueProgramException("Program with code " + request.code() + " and degree " + request.degree() + " already exists.");
         }
 
         program.setCode(request.code());
@@ -59,8 +61,8 @@ public class ProgramService {
     public ProgramDto createProgram(ProgramDetailsDto details) {
         programDetailsValidator.validate(details);
 
-        if (programRepository.existsByCodeIgnoreCase(details.code())) {
-            throw new UniqueProgramException("Program with code " + details.code() + " already exists.");
+        if (programRepository.existsByCodeAndDegree(details.code(), details.degree().name())) {
+            throw new UniqueProgramException("Program with code " + details.code() + " and degree " + details.degree() + " already exists.");
         }
 
         var newProgram = new Program();

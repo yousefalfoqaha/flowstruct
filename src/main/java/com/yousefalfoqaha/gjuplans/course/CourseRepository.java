@@ -31,4 +31,6 @@ public interface CourseRepository extends ListCrudRepository<Course, Long> {
             "ILIKE :filter"
     )
     long countByFilter(String filter);
+
+    boolean existsByCodeIgnoreCase(String code);
 }
