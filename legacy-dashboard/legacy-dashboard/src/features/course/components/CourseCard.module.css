@@ -11,7 +11,7 @@
     flex-direction: column;
     position: relative;
     overflow: hidden;
-    transition: 0.4s ease;
+    transition: 0.2s ease-in-out;
 }
 
 .cell {
@@ -35,7 +35,6 @@
     composes: container;
     background-color: var(--mantine-color-red-light);
     border: 1px solid var(--mantine-color-red-filled);
-    z-index: 3;
     pointer-events: none;
 }
 
@@ -49,8 +48,6 @@
     background-color: var(--mantine-primary-color-light);
     border: 1px solid var(--mantine-primary-color-filled);
     box-shadow: 0 0 0 2px var(--mantine-primary-color-light);
-    z-index: 3;
-    pointer-events: auto;
 }
 
 .name {

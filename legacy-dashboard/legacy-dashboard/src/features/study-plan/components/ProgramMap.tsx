@@ -110,7 +110,7 @@ export function ProgramMap() {
                     ([termIndex, termCourses]) => {
                         const placement = {
                             ...getPlacementFromTermIndex(termIndex),
-                            position: termCourses.length || 1,
+                            position: termCourses.length + 1,
                             span: 1,
                         } as CoursePlacement;
                         const columnHeight = columnHeights.get(termIndex) || 1;

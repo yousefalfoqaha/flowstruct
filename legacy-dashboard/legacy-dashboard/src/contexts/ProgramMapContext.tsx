@@ -94,15 +94,25 @@ function ProgramMapProvider({children}: { children: ReactNode }) {
                 }
 
                 const targetPlacement = JSON.parse(nearestIndicator.dataset.placement ?? '') as CoursePlacement | null;
-
-
                 const oldPlacement = studyPlan.coursePlacements[movingCourse];
 
-                if (!targetPlacement ||
-                    !oldPlacement ||
-                    (targetPlacement.position === oldPlacement.position && comparePlacement(oldPlacement, targetPlacement) === 0)) {
+                if (!targetPlacement || !oldPlacement) {
                     setMovingCourse(null);
                     return;
+                }
+
+                const samePlacement = comparePlacement(oldPlacement, targetPlacement) === 0;
+                const positionDiff = targetPlacement.position - oldPlacement.position;
+
+                if (samePlacement) {
+                    if (positionDiff === 0 || positionDiff === 1) {
+                        setMovingCourse(null);
+                        return;
+                    }
+
+                    if (positionDiff > 1) {
+                        targetPlacement.position -= 1;
+                    }
                 }
 
                 moveCourseToSemester.mutate({
