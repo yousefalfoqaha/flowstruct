@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.function.Function;
 
 @Service
-public class CourseResponseMapper implements Function<Course, CourseDto> {
+public class CourseDtoMapper implements Function<Course, CourseDto> {
 
     @Override
     public CourseDto apply(Course course) {
@@ -20,7 +20,9 @@ public class CourseResponseMapper implements Function<Course, CourseDto> {
                 course.getLectureHours(),
                 course.getPracticalHours(),
                 course.getType(),
-                course.isRemedial()
+                course.isRemedial(),
+                course.getCreatedAt(),
+                course.getUpdatedAt()
         );
     }
 }

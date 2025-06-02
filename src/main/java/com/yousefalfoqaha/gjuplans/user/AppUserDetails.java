@@ -1,6 +1,5 @@
 package com.yousefalfoqaha.gjuplans.user;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,10 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-@RequiredArgsConstructor
-public class AppUserDetails implements UserDetails, CredentialsContainer {
-    private final User user;
-
+public record AppUserDetails(User user) implements UserDetails, CredentialsContainer {
     @Override
     public void eraseCredentials() {
         this.user.password = null;

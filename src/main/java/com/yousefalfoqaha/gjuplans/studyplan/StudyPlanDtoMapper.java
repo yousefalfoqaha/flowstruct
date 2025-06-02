@@ -26,6 +26,8 @@ public class StudyPlanDtoMapper implements Function<StudyPlan, StudyPlanDto> {
                 studyPlan.getTrack(),
                 studyPlan.isPrivate(),
                 studyPlan.getProgram().getId(),
+                studyPlan.getCreatedAt(),
+                studyPlan.getUpdatedAt(),
                 studyPlan.getSections()
                         .stream()
                         .sorted(Comparator.comparing(this::getSectionCode))

@@ -17,7 +17,7 @@ import java.util.function.Function;
 @Service
 public class ProgramService {
     private final ProgramRepository programRepository;
-    private final ProgramResponseMapper programResponseMapper;
+    private final ProgramDtoMapper programDtoMapper;
     private final ObjectValidator<ProgramDetailsDto> updateProgramValidator;
     private final ObjectValidator<ProgramDetailsDto> programDetailsValidator;
 
@@ -31,7 +31,7 @@ public class ProgramService {
                         "Program with id " + programId + " was not found."
                 ));
 
-        return programResponseMapper.apply(program);
+        return programDtoMapper.apply(program);
     }
 
     @Transactional
@@ -54,7 +54,7 @@ public class ProgramService {
         program.setPrivate(request.isPrivate());
 
         Program updatedProgram = programRepository.save(program);
-        return programResponseMapper.apply(updatedProgram);
+        return programDtoMapper.apply(updatedProgram);
     }
 
     @Transactional
@@ -72,7 +72,7 @@ public class ProgramService {
         newProgram.setDegree(details.degree());
         newProgram.setPrivate(details.isPrivate());
 
-        return saveAndMapProgram(newProgram, programResponseMapper);
+        return saveAndMapProgram(newProgram, programDtoMapper);
     }
 
     @Transactional
@@ -86,7 +86,7 @@ public class ProgramService {
 
         program.setPrivate(!program.isPrivate());
 
-        return saveAndMapProgram(program, programResponseMapper);
+        return saveAndMapProgram(program, programDtoMapper);
     }
 
     private Program findProgram(long programId) {

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.function.Function;
 
 @Service
-public class ProgramResponseMapper implements Function<Program, ProgramDto> {
+public class ProgramDtoMapper implements Function<Program, ProgramDto> {
 
     @Override
     public ProgramDto apply(Program program) {
@@ -16,7 +16,9 @@ public class ProgramResponseMapper implements Function<Program, ProgramDto> {
                 program.getCode(),
                 program.getName(),
                 program.getDegree().name(),
-                program.isPrivate()
+                program.isPrivate(),
+                program.getCreatedAt(),
+                program.getUpdatedAt()
         );
     }
 }

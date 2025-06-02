@@ -7,7 +7,7 @@ import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseSummaryDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CoursesPageDto;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
-import com.yousefalfoqaha.gjuplans.course.mapper.CourseResponseMapper;
+import com.yousefalfoqaha.gjuplans.course.mapper.CourseDtoMapper;
 import com.yousefalfoqaha.gjuplans.course.mapper.CourseSummaryResponseMapper;
 import com.yousefalfoqaha.gjuplans.course.mapper.CoursesPageResponseMapper;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.CourseExistsException;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class CourseService {
     private final CourseRepository courseRepository;
     private final ObjectValidator<CourseDetailsDto> courseDetailsValidator;
-    private final CourseResponseMapper courseResponseMapper;
+    private final CourseDtoMapper courseDtoMapper;
     private final CourseSummaryResponseMapper courseSummaryResponseMapper;
     private final CoursesPageResponseMapper coursesPageResponseMapper;
 
@@ -60,13 +60,13 @@ public class CourseService {
     public Map<Long, CourseDto> getDetailedCourseList(List<Long> courseIds) {
         return courseRepository.findAllById(courseIds)
                 .stream()
-                .map(courseResponseMapper)
+                .map(courseDtoMapper)
                 .collect(Collectors.toMap(CourseDto::id, Function.identity()));
     }
 
     public CourseDto getCourse(long courseId) {
         var course = findCourse(courseId);
-        return courseResponseMapper.apply(course);
+        return courseDtoMapper.apply(course);
     }
 
     public CourseDto editCourseDetails(long courseId, CourseDetailsDto details) {
@@ -87,7 +87,7 @@ public class CourseService {
         course.setType(details.type());
         course.setRemedial(details.isRemedial());
 
-        return saveAndMap(course, courseResponseMapper);
+        return saveAndMap(course, courseDtoMapper);
     }
 
     public CourseDto createCourse(CourseDetailsDto details) {
@@ -107,10 +107,12 @@ public class CourseService {
                 details.practicalHours(),
                 details.type(),
                 details.isRemedial(),
+                null,
+                null,
                 null
         );
 
-        return saveAndMap(newCourse, courseResponseMapper);
+        return saveAndMap(newCourse, courseDtoMapper);
     }
 
     private Course findCourse(long id) {
