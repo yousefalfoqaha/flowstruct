@@ -33,9 +33,6 @@ export const moveCourseToSemester = ({studyPlanId, courseId, targetPlacement}: {
         body: targetPlacement
     });
 
-export const toggleStudyPlanVisibility = (studyPlanId: number) =>
-    api.put<StudyPlan>([ENDPOINT, studyPlanId, 'toggle-visibility']);
-
 export const deleteStudyPlan = (studyPlanId: number) =>
     api.delete<void>([ENDPOINT, studyPlanId]);
 

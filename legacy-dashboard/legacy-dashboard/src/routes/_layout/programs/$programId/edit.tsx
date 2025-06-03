@@ -3,7 +3,6 @@ import {getProgramDisplayName} from '@/utils/getProgramDisplayName.ts'
 import {Group} from '@mantine/core'
 import {useProgram} from '@/features/program/hooks/useProgram.ts'
 import {EditProgramFieldset} from '@/features/program/components/EditProgramFieldset.tsx'
-import {visibilityBadge} from '@/shared/components/VisibilityBadge.tsx'
 import {PageHeaderWithBack} from "@/shared/components/PageHeaderWithBack.tsx";
 import {PageLayout} from "@/shared/components/PageLayout.tsx";
 
@@ -28,7 +27,6 @@ function RouteComponent() {
                             params: {programId: String(program.id)}
                         }}
                     />
-                    {visibilityBadge(program.isPrivate)}
                 </Group>
             }
         >

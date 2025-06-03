@@ -1,7 +1,7 @@
 import {createFileRoute} from '@tanstack/react-router'
 import {ProgramMap} from "@/features/study-plan/components/ProgramMap.tsx";
 import {AppCard} from "@/shared/components/AppCard.tsx";
-import { ProgramMapProvider } from '@/contexts/ProgramMapContext';
+import {ProgramMapProvider} from '@/contexts/ProgramMapContext';
 
 export const Route = createFileRoute(
     '/_layout/study-plans/$studyPlanId/program-map',

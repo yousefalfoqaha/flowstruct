@@ -14,6 +14,8 @@ export type Course = {
     practicalHours: number;
     type: string;
     isRemedial: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export type CoursesPage = {

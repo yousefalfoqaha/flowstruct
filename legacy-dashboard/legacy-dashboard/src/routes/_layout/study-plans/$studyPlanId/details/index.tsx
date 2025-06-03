@@ -44,16 +44,10 @@ function RouteComponent() {
                 />
             </Group>
 
-            <Group grow>
-                <InfoItem
-                    label="Track"
-                    value={studyPlan.track ? studyPlan.track : '---'}
-                />
-                <InfoItem
-                    label="Visibility"
-                    value={studyPlan.isPrivate ? 'Hidden' : 'Public'}
-                />
-            </Group>
+            <InfoItem
+                label="Track"
+                value={studyPlan.track ? studyPlan.track : '---'}
+            />
         </AppCard>
     );
 }

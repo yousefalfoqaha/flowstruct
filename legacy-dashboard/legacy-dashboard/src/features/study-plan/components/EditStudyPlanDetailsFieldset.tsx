@@ -21,8 +21,7 @@ export function EditStudyPlanDetailsFieldset({studyPlan}: Props) {
         program: String(studyPlan.program),
         year: dayjs().year(studyPlan.year).toISOString(),
         duration: studyPlan.duration,
-        track: studyPlan.track ?? '',
-        isPrivate: studyPlan.isPrivate
+        track: studyPlan.track ?? ''
     });
 
     const editStudyPlanDetails = useEditStudyPlanDetails();

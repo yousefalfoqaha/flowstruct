@@ -2,7 +2,6 @@ import {createFileRoute} from '@tanstack/react-router'
 import {useProgram} from "@/features/program/hooks/useProgram.ts";
 import {Group} from "@mantine/core";
 import {getProgramDisplayName} from "@/utils/getProgramDisplayName.ts";
-import {visibilityBadge} from "@/shared/components/VisibilityBadge.tsx";
 import {AppCard} from "@/shared/components/AppCard.tsx";
 import {InfoItem} from "@/shared/components/InfoItem.tsx";
 import {Degree} from "@/features/program/types.ts";
@@ -29,7 +28,6 @@ function RouteComponent() {
                             search: getDefaultSearchValues()
                         }}
                     />
-                    {visibilityBadge(program.isPrivate)}
                 </Group>
             }
         >
@@ -54,16 +52,10 @@ function RouteComponent() {
                     />
                 </Group>
 
-                <Group grow>
-                    <InfoItem
-                        label="Degree"
-                        value={`${Degree[program.degree as keyof typeof Degree]} (${program.degree})`}
-                    />
-                    <InfoItem
-                        label="Visibility"
-                        value={program.isPrivate ? 'Hidden' : 'Public'}
-                    />
-                </Group>
+                <InfoItem
+                    label="Degree"
+                    value={`${Degree[program.degree as keyof typeof Degree]} (${program.degree})`}
+                />
             </AppCard>
         </PageLayout>
     );

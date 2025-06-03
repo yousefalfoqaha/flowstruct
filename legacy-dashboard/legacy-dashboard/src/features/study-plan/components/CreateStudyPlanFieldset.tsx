@@ -10,7 +10,6 @@ import {Plus, X} from "lucide-react";
 
 export function CreateStudyPlanFieldset() {
     const form = useAppForm(studyPlanDetailsSchema, {
-        isPrivate: true,
         year: new Date().toISOString(),
         track: '',
         duration: 4

@@ -22,11 +22,6 @@ export enum MoveDirection {
     DOWN = "DOWN"
 }
 
-export type Prerequisite = {
-    prerequisite: number;
-    relation: CourseRelation;
-}
-
 export type Section = {
     id: number;
     level: SectionLevel;
@@ -49,12 +44,14 @@ export type StudyPlan = {
     year: number;
     duration: number;
     track: string | null;
-    isPrivate: boolean;
+    isPublished: boolean;
     program: number;
     sections: Section[];
     coursePlacements: Record<number, CoursePlacement>;
     coursePrerequisites: Record<number, Record<number, CourseRelation>>;
     courseCorequisites: Record<number, number[]>;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export type FrameworkCourse = CourseSummary & {
@@ -68,4 +65,4 @@ export type StudyPlanRow = StudyPlanSummary & {
     programName: string
 }
 
-export type StudyPlanSummary = Pick<StudyPlan, "id" | "year" | "duration" | "track" | "isPrivate" | "program">;
+export type StudyPlanSummary = Pick<StudyPlan, "id" | "year" | "duration" | "track" | "isPublished" | "program" | "createdAt" | "updatedAt">;

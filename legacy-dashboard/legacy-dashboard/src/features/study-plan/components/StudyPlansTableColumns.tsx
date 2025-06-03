@@ -1,7 +1,8 @@
 import {createColumnHelper} from "@tanstack/react-table";
 import {StudyPlanRow} from "@/features/study-plan/types.ts";
 import {StudyPlanOptionsMenu} from "@/features/study-plan/components/StudyPlanOptionsMenu.tsx";
-import {visibilityBadge} from "@/shared/components/VisibilityBadge.tsx";
+import {publishStatusBadge} from "@/shared/components/PublishStatusBadge.tsx";
+import {formatTimeAgo} from "@/utils/formatTimeAgo.ts";
 
 export function getStudyPlansTableColumns() {
     const {accessor, display} = createColumnHelper<StudyPlanRow>();
@@ -26,11 +27,15 @@ export function getStudyPlansTableColumns() {
             header: 'Track',
             cell: ({row}) => row.getValue('track') ?? '---'
         }),
-        accessor('isPrivate', {
+        accessor('isPublished', {
             header: 'Status',
-            cell: ({row}) => {
-                return visibilityBadge(row.getValue('isPrivate'));
-            }
+            cell: ({row}) => (
+                publishStatusBadge(row.getValue('isPublished'))
+            )
+        }),
+        accessor('updatedAt', {
+            header: 'Last Updated',
+            cell: ({row}) => formatTimeAgo(new Date(row.original.updatedAt))
         }),
         display({
             id: 'actions',

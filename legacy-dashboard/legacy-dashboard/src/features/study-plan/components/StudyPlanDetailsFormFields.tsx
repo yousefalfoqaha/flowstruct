@@ -1,6 +1,6 @@
 import {Controller, UseFormReturn} from "react-hook-form";
-import {Flex, NumberInput, Select, Stack, Switch, Text, TextInput} from "@mantine/core";
-import {Calendar, Eye, EyeOff, Timer} from "lucide-react";
+import {Flex, NumberInput, Select, Stack, TextInput} from "@mantine/core";
+import {Calendar, Timer} from "lucide-react";
 import {YearPickerInput} from "@mantine/dates";
 import {studyPlanDetailsSchema} from "@/features/study-plan/schemas.ts";
 import {z} from "zod";
@@ -92,25 +92,6 @@ export function StudyPlanDetailsFormFields({form, disableProgramSelect = false}:
                             error={errors.track?.message}
                             w="100%"
                         />
-                    )}
-                />
-
-                <Controller
-                    name="isPrivate"
-                    control={control}
-                    render={({field: {onChange, value, ...rest}}) => (
-                        <Stack w="100%" gap={5} mt={6}>
-                            <Text fw={600} size="sm">Visibility</Text>
-                            <Switch
-                                {...rest}
-                                checked={!value}
-                                onChange={(event) => onChange(!event.currentTarget.checked)}
-                                description={!value ? 'Study plan is visible to students' : 'Study plan is hidden'}
-                                onLabel={<Eye size={16}/>}
-                                offLabel={<EyeOff size={16}/>}
-                                size="md"
-                            />
-                        </Stack>
                     )}
                 />
             </Flex>

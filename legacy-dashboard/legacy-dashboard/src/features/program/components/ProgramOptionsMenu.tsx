@@ -1,9 +1,8 @@
 import {ActionIcon, Menu, Text} from "@mantine/core";
-import {Ellipsis, Eye, EyeOff, Pencil, ScrollText, Trash} from "lucide-react";
+import {Ellipsis, Pencil, ScrollText, Trash} from "lucide-react";
 import {Program} from "@/features/program/types.ts";
 import {modals} from "@mantine/modals";
 import {useDeleteProgram} from "@/features/program/hooks/useDeleteProgram.ts";
-import {useToggleProgramVisibility} from "@/features/program/hooks/useToggleProgramVisibility.ts";
 import {Link} from "@tanstack/react-router";
 
 
@@ -13,12 +12,12 @@ type ProgramOptionsMenuProps = {
 
 export function ProgramOptionsMenu({program}: ProgramOptionsMenuProps) {
     const deleteProgram = useDeleteProgram();
-    const toggleVisibility = useToggleProgramVisibility();
 
     return (
         <Menu shadow="md">
             <Menu.Target>
-                <ActionIcon loading={deleteProgram.isPending || toggleVisibility.isPending} variant="transparent" color="gray">
+                <ActionIcon loading={deleteProgram.isPending} variant="transparent"
+                            color="gray">
                     <Ellipsis size={14}/>
                 </ActionIcon>
             </Menu.Target>
@@ -39,13 +38,6 @@ export function ProgramOptionsMenu({program}: ProgramOptionsMenuProps) {
                 </Link>
 
                 <Menu.Divider/>
-
-                <Menu.Item
-                    onClick={() => toggleVisibility.mutate(program.id)}
-                    leftSection={program.isPrivate ? <Eye size={14}/> : <EyeOff size={14}/>}
-                >
-                    {program.isPrivate ? 'Make public' : 'Hide'}
-                </Menu.Item>
 
                 <Menu.Item
                     color="red"

@@ -1,13 +1,13 @@
 import {Table} from "@tanstack/react-table";
 import {getProgramDisplayName} from "@/utils/getProgramDisplayName.ts";
 import {Select} from "@mantine/core";
-import {ProgramSummary} from "@/features/program/types.ts";
+import {Program} from "@/features/program/types.ts";
 import {StudyPlanRow} from "@/features/study-plan/types.ts";
 import React from "react";
 
 type Props = {
     table: Table<StudyPlanRow>;
-    programs: ProgramSummary[];
+    programs: Program[];
 };
 
 export function ProgramFilter({table, programs}: Props) {

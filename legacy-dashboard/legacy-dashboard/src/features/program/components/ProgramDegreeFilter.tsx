@@ -1,10 +1,10 @@
-import {Degree, ProgramSummary} from "@/features/program/types.ts";
+import {Degree, Program} from "@/features/program/types.ts";
 import {Select} from "@mantine/core";
 import React from "react";
 import {Table} from "@tanstack/react-table";
 
 type Props = {
-    table: Table<ProgramSummary>;
+    table: Table<Program>;
 }
 
 export function ProgramDegreeFilter({table}: Props) {

@@ -2,7 +2,6 @@ import {createFileRoute} from '@tanstack/react-router'
 import {PageHeaderWithBack} from "@/shared/components/PageHeaderWithBack.tsx";
 import {useRouteCourse} from "@/features/course/hooks/useRouteCourse.ts";
 import {getCourseDisplayName} from "@/utils/getCourseDisplayName.ts";
-import {AppCard} from "@/shared/components/AppCard.tsx";
 import {PageLayout} from "@/shared/components/PageLayout.tsx";
 import {EditCourseFieldset} from "@/features/course/components/EditCourseFieldset.tsx";
 

@@ -10,8 +10,6 @@ export type Program = {
     code: string;
     name: string;
     degree: string;
-    isPrivate: boolean;
+    createdAt: Date;
+    updatedAt: Date;
 }
-
-export type ProgramSummary = Pick<Program,
-    "id" | "code" | "name" | "degree" | "isPrivate">;

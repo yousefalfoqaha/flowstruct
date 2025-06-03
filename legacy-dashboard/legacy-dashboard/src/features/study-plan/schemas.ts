@@ -10,10 +10,7 @@ export const studyPlanDetailsSchema = z.interface({
         .number()
         .min(1, {error: "Must be at least 1 year"})
         .default(4),
-    track: z.string(),
-    isPrivate: z
-        .boolean()
-        .default(true)
+    track: z.string()
 });
 
 export const sectionDetailsSchema = z.interface({

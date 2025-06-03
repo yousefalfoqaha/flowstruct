@@ -2,7 +2,7 @@ import {DataTable} from "@/shared/components/DataTable.tsx";
 import {useProgramList} from "@/features/program/hooks/useProgramList.ts";
 import {getProgramsTableColumns} from "@/features/program/components/ProgramsTableColumns.tsx";
 import {useDataTable} from "@/shared/hooks/useDataTable.ts";
-import {ProgramSummary} from "@/features/program/types.ts";
+import {Program} from "@/features/program/types.ts";
 import {DataTableSearch} from "@/shared/components/DataTableSearch.tsx";
 import {Button, Group, Stack} from "@mantine/core";
 import React from "react";
@@ -15,7 +15,7 @@ import {ProgramDegreeFilter} from "@/features/program/components/ProgramDegreeFi
 export function ProgramsTable() {
     const {data} = useProgramList();
     const columns = React.useMemo(() => getProgramsTableColumns(), []);
-    const table = useDataTable<ProgramSummary>({data, columns});
+    const table = useDataTable<Program>({data, columns});
 
     return (
         <Stack gap="md">

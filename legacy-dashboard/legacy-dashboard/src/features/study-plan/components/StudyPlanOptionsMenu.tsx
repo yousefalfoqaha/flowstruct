@@ -1,6 +1,5 @@
 import {ActionIcon, Menu, Text} from "@mantine/core";
-import {Ellipsis, Eye, EyeOff, Pencil, ScrollText, Trash} from "lucide-react";
-import {useToggleStudyPlanVisibility} from "@/features/study-plan/hooks/useToggleStudyPlanVisibility.ts";
+import {Ellipsis, Pencil, ScrollText, Trash} from "lucide-react";
 import {useDeleteStudyPlan} from "@/features/study-plan/hooks/useDeleteStudyPlan.ts";
 import {StudyPlanSummary} from "@/features/study-plan/types.ts";
 import {Link} from "@tanstack/react-router";
@@ -11,13 +10,13 @@ type Props = {
 }
 
 export function StudyPlanOptionsMenu({studyPlan}: Props) {
-    const toggleVisibility = useToggleStudyPlanVisibility();
     const deleteStudyPlan = useDeleteStudyPlan();
 
     return (
         <Menu>
             <Menu.Target>
-                <ActionIcon loading={deleteStudyPlan.isPending || toggleVisibility.isPending} variant="transparent" color="gray">
+                <ActionIcon loading={deleteStudyPlan.isPending} variant="transparent"
+                            color="gray">
                     <Ellipsis size={14}/>
                 </ActionIcon>
             </Menu.Target>
@@ -40,13 +39,6 @@ export function StudyPlanOptionsMenu({studyPlan}: Props) {
                 </Link>
 
                 <Menu.Divider/>
-
-                <Menu.Item
-                    onClick={() => toggleVisibility.mutate(studyPlan.id)}
-                    leftSection={studyPlan.isPrivate ? <Eye size={14}/> : <EyeOff size={14}/>}
-                >
-                    {studyPlan.isPrivate ? 'Make public' : 'Hide'}
-                </Menu.Item>
 
                 <Menu.Item
                     color="red"

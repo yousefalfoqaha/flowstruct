@@ -11,8 +11,7 @@ import {getDefaultSearchValues} from "@/utils/getDefaultSearchValues.ts";
 export function CreateProgramFieldset() {
     const form = useAppForm(programDetailsSchema, {
         code: '',
-        name: '',
-        isPrivate: true,
+        name: ''
     });
     const createProgram = useCreateProgram();
     const navigate = useNavigate();

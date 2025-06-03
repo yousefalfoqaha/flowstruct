@@ -1,7 +1,7 @@
 import {Controller, UseFormReturn} from "react-hook-form";
-import {Flex, Select, Stack, Switch, Text, TextInput} from "@mantine/core";
+import {Flex, Select, TextInput} from "@mantine/core";
 import {Degree} from "@/features/program/types.ts";
-import {Eye, EyeOff, GraduationCap, Hash} from "lucide-react";
+import {GraduationCap, Hash} from "lucide-react";
 import {programDetailsSchema} from "@/features/program/schemas.ts";
 import {z} from "zod";
 
@@ -67,25 +67,6 @@ export function ProgramDetailsFormFields({form}: Props) {
                             withAsterisk
                             w="50%"
                         />
-                    )}
-                />
-
-                <Controller
-                    name="isPrivate"
-                    control={control}
-                    render={({field: {onChange, value, ...rest}}) => (
-                        <Stack gap={5} mt={6}>
-                            <Text fw={600} size="sm">Visibility</Text>
-                            <Switch
-                                {...rest}
-                                checked={!value}
-                                onChange={(event) => onChange(!event.currentTarget.checked)}
-                                description={!value ? 'Program is visible to students' : 'Program is hidden'}
-                                onLabel={<Eye size={16}/>}
-                                offLabel={<EyeOff size={16}/>}
-                                size="md"
-                            />
-                        </Stack>
                     )}
                 />
             </Flex>
