@@ -152,6 +152,7 @@ public class StudyPlanService {
         deleteCoursePlacement(studyPlan, oldPlacement);
         insertCoursePlacement(studyPlan, newPlacement);
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -227,6 +228,7 @@ public class StudyPlanService {
             studyPlan.getCoursePlacements().put(courseId, individualCoursePlacement);
         }
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -239,6 +241,7 @@ public class StudyPlanService {
         studyPlan.setTrack(details.track().trim().isEmpty() ? null : details.track());
         studyPlan.setPublished(details.isPublished());
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -252,6 +255,7 @@ public class StudyPlanService {
         studyPlan.setPublished(details.isPublished());
         studyPlan.setProgram(AggregateReference.to(details.program()));
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -286,6 +290,7 @@ public class StudyPlanService {
 
         studyPlan.getSections().add(newSection);
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -306,6 +311,7 @@ public class StudyPlanService {
                         }
                 );
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -351,6 +357,7 @@ public class StudyPlanService {
 
         studyPlan.getSections().remove(section);
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -391,6 +398,7 @@ public class StudyPlanService {
 
         section.getCourses().putAll(toBeAddedCourses);
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -414,6 +422,7 @@ public class StudyPlanService {
             deleteCoursePlacement(studyPlan, studyPlan.getCoursePlacements().get(courseId));
         }
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -450,6 +459,7 @@ public class StudyPlanService {
             );
         }
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -470,6 +480,7 @@ public class StudyPlanService {
             );
         }
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -487,6 +498,7 @@ public class StudyPlanService {
 
         if (!removed) throw new CourseNotFoundException("Corequisite not found");
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -505,6 +517,7 @@ public class StudyPlanService {
 
         if (!removed) throw new CourseNotFoundException("Prerequisite not found");
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -531,6 +544,7 @@ public class StudyPlanService {
             targetSection.getCourses().put(courseId, new SectionCourse(AggregateReference.to(courseId)));
         }
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -576,6 +590,7 @@ public class StudyPlanService {
         targetSection.setPosition(newPosition);
         swappedSection.setPosition(currentPosition);
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -595,6 +610,7 @@ public class StudyPlanService {
 
         coursePlacement.setSpan(span);
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -604,12 +620,28 @@ public class StudyPlanService {
 
         deleteCoursePlacement(studyPlan, studyPlan.getCoursePlacements().get(courseId));
 
+        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
     private StudyPlan findStudyPlan(long studyPlanId) {
         return studyPlanRepository.findById(studyPlanId)
                 .orElseThrow(() -> new StudyPlanNotFoundException("Study plan with id " + studyPlanId + " was not found."));
+    }
+
+    @Transactional
+    public StudyPlanDto publishStudyPlan(long studyPlanId) {
+        var studyPlan = findStudyPlan(studyPlanId);
+
+        studyPlan.setPublished(true);
+
+        return saveAndMapStudyPlan(studyPlan);
+    }
+
+    private void markAsDraft(StudyPlan studyPlan) {
+        if (studyPlan.isPublished()) {
+            studyPlan.setPublished(false);
+        }
     }
 
     private StudyPlanDto saveAndMapStudyPlan(StudyPlan studyPlan) {
