@@ -48,10 +48,8 @@ export function PrerequisiteMultiSelect({parentCourseId, courses, studyPlan}: Pr
                 {
                     courseId: parentCourseId,
                     studyPlanId: studyPlan.id,
-                    prerequisites: selectedCourses.map(id => ({
-                        prerequisite: Number(id),
-                        relation: CourseRelation.AND
-                    }))
+                    prerequisites: selectedCourses.map(Number),
+                    relation: CourseRelation.AND
                 },
                 {
                     onSuccess: () => {
@@ -67,7 +65,7 @@ export function PrerequisiteMultiSelect({parentCourseId, courses, studyPlan}: Pr
             {
                 courseId: parentCourseId,
                 studyPlanId: studyPlan.id,
-                corequisiteIds: selectedCourses.map(id => parseInt(id))
+                corequisiteIds: selectedCourses.map(Number)
             },
             {
                 onSuccess: () => {

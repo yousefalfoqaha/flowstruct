@@ -3,7 +3,7 @@ import {ColumnFilter} from "@tanstack/react-table";
 
 export interface ErrorObject {
     statusCode: number;
-    message: string;
+    messages: string[];
     timestamp: string;
 }
 

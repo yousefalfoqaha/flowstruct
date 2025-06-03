@@ -51,12 +51,16 @@ export function useAppMutation<
             }
         },
         onError: (error, variables, context) => {
-            notifications.show({
-                title: "Error...",
-                message: (error as ErrorObject)?.message || "An unknown error occurred",
-                color: "red",
-                icon: React.createElement(X, {size: ICON_SIZE}),
-                withBorder: true
+            const errorObject = error as ErrorObject;
+
+            errorObject.messages.forEach(message => {
+                notifications.show({
+                    title: "Error...",
+                    message: message || "An unknown error occurred",
+                    color: "red",
+                    icon: React.createElement(X, {size: ICON_SIZE}),
+                    withBorder: true
+                })
             });
 
             options?.onError?.(error, variables, context);

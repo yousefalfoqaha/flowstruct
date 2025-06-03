@@ -1,3 +1,5 @@
+import {ErrorObject} from "@/shared/types.ts";
+
 const API_BASE_URL = "http://localhost:8080/api/v1";
 
 type RequestOptions = {
@@ -43,7 +45,11 @@ export const api = {
             }
 
             const errorData = await response.json();
-            throw new Error(errorData.message || `Request failed with status ${response.status}`);
+            throw {
+                statusCode: response.status,
+                messages: errorData.messages || [errorData.message || "Unknown error"],
+                timestamp: errorData.timestamp || new Date().toISOString()
+            } satisfies ErrorObject;
         }
 
         if (response.status === 204) {

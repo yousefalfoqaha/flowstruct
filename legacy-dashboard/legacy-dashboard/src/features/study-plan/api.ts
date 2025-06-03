@@ -1,7 +1,7 @@
 import {
     CoursePlacement,
+    CourseRelation,
     MoveDirection,
-    Prerequisite,
     Section,
     StudyPlan,
     StudyPlanSummary
@@ -90,13 +90,17 @@ export const deleteSection = ({studyPlanId, sectionId}: {
 }) =>
     api.delete<StudyPlan>([ENDPOINT, studyPlanId, 'sections', sectionId]);
 
-export const linkPrerequisitesToCourse = ({studyPlanId, courseId, prerequisites}: {
+export const linkPrerequisitesToCourse = ({studyPlanId, courseId, prerequisites, relation}: {
     studyPlanId: number;
     courseId: number;
-    prerequisites: Prerequisite[]
+    prerequisites: number[],
+    relation: CourseRelation
 }) =>
     api.post<StudyPlan>([ENDPOINT, studyPlanId, 'courses', courseId, 'prerequisites'], {
-        body: prerequisites
+        params: {
+            prerequisites,
+            relation
+        }
     });
 
 export const unlinkPrerequisiteFromCourse = ({studyPlanId, courseId, prerequisiteId}: {
