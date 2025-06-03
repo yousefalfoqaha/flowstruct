@@ -1,6 +1,5 @@
 package com.yousefalfoqaha.gjuplans.program;
 
-import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.program.domain.Program;
 import com.yousefalfoqaha.gjuplans.program.dto.ProgramDetailsDto;
 import com.yousefalfoqaha.gjuplans.program.dto.ProgramDto;
@@ -18,28 +17,19 @@ import java.util.function.Function;
 public class ProgramService {
     private final ProgramRepository programRepository;
     private final ProgramDtoMapper programDtoMapper;
-    private final ObjectValidator<ProgramDetailsDto> updateProgramValidator;
-    private final ObjectValidator<ProgramDetailsDto> programDetailsValidator;
 
     public List<ProgramDto> getAllPrograms() {
         return programRepository.findAllPrograms();
     }
 
     public ProgramDto getProgram(long programId) {
-        var program = programRepository.findById(programId)
-                .orElseThrow(() -> new ProgramNotFoundException(
-                        "Program with id " + programId + " was not found."
-                ));
-
+        var program = findProgram(programId);
         return programDtoMapper.apply(program);
     }
 
     @Transactional
     public ProgramDto editProgramDetails(long programId, ProgramDetailsDto request) {
-        updateProgramValidator.validate(request);
-
-        Program program = programRepository.findById(programId)
-                .orElseThrow(() -> new ProgramNotFoundException("Program does not exist."));
+        Program program = findProgram(programId);
 
         if (
                 programRepository.existsByCodeAndDegree(request.code(), request.degree().name()) &&
@@ -51,7 +41,6 @@ public class ProgramService {
         program.setCode(request.code());
         program.setName(request.name());
         program.setDegree(request.degree());
-        program.setPrivate(request.isPrivate());
 
         Program updatedProgram = programRepository.save(program);
         return programDtoMapper.apply(updatedProgram);
@@ -59,18 +48,19 @@ public class ProgramService {
 
     @Transactional
     public ProgramDto createProgram(ProgramDetailsDto details) {
-        programDetailsValidator.validate(details);
-
         if (programRepository.existsByCodeAndDegree(details.code(), details.degree().name())) {
             throw new UniqueProgramException("Program with code " + details.code() + " and degree " + details.degree() + " already exists.");
         }
 
-        var newProgram = new Program();
-
-        newProgram.setCode(details.code());
-        newProgram.setName(details.name());
-        newProgram.setDegree(details.degree());
-        newProgram.setPrivate(details.isPrivate());
+        var newProgram = new Program(
+                null,
+                details.code(),
+                details.name(),
+                details.degree(),
+                null,
+                null,
+                null
+        );
 
         return saveAndMapProgram(newProgram, programDtoMapper);
     }
@@ -78,15 +68,6 @@ public class ProgramService {
     @Transactional
     public void deleteProgram(long programId) {
         programRepository.deleteById(programId);
-    }
-
-    @Transactional
-    public ProgramDto toggleVisibility(long programId) {
-        var program = findProgram(programId);
-
-        program.setPrivate(!program.isPrivate());
-
-        return saveAndMapProgram(program, programDtoMapper);
     }
 
     private Program findProgram(long programId) {

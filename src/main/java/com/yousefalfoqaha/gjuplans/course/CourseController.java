@@ -36,14 +36,14 @@ public class CourseController {
     @PutMapping("/{courseId}")
     public ResponseEntity<CourseDto> editCourseDetails(
             @PathVariable long courseId,
-            @RequestBody CourseDetailsDto courseDetails
+            @Valid @RequestBody CourseDetailsDto courseDetails
     ) {
         return new ResponseEntity<>(courseService.editCourseDetails(courseId, courseDetails), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<CourseDto> createCourse(
-            @RequestBody @Valid CourseDetailsDto courseDetails
+            @Valid @RequestBody CourseDetailsDto courseDetails
     ) {
         return new ResponseEntity<>(courseService.createCourse(courseDetails), HttpStatus.CREATED);
     }

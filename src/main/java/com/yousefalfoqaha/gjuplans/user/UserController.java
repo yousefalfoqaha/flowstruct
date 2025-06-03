@@ -4,6 +4,7 @@ import com.yousefalfoqaha.gjuplans.user.dto.LoginDetailsDto;
 import com.yousefalfoqaha.gjuplans.user.dto.UserDto;
 import com.yousefalfoqaha.gjuplans.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -24,7 +25,7 @@ public class UserController {
     private int cookieExpiry;
 
     @PostMapping("/login")
-    public ResponseEntity<Void> loginUser(@RequestBody LoginDetailsDto loginDetails, HttpServletResponse response) {
+    public ResponseEntity<Void> loginUser(@Valid @RequestBody LoginDetailsDto loginDetails, HttpServletResponse response) {
         String jwtToken = userService.verify(loginDetails);
 
         ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", jwtToken)

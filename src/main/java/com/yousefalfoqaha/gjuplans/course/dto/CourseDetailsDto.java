@@ -2,33 +2,28 @@ package com.yousefalfoqaha.gjuplans.course.dto;
 
 import com.yousefalfoqaha.gjuplans.course.domain.CourseType;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record CourseDetailsDto(
-        @NotEmpty(message="Code cannot be empty")
+        @NotBlank(message = "Course must have a unique code.")
         String code,
 
-        @NotEmpty(message="Name cannot be empty")
+        @NotBlank(message = "Course must have a name.")
         String name,
 
-        @NotNull(message="Credit hours cannot be empty")
-        @Min(0)
+        @Min(value = 0, message = "Course cannot have less than 0 credit hours.")
         int creditHours,
 
-        @NotNull(message="Credit hours cannot be empty")
-        @Min(0)
+        @NotNull(message = "A course must provide a valid ECTS number.")
         int ects,
 
-        @NotNull(message="Lecture hours cannot be empty")
-        @Min(0)
+        @Min(value = 0, message = "Course cannot have less than 0 lecture hours.")
         int lectureHours,
 
-        @NotNull(message="Practical hours cannot be empty")
-        @Min(0)
+        @Min(value = 0, message = "Course cannot have less than 0 practical hours.")
         int practicalHours,
 
-        @NotNull(message="Please choose a valid course type")
         CourseType type,
 
         boolean isRemedial

@@ -4,7 +4,7 @@ import com.yousefalfoqaha.gjuplans.studyplan.domain.Section;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionLevel;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionType;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.CoursePlacementDto;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.PlacementDto;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.SectionDto;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDto;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class StudyPlanDtoMapper implements Function<StudyPlan, StudyPlanDto> {
                 studyPlan.getYear(),
                 studyPlan.getDuration(),
                 studyPlan.getTrack(),
-                studyPlan.isPrivate(),
+                studyPlan.isPublished(),
                 studyPlan.getProgram().getId(),
                 studyPlan.getCreatedAt(),
                 studyPlan.getUpdatedAt(),
@@ -45,7 +45,7 @@ public class StudyPlanDtoMapper implements Function<StudyPlan, StudyPlanDto> {
                         .stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
-                                entry -> new CoursePlacementDto(
+                                entry -> new PlacementDto(
                                         entry.getValue().getYear(),
                                         entry.getValue().getSemester(),
                                         entry.getValue().getPosition(),

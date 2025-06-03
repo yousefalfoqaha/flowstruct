@@ -2,6 +2,7 @@ package com.yousefalfoqaha.gjuplans.program;
 
 import com.yousefalfoqaha.gjuplans.program.dto.ProgramDetailsDto;
 import com.yousefalfoqaha.gjuplans.program.dto.ProgramDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,21 +29,14 @@ public class ProgramController {
     @PutMapping("/{programId}")
     public ResponseEntity<ProgramDto> updateProgram(
             @PathVariable long programId,
-            @RequestBody ProgramDetailsDto request
+            @Valid @RequestBody ProgramDetailsDto request
     ) {
         return new ResponseEntity<>(programService.editProgramDetails(programId, request), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<ProgramDto> createProgram(@RequestBody ProgramDetailsDto programDetails) {
+    public ResponseEntity<ProgramDto> createProgram(@Valid @RequestBody ProgramDetailsDto programDetails) {
         return new ResponseEntity<>(programService.createProgram(programDetails), HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{programId}/toggle-visibility")
-    public ResponseEntity<ProgramDto> toggleProgramVisibility(
-            @PathVariable long programId
-    ) {
-        return new ResponseEntity<>(programService.toggleVisibility(programId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{programId}")

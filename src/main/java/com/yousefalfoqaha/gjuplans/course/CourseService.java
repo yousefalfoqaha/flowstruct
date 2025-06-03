@@ -1,6 +1,5 @@
 package com.yousefalfoqaha.gjuplans.course;
 
-import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.course.domain.Course;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDetailsDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
@@ -27,7 +26,6 @@ import java.util.stream.Collectors;
 @Service
 public class CourseService {
     private final CourseRepository courseRepository;
-    private final ObjectValidator<CourseDetailsDto> courseDetailsValidator;
     private final CourseDtoMapper courseDtoMapper;
     private final CourseSummaryResponseMapper courseSummaryResponseMapper;
     private final CoursesPageResponseMapper coursesPageResponseMapper;
@@ -70,8 +68,6 @@ public class CourseService {
     }
 
     public CourseDto editCourseDetails(long courseId, CourseDetailsDto details) {
-        courseDetailsValidator.validate(details);
-
         var course = findCourse(courseId);
 
         if (courseRepository.existsByCodeIgnoreCase(course.getCode()) && !course.getCode().equalsIgnoreCase(details.code())) {
@@ -91,8 +87,6 @@ public class CourseService {
     }
 
     public CourseDto createCourse(CourseDetailsDto details) {
-        courseDetailsValidator.validate(details);
-
         if (courseRepository.existsByCodeIgnoreCase(details.code())) {
             throw new CourseExistsException("Course with code " + details.code() + " already exists.");
         }

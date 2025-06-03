@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
+// TODO: give site generator "SITE_GENERATOR" role with access to public endpoints only
 @Component
 public class SiteGeneratorFilter extends OncePerRequestFilter {
 

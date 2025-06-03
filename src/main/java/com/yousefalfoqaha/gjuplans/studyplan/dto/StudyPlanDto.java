@@ -12,12 +12,12 @@ public record StudyPlanDto(
         int year,
         int duration,
         String track,
-        boolean isPrivate,
+        boolean isPublished,
         long program,
         Instant createdAt,
         Instant updatedAt,
         List<SectionDto> sections,
-        Map<Long, CoursePlacementDto> coursePlacements,
+        Map<Long, PlacementDto> coursePlacements,
         Map<Long, Map<Long, Relation>> coursePrerequisites,
         Map<Long, Set<Long>> courseCorequisites
 ) {

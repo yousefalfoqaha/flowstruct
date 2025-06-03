@@ -28,8 +28,6 @@ public class Program {
 
     private Degree degree;
 
-    private boolean isPrivate;
-
     @Version
     private Long version;
 

@@ -1,6 +1,8 @@
 package com.yousefalfoqaha.gjuplans.studyplan.domain;
 
 import com.yousefalfoqaha.gjuplans.program.domain.Program;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +35,7 @@ public class StudyPlan {
 
     private String track;
 
-    private boolean isPrivate;
+    private boolean isPublished;
 
     private AggregateReference<Program, Long> program;
 

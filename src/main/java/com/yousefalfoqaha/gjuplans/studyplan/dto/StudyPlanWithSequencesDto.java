@@ -11,12 +11,12 @@ public record StudyPlanWithSequencesDto(
         int year,
         int duration,
         String track,
-        boolean isPrivate,
+        boolean isPublished,
         long program,
         List<SectionDto> sections,
-        Map<Long, CoursePlacementDto> coursePlacements,
+        Map<Long, PlacementDto> coursePlacements,
         Map<Long, Map<Long, Relation>> coursePrerequisites,
         Map<Long, Set<Long>> courseCorequisites,
-        Map<Long, CourseSequencesDto> courseSequences
+        Map<Long, SequencesDto> courseSequences
 ) {
 }

@@ -1,6 +1,5 @@
 package com.yousefalfoqaha.gjuplans.studyplan.service;
 
-import com.yousefalfoqaha.gjuplans.common.ObjectValidator;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanDtoMapper;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanRepository;
@@ -25,8 +24,6 @@ public class StudyPlanService {
     private final StudyPlanRepository studyPlanRepository;
     private final StudyPlanGraphService studyPlanGraphService;
     private final StudyPlanDtoMapper studyPlanDtoMapper;
-    private final ObjectValidator<StudyPlanDetailsDto> studyPlanDetailsValidator;
-    private final ObjectValidator<SectionDetailsDto> sectionDetailsValidator;
 
     public StudyPlanDto getStudyPlan(long studyPlanId) {
         var studyPlan = findStudyPlan(studyPlanId);
@@ -56,7 +53,7 @@ public class StudyPlanService {
                         Map.Entry::getKey,
                         entry -> {
                             var sequences = entry.getValue();
-                            return new CourseSequencesDto(
+                            return new SequencesDto(
                                     sequences.getPrerequisiteSequence()
                                             .stream()
                                             .filter(prerequisiteSequenceId -> {
@@ -79,7 +76,7 @@ public class StudyPlanService {
                 studyPlanResponse.year(),
                 studyPlanResponse.duration(),
                 studyPlanResponse.track(),
-                studyPlanResponse.isPrivate(),
+                studyPlanResponse.isPublished(),
                 studyPlanResponse.program(),
                 studyPlanResponse.sections(),
                 studyPlanResponse.coursePlacements(),
@@ -90,23 +87,14 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto toggleVisibility(long studyPlanId) {
-        var studyPlan = findStudyPlan(studyPlanId);
-
-        studyPlan.setPrivate(!studyPlan.isPrivate());
-
-        return saveAndMapStudyPlan(studyPlan);
-    }
-
-    @Transactional
     public StudyPlanDto moveCourseToSemester(
             long studyPlanId,
             long courseId,
-            CoursePlacementDto targetPlacement
+            PlacementDto targetPlacement
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
 
-        if (targetPlacement.year() > studyPlan.getDuration() || targetPlacement.year() <= 0) {
+        if (targetPlacement.year() > studyPlan.getDuration()) {
             throw new OutOfBoundsPositionException("Out of bounds year");
         }
 
@@ -186,7 +174,7 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto placeCoursesInSemester(long studyPlanId, List<Long> courseIds, CoursePlacementDto targetPlacement) {
+    public StudyPlanDto placeCoursesInSemester(long studyPlanId, List<Long> courseIds, PlacementDto targetPlacement) {
         var studyPlan = findStudyPlan(studyPlanId);
         var coursePrerequisitesMap = studyPlan.getCoursePrerequisitesMap();
 
@@ -244,14 +232,12 @@ public class StudyPlanService {
 
     @Transactional
     public StudyPlanDto editStudyPlanDetails(long studyPlanId, StudyPlanDetailsDto details) {
-        studyPlanDetailsValidator.validate(details);
-
         var studyPlan = findStudyPlan(studyPlanId);
 
         studyPlan.setYear(details.year());
         studyPlan.setDuration(details.duration());
         studyPlan.setTrack(details.track().trim().isEmpty() ? null : details.track());
-        studyPlan.setPrivate(details.isPrivate());
+        studyPlan.setPublished(details.isPublished());
 
         return saveAndMapStudyPlan(studyPlan);
     }
@@ -263,7 +249,7 @@ public class StudyPlanService {
         studyPlan.setYear(details.year());
         studyPlan.setDuration(details.duration());
         studyPlan.setTrack(details.track().trim().isEmpty() ? null : details.track());
-        studyPlan.setPrivate(details.isPrivate());
+        studyPlan.setPublished(details.isPublished());
         studyPlan.setProgram(AggregateReference.to(details.program()));
 
         return saveAndMapStudyPlan(studyPlan);
@@ -305,8 +291,6 @@ public class StudyPlanService {
 
     @Transactional
     public StudyPlanDto editSectionDetails(long studyPlanId, long sectionId, SectionDetailsDto details) {
-        sectionDetailsValidator.validate(details);
-
         var studyPlan = findStudyPlan(studyPlanId);
 
         studyPlan.getSections().stream()
@@ -449,7 +433,8 @@ public class StudyPlanService {
     public StudyPlanDto linkPrerequisitesToCourse(
             long studyPlanId,
             long courseId,
-            List<CoursePrerequisiteDto> prerequisites
+            List<Long> prerequisites,
+            Relation relation
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
 
@@ -459,8 +444,8 @@ public class StudyPlanService {
             studyPlan.getCoursePrerequisites().add(
                     new CoursePrerequisite(
                             AggregateReference.to(courseId),
-                            AggregateReference.to(prerequisite.prerequisite()),
-                            Relation.AND
+                            AggregateReference.to(prerequisite),
+                            relation
                     )
             );
         }
@@ -628,16 +613,13 @@ public class StudyPlanService {
     }
 
     private StudyPlanDto saveAndMapStudyPlan(StudyPlan studyPlan) {
-        StudyPlan savedStudyPlan;
-
         try {
-            savedStudyPlan = studyPlanRepository.save(studyPlan);
+            StudyPlan savedStudyPlan = studyPlanRepository.save(studyPlan);
+            return studyPlanDtoMapper.apply(savedStudyPlan);
         } catch (OptimisticLockingFailureException e) {
             throw new OptimisticLockingFailureException(
                     "This study plan has been modified by another user while you were editing. Please refresh to see the latest version."
             );
         }
-
-        return studyPlanDtoMapper.apply(savedStudyPlan);
     }
 }

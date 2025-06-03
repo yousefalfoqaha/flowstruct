@@ -3,9 +3,11 @@ package com.yousefalfoqaha.gjuplans.studyplan;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseSummaryDto;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.MoveDirection;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.Relation;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.*;
 import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanCourseService;
 import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,18 +63,10 @@ public class StudyPlanController {
         );
     }
 
-    @PutMapping("/{studyPlanId}/toggle-visibility")
-    public ResponseEntity<StudyPlanDto> toggleVisibility(@PathVariable long studyPlanId) {
-        return new ResponseEntity<>(
-                studyPlanService.toggleVisibility(studyPlanId),
-                HttpStatus.OK
-        );
-    }
-
     @PutMapping("/{studyPlanId}")
     public ResponseEntity<StudyPlanDto> editStudyPlanDetails(
             @PathVariable long studyPlanId,
-            @RequestBody StudyPlanDetailsDto studyPlanDetails
+            @Valid @RequestBody StudyPlanDetailsDto studyPlanDetails
     ) {
         return new ResponseEntity<>(
                 studyPlanService.editStudyPlanDetails(studyPlanId, studyPlanDetails),
@@ -81,7 +75,7 @@ public class StudyPlanController {
     }
 
     @PostMapping
-    public ResponseEntity<StudyPlanDto> createStudyPlan(@RequestBody StudyPlanDetailsDto studyPlanDetails) {
+    public ResponseEntity<StudyPlanDto> createStudyPlan(@Valid @RequestBody StudyPlanDetailsDto studyPlanDetails) {
         return new ResponseEntity<>(
                 studyPlanService.createStudyPlan(studyPlanDetails),
                 HttpStatus.OK
@@ -98,7 +92,7 @@ public class StudyPlanController {
     public ResponseEntity<StudyPlanDto> placeCoursesInSemester(
             @PathVariable long studyPlanId,
             @RequestParam(value = "courses", defaultValue = "") List<Long> courseIds,
-            @RequestBody CoursePlacementDto targetPlacement
+            @Valid @RequestBody PlacementDto targetPlacement
     ) {
         return new ResponseEntity<>(
                 studyPlanService.placeCoursesInSemester(studyPlanId, courseIds, targetPlacement),
@@ -109,7 +103,7 @@ public class StudyPlanController {
     @PutMapping("/{studyPlanId}/create-section")
     public ResponseEntity<StudyPlanDto> createSection(
             @PathVariable long studyPlanId,
-            @RequestBody SectionDetailsDto sectionDetails
+            @Valid @RequestBody SectionDetailsDto sectionDetails
     ) {
         return new ResponseEntity<>(
                 studyPlanService.createSection(studyPlanId, sectionDetails),
@@ -121,7 +115,7 @@ public class StudyPlanController {
     public ResponseEntity<StudyPlanDto> editSectionDetails(
             @PathVariable long studyPlanId,
             @PathVariable long sectionId,
-            @RequestBody SectionDetailsDto sectionDetails
+            @Valid @RequestBody SectionDetailsDto sectionDetails
     ) {
         return new ResponseEntity<>(
                 studyPlanService.editSectionDetails(studyPlanId, sectionId, sectionDetails),
@@ -133,7 +127,7 @@ public class StudyPlanController {
     public ResponseEntity<StudyPlanDto> moveCourseToSemester(
             @PathVariable long studyPlanId,
             @PathVariable long courseId,
-            @RequestBody CoursePlacementDto targetPlacement
+            @Valid @RequestBody PlacementDto targetPlacement
     ) {
         return new ResponseEntity<>(
                 studyPlanService.moveCourseToSemester(studyPlanId, courseId, targetPlacement),
@@ -175,14 +169,16 @@ public class StudyPlanController {
         );
     }
 
+    // TODO: also update frontend api
     @PostMapping("/{studyPlanId}/courses/{courseId}/prerequisites")
     public ResponseEntity<StudyPlanDto> linkPrerequisitesToCourse(
             @PathVariable long studyPlanId,
             @PathVariable long courseId,
-            @RequestBody List<CoursePrerequisiteDto> prerequisites
+            @RequestBody List<Long> prerequisiteIds,
+            @RequestParam(value = "relation", defaultValue = "AND") Relation relation
     ) {
         return new ResponseEntity<>(
-                studyPlanService.linkPrerequisitesToCourse(studyPlanId, courseId, prerequisites),
+                studyPlanService.linkPrerequisitesToCourse(studyPlanId, courseId, prerequisiteIds, relation),
                 HttpStatus.OK
         );
     }

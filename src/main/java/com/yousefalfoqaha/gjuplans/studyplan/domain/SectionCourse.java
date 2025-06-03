@@ -1,6 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan.domain;
 
 import com.yousefalfoqaha.gjuplans.course.domain.Course;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,5 @@ import org.springframework.data.relational.core.mapping.Table;
 @Setter
 @Table("section_course")
 public class SectionCourse {
-
     private AggregateReference<Course, Long> course;
 }

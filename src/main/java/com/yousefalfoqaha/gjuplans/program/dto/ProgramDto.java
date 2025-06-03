@@ -7,7 +7,6 @@ public record ProgramDto(
         String code,
         String name,
         String degree,
-        boolean isPrivate,
         Instant createdAt,
         Instant updatedAt
 ) {

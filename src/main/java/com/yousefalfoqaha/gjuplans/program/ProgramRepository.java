@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface ProgramRepository extends ListCrudRepository<Program, Long> {
 
-    @Query("SELECT id, code, name, degree, is_private FROM program")
+    @Query("SELECT id, code, name, degree, created_at, updated_at FROM program")
     List<ProgramDto> findAllPrograms();
 
     @Query("SELECT 1 FROM program WHERE code = :code AND degree = :degreeName::degree")

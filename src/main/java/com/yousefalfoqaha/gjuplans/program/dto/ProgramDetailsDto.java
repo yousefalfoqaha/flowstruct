@@ -1,18 +1,16 @@
 package com.yousefalfoqaha.gjuplans.program.dto;
 
 import com.yousefalfoqaha.gjuplans.program.domain.Degree;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 
 public record ProgramDetailsDto(
 
-        @NotEmpty(message = "Code cannot be empty.")
+        @NotBlank(message = "Program must have a unique code.")
         String code,
 
-        @NotEmpty(message = "Name cannot be empty.")
+        @NotBlank(message = "Program must have a name.")
         String name,
 
-        Degree degree,
-
-        boolean isPrivate
+        Degree degree
 ) {
 }

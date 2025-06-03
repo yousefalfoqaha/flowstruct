@@ -7,9 +7,11 @@ import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.*;
 import com.yousefalfoqaha.gjuplans.user.InvalidCredentialsException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -25,6 +27,26 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(HttpStatus.NOT_FOUND.value(), exception.getMessage(), new Date()),
                 HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationErrorObject> handleException(
+            MethodArgumentNotValidException exception
+    ) {
+        var errorMessages = exception.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .toList();
+
+        return new ResponseEntity<>(
+                new ValidationErrorObject(
+                        HttpStatus.BAD_REQUEST.value(),
+                        errorMessages,
+                        new Date()
+                ),
+                HttpStatus.BAD_REQUEST
         );
     }
 
@@ -133,20 +155,6 @@ public class GlobalExceptionHandler {
                         new Date()
                 ),
                 HttpStatus.CONFLICT
-        );
-    }
-
-    @ExceptionHandler(ObjectNotValidException.class)
-    public ResponseEntity<ValidationErrorObject> handleException(
-            ObjectNotValidException exception
-    ) {
-        return new ResponseEntity<>(
-                new ValidationErrorObject(
-                        HttpStatus.BAD_REQUEST.value(),
-                        exception.getErrorMessages(),
-                        new Date()
-                ),
-                HttpStatus.BAD_REQUEST
         );
     }
 

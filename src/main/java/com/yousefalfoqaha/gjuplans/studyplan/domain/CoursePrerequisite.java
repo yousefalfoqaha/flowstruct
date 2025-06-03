@@ -1,6 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan.domain;
 
 import com.yousefalfoqaha.gjuplans.course.domain.Course;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @Setter
 @Table("course_prerequisite")
 public class CoursePrerequisite {
-
         private AggregateReference<Course, Long> course;
 
         private AggregateReference<Course, Long> prerequisite;
