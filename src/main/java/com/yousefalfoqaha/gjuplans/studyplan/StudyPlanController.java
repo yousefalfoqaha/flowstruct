@@ -169,12 +169,11 @@ public class StudyPlanController {
         );
     }
 
-    // TODO: also update frontend api
     @PostMapping("/{studyPlanId}/courses/{courseId}/prerequisites")
     public ResponseEntity<StudyPlanDto> linkPrerequisitesToCourse(
             @PathVariable long studyPlanId,
             @PathVariable long courseId,
-            @RequestBody List<Long> prerequisiteIds,
+            @RequestParam(value = "prerequisites", defaultValue = "") List<Long> prerequisiteIds,
             @RequestParam(value = "relation", defaultValue = "AND") Relation relation
     ) {
         return new ResponseEntity<>(

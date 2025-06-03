@@ -1,10 +1,11 @@
 package com.yousefalfoqaha.gjuplans.common.dto;
 
 import java.util.Date;
+import java.util.List;
 
 public record ErrorObject(
         int statusCode,
-        String message,
+        List<String> messages,
         Date timestamp
 ) {
 }

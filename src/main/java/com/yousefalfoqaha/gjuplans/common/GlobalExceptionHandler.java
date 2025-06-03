@@ -1,7 +1,6 @@
 package com.yousefalfoqaha.gjuplans.common;
 
 import com.yousefalfoqaha.gjuplans.common.dto.ErrorObject;
-import com.yousefalfoqaha.gjuplans.common.dto.ValidationErrorObject;
 import com.yousefalfoqaha.gjuplans.program.exception.InvalidDegreeException;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Date;
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -25,13 +25,17 @@ public class GlobalExceptionHandler {
             ProgramNotFoundException exception
     ) {
         return new ResponseEntity<>(
-                new ErrorObject(HttpStatus.NOT_FOUND.value(), exception.getMessage(), new Date()),
+                new ErrorObject(
+                        HttpStatus.NOT_FOUND.value(),
+                        List.of(exception.getMessage()),
+                        new Date()
+                ),
                 HttpStatus.NOT_FOUND
         );
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationErrorObject> handleException(
+    public ResponseEntity<ErrorObject> handleException(
             MethodArgumentNotValidException exception
     ) {
         var errorMessages = exception.getBindingResult()
@@ -41,7 +45,7 @@ public class GlobalExceptionHandler {
                 .toList();
 
         return new ResponseEntity<>(
-                new ValidationErrorObject(
+                new ErrorObject(
                         HttpStatus.BAD_REQUEST.value(),
                         errorMessages,
                         new Date()
@@ -57,7 +61,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(
                         HttpStatus.NOT_FOUND.value(),
-                        exception.getMessage(),
+                        List.of(exception.getMessage()),
                         new Date()
                 ),
                 HttpStatus.NOT_FOUND
@@ -71,7 +75,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(
                         HttpStatus.BAD_REQUEST.value(),
-                        exception.getMessage(),
+                        List.of(exception.getMessage()),
                         new Date()
                 ),
                 HttpStatus.BAD_REQUEST
@@ -85,7 +89,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(
                         HttpStatus.UNAUTHORIZED.value(),
-                        exception.getMessage(),
+                        List.of(exception.getMessage()),
                         new Date()
                 ),
                 HttpStatus.UNAUTHORIZED
@@ -97,7 +101,7 @@ public class GlobalExceptionHandler {
             StudyPlanNotFoundException exception
     ) {
         return new ResponseEntity<>(
-                new ErrorObject(HttpStatus.NOT_FOUND.value(), exception.getMessage(), new Date()),
+                new ErrorObject(HttpStatus.NOT_FOUND.value(), List.of(exception.getMessage()), new Date()),
                 HttpStatus.NOT_FOUND
         );
     }
@@ -109,7 +113,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(
                         HttpStatus.BAD_REQUEST.value(),
-                        exception.getMessage(),
+                        List.of(exception.getMessage()),
                         new Date()
                 ),
                 HttpStatus.BAD_REQUEST
@@ -123,7 +127,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(
                         HttpStatus.CONFLICT.value(),
-                        exception.getMessage(),
+                        List.of(exception.getMessage()),
                         new Date()
                 ),
                 HttpStatus.CONFLICT
@@ -137,7 +141,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(
                         HttpStatus.CONFLICT.value(),
-                        exception.getMessage(),
+                        List.of(exception.getMessage()),
                         new Date()
                 ),
                 HttpStatus.CONFLICT
@@ -151,7 +155,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(
                         HttpStatus.CONFLICT.value(),
-                        exception.getMessage(),
+                        List.of(exception.getMessage()),
                         new Date()
                 ),
                 HttpStatus.CONFLICT
@@ -165,7 +169,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(
                         HttpStatus.CONFLICT.value(),
-                        exception.getMessage(),
+                        List.of(exception.getMessage()),
                         new Date()
                 ),
                 HttpStatus.CONFLICT
@@ -179,7 +183,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(
                         HttpStatus.BAD_REQUEST.value(),
-                        exception.getMessage(),
+                        List.of(exception.getMessage()),
                         new Date()
                 ),
                 HttpStatus.BAD_REQUEST
@@ -193,7 +197,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(
                         HttpStatus.CONFLICT.value(),
-                        exception.getMessage(),
+                        List.of(exception.getMessage()),
                         new Date()
                 ),
                 HttpStatus.CONFLICT
@@ -207,7 +211,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(
                         HttpStatus.BAD_REQUEST.value(),
-                        exception.getMessage(),
+                        List.of(exception.getMessage()),
                         new Date()
                 ),
                 HttpStatus.BAD_REQUEST
@@ -221,7 +225,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(
                         HttpStatus.BAD_REQUEST.value(),
-                        exception.getMessage(),
+                        List.of(exception.getMessage()),
                         new Date()
                 ),
                 HttpStatus.BAD_REQUEST
@@ -235,7 +239,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorObject(
                         HttpStatus.BAD_REQUEST.value(),
-                        exception.getMessage(),
+                        List.of(exception.getMessage()),
                         new Date()
                 ),
                 HttpStatus.BAD_REQUEST
