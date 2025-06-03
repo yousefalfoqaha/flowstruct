@@ -6,6 +6,9 @@ import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
 export const useUnlinkPrerequisiteFromCourse = () => {
     const queryClient = useQueryClient();
     return useAppMutation(unlinkPrerequisiteFromCourse, {
-        onSuccess: (data) => queryClient.setQueryData(studyPlanKeys.detail(data.id), data)
+        onSuccess: (data) => {
+            queryClient.setQueryData(studyPlanKeys.detail(data.id), data);
+            queryClient.invalidateQueries({queryKey: studyPlanKeys.list()});
+        }
     });
 }

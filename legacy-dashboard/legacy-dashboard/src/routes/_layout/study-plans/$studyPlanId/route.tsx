@@ -12,6 +12,7 @@ import {PageLayout} from "@/shared/components/PageLayout.tsx";
 import {StudyPlanTabs} from "@/features/study-plan/components/StudyPlanTabs.tsx";
 import {Globe} from "lucide-react";
 import {CoursesGraphProvider} from '@/contexts/CoursesGraphContext';
+import {PublishButton} from "@/features/study-plan/components/PublishButton.tsx";
 
 export const Route = createFileRoute('/_layout/study-plans/$studyPlanId')({
     loader: async ({context: {queryClient}, params}) => {
@@ -49,16 +50,7 @@ function RouteComponent() {
                 {publishStatusBadge(studyPlan.isPublished)}
             </Group>
 
-            <Button
-                leftSection={<Globe size={18}/>}
-                radius="xl"
-                variant="outline"
-                mb="auto"
-                ml="auto"
-                disabled={studyPlan.isPublished}
-            >
-                {studyPlan.isPublished ? 'Published' : 'Publish Study Plan'}
-            </Button>
+            <PublishButton studyPlan={studyPlan} />
         </Group>
     );
 

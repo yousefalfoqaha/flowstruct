@@ -7,6 +7,9 @@ export const useResizeCoursePlacement = () => {
     const queryClient = useQueryClient();
 
     return useAppMutation(resizeCoursePlacement, {
-        onSuccess: (data) => queryClient.setQueryData(studyPlanKeys.detail(data.id), data)
+        onSuccess: (data) => {
+            queryClient.setQueryData(studyPlanKeys.detail(data.id), data);
+            queryClient.invalidateQueries({queryKey: studyPlanKeys.list()});
+        }
     });
 }

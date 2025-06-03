@@ -33,6 +33,9 @@ export const moveCourseToSemester = ({studyPlanId, courseId, targetPlacement}: {
         body: targetPlacement
     });
 
+export const publishStudyPlan = (studyPlanId: number) =>
+    api.put<StudyPlan>([ENDPOINT, studyPlanId, 'publish']);
+
 export const deleteStudyPlan = (studyPlanId: number) =>
     api.delete<void>([ENDPOINT, studyPlanId]);
 

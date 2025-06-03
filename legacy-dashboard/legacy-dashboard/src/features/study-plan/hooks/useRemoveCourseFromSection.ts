@@ -9,6 +9,7 @@ export const useRemoveCoursesFromStudyPlan = () => {
     return useAppMutation(removeCoursesFromStudyPlan, {
         onSuccess: (data) => {
             queryClient.setQueryData(studyPlanKeys.detail(data.id), data);
+            queryClient.invalidateQueries({queryKey: studyPlanKeys.list()});
             queryClient.invalidateQueries({queryKey: studyPlanKeys.courseList(data.id)});
         },
         successNotification: {

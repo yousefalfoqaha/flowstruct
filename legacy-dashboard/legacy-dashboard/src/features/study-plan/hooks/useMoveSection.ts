@@ -7,6 +7,10 @@ export const useMoveSection = () => {
     const queryClient = useQueryClient();
 
     return useAppMutation(moveSection, {
-        onSuccess: (data) => queryClient.setQueryData(studyPlanKeys.detail(data.id), data)
+        onSuccess: (data) => {
+            queryClient.setQueryData(studyPlanKeys.detail(data.id), data);
+            queryClient.invalidateQueries({queryKey: studyPlanKeys.list()});
+        }
+
     });
 }

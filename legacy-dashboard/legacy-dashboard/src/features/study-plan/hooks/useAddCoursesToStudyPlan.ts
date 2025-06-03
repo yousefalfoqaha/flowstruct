@@ -9,6 +9,7 @@ export const useAddCoursesToStudyPlan = () => {
     return useAppMutation(addCoursesToStudyPlan, {
         onSuccess: (data) => {
             queryClient.setQueryData(studyPlanKeys.detail(data.id), data);
+            queryClient.invalidateQueries({queryKey: studyPlanKeys.list()});
             queryClient.invalidateQueries({queryKey: studyPlanKeys.courseList(data.id)});
         },
         successNotification: {message: "Course(s) added to study plan."}
