@@ -1,4 +1,4 @@
-import type {Course} from "../types";
+import type { Course } from '../types';
 
 export const sortByCourseCode = (a: Course, b: Course, programCode: string) => {
   const parseCode = (code: string) => {
@@ -18,7 +18,7 @@ export const sortByCourseCode = (a: Course, b: Course, programCode: string) => {
       baseNum,
       secondaryNum,
       isGermanCourse,
-      isProgramCourse
+      isProgramCourse,
     };
   };
 

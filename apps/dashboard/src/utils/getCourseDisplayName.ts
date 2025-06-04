@@ -1,5 +1,4 @@
-import {Course} from "@/features/course/types.ts";
+import { Course } from '@/features/course/types.ts';
 
-export const getCourseDisplayName = (course: Pick<Course, 'code' | 'name'>) => (
-    `${course.code}: ${course.name}`
-);
+export const getCourseDisplayName = (course: Pick<Course, 'code' | 'name'>) =>
+  `${course.code}: ${course.name}`;

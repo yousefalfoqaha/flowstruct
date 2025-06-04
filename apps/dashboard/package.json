@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -12,10 +11,9 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,md}\"",
     "test": "echo \"dashboard: no tests defined\" && exit 0"
   },
-
   "dependencies": {
-    "@gjuplans/shared-types": "workspace:*",
-    "@gjuplans/api-client": "workspace:*",
+    "@gjuplans/shared-types": "*",
+    "@gjuplans/api-client": "*",
     "@hookform/resolvers": "^3.10.0",
     "@mantine/core": "^8.0.0",
     "@mantine/dates": "^8.0.0",
@@ -36,7 +34,6 @@
     "react-hook-form": "^7.54.2",
     "zod": "^4.0.0-beta.20250418T073619"
   },
-
   "devDependencies": {
     "@tanstack/router-devtools": "^1.99.0",
     "@tanstack/router-plugin": "^1.99.3",

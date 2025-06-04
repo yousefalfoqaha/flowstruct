@@ -1,152 +1,156 @@
-import {Button, Group, MultiSelect, MultiSelectProps, Popover, Stack, Text} from "@mantine/core";
-import {BetweenHorizontalStart, CircleAlert, Plus} from "lucide-react";
-import React from "react";
-import {usePlaceCoursesInSemester} from "@/features/study-plan/hooks/useAddCoursesToSemester.ts";
+import { Button, Group, MultiSelect, MultiSelectProps, Popover, Stack, Text } from '@mantine/core';
+import { BetweenHorizontalStart, CircleAlert, Plus } from 'lucide-react';
+import React from 'react';
+import { usePlaceCoursesInSemester } from '@/features/study-plan/hooks/useAddCoursesToSemester.ts';
 import classes from './CoursesMultiSelect.module.css';
-import {getSectionCode} from "@/utils/getSectionCode.ts";
-import {CoursePlacement} from "@/features/study-plan/types.ts";
-import {useStudyPlan} from "@/features/study-plan/hooks/useStudyPlan.ts";
-import {useStudyPlanCourses} from "@/features/study-plan/hooks/useStudyPlanCourses.ts";
-import {comparePlacement} from "@/utils/comparePlacement.ts";
+import { getSectionCode } from '@/utils/getSectionCode.ts';
+import { CoursePlacement } from '@/features/study-plan/types.ts';
+import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
+import { useStudyPlanCourses } from '@/features/study-plan/hooks/useStudyPlanCourses.ts';
+import { comparePlacement } from '@/utils/comparePlacement.ts';
 
 type CoursePlacementMultiSelectProps = {
-    placement: CoursePlacement;
-}
+  placement: CoursePlacement;
+};
 
 interface CourseOption {
-    label: string;
-    value: string;
-    disabled: boolean;
-    alreadyAdded: boolean;
-    unmetPrerequisites: string[];
+  label: string;
+  value: string;
+  disabled: boolean;
+  alreadyAdded: boolean;
+  unmetPrerequisites: string[];
 }
 
-export function CoursePlacementMultiSelect({placement}: CoursePlacementMultiSelectProps) {
-    const [opened, setOpened] = React.useState(false);
-    const [selectedCourses, setSelectedCourses] = React.useState<string[]>([]);
-    const {data: studyPlan} = useStudyPlan();
-    const {data: courses} = useStudyPlanCourses();
+export function CoursePlacementMultiSelect({ placement }: CoursePlacementMultiSelectProps) {
+  const [opened, setOpened] = React.useState(false);
+  const [selectedCourses, setSelectedCourses] = React.useState<string[]>([]);
+  const { data: studyPlan } = useStudyPlan();
+  const { data: courses } = useStudyPlanCourses();
 
-    const placeCourses = usePlaceCoursesInSemester();
+  const placeCourses = usePlaceCoursesInSemester();
 
-    const handlePlaceCourses = () => placeCourses.mutate({
+  const handlePlaceCourses = () =>
+    placeCourses.mutate(
+      {
         studyPlanId: studyPlan.id,
-        targetPlacement: {...placement, position: placement.position + 1},
-        courseIds: selectedCourses.map(id => Number(id))
-    }, {
+        targetPlacement: { ...placement, position: placement.position + 1 },
+        courseIds: selectedCourses.map((id) => Number(id)),
+      },
+      {
         onSuccess: () => {
-            setSelectedCourses([]);
-            setOpened(false);
-        }
-    });
-
-    if (!placement) return null;
-
-    const data = studyPlan.sections
-        .map(section => {
-            const sectionCode = getSectionCode(section);
-            const displayName = section.name
-                ? `- ${section.name}`
-                : (sectionCode.split('.').length > 2 ? "- General" : "");
-
-            return {
-                group: `${sectionCode}. ${section.level} ${section.type} ${displayName}`,
-                items: section.courses.map(courseId => {
-                    const course = courses[courseId];
-                    if (!course) return null;
-
-                    const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
-                    const unmetPrerequisites = Object.keys(prerequisites)
-                        .filter((prerequisiteId) => {
-                            const prerequisitePlacement = studyPlan.coursePlacements[Number(prerequisiteId)];
-                            return prerequisitePlacement === undefined || comparePlacement(prerequisitePlacement, placement) >= 0;
-                        });
-
-                    if (studyPlan.coursePlacements[courseId] !== undefined) return null;
-
-                    return {
-                        label: `${course.code}: ${course.name}`,
-                        value: courseId.toString(),
-                        disabled: unmetPrerequisites.length > 0,
-                        unmetPrerequisites,
-                    } as CourseOption;
-                }).filter((item): item is CourseOption => item !== null)
-            }
-        });
-
-    const renderOption: MultiSelectProps['renderOption'] = ({option}) => {
-        const courseOption = option as unknown as CourseOption;
-        return (
-            <div>
-                <div className={classes.label}>{option.label}</div>
-
-                {courseOption.disabled && courseOption.unmetPrerequisites.length > 0 && (
-                    <Text className={classes.warning}>
-                        <Group gap={6}>
-                            <CircleAlert size={14}/>
-
-                            Prerequisites: {courseOption.unmetPrerequisites.map(prerequisiteId => {
-                            const prerequisite = courses[Number(prerequisiteId)];
-                            return prerequisite?.code || prerequisiteId;
-                        }).join(', ')}
-                        </Group>
-                    </Text>
-                )}
-            </div>
-        );
-    }
-
-    return (
-        <Popover
-            trapFocus
-            opened={opened}
-            onChange={setOpened}
-            withArrow
-            shadow="md"
-            width={360}
-        >
-            <Popover.Target>
-                <Button
-                    fullWidth
-                    variant="subtle"
-                    size="compact-xs"
-                    onClick={() => setOpened((o) => !o)}
-                    leftSection={<Plus size={14}/>}
-                >
-                    Add
-                </Button>
-            </Popover.Target>
-
-            <Popover.Dropdown>
-                <Stack>
-                    <Button
-                        disabled={selectedCourses.length === 0}
-                        loading={placeCourses.isPending}
-                        leftSection={<BetweenHorizontalStart size={18}/>}
-                        onClick={handlePlaceCourses}
-                    >
-                        Place Courses
-                    </Button>
-
-                    <MultiSelect
-                        comboboxProps={{
-                            withinPortal: false,
-                            classNames: {
-                                option: classes.option
-                            }
-                        }}
-                        withCheckIcon
-                        renderOption={renderOption}
-                        data={data}
-                        value={selectedCourses}
-                        onChange={setSelectedCourses}
-                        label={`Add courses to year ${placement.year}, semester ${placement.semester}`}
-                        placeholder="Search framework courses"
-                        searchable
-                        hidePickedOptions
-                    />
-                </Stack>
-            </Popover.Dropdown>
-        </Popover>
+          setSelectedCourses([]);
+          setOpened(false);
+        },
+      }
     );
+
+  if (!placement) return null;
+
+  const data = studyPlan.sections.map((section) => {
+    const sectionCode = getSectionCode(section);
+    const displayName = section.name
+      ? `- ${section.name}`
+      : sectionCode.split('.').length > 2
+        ? '- General'
+        : '';
+
+    return {
+      group: `${sectionCode}. ${section.level} ${section.type} ${displayName}`,
+      items: section.courses
+        .map((courseId) => {
+          const course = courses[courseId];
+          if (!course) return null;
+
+          const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
+          const unmetPrerequisites = Object.keys(prerequisites).filter((prerequisiteId) => {
+            const prerequisitePlacement = studyPlan.coursePlacements[Number(prerequisiteId)];
+            return (
+              prerequisitePlacement === undefined ||
+              comparePlacement(prerequisitePlacement, placement) >= 0
+            );
+          });
+
+          if (studyPlan.coursePlacements[courseId] !== undefined) return null;
+
+          return {
+            label: `${course.code}: ${course.name}`,
+            value: courseId.toString(),
+            disabled: unmetPrerequisites.length > 0,
+            unmetPrerequisites,
+          } as CourseOption;
+        })
+        .filter((item): item is CourseOption => item !== null),
+    };
+  });
+
+  const renderOption: MultiSelectProps['renderOption'] = ({ option }) => {
+    const courseOption = option as unknown as CourseOption;
+    return (
+      <div>
+        <div className={classes.label}>{option.label}</div>
+
+        {courseOption.disabled && courseOption.unmetPrerequisites.length > 0 && (
+          <Text className={classes.warning}>
+            <Group gap={6}>
+              <CircleAlert size={14} />
+              Prerequisites:{' '}
+              {courseOption.unmetPrerequisites
+                .map((prerequisiteId) => {
+                  const prerequisite = courses[Number(prerequisiteId)];
+                  return prerequisite?.code || prerequisiteId;
+                })
+                .join(', ')}
+            </Group>
+          </Text>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <Popover trapFocus opened={opened} onChange={setOpened} withArrow shadow="md" width={360}>
+      <Popover.Target>
+        <Button
+          fullWidth
+          variant="subtle"
+          size="compact-xs"
+          onClick={() => setOpened((o) => !o)}
+          leftSection={<Plus size={14} />}
+        >
+          Add
+        </Button>
+      </Popover.Target>
+
+      <Popover.Dropdown>
+        <Stack>
+          <Button
+            disabled={selectedCourses.length === 0}
+            loading={placeCourses.isPending}
+            leftSection={<BetweenHorizontalStart size={18} />}
+            onClick={handlePlaceCourses}
+          >
+            Place Courses
+          </Button>
+
+          <MultiSelect
+            comboboxProps={{
+              withinPortal: false,
+              classNames: {
+                option: classes.option,
+              },
+            }}
+            withCheckIcon
+            renderOption={renderOption}
+            data={data}
+            value={selectedCourses}
+            onChange={setSelectedCourses}
+            label={`Add courses to year ${placement.year}, semester ${placement.semester}`}
+            placeholder="Search framework courses"
+            searchable
+            hidePickedOptions
+          />
+        </Stack>
+      </Popover.Dropdown>
+    </Popover>
+  );
 }

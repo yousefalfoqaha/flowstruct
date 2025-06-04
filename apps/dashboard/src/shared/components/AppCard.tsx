@@ -1,33 +1,41 @@
-import {Card, Group, Stack, Text} from '@mantine/core';
-import {ReactNode} from 'react';
+import { Card, Group, Stack, Text } from '@mantine/core';
+import { ReactNode } from 'react';
 
 type AppCardProps = {
-    title: string;
-    subtitle?: string;
-    children: ReactNode;
-    footer?: ReactNode;
-    headerAction?: ReactNode;
+  title: string;
+  subtitle?: string;
+  children: ReactNode;
+  footer?: ReactNode;
+  headerAction?: ReactNode;
 };
 
-export function AppCard({title, subtitle, children, footer, headerAction}: AppCardProps) {
-    return (
-        <Card padding="lg" pt="md" withBorder>
-            <Group justify="space-between">
-                <div>
-                    <Text size="xl" fw={600}>{title}</Text>
-                    {subtitle && <Text size="xs" c="dimmed">{subtitle}</Text>}
-                </div>
-                {headerAction}
-            </Group>
+export function AppCard({ title, subtitle, children, footer, headerAction }: AppCardProps) {
+  return (
+    <Card padding="lg" pt="md" withBorder>
+      <Group justify="space-between">
+        <div>
+          <Text size="xl" fw={600}>
+            {title}
+          </Text>
+          {subtitle && (
+            <Text size="xs" c="dimmed">
+              {subtitle}
+            </Text>
+          )}
+        </div>
+        {headerAction}
+      </Group>
 
-            <Card.Section py="lg" inheritPadding>
-                <Stack gap="lg">
-                    {children}
-                    {footer && (
-                        <Group justify="space-between" mt="xs">{footer}</Group>
-                    )}
-                </Stack>
-            </Card.Section>
-        </Card>
-    );
+      <Card.Section py="lg" inheritPadding>
+        <Stack gap="lg">
+          {children}
+          {footer && (
+            <Group justify="space-between" mt="xs">
+              {footer}
+            </Group>
+          )}
+        </Stack>
+      </Card.Section>
+    </Card>
+  );
 }

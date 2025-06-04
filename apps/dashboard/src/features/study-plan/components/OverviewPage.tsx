@@ -1,4 +1,3 @@
-
 export function OverviewPage() {
-    return <></>
+  return <></>;
 }

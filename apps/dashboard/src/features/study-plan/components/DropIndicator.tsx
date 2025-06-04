@@ -1,15 +1,10 @@
-import classes from "@/features/study-plan/components/ProgramMap.module.css";
-import {CoursePlacement} from "@/features/study-plan/types.ts";
+import classes from '@/features/study-plan/components/ProgramMap.module.css';
+import { CoursePlacement } from '@/features/study-plan/types.ts';
 
 type Props = {
-    placement: CoursePlacement;
-}
+  placement: CoursePlacement;
+};
 
-export function DropIndicator({placement}: Props) {
-    return (
-        <div
-            data-placement={JSON.stringify(placement)}
-            className={classes.dropIndicator}
-        />
-    );
+export function DropIndicator({ placement }: Props) {
+  return <div data-placement={JSON.stringify(placement)} className={classes.dropIndicator} />;
 }

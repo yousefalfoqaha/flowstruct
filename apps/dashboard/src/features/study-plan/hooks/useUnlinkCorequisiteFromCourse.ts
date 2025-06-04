@@ -1,15 +1,15 @@
-import {useQueryClient} from "@tanstack/react-query";
-import {unlinkCorequisiteFromCourse} from "@/features/study-plan/api.ts";
-import {studyPlanKeys} from "@/features/study-plan/queries.ts";
-import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
+import { useQueryClient } from '@tanstack/react-query';
+import { unlinkCorequisiteFromCourse } from '@/features/study-plan/api.ts';
+import { studyPlanKeys } from '@/features/study-plan/queries.ts';
+import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
 
 export const useUnlinkCorequisiteFromCourse = () => {
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
-    return useAppMutation(unlinkCorequisiteFromCourse, {
-        onSuccess: (data) => {
-            queryClient.setQueryData(studyPlanKeys.detail(data.id), data);
-            queryClient.invalidateQueries({queryKey: studyPlanKeys.list()});
-        }
-    });
-}
+  return useAppMutation(unlinkCorequisiteFromCourse, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(studyPlanKeys.detail(data.id), data);
+      queryClient.invalidateQueries({ queryKey: studyPlanKeys.list() });
+    },
+  });
+};

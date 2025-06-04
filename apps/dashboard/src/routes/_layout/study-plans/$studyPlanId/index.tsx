@@ -1,15 +1,10 @@
-import {createFileRoute, Navigate} from '@tanstack/react-router'
+import { createFileRoute, Navigate } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_layout/study-plans/$studyPlanId/')({
-    component: RouteComponent,
-})
+  component: RouteComponent,
+});
 
 function RouteComponent() {
-    const { studyPlanId } = Route.useParams();
-    return (
-        <Navigate
-            to="/study-plans/$studyPlanId/details"
-            params={{studyPlanId}}
-        />
-    );
+  const { studyPlanId } = Route.useParams();
+  return <Navigate to="/study-plans/$studyPlanId/details" params={{ studyPlanId }} />;
 }

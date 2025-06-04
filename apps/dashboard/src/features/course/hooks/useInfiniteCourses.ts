@@ -1,6 +1,6 @@
-import {InfiniteCoursesQuery} from "@/features/course/queries.ts";
-import {useInfiniteQuery} from "@tanstack/react-query";
+import { InfiniteCoursesQuery } from '@/features/course/queries.ts';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 export const useInfiniteCourses = (filter: string) => {
-    return useInfiniteQuery(InfiniteCoursesQuery(filter));
-}
+  return useInfiniteQuery(InfiniteCoursesQuery(filter));
+};

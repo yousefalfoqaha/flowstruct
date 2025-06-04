@@ -1,20 +1,19 @@
-import {useQueryClient} from "@tanstack/react-query";
-import {removeCoursesFromStudyPlan} from "@/features/study-plan/api.ts";
-import {studyPlanKeys} from "@/features/study-plan/queries.ts";
-import {useAppMutation} from "@/shared/hooks/useAppMutation.ts";
+import { useQueryClient } from '@tanstack/react-query';
+import { removeCoursesFromStudyPlan } from '@/features/study-plan/api.ts';
+import { studyPlanKeys } from '@/features/study-plan/queries.ts';
+import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
 
 export const useRemoveCoursesFromStudyPlan = () => {
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
-    return useAppMutation(removeCoursesFromStudyPlan, {
-        onSuccess: (data) => {
-            queryClient.setQueryData(studyPlanKeys.detail(data.id), data);
-            queryClient.invalidateQueries({queryKey: studyPlanKeys.list()});
-            queryClient.invalidateQueries({queryKey: studyPlanKeys.courseList(data.id)});
-        },
-        successNotification: {
-            message: (_, {courseIds}) =>
-                `${courseIds.length} course(s) removed from study plan.`
-        }
-    });
-}
+  return useAppMutation(removeCoursesFromStudyPlan, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(studyPlanKeys.detail(data.id), data);
+      queryClient.invalidateQueries({ queryKey: studyPlanKeys.list() });
+      queryClient.invalidateQueries({ queryKey: studyPlanKeys.courseList(data.id) });
+    },
+    successNotification: {
+      message: (_, { courseIds }) => `${courseIds.length} course(s) removed from study plan.`,
+    },
+  });
+};
