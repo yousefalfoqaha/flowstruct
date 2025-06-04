@@ -1,0 +1,28 @@
+{
+  "name": "pages",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "lint": "eslint \"src/**/*.{ts,tsx,astro,js,jsx,md}\"",
+    "format": "prettier --write \"./**/*.{ts,tsx,astro,js,jsx,md,css}\"",
+    "test": "echo \"pages: no tests defined\" && exit 0"
+  },
+
+  "dependencies": {
+    "@gjuplans/shared-types": "workspace:*",
+    "@gjuplans/api-client": "workspace:*",
+    "@astrojs/tailwind": "^6.0.2",
+    "astro": "^5.7.10",
+    "lucide": "^0.468.0",
+    "tailwindcss": "^3.4.16"
+  },
+
+  "devDependencies": {
+    "@types/node": "^22.12.0"
+  }
+}

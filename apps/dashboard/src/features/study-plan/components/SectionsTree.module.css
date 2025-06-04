@@ -1,0 +1,8 @@
+.label {
+    padding-block: 3px;
+
+    &[data-selected] {
+        font-weight: 600;
+        background-color: transparent;
+    }
+}
