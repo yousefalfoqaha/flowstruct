@@ -10,6 +10,7 @@ import {DropIndicator} from "@/features/study-plan/components/DropIndicator.tsx"
 import {createCourseGridCellMap} from "@/utils/createCourseGridCellMap.ts";
 import React from "react";
 import {CoursePlacement} from "@/features/study-plan/types.ts";
+import {comparePlacement} from "@/utils/comparePlacement.ts";
 
 export function ProgramMap() {
     const {data: studyPlan} = useStudyPlan();
@@ -88,6 +89,18 @@ export function ProgramMap() {
                         const course = courses[courseId];
                         if (!course) return null;
 
+                        const placement = studyPlan.coursePlacements[course.id];
+                        const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
+
+                        const unmetPrerequisite = (prerequisiteId: string) => {
+                            const prerequisitePlacement = studyPlan.coursePlacements[Number(prerequisiteId)];
+                            return prerequisitePlacement === undefined || comparePlacement(placement, prerequisitePlacement) <= 0;
+                        };
+
+                        const missingPrerequisites = Object.keys(prerequisites)
+                            .filter(unmetPrerequisite)
+                            .map(prerequisiteId => courses[Number(prerequisiteId)].code);
+
                         return (
                             <div
                                 key={courseId}
@@ -99,7 +112,8 @@ export function ProgramMap() {
                             >
                                 <CourseCard
                                     course={course}
-                                    placement={studyPlan.coursePlacements[course.id]}
+                                    placement={placement}
+                                    missingPrerequisites={missingPrerequisites}
                                 />
                             </div>
                         );
