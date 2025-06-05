@@ -1,14 +1,16 @@
 FROM eclipse-temurin:23-jdk
-WORKDIR /gjuplans/services/backend
+WORKDIR /app
 
-RUN apt-get update && apt-get install -y maven
-
+COPY mvnw ./
+COPY .mvn .mvn
 COPY pom.xml ./
 
-RUN mvn dependency:go-offline -B
+RUN chmod +x ./mvnw && \
+    sed -i 's/\r$//' ./mvnw
+
+RUN ./mvnw dependency:go-offline -B
 
 COPY src src
 
 EXPOSE 8080
-
-CMD ["mvn", "spring-boot:run"]
+CMD ["./mvnw", "spring-boot:run"]

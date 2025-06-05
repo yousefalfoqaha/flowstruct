@@ -1,8 +1,20 @@
-FROM gjuplans/base
-WORKDIR /gjuplans/apps/pages
+FROM node:22.16.0-alpine AS deps
+WORKDIR /app
 
-COPY . ./
+COPY package.json        package-lock.json  ./
+COPY apps/pages/package.json  ./apps/pages/
 
-EXPOSE 4321
+COPY packages/* ./packages/*
 
+RUN npm install --workspace=apps/pages
+
+FROM node:22.16.0-alpine AS runner
+WORKDIR /app
+
+COPY --from=deps /app/node_modules  ./node_modules
+COPY apps/pages ./apps/pages
+
+WORKDIR /app/apps/pages
+
+EXPOSE 5173
 CMD ["npm", "run", "dev"]

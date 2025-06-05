@@ -3,14 +3,16 @@ spring:
     name: gjuplans
   security:
     user:
-      name: admin
-      password: admin
+      name: ${SPRING_SECURITY_USER_NAME}
+      password: ${SPRING_SECURITY_USER_PASSWORD}
   datasource:
-    url: jdbc:postgresql://localhost:5432/gjuplans
-    username: postgres
-    password: admin
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
 jwt:
-  cookieExpiry: 1800
+  cookieExpiry: ${JWT_COOKIEEXPIRY:1800} # default 1800 seconds if not set
+
 backend:
   api:
     key: ${BACKEND_API_KEY}
