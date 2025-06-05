@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+backend
+Dockerfile.base
+Dockerfile.dashboard
+Dockerfile.pages
+docker-compose.yml
+.git

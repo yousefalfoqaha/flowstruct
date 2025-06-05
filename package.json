@@ -20,6 +20,8 @@
     "build:pages": "npm run build --workspace=pages",
     "build:shared-types": "npm run build --workspace=@gjuplans/shared-types",
     "build:api-client": "npm run build --workspace=@gjuplans/api-client",
+    "dev:dashboard": "npm run dev --workspace=dashboard",
+    "dev:pages": "npm run dev --workspace=pages",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.astro",
     "format": "prettier --write . --ignore-path .prettierignore",
     "test": "npm run test --workspaces"
