@@ -1,7 +1,7 @@
 FROM gjuplans/base
 WORKDIR /gjuplans/apps/pages
 
-COPY apps/pages/ ./
+COPY . ./
 
 EXPOSE 4321
 

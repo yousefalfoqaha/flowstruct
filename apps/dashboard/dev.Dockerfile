@@ -1,7 +1,7 @@
 FROM gjuplans/base
 WORKDIR /gjuplans/apps/dashboard
 
-COPY apps/dashboard/ ./
+COPY . ./
 
 EXPOSE 5173
 
