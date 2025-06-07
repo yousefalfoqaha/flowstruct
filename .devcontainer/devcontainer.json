@@ -3,6 +3,19 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "backend",
   "workspaceFolder": "/workspace",
-  "runServices": ["database", "backend", "dashboard", "pages"],
-  "forwardPorts": [5432, 8080, 5173, 4321]
+  "runServices": [
+    "database",
+    "backend",
+    "dashboard",
+    "pages"
+  ],
+  "forwardPorts": [
+    5432,
+    8080,
+    5173,
+    4321
+  ],
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind"
+  ]
 }
