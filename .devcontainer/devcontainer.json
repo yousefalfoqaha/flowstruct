@@ -1,6 +1,6 @@
 {
   "name": "GJU Plans",
-  "dockerComposeFile": "docker-compose.yml",
+  "dockerComposeFile": "../docker-compose.yaml",
   "service": "backend",
   "workspaceFolder": "/workspace",
   "runServices": [
