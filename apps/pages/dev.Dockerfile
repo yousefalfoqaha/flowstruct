@@ -14,6 +14,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules  ./node_modules
 COPY apps/pages ./apps/pages
 
+COPY tsconfig.base.json ./
+
 WORKDIR /app/apps/pages
 
 EXPOSE 5173
