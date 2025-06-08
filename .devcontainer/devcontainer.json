@@ -2,6 +2,7 @@
   "name": "GJU Plans",
   "dockerComposeFile": "../docker-compose.yaml",
   "service": "dev_container",
+  "runServices": [ "dev_container", "database" ],
   "workspaceFolder": "/workspace",
   "forwardPorts": [8080, 5173, 4321, 5432],
   "portsAttributes": {
