@@ -1,0 +1,22 @@
+{
+  "name": "GJU Plans - Dashboard Environment",
+  "dockerComposeFile": [
+    "../../../docker-compose.yaml"
+  ],
+  "service": "dashboard",
+  "workspaceFolder": "/workspace/apps/dashboard",
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [5173],
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "ms-vscode.vscode-typescript-next"
+      ]
+    }
+  },
+
+  "remoteUser": "node"
+}
