@@ -2,7 +2,7 @@ services:
   database:
     image: postgres:17.4-alpine
     container_name: gjuplans-database
-    env_file: .env
+    env_file: dev.env
     ports:
       - "5432:5432"
     volumes:
@@ -14,7 +14,7 @@ services:
       context: ./services/backend
       dockerfile: dev.Dockerfile
     container_name: gjuplans-backend
-    env_file: .env
+    env_file: dev.env
     ports:
       - "8080:8080"
     depends_on:
@@ -23,9 +23,9 @@ services:
   dashboard:
     build:
       context: .
-      dockerfile: apps/dashboard/dev.Dockerfile
+      dockerfile: apps/dashboard/.devcontainer/dev.Dockerfile
     container_name: gjuplans-dashboard
-    env_file: .env
+    env_file: dev.env
     ports:
       - "5173:5173"
     depends_on:
@@ -36,7 +36,7 @@ services:
       context: .
       dockerfile: apps/pages/dev.Dockerfile
     container_name: gjuplans-pages
-    env_file: .env
+    env_file: dev.env
     ports:
       - "4321:4321"
     depends_on:

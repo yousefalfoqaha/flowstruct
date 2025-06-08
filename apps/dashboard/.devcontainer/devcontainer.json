@@ -1,10 +1,10 @@
 {
   "name": "GJU Plans - Dashboard Environment",
   "dockerComposeFile": [
-    "../docker-compose.yaml"
+    "../../docker-compose.yaml"
   ],
   "service": "dashboard",
-  "workspaceFolder": "/workspace/apps/dashboard",
+  "runServices": ["backend"],
   "shutdownAction": "stopCompose",
   "forwardPorts": [5173],
 
@@ -17,6 +17,6 @@
       ]
     }
   },
-
+  "workspaceFolder": "/workspace",
   "remoteUser": "node"
 }
