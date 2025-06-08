@@ -1,7 +1,7 @@
 {
   "name": "GJU Plans - Dashboard Environment",
   "dockerComposeFile": [
-    "../../../docker-compose.yaml"
+    "../docker-compose.yaml"
   ],
   "service": "dashboard",
   "workspaceFolder": "/workspace/apps/dashboard",

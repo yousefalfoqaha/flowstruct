@@ -23,7 +23,7 @@ services:
   dashboard:
     build:
       context: .
-      dockerfile: apps/dashboard/.devcontainer/dev.Dockerfile
+      dockerfile: apps/dashboard/dev.Dockerfile
     container_name: gjuplans-dashboard
     env_file: .env
     ports:
