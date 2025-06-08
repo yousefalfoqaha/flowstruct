@@ -1,21 +1,46 @@
 {
   "name": "GJU Plans",
   "dockerComposeFile": "../docker-compose.yaml",
-  "service": "backend",
+  "service": "dev_container",
   "workspaceFolder": "/workspace",
-  "runServices": [
-    "database",
-    "backend",
-    "dashboard",
-    "pages"
-  ],
-  "forwardPorts": [
-    5432,
-    8080,
-    5173,
-    4321
-  ],
-  "mounts": [
-    "source=${localWorkspaceFolder},target=/workspace,type=bind"
-  ]
+  "forwardPorts": [8080, 5173, 4321, 5432],
+  "portsAttributes": {
+    "8080": {
+      "label": "Backend API",
+      "onAutoForward": "notify"
+    },
+    "5173": {
+      "label": "Pages App",
+      "onAutoForward": "openBrowser"
+    },
+    "4321": {
+      "label": "Dashboard App",
+      "onAutoForward": "openBrowser"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "ignore"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-spring-initializr",
+        "vscjava.vscode-spring-boot-dashboard",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next",
+        "ms-python.python",
+        "ms-vscode.vscode-json"
+      ],
+      "settings": {
+        "java.home": "/usr/lib/jvm/java-23-openjdk-amd64",
+        "spring-boot.ls.java.home": "/usr/lib/jvm/java-23-openjdk-amd64",
+        "typescript.preferences.importModuleSpecifier": "relative"
+      }
+    }
+  },
+  "postCreateCommand": "echo 'Dev container ready! Run the following commands to get started:\n\n1. npm install\n2. cd services/backend && ./mvnw dependency:go-offline\n3. Start services as needed:\n   - Backend: cd services/backend && ./mvnw spring-boot:run\n   - Pages: cd apps/pages && npm run dev\n   - Dashboard: cd apps/dashboard && npm run dev'",
+  "remoteUser": "root"
 }

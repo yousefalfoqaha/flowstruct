@@ -1,4 +1,18 @@
 services:
+  dev_container:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    container_name: dev-container
+    env_file: dev.env
+    volumes:
+      - .:/workspace
+      - node_modules:/workspace/node_modules
+      - maven_cache:/root/.m2
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+
   database:
     image: postgres:17.4-alpine
     container_name: gjuplans-database
@@ -9,38 +23,7 @@ services:
       - db:/var/lib/postgresql/data
       - ./db.sql:/docker-entrypoint-initdb.d/db.sql
 
-  backend:
-    build:
-      context: ./services/backend
-      dockerfile: dev.Dockerfile
-    container_name: gjuplans-backend
-    env_file: dev.env
-    ports:
-      - "8080:8080"
-    depends_on:
-      - database
-
-  dashboard:
-    build:
-      context: .
-      dockerfile: apps/dashboard/dev.Dockerfile
-    container_name: gjuplans-dashboard
-    env_file: dev.env
-    ports:
-      - "5173:5173"
-    depends_on:
-      - backend
-
-  pages:
-    build:
-      context: .
-      dockerfile: apps/pages/dev.Dockerfile
-    container_name: gjuplans-pages
-    env_file: dev.env
-    ports:
-      - "4321:4321"
-    depends_on:
-      - backend
-
 volumes:
   db:
+  node_modules:
+  maven_cache:
