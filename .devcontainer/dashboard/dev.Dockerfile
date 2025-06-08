@@ -1,7 +1,7 @@
 FROM node:22.16.0-alpine AS deps
 WORKDIR /app
 
-COPY ../package.json        package-lock.json  ./
+COPY ../../apps/dashboard/package.json        package-lock.json  ./
 COPY apps/dashboard/package.json ./apps/dashboard/
 
 COPY packages/* ./packages/*

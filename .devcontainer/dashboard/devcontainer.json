@@ -1,13 +1,16 @@
 {
   "name": "GJU Plans - Dashboard Environment",
   "dockerComposeFile": [
-    "../../../docker-compose.yaml"
+    "docker-compose.yaml"
   ],
   "service": "dashboard",
-  "runServices": ["backend"],
+  "runServices": [
+    "backend"
+  ],
   "shutdownAction": "stopCompose",
-  "forwardPorts": [5173],
-
+  "forwardPorts": [
+    5173
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
