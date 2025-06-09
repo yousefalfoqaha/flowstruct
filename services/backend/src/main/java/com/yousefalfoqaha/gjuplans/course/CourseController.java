@@ -2,16 +2,12 @@ package com.yousefalfoqaha.gjuplans.course;
 
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDetailsDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
-import com.yousefalfoqaha.gjuplans.course.dto.CourseSummaryDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CoursesPageDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/courses")
