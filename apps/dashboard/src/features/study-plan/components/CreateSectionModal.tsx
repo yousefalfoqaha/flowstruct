@@ -1,10 +1,10 @@
-import {useCreateSection} from '@/features/study-plan/hooks/useCreateSection.ts';
-import {sectionDetailsSchema} from '@/features/study-plan/schemas.ts';
-import {Button, Flex, LoadingOverlay, Modal} from '@mantine/core';
-import {SectionDetailsFormFields} from '@/features/study-plan/components/SectionDetailsFormFields.tsx';
-import {useDisclosure} from '@mantine/hooks';
-import {Plus} from 'lucide-react';
-import {useAppForm} from '@/shared/hooks/useAppForm.ts';
+import { useCreateSection } from '@/features/study-plan/hooks/useCreateSection.ts';
+import { sectionDetailsSchema } from '@/features/study-plan/schemas.ts';
+import { Button, Flex, LoadingOverlay, Modal } from '@mantine/core';
+import { SectionDetailsFormFields } from '@/features/study-plan/components/SectionDetailsFormFields.tsx';
+import { useDisclosure } from '@mantine/hooks';
+import { Plus } from 'lucide-react';
+import { useAppForm } from '@/shared/hooks/useAppForm.ts';
 
 type Props = {
   studyPlanId: number;

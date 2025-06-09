@@ -1,18 +1,18 @@
 {
-  "name": "Dashboard",
+  "name": "Pages",
   "dockerComposeFile": ["../../docker-compose.yaml"],        
-  "service": "dashboard",
-  "workspaceFolder": "/app/apps/dashboard",                           
+  "service": "pages",
+  "workspaceFolder": "/app/apps/pages",                           
   "runServices": ["backend"],              
   "shutdownAction": "stopCompose",                 
-  "forwardPorts": [5173, 8080],
+  "forwardPorts": [4321, 8080],
   "customizations": {
     "vscode": {
       "extensions": [
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint",
         "ms-vscode.vscode-typescript-next",
-        "dsznajder.es7-react-js-snippets"
+        "astro-build.astro-vscode"
       ]
     }
   }

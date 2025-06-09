@@ -1,0 +1,9 @@
+{
+  "name": "Backend",
+  "dockerComposeFile": ["../../docker-compose.yaml"],        
+  "service": "backend",
+  "workspaceFolder": "/app",
+  "runServices": ["database"],              
+  "shutdownAction": "stopCompose",                 
+  "forwardPorts": [8080, 5432]
+}

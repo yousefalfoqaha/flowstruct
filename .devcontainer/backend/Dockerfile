@@ -10,7 +10,5 @@ RUN chmod +x ./mvnw && \
 
 RUN ./mvnw dependency:go-offline -B
 
-COPY src src
-
 EXPOSE 8080
 CMD ["./mvnw", "spring-boot:run"]
