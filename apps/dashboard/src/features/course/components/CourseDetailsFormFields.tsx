@@ -21,7 +21,7 @@ import {
   Timer,
 } from 'lucide-react';
 import { PresetType } from '@/utils/getCoursePresetSettings.ts';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { courseDetailsSchema } from '@/features/course/schemas.ts';
 
 type CourseDetailsFormFieldsProps = {

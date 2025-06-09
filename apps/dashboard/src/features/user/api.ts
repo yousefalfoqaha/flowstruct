@@ -1,6 +1,6 @@
 import { api } from '@/shared/api.ts';
 import { User } from '@/features/user/types.ts';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { LoginSchema } from '@/features/user/schemas.ts';
 
 const ENDPOINT = '/users';

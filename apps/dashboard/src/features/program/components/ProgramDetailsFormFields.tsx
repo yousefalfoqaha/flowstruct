@@ -3,7 +3,7 @@ import { Flex, Select, TextInput } from '@mantine/core';
 import { Degree } from '@/features/program/types.ts';
 import { GraduationCap, Hash } from 'lucide-react';
 import { programDetailsSchema } from '@/features/program/schemas.ts';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 type Props = {
   form: UseFormReturn<z.infer<typeof programDetailsSchema>>;

@@ -1,9 +1,9 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
 
 const defaultValues = getDefaultSearchValues();
 
-export const TableSearchSchema = z.interface({
+export const TableSearchSchema = z.object({
   filter: z.string().catch(defaultValues.filter),
   page: z.number().catch(defaultValues.page),
   size: z.number().catch(defaultValues.size),

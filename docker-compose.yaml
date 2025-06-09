@@ -12,7 +12,7 @@ services:
   backend:
     build:
       context: ./services/backend
-      dockerfile: ../../.devcontainer/backend/Dockerfile
+      dockerfile: dev.Dockerfile
     container_name: gjuplans-backend
     env_file: dev.env
     ports:
@@ -20,26 +20,25 @@ services:
     depends_on:
       - database
     volumes:
-      - backend_deps:/root/.m2:cached
-      - ./services/backend/src:/app/src:cached
-      - ./services/backend/pom.xml:/app/pom.xml:cached 
+      - /root/.m2
+      - ./services/backend:/app:cached
 
   dashboard:
     build:
       context: .
-      dockerfile: .devcontainer/dashboard/Dockerfile
+      dockerfile: apps/dashboard/Dockerfile
     container_name: gjuplans-dashboard
     env_file: dev.env
     ports:
       - "5173:5173"
     volumes:
       - .:/app:cached
-      - dashboard_deps:/app/node_modules:cached
+      - /app/node_modules
 
   pages:
     build:
       context: .
-      dockerfile: .devcontainer/pages/Dockerfile
+      dockerfile: apps/pages/Dockerfile
     container_name: gjuplans-pages
     env_file: dev.env
     ports:
@@ -48,10 +47,7 @@ services:
       - backend
     volumes:
       - .:/app:cached
-      - pages_deps:/app/node_modules:cached
+      - /app/node_modules
 
 volumes:
   db:
-  pages_deps:
-  dashboard_deps:
-  backend_deps:

@@ -1,7 +1,7 @@
 import { getCoursePresetSettings } from '@/utils/getCoursePresetSettings.ts';
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { courseDetailsSchema } from '@/features/course/schemas.ts';
 
 export type PresetType = 'lecture' | 'lab' | 'custom';

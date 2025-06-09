@@ -1,7 +1,7 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { CourseType } from '@/features/course/types.ts';
 
-export const courseDetailsSchema = z.interface({
+export const courseDetailsSchema = z.object({
   code: z.string().transform((val) => val.toLocaleUpperCase()),
   name: z.string(),
   creditHours: z.number().min(0, { error: 'Must be positive' }),
@@ -15,5 +15,3 @@ export const courseDetailsSchema = z.interface({
   type: z.enum(Object.keys(CourseType)),
   isRemedial: z.boolean().default(false),
 });
-
-export type CourseDetailsFormValues = z.infer<typeof courseDetailsSchema>;

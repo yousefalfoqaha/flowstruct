@@ -5,5 +5,14 @@
   "workspaceFolder": "/app",
   "runServices": ["database"],              
   "shutdownAction": "stopCompose",                 
-  "forwardPorts": [8080, 5432]
+  "forwardPorts": [8080, 5432],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "redhat.java",
+        "vscjava.vscode-maven",
+        "vmware.vscode-spring-boot"
+      ]
+    }
+  }
 }

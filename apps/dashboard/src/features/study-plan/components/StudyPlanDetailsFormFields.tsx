@@ -3,7 +3,7 @@ import { Flex, NumberInput, Select, Stack, TextInput } from '@mantine/core';
 import { Calendar, Timer } from 'lucide-react';
 import { YearPickerInput } from '@mantine/dates';
 import { studyPlanDetailsSchema } from '@/features/study-plan/schemas.ts';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { useProgramList } from '@/features/program/hooks/useProgramList.ts';
 import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
 

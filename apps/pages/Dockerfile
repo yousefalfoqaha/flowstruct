@@ -12,4 +12,4 @@ RUN npm install
 EXPOSE 5173
 WORKDIR /app/apps/pages
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "dev", "--host"]

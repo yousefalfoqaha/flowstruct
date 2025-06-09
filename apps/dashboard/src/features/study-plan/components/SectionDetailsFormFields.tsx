@@ -3,7 +3,7 @@ import { Controller, UseFormReturn } from 'react-hook-form';
 import { SectionLevel, SectionType } from '@/features/study-plan/types.ts';
 import { GraduationCap, Tag, University } from 'lucide-react';
 import { sectionDetailsSchema } from '@/features/study-plan/schemas.ts';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 type Props = {
   form: UseFormReturn<z.infer<typeof sectionDetailsSchema>>;
