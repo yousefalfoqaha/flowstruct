@@ -9,5 +9,5 @@ public class GjuPlansApplication {
     public static void main(String[] args) {
         SpringApplication.run(GjuPlansApplication.class, args);
     }
-
+    
 }

@@ -8,7 +8,6 @@ import { CoursePlacement } from '@/features/study-plan/types.ts';
 import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
 import { useStudyPlanCourses } from '@/features/study-plan/hooks/useStudyPlanCourses.ts';
 import { comparePlacement } from '@/utils/comparePlacement.ts';
-
 type CoursePlacementMultiSelectProps = {
   placement: CoursePlacement;
 };
