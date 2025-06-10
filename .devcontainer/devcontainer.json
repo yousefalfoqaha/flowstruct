@@ -20,11 +20,11 @@
     4321,
     5173  
   ],
+  "postCreateCommand": "npm install && cd services/backend && ./mvnw dependency:go-offline",
   "customizations": {
     "vscode": {
       "extensions": [
         "esbenp.prettier-vscode",
-        "dbaeumer.vscode-eslint",
         "ms-vscode.vscode-typescript-next",
         "astro-build.astro-vscode"
       ]

@@ -59,7 +59,8 @@ export function CoursePlacementMultiSelect({ placement }: CoursePlacementMultiSe
         .map((courseId) => {
           const course = courses[courseId];
           if (!course) return null;
-
+          
+          
           const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
           const unmetPrerequisites = Object.keys(prerequisites).filter((prerequisiteId) => {
             const prerequisitePlacement = studyPlan.coursePlacements[Number(prerequisiteId)];

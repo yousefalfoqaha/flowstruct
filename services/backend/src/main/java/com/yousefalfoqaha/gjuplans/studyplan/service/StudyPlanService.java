@@ -479,7 +479,7 @@ public class StudyPlanService {
                     )
             );
         }
-
+        
         markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
