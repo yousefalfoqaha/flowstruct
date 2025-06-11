@@ -3,24 +3,16 @@
   "dockerComposeFile": [
     "docker-compose.yaml"
   ],
-  "features": {
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "22.15.0"
-    },
-    "ghcr.io/devcontainers/features/java:1": {
-      "version": "23"
-    },
-    "ghcr.io/devcontainers/features/git:1": {}
-  },
-  "service": "devcontainer",
+  "service": "dev",
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
+
   "forwardPorts": [
     8080,
-    4321,
-    5173  
+    5173,
+    4321
   ],
-  "postCreateCommand": "npm install && cd services/backend && ./mvnw dependency:go-offline",
+
   "customizations": {
     "vscode": {
       "extensions": [
@@ -29,5 +21,7 @@
         "astro-build.astro-vscode"
       ]
     }
-  }
+  },
+
+  "postCreateCommand": "npm install && cd services/backend && ./mvnw dependency:go-offline && echo \"Your development environment is ready!\""
 }
