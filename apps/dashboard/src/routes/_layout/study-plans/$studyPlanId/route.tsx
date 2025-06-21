@@ -4,13 +4,12 @@ import { getStudyPlanDisplayName } from '@/utils/getStudyPlanDisplayName.ts';
 import { ProgramQuery } from '@/features/program/queries.ts';
 import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
 import { useProgram } from '@/features/program/hooks/useProgram.ts';
-import { Button, Divider, Group, Stack, Text, Title } from '@mantine/core';
+import { Divider, Group, Stack, Text, Title } from '@mantine/core';
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
 import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
 import { publishStatusBadge } from '@/shared/components/PublishStatusBadge.tsx';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 import { StudyPlanTabs } from '@/features/study-plan/components/StudyPlanTabs.tsx';
-import { Globe } from 'lucide-react';
 import { CoursesGraphProvider } from '@/contexts/CoursesGraphContext';
 import { PublishButton } from '@/features/study-plan/components/PublishButton.tsx';
 
@@ -19,7 +18,7 @@ export const Route = createFileRoute('/_layout/study-plans/$studyPlanId')({
     const studyPlanId = Number(params.studyPlanId);
 
     const studyPlan = await queryClient.ensureQueryData(StudyPlanQuery(studyPlanId));
-    await queryClient.ensureQueryData(StudyPlanCourseListQuery(studyPlanId));
+    queryClient.ensureQueryData(StudyPlanCourseListQuery(studyPlanId)).then();
     const program = await queryClient.ensureQueryData(ProgramQuery(studyPlan.program));
 
     return {

@@ -38,5 +38,4 @@ export const InfiniteCoursesQuery = (filter: string) =>
     initialPageParam: 0,
     getNextPageParam: (lastPage) => (lastPage.isLastPage ? undefined : lastPage.page + 1),
     placeholderData: keepPreviousData,
-    enabled: filter.trim().length > 0,
   });

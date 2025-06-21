@@ -1,265 +1,174 @@
-import {
-  Button,
-  Checkbox,
-  Combobox,
-  Flex,
-  FocusTrap,
-  Loader,
-  Pill,
-  PillsInput,
-  Popover,
-  ScrollArea,
-  Select,
-  Text,
-  useCombobox,
-} from '@mantine/core';
 import React from 'react';
-import { Plus } from 'lucide-react';
+import { Button, Checkbox, Group, Loader, Modal, Select, Stack } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { Course } from '@/features/course/types.ts';
-import { useAddCoursesToStudyPlan } from '@/features/study-plan/hooks/useAddCoursesToStudyPlan.ts';
-import { CreateCourseModal } from '@/features/course/components/CreateCourseModal.tsx';
-import { getSectionCode } from '@/utils/getSectionCode.ts';
+import { Plus } from 'lucide-react';
 import { StudyPlan } from '@/features/study-plan/types.ts';
+import { useAddCoursesToStudyPlan } from '@/features/study-plan/hooks/useAddCoursesToStudyPlan.ts';
 import { useInfiniteCourses } from '@/features/course/hooks/useInfiniteCourses.ts';
+import { DataTable } from '@/shared/components/DataTable.tsx';
+import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
+import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  createColumnHelper,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  PaginationState,
+  useReactTable,
+} from '@tanstack/react-table';
+import { getSectionCode } from '@/utils/getSectionCode.ts';
+import { getSectionDisplayName } from '@/utils/getSectionDisplayName.ts';
 
-type StudyPlanCourseAdderProps = {
+interface StudyPlanCourseAdderProps {
   studyPlan: StudyPlan;
-};
+}
+
+interface CourseRow {
+  id: number;
+  code: string;
+  name: string;
+  creditHours: number;
+}
 
 export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
-  const [popoverOpened, setPopoverOpened] = React.useState(false);
+  const [modalOpen, setModalOpen] = React.useState(false);
   const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
-  const [selectedCourses, setSelectedCourses] = React.useState<Course[]>([]);
-  const [search, setSearch] = React.useState<string>('');
-  const [debouncedSearch] = useDebouncedValue(search, 750);
-  const [createModalOpen, setCreateModalOpen] = React.useState(false);
-  const combobox = useCombobox({
-    onDropdownClose: () => combobox.resetSelectedOption(),
-    onDropdownOpen: () => combobox.focusSearchInput(),
+  const [selectedRows, setSelectedRows] = React.useState<Set<number>>(new Set());
+  const [searchValue, setSearchValue] = React.useState('');
+  const [debouncedSearch] = useDebouncedValue(searchValue, 300);
+
+  const addCourses = useAddCoursesToStudyPlan();
+  const { data, isFetching, fetchNextPage, hasNextPage } = useInfiniteCourses(debouncedSearch);
+
+  const rows: CourseRow[] = React.useMemo(() => {
+    const list = data?.pages.flatMap((p) => p.content) ?? [];
+    return list.map((course) => ({
+      id: course.id,
+      code: course.code,
+      name: course.name,
+      creditHours: course.creditHours,
+    }));
+  }, [data]);
+
+  const columnHelper = createColumnHelper<CourseRow>();
+  const columns = React.useMemo<ColumnDef<CourseRow>[]>(
+    () => [
+      columnHelper.display({
+        id: 'selection',
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllRowsSelected()}
+            indeterminate={table.getIsSomeRowsSelected()}
+            onChange={table.getToggleAllRowsSelectedHandler()}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            disabled={!row.getCanSelect()}
+            onChange={row.getToggleSelectedHandler()}
+          />
+        ),
+      }),
+      columnHelper.accessor('code', { header: 'Code' }) as ColumnDef<CourseRow>,
+      columnHelper.accessor('name', { header: 'Name' }) as ColumnDef<CourseRow>,
+      columnHelper.accessor('creditHours', { header: 'Credits' }) as ColumnDef<CourseRow>,
+    ],
+    [selectedRows]
+  );
+
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [pagination, setPagination] = React.useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 5,
   });
 
-  const { data, isFetching, isSuccess, fetchNextPage, hasNextPage } =
-    useInfiniteCourses(debouncedSearch);
+  const table = useReactTable<CourseRow>({
+    data: rows,
+    columns,
+    state: {
+      globalFilter: searchValue,
+      columnFilters,
+      pagination,
+    },
+    onGlobalFilterChange: (value) => setSearchValue(value),
+    onColumnFiltersChange: setColumnFilters,
+    onPaginationChange: setPagination,
+    manualPagination: true,
+    pageCount: data?.pages[0]?.totalPages ?? 1,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
 
-  const addCoursesToStudyPlan = useAddCoursesToStudyPlan();
-
-  const handleCourseSelect = (courseString: string) => {
-    const course: Course = JSON.parse(courseString);
-    setSelectedCourses((current) =>
-      current.some((c) => c.id === course.id)
-        ? current.filter((c) => c.id !== course.id)
-        : [...current, course]
-    );
-
-    setSearch('');
-  };
-
-  const handleCourseRemove = (courseId: number) =>
-    setSelectedCourses((current) => current.filter((c) => c.id !== courseId));
-
-  const handleAddCourses = () => {
-    const sectionId = parseInt(selectedSection ?? '');
-    if (!sectionId) return;
-
-    addCoursesToStudyPlan.mutate(
+  const handleAdd = () => {
+    if (!selectedSection) return;
+    addCourses.mutate(
       {
-        courseIds: selectedCourses.map((c) => c.id),
-        sectionId: sectionId,
         studyPlanId: studyPlan.id,
+        sectionId: Number(selectedSection),
+        courseIds: Array.from(selectedRows),
       },
-      {
-        onSuccess: () => {
-          combobox.closeDropdown();
-          setSelectedCourses([]);
-          setSearch('');
-          setPopoverOpened(false);
-        },
-      }
+      { onSuccess: () => setModalOpen(false) }
     );
   };
 
   const sectionOptions = React.useMemo(
     () =>
-      studyPlan?.sections.map((section) => ({
-        value: section.id.toString(),
-        label: `${getSectionCode(section)}: ${section.level} ${section.type} ${
-          section.name
-            ? `- ${section.name}`
-            : getSectionCode(section).split('.').length > 2
-              ? '- General'
-              : ''
-        }`,
+      studyPlan.sections.map((s) => ({
+        value: s.id.toString(),
+        label: getSectionDisplayName(s),
       })),
     [studyPlan]
   );
 
-  const options =
-    data?.pages.flatMap((page) =>
-      page.content.map((course) => {
-        const isAlreadyAdded = studyPlan?.sections.some((s) => s.courses.includes(course.id));
-        const isSelected = selectedCourses.some((c) => c.id === course.id);
-
-        return (
-          <Combobox.Option value={JSON.stringify(course)} key={course.id} disabled={isAlreadyAdded}>
-            <Flex align="center" gap="sm">
-              <Checkbox
-                checked={isSelected || isAlreadyAdded}
-                onChange={() => {}}
-                aria-hidden
-                tabIndex={-1}
-                style={{ pointerEvents: 'none' }}
-              />
-              <span>
-                {course.code}: {course.name}
-              </span>
-            </Flex>
-          </Combobox.Option>
-        );
-      })
-    ) ?? [];
-
-  const selectedOptions = React.useMemo(
-    () =>
-      selectedCourses.map((course) => (
-        <Pill key={course.id} withRemoveButton onRemove={() => handleCourseRemove(course.id)}>
-          {course.code}: {course.name}
-        </Pill>
-      )),
-    [selectedCourses]
-  );
-
   return (
     <>
-      <CreateCourseModal
-        opened={createModalOpen}
-        setOpened={setCreateModalOpen}
-        openCourseSearch={() => {
-          setSearch('');
-          combobox.closeDropdown();
-          setPopoverOpened(true);
-        }}
-        selectCreatedCourse={(newCourse) =>
-          setSelectedCourses((current) => [...current, newCourse])
-        }
-      />
+      <Button onClick={() => setModalOpen(true)} leftSection={<Plus />}>
+        Add Courses
+      </Button>
 
-      <Popover
-        position="left-start"
-        shadow="md"
-        opened={popoverOpened}
-        onChange={setPopoverOpened}
-        width={360}
+      <Modal
+        opened={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title="Add Courses to Study Plan"
+        size="auto"
+        centered
       >
-        <Popover.Target>
-          <Button onClick={() => setPopoverOpened((o) => !o)} leftSection={<Plus size={18} />}>
-            Add Courses
-          </Button>
-        </Popover.Target>
-
-        <Popover.Dropdown>
-          <Flex direction="column" gap="sm">
-            <Button
-              leftSection={<Plus size={14} />}
-              onClick={handleAddCourses}
-              loading={addCoursesToStudyPlan.isPending}
-              disabled={selectedCourses.length <= 0 || !selectedSection}
-            >
-              Add To Study Plan
-            </Button>
+        <Stack>
+          <Group>
+            <DataTableSearch
+              table={table}
+              placeholder="Filter courses..."
+              width={300}
+              debounce={300}
+            />
 
             <Select
-              label="Section"
-              withAsterisk
-              placeholder="Select a section"
-              data={sectionOptions ?? []}
-              comboboxProps={{ withinPortal: false }}
+              placeholder="Select section"
+              data={sectionOptions}
               value={selectedSection}
               onChange={setSelectedSection}
             />
 
-            <Combobox store={combobox} onOptionSubmit={handleCourseSelect} withinPortal={false}>
-              <FocusTrap active={popoverOpened}>
-                <Combobox.Target>
-                  <PillsInput
-                    label="Selected Courses"
-                    rightSection={isFetching ? <Loader size={14} /> : null}
-                    onClick={() => combobox.openDropdown()}
-                  >
-                    <Pill.Group>
-                      {selectedOptions}
+            <Button
+              leftSection={<Plus />}
+              onClick={handleAdd}
+              loading={addCourses.isPending}
+              disabled={selectedRows.size === 0 || !selectedSection}
+            >
+              Add to Plan
+            </Button>
+          </Group>
 
-                      <PillsInput.Field
-                        value={search}
-                        placeholder="Search any course"
-                        onChange={(event) => {
-                          combobox.updateSelectedOptionIndex();
-                          setSearch(event.currentTarget.value);
-                          if (!combobox.dropdownOpened) {
-                            combobox.openDropdown();
-                          }
-                        }}
-                        autoComplete="off"
-                      />
-                    </Pill.Group>
-                  </PillsInput>
-                </Combobox.Target>
-              </FocusTrap>
+          <DataTable table={table} />
+          <DataTablePagination table={table} />
+        </Stack>
 
-              {isSuccess && (
-                <Combobox.Dropdown>
-                  <>
-                    {debouncedSearch.trim().length > 0 && (
-                      <Combobox.Header>
-                        <Button
-                          variant="transparent"
-                          fullWidth
-                          onClick={() => {
-                            setPopoverOpened(false);
-                            setCreateModalOpen(true);
-                          }}
-                          leftSection={<Plus size={14} />}
-                        >
-                          Create "{debouncedSearch}"
-                        </Button>
-                      </Combobox.Header>
-                    )}
-
-                    <Combobox.Options>
-                      <ScrollArea.Autosize mah={250} type="scroll" scrollbarSize={6}>
-                        {options.length > 0 ? (
-                          options
-                        ) : (
-                          <Combobox.Empty>Nothing found</Combobox.Empty>
-                        )}
-                      </ScrollArea.Autosize>
-                    </Combobox.Options>
-
-                    {options.length > 0 && (
-                      <Combobox.Footer>
-                        {hasNextPage ? (
-                          <Button
-                            size="compact-sm"
-                            fullWidth
-                            variant="subtle"
-                            onClick={() => fetchNextPage()}
-                          >
-                            Load more ({data?.pages[0].totalCourses} results total)
-                          </Button>
-                        ) : (
-                          <Text size="sm" c="dimmed" ta="center">
-                            {data?.pages[0].totalCourses} results
-                          </Text>
-                        )}
-                      </Combobox.Footer>
-                    )}
-                  </>
-                </Combobox.Dropdown>
-              )}
-            </Combobox>
-          </Flex>
-        </Popover.Dropdown>
-      </Popover>
+        {isFetching && <Loader />}
+      </Modal>
     </>
   );
 }

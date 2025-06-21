@@ -1,4 +1,4 @@
-FROM eclipse-temurin:23-jdk AS build
+FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 
 COPY --chmod=755 mvnw ./

@@ -12,9 +12,9 @@ import { Plus } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 
 export function CoursesTable() {
-  const { data: coursesPage, isPending } = usePaginatedCourseList();
-
   const columns = React.useMemo(() => getCoursesTableColumns(), []);
+
+  const { data: coursesPage, isPending } = usePaginatedCourseList();
 
   const data: CourseSummary[] = React.useMemo(
     () => coursesPage?.content ?? [],
@@ -29,6 +29,7 @@ export function CoursesTable() {
     pageCount: coursesPage?.totalPages,
     rowCount: coursesPage?.totalCourses,
   });
+
 
   return (
     <Stack>

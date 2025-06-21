@@ -98,15 +98,17 @@ function ProgramMapProvider({ children }: { children: ReactNode }) {
         ) as CoursePlacement | null;
         const oldPlacement = studyPlan.coursePlacements[movingCourse];
 
+
+
         if (!targetPlacement || !oldPlacement) {
           setMovingCourse(null);
           return;
         }
 
-        const samePlacement = comparePlacement(oldPlacement, targetPlacement) === 0;
+        const isSamePlacement = comparePlacement(oldPlacement, targetPlacement) === 0;
         const positionDiff = targetPlacement.position - oldPlacement.position;
 
-        if (samePlacement) {
+        if (isSamePlacement) {
           if (positionDiff === 0 || positionDiff === 1) {
             setMovingCourse(null);
             return;

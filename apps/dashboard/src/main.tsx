@@ -7,7 +7,7 @@ import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 import '@mantine/core/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createTheme, MantineColorsTuple, MantineProvider } from '@mantine/core';
+import { createTheme, LoadingOverlay, MantineColorsTuple, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import navigationProgressClasses from '@/shared/components/NavigationProgress.module.css';
@@ -30,6 +30,14 @@ export const router = createRouter({
   defaultPreloadStaleTime: 0,
   scrollRestoration: true,
   defaultNotFoundComponent: () => <NotFoundPage />,
+  defaultPendingComponent: () => (
+    <LoadingOverlay
+      visible
+      zIndex={1000}
+      overlayProps={{ radius: 'sm', blur: 2 }}
+      loaderProps={{ type: 'bars' }}
+    />
+  ),
 });
 
 declare module '@tanstack/react-router' {

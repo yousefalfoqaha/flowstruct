@@ -6,8 +6,8 @@ import { PageLayout } from '@/shared/components/PageLayout.tsx';
 
 export const Route = createFileRoute('/_layout/study-plans/new')({
   component: RouteComponent,
-  loader: async ({ context: { queryClient } }) => {
-    await queryClient.ensureQueryData(ProgramListQuery);
+  loader: ({ context: { queryClient } }) => {
+    queryClient.ensureQueryData(ProgramListQuery);
 
     return {
       crumb: 'Create New Study Plan',

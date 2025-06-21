@@ -5,7 +5,6 @@ import { TableSearchSchema } from '@/shared/schemas.ts';
 import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
 import { PageHeader } from '@/shared/components/PageHeader.tsx';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
-import { Suspense } from 'react';
 
 export const Route = createFileRoute('/_layout/study-plans/')({
   component: RouteComponent,
@@ -18,9 +17,7 @@ export const Route = createFileRoute('/_layout/study-plans/')({
 function RouteComponent() {
   return (
     <PageLayout header={<PageHeader title="Study Plans" icon={<ScrollText />} />}>
-      <Suspense fallback={<div>Loading...</div>}>
-        <StudyPlansTable />
-      </Suspense>
+      <StudyPlansTable />
     </PageLayout>
   );
 }
