@@ -32,7 +32,7 @@ public class ProgramService {
         Program program = findProgram(programId);
 
         if (
-                programRepository.existsByCodeAndDegree(request.code(), request.degree().name()) &&
+                programRepository.existsByCodeAndDegree(request.code(), request.degree()) &&
                         !(program.getCode().equalsIgnoreCase(request.code()) && program.getDegree().equals(request.degree()))
         ) {
             throw new UniqueProgramException("Program with code " + request.code() + " and degree " + request.degree() + " already exists.");
@@ -48,7 +48,7 @@ public class ProgramService {
 
     @Transactional
     public ProgramDto createProgram(ProgramDetailsDto details) {
-        if (programRepository.existsByCodeAndDegree(details.code(), details.degree().name())) {
+        if (programRepository.existsByCodeAndDegree(details.code(), details.degree())) {
             throw new UniqueProgramException("Program with code " + details.code() + " and degree " + details.degree() + " already exists.");
         }
 

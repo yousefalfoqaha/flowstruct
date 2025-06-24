@@ -5,7 +5,7 @@ import {
   Button,
   Checkbox,
   Group,
-  Loader,
+  LoadingOverlay,
   Modal,
   Pill,
   Select,
@@ -222,12 +222,13 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
               </Text>
             )}
           </Box>
+          <Box pos="relative">
+            <LoadingOverlay visible={isFetching} zIndex={1000} loaderProps={{ type: 'bars' }} />
+            <DataTable table={table} />
+          </Box>
 
-          <DataTable table={table} />
           <DataTablePagination table={table} />
         </Stack>
-
-        {isFetching && <Loader />}
       </Modal>
     </>
   );
