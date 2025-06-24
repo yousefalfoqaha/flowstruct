@@ -1,0 +1,11 @@
+
+.box {
+    height: 7rem;
+    text-align: center;
+    font-size: var(--mantine-font-size-sm);
+    padding: var(--mantine-spacing-sm);
+    border: 1px dashed var(--mantine-color-gray-5);
+    border-radius: var(--mantine-radius-default);
+    overflow: auto;
+
+}

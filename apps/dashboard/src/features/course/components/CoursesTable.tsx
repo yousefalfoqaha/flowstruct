@@ -9,12 +9,13 @@ import { Button, LoadingOverlay, Stack } from '@mantine/core';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
 import { Plus } from 'lucide-react';
-import { Link } from '@tanstack/react-router';
+import { Link, useSearch } from '@tanstack/react-router';
 
 export function CoursesTable() {
   const columns = React.useMemo(() => getCoursesTableColumns(), []);
 
-  const { data: coursesPage, isPending } = usePaginatedCourseList();
+  const search = useSearch({ from: '/_layout/courses/' });
+  const { data: coursesPage, isPending } = usePaginatedCourseList(search);
 
   const data: CourseSummary[] = React.useMemo(
     () => coursesPage?.content ?? [],
@@ -29,7 +30,6 @@ export function CoursesTable() {
     pageCount: coursesPage?.totalPages,
     rowCount: coursesPage?.totalCourses,
   });
-
 
   return (
     <Stack>

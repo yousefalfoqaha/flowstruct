@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan.service;
 
+import com.yousefalfoqaha.gjuplans.common.EmptyListException;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanDtoMapper;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanRepository;
@@ -367,6 +368,10 @@ public class StudyPlanService {
             long sectionId,
             List<Long> courseIds
     ) {
+        if (courseIds.isEmpty()) {
+            throw new EmptyListException("No courses were found to add");
+        }
+
         var studyPlan = findStudyPlan(studyPlanId);
 
         var section = studyPlan.getSections().stream()

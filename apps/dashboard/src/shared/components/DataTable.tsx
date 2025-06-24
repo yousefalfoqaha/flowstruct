@@ -28,6 +28,7 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
             table.getRowModel().rows.map((row) => (
               <Table.Tr
                 key={row.id}
+                opacity={row.getCanSelect() ? '100%' : '50%'}
                 bg={row.getIsSelected() ? 'var(--mantine-primary-color-light)' : undefined}
               >
                 {row.getVisibleCells().map((cell) => (

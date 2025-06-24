@@ -4,10 +4,9 @@ import { Table } from '@tanstack/react-table';
 
 type Props<TData> = {
   table: Table<TData>;
-  withPageSize: boolean;
 };
 
-export function DataTablePagination<TData>({ table, withPageSize }: Props<TData>) {
+export function DataTablePagination<TData>({ table }: Props<TData>) {
   const { pageSize, pageIndex } = table.getState().pagination;
   const PAGE_SIZES = ['5', '7', '10', '20', '50'];
 
@@ -17,29 +16,27 @@ export function DataTablePagination<TData>({ table, withPageSize }: Props<TData>
         {table.getRowCount()} row(s) total.
       </Text>
 
-      <Group>
-        {withPageSize && (
-          <>
-            <Group gap="sm">
-              <Group gap="xs">
-                <ListEnd size={18} />
-                <Text size="sm">Rows per page</Text>
-              </Group>
-              <Select
-                data={PAGE_SIZES}
-                value={pageSize.toString()}
-                onChange={(value) =>
-                  table.setPagination({
-                    pageIndex: 0,
-                    pageSize: parseInt(value || '7'),
-                  })
-                }
-                w={70}
-              />
+      <Group wrap="nowrap">
+        <>
+          <Group gap="sm">
+            <Group gap="xs">
+              <ListEnd size={18} />
+              <Text size="sm">Rows per page</Text>
             </Group>
-            <Divider orientation="vertical" />
-          </>
-        )}
+            <Select
+              data={PAGE_SIZES}
+              value={pageSize.toString()}
+              onChange={(value) =>
+                table.setPagination({
+                  pageIndex: 0,
+                  pageSize: parseInt(value || '7'),
+                })
+              }
+              w={70}
+            />
+          </Group>
+          <Divider orientation="vertical" />
+        </>
 
         <Text size="sm">
           Page {pageIndex + 1} of {table.getPageCount()}

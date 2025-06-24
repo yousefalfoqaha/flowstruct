@@ -34,6 +34,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(EmptyListException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            EmptyListException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.BAD_REQUEST.value(),
+                        List.of(exception.getMessage()),
+                        new Date()
+                ),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorObject> handleException(
             MethodArgumentNotValidException exception

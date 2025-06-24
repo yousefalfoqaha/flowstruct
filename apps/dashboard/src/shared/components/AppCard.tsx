@@ -11,7 +11,7 @@ type AppCardProps = {
 
 export function AppCard({ title, subtitle, children, footer, headerAction }: AppCardProps) {
   return (
-    <Card padding="lg" pt="md" withBorder>
+    <Card shadow="sm" padding="lg" pt="md" withBorder>
       <Group justify="space-between">
         <div>
           <Text size="xl" fw={600}>

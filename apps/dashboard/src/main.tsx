@@ -34,7 +34,6 @@ export const router = createRouter({
     <LoadingOverlay
       visible
       zIndex={1000}
-      overlayProps={{ radius: 'sm', blur: 2 }}
       loaderProps={{ type: 'bars' }}
     />
   ),
