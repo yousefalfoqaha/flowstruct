@@ -9,6 +9,7 @@ import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
 import { EditDetailsButton } from '@/shared/components/EditDetailsButton.tsx';
+import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
 
 export const Route = createFileRoute('/_layout/programs/$programId/')({
   component: RouteComponent,
@@ -20,7 +21,7 @@ function RouteComponent() {
   return (
     <PageLayout
       header={
-        <Group>
+        <Group gap="lg" justify="space-between">
           <PageHeaderWithBack
             title={getProgramDisplayName(program)}
             linkProps={{
@@ -28,6 +29,7 @@ function RouteComponent() {
               search: getDefaultSearchValues(),
             }}
           />
+          <LastUpdated updatedAt={program.updatedAt} />
         </Group>
       }
     >
@@ -46,10 +48,12 @@ function RouteComponent() {
           <InfoItem label="Name" value={program.name} />
         </Group>
 
-        <InfoItem
-          label="Degree"
-          value={`${Degree[program.degree as keyof typeof Degree]} (${program.degree})`}
-        />
+        <Group grow>
+          <InfoItem
+            label="Degree"
+            value={`${Degree[program.degree as keyof typeof Degree]} (${program.degree})`}
+          />
+        </Group>
       </AppCard>
     </PageLayout>
   );

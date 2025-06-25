@@ -12,6 +12,7 @@ import { PageLayout } from '@/shared/components/PageLayout.tsx';
 import { StudyPlanTabs } from '@/features/study-plan/components/StudyPlanTabs.tsx';
 import { CoursesGraphProvider } from '@/contexts/CoursesGraphContext';
 import { PublishButton } from '@/features/study-plan/components/PublishButton.tsx';
+import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
 
 export const Route = createFileRoute('/_layout/study-plans/$studyPlanId')({
   loader: async ({ context: { queryClient }, params }) => {
@@ -50,7 +51,10 @@ function RouteComponent() {
         {publishStatusBadge(studyPlan.isPublished)}
       </Group>
 
-      <PublishButton studyPlan={studyPlan} />
+      <Group mb="auto">
+        <LastUpdated updatedAt={studyPlan.updatedAt} />
+        <PublishButton studyPlan={studyPlan} />
+      </Group>
     </Group>
   );
 

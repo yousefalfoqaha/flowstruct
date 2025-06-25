@@ -7,6 +7,7 @@ import { EditDetailsButton } from '@/shared/components/EditDetailsButton.tsx';
 import { Group } from '@mantine/core';
 import { InfoItem } from '@/shared/components/InfoItem.tsx';
 import { CourseType } from '@/features/course/types.ts';
+import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
 
 export const Route = createFileRoute('/_layout/courses/$courseId/')({
   component: RouteComponent,
@@ -18,17 +19,22 @@ function RouteComponent() {
   return (
     <PageLayout
       header={
-        <PageHeaderWithBack title={getCourseDisplayName(course)} linkProps={{ to: '/courses' }} />
+        <Group gap="lg" justify="space-between">
+          <PageHeaderWithBack title={getCourseDisplayName(course)} linkProps={{ to: '/courses' }} />
+          <LastUpdated updatedAt={course.updatedAt} />
+        </Group>
       }
     >
       <AppCard
         title="Course Information"
         subtitle="Details about this course"
         headerAction={
-          <EditDetailsButton
-            to="/courses/$courseId/edit"
-            params={{ courseId: String(course.id) }}
-          />
+          <Group gap="lg">
+            <EditDetailsButton
+              to="/courses/$courseId/edit"
+              params={{ courseId: String(course.id) }}
+            />
+          </Group>
         }
       >
         <Group grow>

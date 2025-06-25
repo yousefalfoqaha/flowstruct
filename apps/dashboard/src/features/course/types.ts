@@ -29,5 +29,5 @@ export type CoursesPage = {
 
 export type CourseSummary = Pick<
   Course,
-  'id' | 'code' | 'name' | 'creditHours' | 'type' | 'isRemedial'
+  'id' | 'code' | 'name' | 'creditHours' | 'type' | 'isRemedial' | 'updatedAt' | 'createdAt'
 >;

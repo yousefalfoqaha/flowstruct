@@ -1,15 +1,15 @@
 import {
   Badge,
   Box,
-  Flex,
   Group,
   RenderTreeNodePayload,
+  Stack,
   Text,
   Tree,
   TreeNodeData,
 } from '@mantine/core';
 import { SectionLevel, SectionType, StudyPlan } from '@/features/study-plan/types.ts';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Folder, List } from 'lucide-react';
 import { CreateSectionModal } from '@/features/study-plan/components/CreateSectionModal.tsx';
 import classes from './SectionsTree.module.css';
 import React from 'react';
@@ -70,44 +70,53 @@ export function SectionsTree({ studyPlan }: SectionsTreeProps) {
 
   const Leaf = ({ node, level, expanded, hasChildren, elementProps }: RenderTreeNodePayload) => {
     const section = studyPlan.sections.find((s) => s.id.toString() === node.value);
+    const coursesCount = section?.courses.length || 0;
 
     return (
-      <Box {...elementProps} w={250}>
-        <Group gap={10} py={5}>
+      <Box {...elementProps} py="xs">
+        <Group style={{ flex: 1 }}>
           {hasChildren && (
             <ChevronDown
               size={14}
-              style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+              style={{
+                transform: expanded ? 'rotate(0deg)' : 'rotate(-90deg)',
+                transition: 'transform 0.2s ease',
+                color: 'var(--mantine-color-gray-6)',
+              }}
             />
           )}
 
-          <span>{node.label}</span>
+          <Group gap="sm">
+            {hasChildren ? <Folder size={16} color="gray" /> : <List size={16} color="gray" />}
+            <Text style={{ flex: 1 }}>{node.label}</Text>
+          </Group>
         </Group>
 
-        <Group gap="xs" justify="space-between">
+        <Group gap="xs" align="center">
           {section && (
-            <Badge size="xs" variant="default">
-              {section.requiredCreditHours} Cr. Req
-            </Badge>
+            <>
+              <Badge size="xs" variant="light" color="gray">
+                {section.requiredCreditHours} CH
+              </Badge>
+              <Badge size="xs" variant="light" color="blue">
+                {coursesCount} courses
+              </Badge>
+            </>
           )}
 
-          <Group gap="xs">
-            {level > 2 && section && <MoveSectionMenu studyPlan={studyPlan} section={section} />}
-
-            {section && <SectionOptionsMenu section={section} studyPlanId={studyPlan.id} />}
-          </Group>
+          {level > 2 && section && <MoveSectionMenu studyPlan={studyPlan} section={section} />}
+          {section && <SectionOptionsMenu section={section} studyPlanId={studyPlan.id} />}
         </Group>
       </Box>
     );
   };
 
   return (
-    <Flex direction="column" gap={8}>
+    <Stack gap="xs" w={300}>
       <Group justify="space-between">
         <Text fw={500}>All Sections</Text>
         <CreateSectionModal studyPlanId={studyPlan.id} />
       </Group>
-
       <Tree
         levelOffset="xl"
         classNames={classes}
@@ -115,6 +124,6 @@ export function SectionsTree({ studyPlan }: SectionsTreeProps) {
         selectOnClick={false}
         renderNode={(payload) => <Leaf {...payload} />}
       />
-    </Flex>
+    </Stack>
   );
 }

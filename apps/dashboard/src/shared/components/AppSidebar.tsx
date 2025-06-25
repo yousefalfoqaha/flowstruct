@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import classes from '@/shared/components/AppSidebar.module.css';
 import { ActionIcon, Avatar, Divider, Group, Stack, Text, Title, Tooltip } from '@mantine/core';
-import { BookOpen, GraduationCap, History, LogOut, ScrollText } from 'lucide-react';
+import { BookOpen, GraduationCap, LogOut, ScrollText } from 'lucide-react';
 import { SidebarLink } from '@/shared/types.ts';
 import { Route as ProgramsRoute } from '@/routes/_layout/programs/route.tsx';
 import { Route as StudyPlansRoute } from '@/routes/_layout/study-plans/route.tsx';
@@ -37,16 +37,9 @@ export function AppSidebar() {
   return (
     <nav className={classes.navbar}>
       <Stack align="center" gap={5}>
-        <Title ta="center" order={3} fw={600} pb={8}>
+        <Title ta="center" order={3} fw={600}>
           GJUPlans Admin
         </Title>
-
-        <Group gap="xs">
-          <History size={14} color="gray" />
-          <Text c="dimmed" size="xs">
-            Last Publish: 2 weeks ago
-          </Text>
-        </Group>
       </Stack>
 
       <Divider my="md" />
