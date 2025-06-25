@@ -13,7 +13,7 @@ import {
   Text,
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { Plus } from 'lucide-react';
+import { BookOpen, Folder, Plus, PlusCircle, X } from 'lucide-react';
 import { StudyPlan } from '@/features/study-plan/types.ts';
 import { useAddCoursesToStudyPlan } from '@/features/study-plan/hooks/useAddCoursesToStudyPlan.ts';
 import { DataTable } from '@/shared/components/DataTable.tsx';
@@ -33,6 +33,8 @@ import { getSectionDisplayName } from '@/utils/getSectionDisplayName.ts';
 import { usePaginatedCourseList } from '@/features/course/hooks/usePaginatedCourseList.ts';
 import classes from '@/features/study-plan/components/StudyPlanCourseAdder.module.css';
 import { useCoursesGraph } from '@/contexts/CoursesGraphContext.tsx';
+import { CreateCourseModal } from '@/features/course/components/CreateCourseModal';
+import { Course } from '@/features/course/types.ts';
 
 interface StudyPlanCourseAdderProps {
   studyPlan: StudyPlan;
@@ -49,6 +51,7 @@ type CourseMeta = Pick<CourseRow, 'code' | 'name'>;
 
 export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
   const [modalOpen, setModalOpen] = React.useState(false);
+  const [createModalOpen, setCreateModalOpen] = React.useState(false);
   const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
   const DEBOUNCE_MS = 500;
@@ -102,7 +105,7 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
     data: data?.content ?? [],
     columns,
     state: {
-      globalFilter: filter,
+      globalFilter: debouncedFilter,
       pagination,
       rowSelection: rowSelection,
     },
@@ -132,6 +135,7 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
     onGlobalFilterChange: setFilter,
     onPaginationChange: setPagination,
     manualPagination: true,
+    manualFiltering: true,
     pageCount: data?.totalPages ?? 1,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -167,8 +171,33 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
     [studyPlan]
   );
 
+  const noSelection = Object.keys(selectedCourses).length === 0;
+
+  const selectCreatedCourse = (course: Course) => {
+    const courseId = String(course.id);
+
+    setRowSelection(prev => ({
+      ...prev,
+      [courseId]: true,
+    }));
+
+    setSelectedCourses(prev => ({
+      ...prev,
+      [courseId]: {
+        code: course.code,
+        name: course.name,
+      },
+    }));
+  };
+
   return (
     <>
+      <CreateCourseModal
+        selectCreatedCourse={selectCreatedCourse}
+        opened={createModalOpen}
+        setOpened={setCreateModalOpen}
+        openCourseSearch={() => setModalOpen(true)}
+      />
       <Button onClick={() => setModalOpen(true)} leftSection={<Plus />}>
         Add Courses
       </Button>
@@ -185,29 +214,28 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
             <DataTableSearch
               table={table}
               placeholder="Filter courses..."
-              width={150}
               debounce={DEBOUNCE_MS}
             />
 
-            <Select
-              placeholder="Select section"
-              data={sectionOptions}
-              value={selectedSection}
-              onChange={setSelectedSection}
-            />
-
             <Button
-              leftSection={<Plus />}
-              onClick={handleAddCourse}
-              loading={addCourses.isPending}
-              disabled={!Object.keys(rowSelection).length || !selectedSection}
+              leftSection={<BookOpen size={16} />}
+              onClick={() => {
+                setModalOpen(false);
+                setCreateModalOpen(true);
+              }}
             >
-              Add
+              Create Course
             </Button>
           </Group>
 
+          <Box pos="relative">
+            <LoadingOverlay visible={isFetching} zIndex={1000} loaderProps={{ type: 'bars' }} />
+            <DataTable table={table} />
+          </Box>
+
+          <DataTablePagination table={table} />
           <Box className={classes.box}>
-            <Pill.Group>
+            <Pill.Group style={{alignContent: 'start'}}>
               {Object.entries(selectedCourses).map(([id, metadata]) => {
                 return (
                   <Pill withRemoveButton onRemove={() => handleRemoveCourse(id)}>
@@ -216,18 +244,48 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
                 );
               })}
             </Pill.Group>
-            {Object.keys(selectedCourses).length === 0 && (
-              <Text c="dimmed" my="30" size="sm">
-                Selected courses will appear here
-              </Text>
+            {noSelection && (
+              <Group gap="xs" m="auto">
+                <PlusCircle color="gray" size={16} />
+                <Text c="dimmed" size="sm">
+                  Selected courses will appear here
+                </Text>
+              </Group>
             )}
           </Box>
-          <Box pos="relative">
-            <LoadingOverlay visible={isFetching} zIndex={1000} loaderProps={{ type: 'bars' }} />
-            <DataTable table={table} />
-          </Box>
 
-          <DataTablePagination table={table} />
+          <Group>
+            <Button
+              variant="default"
+              leftSection={<X size={16} />}
+              disabled={noSelection}
+              onClick={() => {
+                setRowSelection({});
+                setSelectedCourses({});
+              }}
+            >
+              Clear
+            </Button>
+
+            <Select
+              flex={1}
+              leftSection={<Folder size={16} />}
+              placeholder="Select section"
+              searchable
+              data={sectionOptions}
+              value={selectedSection}
+              onChange={setSelectedSection}
+            />
+
+            <Button
+              leftSection={<Plus size={16} />}
+              onClick={handleAddCourse}
+              loading={addCourses.isPending}
+              disabled={!Object.keys(rowSelection).length || !selectedSection}
+            >
+              Add to Study Plan
+            </Button>
+          </Group>
         </Stack>
       </Modal>
     </>

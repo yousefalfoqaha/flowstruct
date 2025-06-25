@@ -46,7 +46,13 @@ export function CreateCourseModal({
   });
 
   return (
-    <Modal opened={opened} onClose={handleClose} title="Create Course" centered>
+    <Modal
+      size="xl"
+      opened={opened}
+      onClose={handleClose}
+      title="Create Course"
+      centered
+    >
       <form onSubmit={onSubmit}>
         <Stack>
           <LoadingOverlay
