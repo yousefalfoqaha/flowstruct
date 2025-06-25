@@ -52,7 +52,6 @@ export function ProgramDetailsFormFields({ form }: Props) {
         />
       </Flex>
 
-      <Flex gap="md" mt="md">
         <Controller
           name="degree"
           control={control}
@@ -68,11 +67,9 @@ export function ProgramDetailsFormFields({ form }: Props) {
               leftSection={<GraduationCap size={18} />}
               error={errors.degree?.message}
               withAsterisk
-              w="50%"
             />
           )}
         />
-      </Flex>
     </>
   );
 }

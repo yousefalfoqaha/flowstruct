@@ -96,7 +96,7 @@ export function SectionsTree({ studyPlan }: SectionsTreeProps) {
           {section && (
             <>
               <Badge size="xs" variant="light" color="gray">
-                {section.requiredCreditHours} CH
+                {section.requiredCreditHours} Cr.
               </Badge>
               <Badge size="xs" variant="light" color="blue">
                 {coursesCount} courses
