@@ -93,7 +93,7 @@ public class CourseService {
 
         var newCourse = new Course(
                 null,
-                details.code(),
+                details.code().toUpperCase(),
                 details.name(),
                 details.creditHours(),
                 details.ects(),

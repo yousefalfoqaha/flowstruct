@@ -38,8 +38,8 @@ export function StudyPlanTabs() {
       variant="pills"
     >
       <Tabs.List>
-        {tabs.map((tab) => (
-          <Tabs.Tab key={tab.path} value={tab.path} leftSection={tab.icon}>
+        {tabs.map((tab, index) => (
+          <Tabs.Tab key={index} value={tab.path} leftSection={tab.icon}>
             {tab.label}
           </Tabs.Tab>
         ))}

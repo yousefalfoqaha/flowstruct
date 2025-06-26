@@ -1,5 +1,5 @@
 import { ActionIcon, Menu, Text } from '@mantine/core';
-import { Ellipsis, Pencil, Trash } from 'lucide-react';
+import { EllipsisVertical, Pencil, Trash } from 'lucide-react';
 import { Section } from '@/features/study-plan/types.ts';
 import { modals } from '@mantine/modals';
 import { EditSectionDetailsModal } from '@/features/study-plan/components/EditSectionDetailsModal.tsx';
@@ -25,7 +25,7 @@ export function SectionOptionsMenu({ section, studyPlanId }: Props) {
     <Menu shadow="md">
       <Menu.Target>
         <ActionIcon loading={deleteSection.isPending} variant="transparent" color="gray">
-          <Ellipsis size={14} />
+          <EllipsisVertical size={14} />
         </ActionIcon>
       </Menu.Target>
 

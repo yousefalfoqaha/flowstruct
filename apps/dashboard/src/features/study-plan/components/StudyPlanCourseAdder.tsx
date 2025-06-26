@@ -13,7 +13,7 @@ import {
   Text,
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { BookOpen, Folder, Plus, PlusCircle, X } from 'lucide-react';
+import { Folder, Plus, PlusCircle, X } from 'lucide-react';
 import { StudyPlan } from '@/features/study-plan/types.ts';
 import { useAddCoursesToStudyPlan } from '@/features/study-plan/hooks/useAddCoursesToStudyPlan.ts';
 import { DataTable } from '@/shared/components/DataTable.tsx';
@@ -54,7 +54,7 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
   const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
-  const DEBOUNCE_MS = 500;
+  const DEBOUNCE_MS = 300;
   const [filter, setFilter] = React.useState('');
   const [debouncedFilter] = useDebouncedValue(filter, DEBOUNCE_MS);
   const [pagination, setPagination] = React.useState<PaginationState>({
@@ -150,7 +150,15 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
         sectionId: Number(selectedSection),
         courseIds: Object.keys(rowSelection).map(Number),
       },
-      { onSuccess: () => setModalOpen(false) }
+      {
+        onSuccess: () => {
+          setModalOpen(false);
+          setSelectedCourses({});
+          setRowSelection({});
+          setFilter('');
+          setSelectedSection(null);
+        },
+      }
     );
   };
 
@@ -176,12 +184,12 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
   const selectCreatedCourse = (course: Course) => {
     const courseId = String(course.id);
 
-    setRowSelection(prev => ({
+    setRowSelection((prev) => ({
       ...prev,
       [courseId]: true,
     }));
 
-    setSelectedCourses(prev => ({
+    setSelectedCourses((prev) => ({
       ...prev,
       [courseId]: {
         code: course.code,
@@ -198,7 +206,7 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
         setOpened={setCreateModalOpen}
         openCourseSearch={() => setModalOpen(true)}
       />
-      <Button onClick={() => setModalOpen(true)} leftSection={<Plus />}>
+      <Button onClick={() => setModalOpen(true)} leftSection={<Plus size={16} />}>
         Add Courses
       </Button>
 
@@ -211,20 +219,17 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
       >
         <Stack>
           <Group grow preventGrowOverflow={false}>
-            <DataTableSearch
-              table={table}
-              placeholder="Filter courses..."
-              debounce={DEBOUNCE_MS}
-            />
+            <DataTableSearch table={table} placeholder="Filter courses..." debounce={DEBOUNCE_MS} />
 
             <Button
-              leftSection={<BookOpen size={16} />}
+              variant="outline"
+              leftSection={<Plus size={16} />}
               onClick={() => {
                 setModalOpen(false);
                 setCreateModalOpen(true);
               }}
             >
-              Create Course
+              Create New Course
             </Button>
           </Group>
 
@@ -235,7 +240,7 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
 
           <DataTablePagination table={table} />
           <Box className={classes.box}>
-            <Pill.Group style={{alignContent: 'start'}}>
+            <Pill.Group style={{ alignContent: 'start' }}>
               {Object.entries(selectedCourses).map(([id, metadata]) => {
                 return (
                   <Pill withRemoveButton onRemove={() => handleRemoveCourse(id)}>

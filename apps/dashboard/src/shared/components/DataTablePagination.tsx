@@ -39,7 +39,7 @@ export function DataTablePagination<TData>({ table }: Props<TData>) {
         </>
 
         <Text size="sm">
-          Page {pageIndex + 1} of {table.getPageCount()}
+          Page {pageIndex + 1} of {table.getPageCount() === 0 ? 1 : table.getPageCount()}
         </Text>
 
         <Pagination
