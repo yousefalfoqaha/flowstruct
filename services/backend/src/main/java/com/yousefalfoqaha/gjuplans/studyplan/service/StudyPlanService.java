@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -248,13 +246,22 @@ public class StudyPlanService {
 
     @Transactional
     public StudyPlanDto createStudyPlan(StudyPlanDetailsDto details) {
-        StudyPlan studyPlan = new StudyPlan();
-
-        studyPlan.setYear(details.year());
-        studyPlan.setDuration(details.duration());
-        studyPlan.setTrack(details.track().trim().isEmpty() ? null : details.track());
-        studyPlan.setPublished(details.isPublished());
-        studyPlan.setProgram(AggregateReference.to(details.program()));
+        StudyPlan studyPlan = new StudyPlan(
+                null,
+                details.year(),
+                details.duration(),
+                details.track().trim().isEmpty() ? null : details.track(),
+                details.isPublished(),
+                AggregateReference.to(details.program()),
+                null,
+                null,
+                null,
+                null,
+                new HashSet<>(),
+                new HashMap<>(),
+                new HashSet<>(),
+                new HashSet<>()
+        );
 
         markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
@@ -484,7 +491,7 @@ public class StudyPlanService {
                     )
             );
         }
-        
+
         markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }

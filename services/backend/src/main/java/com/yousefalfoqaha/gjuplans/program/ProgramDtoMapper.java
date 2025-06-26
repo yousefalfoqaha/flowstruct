@@ -17,7 +17,8 @@ public class ProgramDtoMapper implements Function<Program, ProgramDto> {
                 program.getName(),
                 program.getDegree().name(),
                 program.getCreatedAt(),
-                program.getUpdatedAt()
+                program.getUpdatedAt(),
+                program.getUpdatedBy()
         );
     }
 }

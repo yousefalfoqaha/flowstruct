@@ -29,7 +29,7 @@ function RouteComponent() {
               search: getDefaultSearchValues(),
             }}
           />
-          <LastUpdated updatedAt={program.updatedAt} />
+          <LastUpdated at={program.updatedAt} by={program.updatedBy} />
         </Group>
       }
     >

@@ -2,7 +2,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { StudyPlanRow } from '@/features/study-plan/types.ts';
 import { StudyPlanOptionsMenu } from '@/features/study-plan/components/StudyPlanOptionsMenu.tsx';
 import { publishStatusBadge } from '@/shared/components/PublishStatusBadge.tsx';
-import { formatTimeAgo } from '@/utils/formatTimeAgo.ts';
+import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
 
 export function getStudyPlansTableColumns() {
   const { accessor, display } = createColumnHelper<StudyPlanRow>();
@@ -35,9 +35,12 @@ export function getStudyPlansTableColumns() {
       header: 'Status',
       cell: ({ row }) => publishStatusBadge(row.getValue('isPublished')),
     }),
-    accessor('updatedAt', {
+    display({
+      id: 'last-updated',
       header: 'Last Updated',
-      cell: ({ row }) => formatTimeAgo(new Date(row.original.updatedAt)),
+      cell: ({ row }) => (
+        <LastUpdatedStats at={row.original.updatedAt} by={row.original.updatedBy} />
+      ),
     }),
     display({
       id: 'actions',

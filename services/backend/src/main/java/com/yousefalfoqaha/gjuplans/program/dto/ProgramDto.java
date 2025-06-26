@@ -8,6 +8,7 @@ public record ProgramDto(
         String name,
         String degree,
         Instant createdAt,
-        Instant updatedAt
+        Instant updatedAt,
+        Long updatedBy
 ) {
 }

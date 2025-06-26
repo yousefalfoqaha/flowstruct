@@ -12,7 +12,7 @@ import java.util.List;
 public interface StudyPlanRepository extends CrudRepository<StudyPlan, Long> {
 
     @Query(
-            "SELECT id, year, duration, track, is_published, program, created_at, updated_at " +
+            "SELECT id, year, duration, track, is_published, program, created_at, updated_at, updated_by " +
             "FROM study_plan"
     )
     List<StudyPlanSummaryDto> findAllStudyPlanSummaries();

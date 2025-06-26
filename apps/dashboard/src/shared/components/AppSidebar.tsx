@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import classes from '@/shared/components/AppSidebar.module.css';
-import { ActionIcon, Avatar, Divider, Group, Stack, Text, Title, Tooltip } from '@mantine/core';
+import { ActionIcon, Divider, Group, Stack, Text, Title, Tooltip } from '@mantine/core';
 import { BookOpen, GraduationCap, LogOut, ScrollText } from 'lucide-react';
 import { SidebarLink } from '@/shared/types.ts';
 import { Route as ProgramsRoute } from '@/routes/_layout/programs/route.tsx';
@@ -48,9 +48,8 @@ export function AppSidebar() {
 
       <div className={classes.footer}>
         <Divider mb="md" />
-        <Group justify="space-between">
+        <Group justify="space-between" wrap="nowrap">
           <Group>
-            <Avatar />
             <Stack gap={5}>
               <Text>{user.username}</Text>
               <Text c="dimmed" size="xs">

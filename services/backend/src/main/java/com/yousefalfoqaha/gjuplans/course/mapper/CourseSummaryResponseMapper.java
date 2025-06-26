@@ -18,8 +18,9 @@ public class CourseSummaryResponseMapper implements Function<Course, CourseSumma
                 course.getCreditHours(),
                 course.getType().toString(),
                 course.isRemedial(),
+                course.getCreatedAt(),
                 course.getUpdatedAt(),
-                course.getCreatedAt()
+                course.getUpdatedBy()
         );
     }
 }

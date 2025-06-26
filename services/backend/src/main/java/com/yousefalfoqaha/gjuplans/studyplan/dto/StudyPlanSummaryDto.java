@@ -10,6 +10,7 @@ public record StudyPlanSummaryDto(
         boolean isPublished,
         long program,
         Instant createdAt,
-        Instant updatedAt
+        Instant updatedAt,
+        Long updatedBy
 ) {
 }

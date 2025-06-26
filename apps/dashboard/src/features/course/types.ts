@@ -16,6 +16,7 @@ export type Course = {
   isRemedial: boolean;
   createdAt: Date;
   updatedAt: Date;
+  updatedBy: number;
 };
 
 export type CoursesPage = {
@@ -29,5 +30,13 @@ export type CoursesPage = {
 
 export type CourseSummary = Pick<
   Course,
-  'id' | 'code' | 'name' | 'creditHours' | 'type' | 'isRemedial' | 'updatedAt' | 'createdAt'
+  | 'id'
+  | 'code'
+  | 'name'
+  | 'creditHours'
+  | 'type'
+  | 'isRemedial'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'updatedBy'
 >;

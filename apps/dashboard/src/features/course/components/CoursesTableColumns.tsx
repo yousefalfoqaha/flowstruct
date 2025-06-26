@@ -2,7 +2,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { CourseSummary } from '@/features/course/types.ts';
 import { Badge } from '@mantine/core';
 import { CourseOptionsMenu } from '@/features/course/components/CourseOptionsMenu.tsx';
-import { formatTimeAgo } from '@/utils/formatTimeAgo.ts';
+import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
 
 export function getCoursesTableColumns() {
   const { accessor, display } = createColumnHelper<CourseSummary>();
@@ -22,9 +22,12 @@ export function getCoursesTableColumns() {
     accessor('type', {
       header: 'Type',
     }),
-    accessor('updatedAt', {
+    display({
+      id: 'last-updated',
       header: 'Last Updated',
-      cell: ({ row }) => formatTimeAgo(new Date(row.original.updatedAt)),
+      cell: ({ row }) => (
+        <LastUpdatedStats at={row.original.updatedAt} by={row.original.updatedBy} />
+      ),
     }),
     display({
       id: 'actions',

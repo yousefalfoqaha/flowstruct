@@ -12,4 +12,5 @@ export type Program = {
   degree: string;
   createdAt: Date;
   updatedAt: Date;
+  updatedBy: number;
 };

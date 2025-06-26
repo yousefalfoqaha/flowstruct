@@ -103,6 +103,7 @@ public class CourseService {
                 details.isRemedial(),
                 null,
                 null,
+                null,
                 null
         );
 

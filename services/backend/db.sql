@@ -426,7 +426,7 @@ CREATE TABLE public.program (
     degree public.degree NOT NULL,
     version bigint DEFAULT 0 NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
 );
 
 

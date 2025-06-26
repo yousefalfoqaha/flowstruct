@@ -21,7 +21,7 @@ function RouteComponent() {
       header={
         <Group gap="lg" justify="space-between">
           <PageHeaderWithBack title={getCourseDisplayName(course)} linkProps={{ to: '/courses' }} />
-          <LastUpdated updatedAt={course.updatedAt} />
+          <LastUpdated at={course.updatedAt} by={course.updatedBy} />
         </Group>
       }
     >
@@ -53,7 +53,11 @@ function RouteComponent() {
         </Group>
 
         <Group grow>
-          <InfoItem label="Type" value={CourseType[course.type]} suffix={`(${course.type})`} />
+          <InfoItem
+            label="Type"
+            value={CourseType[course.type as keyof typeof CourseType] ?? 'Unknown'}
+            suffix={`(${course.type})`}
+          />
           <InfoItem label="Is Remedial" value={course.isRemedial ? 'Yes' : 'No'} />
         </Group>
       </AppCard>

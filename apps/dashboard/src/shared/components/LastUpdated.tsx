@@ -1,17 +1,21 @@
 import { History } from 'lucide-react';
 import { Group, Text } from '@mantine/core';
-import { formatTimeAgo } from '@/utils/formatTimeAgo.ts';
+import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
 
 type Props = {
-  updatedAt: Date;
-}
+  at: Date;
+  by: number;
+};
 
-export function LastUpdated({updatedAt}: Props) {
+export function LastUpdated({ at, by }: Props) {
   return (
     <Group gap="xs">
       <History size={14} color="gray" />
       <Text c="dimmed" size="sm">
-        Last Update: {formatTimeAgo(new Date(updatedAt))}
+        Last Update:
+      </Text>
+      <Text c="dimmed" size="sm">
+        <LastUpdatedStats at={at} by={by} />
       </Text>
     </Group>
   );

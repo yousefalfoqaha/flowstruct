@@ -15,6 +15,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -40,5 +43,15 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("No account was found."));
 
         return new UserDto(user.getId(), user.getUsername());
+    }
+
+    public Map<Long, UserDto> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(user -> new UserDto(user.getId(), user.getUsername()))
+                .collect(Collectors.toMap(
+                        UserDto::id,
+                        userDto -> userDto
+                ));
     }
 }

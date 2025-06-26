@@ -16,6 +16,7 @@ public record StudyPlanDto(
         long program,
         Instant createdAt,
         Instant updatedAt,
+        Long updatedBy,
         List<SectionDto> sections,
         Map<Long, PlacementDto> coursePlacements,
         Map<Long, Map<Long, Relation>> coursePrerequisites,

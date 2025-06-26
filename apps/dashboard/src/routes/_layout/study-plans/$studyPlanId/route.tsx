@@ -52,7 +52,7 @@ function RouteComponent() {
       </Group>
 
       <Group mb="auto">
-        <LastUpdated updatedAt={studyPlan.updatedAt} />
+        <LastUpdated at={studyPlan.updatedAt} by={studyPlan.updatedBy} />
         <PublishButton studyPlan={studyPlan} />
       </Group>
     </Group>

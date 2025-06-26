@@ -19,7 +19,10 @@ public class ProgramService {
     private final ProgramDtoMapper programDtoMapper;
 
     public List<ProgramDto> getAllPrograms() {
-        return programRepository.findAllPrograms();
+        return programRepository.findAll()
+                .stream()
+                .map(programDtoMapper)
+                .toList();
     }
 
     public ProgramDto getProgram(long programId) {
@@ -57,6 +60,7 @@ public class ProgramService {
                 details.code(),
                 details.name(),
                 details.degree(),
+                null,
                 null,
                 null,
                 null

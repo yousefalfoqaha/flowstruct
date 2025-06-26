@@ -52,6 +52,7 @@ export type StudyPlan = {
   courseCorequisites: Record<number, number[]>;
   createdAt: Date;
   updatedAt: Date;
+  updatedBy: number;
 };
 
 export type FrameworkCourse = CourseSummary & {
@@ -67,5 +68,13 @@ export type StudyPlanRow = StudyPlanSummary & {
 
 export type StudyPlanSummary = Pick<
   StudyPlan,
-  'id' | 'year' | 'duration' | 'track' | 'isPublished' | 'program' | 'createdAt' | 'updatedAt'
+  | 'id'
+  | 'year'
+  | 'duration'
+  | 'track'
+  | 'isPublished'
+  | 'program'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'updatedBy'
 >;

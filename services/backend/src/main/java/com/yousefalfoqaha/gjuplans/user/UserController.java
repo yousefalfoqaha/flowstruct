@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,8 +55,14 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping
+    public ResponseEntity<Map<Long, UserDto>> getAllUsers() {
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+    }
+
     @GetMapping("/me")
     public ResponseEntity<UserDto> getMe() {
         return new ResponseEntity<>(userService.getMe(), HttpStatus.OK);
     }
+
 }
