@@ -39,7 +39,9 @@ public class StudyPlanDtoMapper implements Function<StudyPlan, StudyPlanDto> {
                                 sec.getRequiredCreditHours(),
                                 sec.getName(),
                                 sec.getPosition(),
-                                sec.getCourses().keySet().stream().collect(Collectors.toSet())
+                                sec.getCourses().stream()
+                                        .map(sectionCourse -> sectionCourse.getCourse().getId())
+                                        .toList()
                         ))
                         .toList(),
                 studyPlan.getCoursePlacements().entrySet()

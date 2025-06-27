@@ -42,7 +42,7 @@ public class StudyPlanService {
                 studyPlanResponse.coursePrerequisites(),
                 studyPlan.getSections()
                         .stream()
-                        .flatMap(s -> s.getCourses().keySet().stream())
+                        .flatMap(s -> s.getCourses().stream().map(c -> c.getCourse().getId()))
                         .toList()
         );
 
@@ -98,8 +98,7 @@ public class StudyPlanService {
         }
 
         var oldPlacement = studyPlan.getCoursePlacements().get(courseId);
-        var newPlacement = new CoursePlacement(
-                AggregateReference.to(courseId),
+        var newPlacement = new Placement(
                 targetPlacement.year(),
                 targetPlacement.semester(),
                 targetPlacement.position(),
@@ -148,21 +147,21 @@ public class StudyPlanService {
             throw new InvalidCoursePlacement("Cannot place a course in the same or later term as its postrequisite");
         }
 
-        deleteCoursePlacement(studyPlan, oldPlacement);
-        insertCoursePlacement(studyPlan, newPlacement);
+        deleteCoursePlacement(studyPlan, courseId, oldPlacement);
+        insertCoursePlacement(studyPlan, courseId, newPlacement);
 
         markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
-    private int comparePlacement(CoursePlacement p1, CoursePlacement p2) {
+    private int comparePlacement(Placement p1, Placement p2) {
         if (p1.getYear() != p2.getYear()) {
             return Integer.compare(p1.getYear(), p2.getYear());
         }
         return Integer.compare(p1.getSemester(), p2.getSemester());
     }
 
-    private void shiftPositions(StudyPlan studyPlan, CoursePlacement placement, int delta) {
+    private void shiftPositions(StudyPlan studyPlan, Placement placement, int delta) {
         studyPlan.getCoursePlacements().values()
                 .stream()
                 .filter(p ->
@@ -178,25 +177,24 @@ public class StudyPlanService {
         var studyPlan = findStudyPlan(studyPlanId);
         var coursePrerequisitesMap = studyPlan.getCoursePrerequisitesMap();
 
-        if (targetPlacement.year() > studyPlan.getDuration() || targetPlacement.year() <= 0) {
+        if (targetPlacement.year() > studyPlan.getDuration()) {
             throw new OutOfBoundsPositionException("Out of bounds year");
         }
 
         int lastPosition = studyPlan.getCoursePlacements().values()
                 .stream()
-                .filter(currentCoursePlacement ->
+                .filter(currentPlacement ->
                         comparePlacement(
-                                new CoursePlacement(
-                                        null,
+                                new Placement(
                                         targetPlacement.year(),
                                         targetPlacement.semester(),
                                         1,
                                         1
                                 ),
-                                currentCoursePlacement
+                                currentPlacement
                         ) == 0
                 )
-                .mapToInt(CoursePlacement::getPosition)
+                .mapToInt(Placement::getPosition)
                 .max()
                 .orElse(0);
 
@@ -205,8 +203,7 @@ public class StudyPlanService {
                 throw new CourseAlreadyAddedException("A course already exists in the program map.");
             }
 
-            var individualCoursePlacement = new CoursePlacement(
-                    AggregateReference.to(courseId),
+            var individualCoursePlacement = new Placement(
                     targetPlacement.year(),
                     targetPlacement.semester(),
                     ++lastPosition,
@@ -351,16 +348,14 @@ public class StudyPlanService {
             remainingSection.setPosition(0);
         }
 
-        var sectionCourses = section.getCourses().keySet();
-
-        sectionCourses.forEach(course -> studyPlan.getCoursePlacements().remove(course));
+        section.getCourses().forEach(sectionCourse -> studyPlan.getCoursePlacements().remove(sectionCourse.getCourse().getId()));
 
         studyPlan.getCoursePrerequisites().removeIf(coursePrerequisite ->
-                sectionCourses.contains(coursePrerequisite.getPrerequisite().getId())
+                section.hasCourse(coursePrerequisite.getPrerequisite().getId())
         );
 
         studyPlan.getCourseCorequisites().removeIf(courseCorequisite ->
-                sectionCourses.contains(courseCorequisite.getCorequisite().getId())
+                section.hasCourse(courseCorequisite.getCorequisite().getId())
         );
 
         studyPlan.getSections().remove(section);
@@ -386,29 +381,20 @@ public class StudyPlanService {
                 .findFirst()
                 .orElseThrow(() -> new SectionNotFoundException("Section was not found"));
 
-        var studyPlanCourses = studyPlan.getSections()
-                .stream()
-                .flatMap(s -> s.getCourses().keySet().stream())
-                .collect(Collectors.toSet());
-
-        Map<Long, SectionCourse> toBeAddedCourses = courseIds
+        Set<SectionCourse> toBeAddedCourses = courseIds
                 .stream()
                 .filter(courseId -> {
-                    if (studyPlanCourses.contains(courseId)) {
+                    boolean alreadyAdded = studyPlan.getSections().stream()
+                            .anyMatch(s -> s.hasCourse(courseId));
+                    if (alreadyAdded) {
                         throw new CourseExistsException("Course was already added in another section");
                     }
                     return true;
                 })
-                .collect(Collectors.toMap(
-                        courseId -> courseId,
-                        courseId -> {
-                            var addedCourse = new SectionCourse();
-                            addedCourse.setCourse(AggregateReference.to(courseId));
-                            return addedCourse;
-                        }
-                ));
+                .map(courseId -> new SectionCourse(AggregateReference.to(courseId)))
+                .collect(Collectors.toSet());
 
-        section.getCourses().putAll(toBeAddedCourses);
+        section.getCourses().addAll(toBeAddedCourses);
 
         markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
@@ -419,7 +405,7 @@ public class StudyPlanService {
         var studyPlan = findStudyPlan(studyPlanId);
 
         for (var courseId : courseIds) {
-            studyPlan.getSections().forEach(section -> section.getCourses().remove(courseId));
+            studyPlan.getSections().forEach(section -> section.removeCourse(courseId));
 
             studyPlan.getCoursePrerequisites().removeIf(coursePrerequisite ->
                     Objects.equals(coursePrerequisite.getCourse().getId(), courseId)
@@ -431,22 +417,22 @@ public class StudyPlanService {
                             || Objects.equals(coursePrerequisite.getCorequisite().getId(), courseId)
             );
 
-            deleteCoursePlacement(studyPlan, studyPlan.getCoursePlacements().get(courseId));
+            deleteCoursePlacement(studyPlan, courseId, studyPlan.getCoursePlacements().get(courseId));
         }
 
         markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
-    private void insertCoursePlacement(StudyPlan studyPlan, CoursePlacement placement) {
+    private void insertCoursePlacement(StudyPlan studyPlan, long courseId, Placement placement) {
         if (placement == null) return;
         shiftPositions(studyPlan, placement, +1);
-        studyPlan.getCoursePlacements().put(placement.getCourse().getId(), placement);
+        studyPlan.getCoursePlacements().put(courseId, placement);
     }
 
-    private void deleteCoursePlacement(StudyPlan studyPlan, CoursePlacement placement) {
+    private void deleteCoursePlacement(StudyPlan studyPlan, long courseId, Placement placement) {
         if (placement == null) return;
-        studyPlan.getCoursePlacements().remove(placement.getCourse().getId());
+        studyPlan.getCoursePlacements().remove(courseId);
         shiftPositions(studyPlan, placement, -1);
     }
 
@@ -547,13 +533,13 @@ public class StudyPlanService {
                 .orElseThrow(() -> new SectionNotFoundException("Target section not found"));
 
         for (long courseId : courseIds) {
-            studyPlan.getSections().forEach(section -> section.getCourses().remove(courseId));
+            studyPlan.getSections().forEach(section -> section.removeCourse(courseId));
 
             if (targetSection.getType() == SectionType.Elective || targetSection.getType() == SectionType.Remedial) {
                 studyPlan.getCoursePlacements().remove(courseId);
             }
 
-            targetSection.getCourses().put(courseId, new SectionCourse(AggregateReference.to(courseId)));
+            targetSection.addCourse(courseId);
         }
 
         markAsDraft(studyPlan);
@@ -630,7 +616,7 @@ public class StudyPlanService {
     public StudyPlanDto removeCourseFromSemester(long studyPlanId, long courseId) {
         var studyPlan = findStudyPlan(studyPlanId);
 
-        deleteCoursePlacement(studyPlan, studyPlan.getCoursePlacements().get(courseId));
+        deleteCoursePlacement(studyPlan, courseId, studyPlan.getCoursePlacements().get(courseId));
 
         markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);

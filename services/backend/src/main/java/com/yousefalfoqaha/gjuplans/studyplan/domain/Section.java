@@ -5,11 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,6 +34,18 @@ public class Section {
 
     private int position;
 
-    @MappedCollection(idColumn = "section", keyColumn = "course")
-    Map<Long, SectionCourse> courses = new HashMap<>();
+    @MappedCollection(idColumn = "section")
+    Set<SectionCourse> courses = new HashSet<>();
+
+    public boolean hasCourse(Long courseId) {
+        return courses.contains(new SectionCourse(AggregateReference.to(courseId)));
+    }
+
+    public void addCourse(Long courseId) {
+        courses.add(new SectionCourse(AggregateReference.to(courseId)));
+    }
+
+    public void removeCourse(Long courseId) {
+        courses.remove(new SectionCourse(AggregateReference.to(courseId)));
+    }
 }

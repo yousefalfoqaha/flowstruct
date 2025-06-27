@@ -50,7 +50,7 @@ public class StudyPlan {
     private Set<Section> sections = new HashSet<>();
 
     @MappedCollection(idColumn = "study_plan", keyColumn = "course")
-    private Map<Long, CoursePlacement> coursePlacements = new HashMap<>();
+    private Map<Long, Placement> coursePlacements = new HashMap<>();
 
     @MappedCollection(idColumn = "study_plan")
     private Set<CoursePrerequisite> coursePrerequisites = new HashSet<>();
