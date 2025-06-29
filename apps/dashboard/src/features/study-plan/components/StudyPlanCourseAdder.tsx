@@ -196,6 +196,8 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
         name: course.name,
       },
     }));
+
+    setFilter('');
   };
 
   return (
@@ -243,7 +245,7 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
             <Pill.Group style={{ alignContent: 'start' }}>
               {Object.entries(selectedCourses).map(([id, metadata]) => {
                 return (
-                  <Pill withRemoveButton onRemove={() => handleRemoveCourse(id)}>
+                  <Pill key={id} withRemoveButton onRemove={() => handleRemoveCourse(id)}>
                     {metadata.code}: {metadata.name}
                   </Pill>
                 );

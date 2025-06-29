@@ -1,11 +1,19 @@
 spring:
   application:
     name: gjuplans
+  datasource:
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   sql:
     init:
       mode: always
   flyway:
     clean-disabled: true
+    baseline-on-migrate: true
+    baseline-description: "init"
+    baseline-version: 0
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
 
 jwt:
   cookieExpiry: ${JWT_COOKIEEXPIRY}

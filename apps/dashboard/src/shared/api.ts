@@ -40,8 +40,6 @@ export const api = {
         if (window.location.pathname !== '/login') {
           window.location.href = '/login';
         }
-
-        await Promise.reject();
       }
 
       const errorData = await response.json();

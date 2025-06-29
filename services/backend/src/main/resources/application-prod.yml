@@ -3,9 +3,7 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:postgresql://not-localhost:5432/${POSTGRES_DB}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://not-localhost:${POSTGRES_PORT}/${POSTGRES_DB}
 
 logging:
   level:
