@@ -4,4 +4,4 @@ services:
     container_name: postgres
     env_file: ../../dev.env
     ports:
-      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+      - "5432:5432"
