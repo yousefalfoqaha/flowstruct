@@ -1,11 +1,19 @@
 spring:
   config:
+    activate:
+      on-profile: dev
     import: file:../../dev.env[.properties]
   datasource:
     url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
-
-backend:
-  api:
-    key: ${BACKEND_API_KEY}
+  flyway:
+    baseline-on-migrate: true
+    baseline-description: "init"
+    baseline-version: 0
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+logging:
+  level:
+    org:
+      springframework: DEBUG

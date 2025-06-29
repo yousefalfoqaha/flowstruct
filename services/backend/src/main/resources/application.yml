@@ -1,6 +1,15 @@
 spring:
   application:
     name: gjuplans
+  sql:
+    init:
+      mode: always
+  flyway:
+    clean-disabled: true
 
 jwt:
-  cookieExpiry: 1800 # in seconds
+  cookieExpiry: ${JWT_COOKIEEXPIRY}
+
+backend:
+  api:
+    key: ${BACKEND_API_KEY}
