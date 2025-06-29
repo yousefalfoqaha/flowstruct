@@ -1,16 +1,6 @@
 spring:
-  config:
-    import: file:../../dev.env[.properties]
   application:
     name: gjuplans
-  datasource:
-    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
 
 jwt:
-  cookieExpiry: ${JWT_COOKIEEXPIRY:1800} # in seconds
-
-backend:
-  api:
-    key: ${BACKEND_API_KEY}
+  cookieExpiry: 1800 # in seconds
