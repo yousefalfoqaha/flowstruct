@@ -25,13 +25,16 @@ public class UserController {
     @Value("${jwt.cookieExpiry}")
     private int cookieExpiry;
 
+    @Value("${jwt.cookieSecure}")
+    private boolean cookieSecure;
+
     @PostMapping("/login")
     public ResponseEntity<Void> loginUser(@Valid @RequestBody LoginDetailsDto loginDetails, HttpServletResponse response) {
         String jwtToken = userService.verify(loginDetails);
 
         ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", jwtToken)
                 .httpOnly(true)
-                .secure(false)
+                .secure(cookieSecure)
                 .path("/")
                 .maxAge(Duration.ofSeconds(cookieExpiry))
                 .build();
@@ -45,7 +48,7 @@ public class UserController {
     public ResponseEntity<Void> logoutUser(HttpServletResponse response) {
         ResponseCookie emptyCookie = ResponseCookie.from("accessToken")
                 .httpOnly(true)
-                .secure(false)
+                .secure(cookieSecure)
                 .path("/")
                 .maxAge(0)
                 .build();

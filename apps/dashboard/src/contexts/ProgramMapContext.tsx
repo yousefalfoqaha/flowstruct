@@ -28,6 +28,7 @@ function ProgramMapProvider({ children }: { children: ReactNode }) {
   const [movingCourse, setMovingCourse] = React.useState<number | null>(null);
   const { data: studyPlan } = useStudyPlan();
   const { coursesGraph } = useCoursesGraph();
+
   const moveCourseToSemester = useMoveCourseToSemester();
 
   const SEMESTERS_PER_YEAR = 3;

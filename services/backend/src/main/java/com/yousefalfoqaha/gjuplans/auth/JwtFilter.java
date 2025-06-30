@@ -8,6 +8,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +26,9 @@ import java.util.Arrays;
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final AppUserDetailsService appUserDetailsService;
+
+    @Value("${jwt.cookieSecure}")
+    private boolean cookieSecure;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -52,7 +56,7 @@ public class JwtFilter extends OncePerRequestFilter {
         } catch (JwtException e) {
             ResponseCookie emptyCookie = ResponseCookie.from("accessToken")
                     .httpOnly(true)
-                    .secure(false)
+                    .secure(cookieSecure)
                     .path("/")
                     .maxAge(0)
                     .build();
@@ -72,7 +76,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if (!jwtService.validateToken(token, userDetails)) {
             ResponseCookie emptyCookie = ResponseCookie.from("accessToken")
                     .httpOnly(true)
-                    .secure(false)
+                    .secure(cookieSecure)
                     .path("/")
                     .maxAge(0)
                     .build();

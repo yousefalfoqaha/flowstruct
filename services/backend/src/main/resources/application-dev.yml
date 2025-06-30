@@ -5,6 +5,17 @@ spring:
     import: file:../../dev.env[.properties]
   datasource:
     url: jdbc:postgresql://localhost:${POSTGRES_PORT}/${POSTGRES_DB}
+  flyway:
+    locations: "classpath:db/migration,classpath:dev/db/migration"
+
+server:
+  servlet:
+    session:
+      cookie:
+        secure: false
+
+jwt:
+  cookieSecure: false
 
 logging:
   level:

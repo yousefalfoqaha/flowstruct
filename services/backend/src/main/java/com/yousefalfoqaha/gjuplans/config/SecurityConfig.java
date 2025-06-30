@@ -5,6 +5,7 @@ import com.yousefalfoqaha.gjuplans.auth.SiteGeneratorFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -25,7 +26,8 @@ public class SecurityConfig {
     private final SiteGeneratorFilter siteGeneratorFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    @Profile("dev")
+    public SecurityFilterChain devSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
@@ -46,6 +48,32 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
+    @Bean
+    @Profile("prod")
+    public SecurityFilterChain prodSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
+                .requiresChannel(channel -> channel.anyRequest().requiresSecure())
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(
+                                "/api/v1/users/login",
+                                "/api/v1/users/logout"
+                        )
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated()
+                )
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .addFilterBefore(siteGeneratorFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {

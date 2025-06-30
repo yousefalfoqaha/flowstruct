@@ -5,6 +5,16 @@ spring:
   datasource:
     url: jdbc:postgresql://not-localhost:${POSTGRES_PORT}/${POSTGRES_DB}
 
+server:
+  servlet:
+    session:
+      cookie:
+        secure: true
+  forward-headers-strategy: native
+
+jwt:
+  cookieSecure: true
+
 logging:
   level:
     root: WARN

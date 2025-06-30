@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { CourseRelation } from '@/features/study-plan/types.ts';
 import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
 
@@ -14,12 +14,10 @@ export type CourseRequisites = {
 const CoursesGraphContext = React.createContext<CoursesGraphContextType | undefined>(undefined);
 
 function CoursesGraphProvider({ children }: { children: ReactNode }) {
-  const [coursesGraph, setCoursesGraph] = React.useState<Map<number, CourseRequisites>>(new Map());
-
   const { data: studyPlan } = useStudyPlan();
 
-  React.useEffect(() => {
-    if (!studyPlan) return;
+  const coursesGraph = useMemo(() => {
+    if (!studyPlan) return new Map<number, CourseRequisites>();
 
     const traversePrerequisites = (
       courseId: number,
@@ -70,7 +68,8 @@ function CoursesGraphProvider({ children }: { children: ReactNode }) {
     };
 
     const buildCoursesGraph = (courses: number[]): Map<number, CourseRequisites> => {
-      const visited = new Set<number>();
+      const visitedPrereq = new Set<number>();
+      const visitedPostreq = new Set<number>();
       const graph = new Map<number, CourseRequisites>();
 
       courses.forEach((courseId) => {
@@ -78,38 +77,35 @@ function CoursesGraphProvider({ children }: { children: ReactNode }) {
       });
 
       courses.forEach((courseId) => {
-        if (!visited.has(courseId)) {
-          traversePrerequisites(courseId, studyPlan.coursePrerequisites, visited, graph);
+        if (!visitedPrereq.has(courseId)) {
+          traversePrerequisites(courseId, studyPlan.coursePrerequisites, visitedPrereq, graph);
         }
       });
 
-      visited.clear();
-
       courses.forEach((courseId) => {
-        if (!visited.has(courseId)) {
-          traversePostrequisites(courseId, visited, graph);
+        if (!visitedPostreq.has(courseId)) {
+          traversePostrequisites(courseId, visitedPostreq, graph);
         }
       });
 
       return graph;
     };
 
-    const newGraph = buildCoursesGraph(studyPlan.sections.flatMap((section) => section.courses));
-    setCoursesGraph(newGraph);
+    return buildCoursesGraph(studyPlan.sections.flatMap((section) => section.courses));
   }, [studyPlan]);
 
   return (
-    <CoursesGraphContext.Provider value={{ coursesGraph }}>{children}</CoursesGraphContext.Provider>
+    <CoursesGraphContext.Provider value={{ coursesGraph }}>
+      {children}
+    </CoursesGraphContext.Provider>
   );
 }
 
 const useCoursesGraph = () => {
   const context = React.useContext(CoursesGraphContext);
-
   if (!context) {
-    throw new Error('oopsie');
+    throw new Error('useCoursesGraph must be used within a CoursesGraphProvider');
   }
-
   return context;
 };
 
