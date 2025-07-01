@@ -11,7 +11,7 @@
     <groupId>com.yousefalfoqaha</groupId>
     <artifactId>gjuplans-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>gju-plans</name>
+    <name>gjuplans</name>
     <description>Backend for GJUPlans</description>
     <url/>
     <licenses>
