@@ -16,7 +16,7 @@ jobs:
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+          ssh-private-key: ${{ secrets.BACKEND_DEPLOY_KEY }}
 
       - name: Add server to known hosts
         run: |
