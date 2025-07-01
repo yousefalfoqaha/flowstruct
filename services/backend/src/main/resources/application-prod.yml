@@ -3,7 +3,7 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:postgresql://not-localhost:${POSTGRES_PORT}/${POSTGRES_DB}
+    url: jdbc:postgresql://localhost:${POSTGRES_PORT}/${POSTGRES_DB}
 
 server:
   servlet:
