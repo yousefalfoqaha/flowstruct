@@ -13,6 +13,9 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>gjuplans</name>
     <description>Backend for GJUPlans</description>
+    <build>
+        <finalName>app</finalName>
+    </build>
     <url/>
     <licenses>
         <license/>
