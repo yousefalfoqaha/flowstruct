@@ -10,32 +10,42 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as LoginImport } from './routes/login'
-import { Route as LayoutRouteImport } from './routes/_layout/route'
-import { Route as IndexImport } from './routes/index'
-import { Route as LayoutStudyPlansRouteImport } from './routes/_layout/study-plans/route'
-import { Route as LayoutProgramsRouteImport } from './routes/_layout/programs/route'
-import { Route as LayoutCoursesRouteImport } from './routes/_layout/courses/route'
-import { Route as LayoutStudyPlansIndexImport } from './routes/_layout/study-plans/index'
-import { Route as LayoutProgramsIndexImport } from './routes/_layout/programs/index'
-import { Route as LayoutCoursesIndexImport } from './routes/_layout/courses/index'
-import { Route as LayoutStudyPlansNewImport } from './routes/_layout/study-plans/new'
-import { Route as LayoutProgramsNewImport } from './routes/_layout/programs/new'
-import { Route as LayoutCoursesNewImport } from './routes/_layout/courses/new'
-import { Route as LayoutStudyPlansStudyPlanIdRouteImport } from './routes/_layout/study-plans/$studyPlanId/route'
-import { Route as LayoutProgramsProgramIdRouteImport } from './routes/_layout/programs/$programId/route'
-import { Route as LayoutCoursesCourseIdRouteImport } from './routes/_layout/courses/$courseId/route'
-import { Route as LayoutStudyPlansStudyPlanIdIndexImport } from './routes/_layout/study-plans/$studyPlanId/index'
-import { Route as LayoutProgramsProgramIdIndexImport } from './routes/_layout/programs/$programId/index'
-import { Route as LayoutCoursesCourseIdIndexImport } from './routes/_layout/courses/$courseId/index'
-import { Route as LayoutStudyPlansStudyPlanIdProgramMapImport } from './routes/_layout/study-plans/$studyPlanId/program-map'
-import { Route as LayoutStudyPlansStudyPlanIdFrameworkImport } from './routes/_layout/study-plans/$studyPlanId/framework'
-import { Route as LayoutProgramsProgramIdEditImport } from './routes/_layout/programs/$programId/edit'
-import { Route as LayoutCoursesCourseIdEditImport } from './routes/_layout/courses/$courseId/edit'
-import { Route as LayoutStudyPlansStudyPlanIdDetailsRouteImport } from './routes/_layout/study-plans/$studyPlanId/details/route'
-import { Route as LayoutStudyPlansStudyPlanIdDetailsIndexImport } from './routes/_layout/study-plans/$studyPlanId/details/index'
-import { Route as LayoutStudyPlansStudyPlanIdDetailsEditImport } from './routes/_layout/study-plans/$studyPlanId/details/edit'
+import { Route as rootRoute } from './routes/__root';
+import { Route as LoginImport } from './routes/login';
+import { Route as LayoutRouteImport } from './routes/_layout/route';
+import { Route as IndexImport } from './routes/index';
+import { Route as LayoutStudyPlansRouteImport } from './routes/_layout/study-plans/route';
+import { Route as LayoutProgramsRouteImport } from './routes/_layout/programs/route';
+import { Route as LayoutCoursesRouteImport } from './routes/_layout/courses/route';
+import { Route as LayoutStudyPlansIndexImport } from './routes/_layout/study-plans/index';
+import { Route as LayoutProgramsIndexImport } from './routes/_layout/programs/index';
+import { Route as LayoutCoursesIndexImport } from './routes/_layout/courses/index';
+import { Route as LayoutStudyPlansNewImport } from './routes/_layout/study-plans/new';
+import { Route as LayoutProgramsNewImport } from './routes/_layout/programs/new';
+import { Route as LayoutCoursesNewImport } from './routes/_layout/courses/new';
+import { Route as LayoutStudyPlansStudyPlanIdRouteImport } from './routes/_layout/study-plans/$studyPlanId/route';
+import { Route as LayoutProgramsProgramIdRouteImport } from './routes/_layout/programs/$programId/route';
+import { Route as LayoutCoursesCourseIdRouteImport } from './routes/_layout/courses/$courseId/route';
+import { Route as LayoutStudyPlansStudyPlanIdIndexImport } from './routes/_layout/study-plans/$studyPlanId/index';
+import { Route as LayoutProgramsProgramIdIndexImport } from './routes/_layout/programs/$programId/index';
+import { Route as LayoutCoursesCourseIdIndexImport } from './routes/_layout/courses/$courseId/index';
+import {
+  Route as LayoutStudyPlansStudyPlanIdProgramMapImport,
+} from './routes/_layout/study-plans/$studyPlanId/program-map';
+import {
+  Route as LayoutStudyPlansStudyPlanIdFrameworkImport,
+} from './routes/_layout/study-plans/$studyPlanId/framework';
+import { Route as LayoutProgramsProgramIdEditImport } from './routes/_layout/programs/$programId/edit';
+import { Route as LayoutCoursesCourseIdEditImport } from './routes/_layout/courses/$courseId/edit';
+import {
+  Route as LayoutStudyPlansStudyPlanIdDetailsRouteImport,
+} from './routes/_layout/study-plans/$studyPlanId/details/route';
+import {
+  Route as LayoutStudyPlansStudyPlanIdDetailsIndexImport,
+} from './routes/_layout/study-plans/$studyPlanId/details/index';
+import {
+  Route as LayoutStudyPlansStudyPlanIdDetailsEditImport,
+} from './routes/_layout/study-plans/$studyPlanId/details/edit';
 
 // Create/Update Routes
 

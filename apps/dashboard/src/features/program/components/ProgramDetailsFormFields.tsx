@@ -52,24 +52,24 @@ export function ProgramDetailsFormFields({ form }: Props) {
         />
       </Flex>
 
-        <Controller
-          name="degree"
-          control={control}
-          render={({ field }) => (
-            <Select
-              label="Degree"
-              placeholder="Select a degree"
-              {...field}
-              data={Object.entries(Degree).map(([key, value]) => ({
-                value: key,
-                label: `${value} (${key})`,
-              }))}
-              leftSection={<GraduationCap size={18} />}
-              error={errors.degree?.message}
-              withAsterisk
-            />
-          )}
-        />
+      <Controller
+        name="degree"
+        control={control}
+        render={({ field }) => (
+          <Select
+            label="Degree"
+            placeholder="Select a degree"
+            {...field}
+            data={Object.entries(Degree).map(([key, value]) => ({
+              value: key,
+              label: `${value} (${key})`,
+            }))}
+            leftSection={<GraduationCap size={18} />}
+            error={errors.degree?.message}
+            withAsterisk
+          />
+        )}
+      />
     </>
   );
 }

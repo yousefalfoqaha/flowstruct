@@ -95,9 +95,7 @@ function CoursesGraphProvider({ children }: { children: ReactNode }) {
   }, [studyPlan]);
 
   return (
-    <CoursesGraphContext.Provider value={{ coursesGraph }}>
-      {children}
-    </CoursesGraphContext.Provider>
+    <CoursesGraphContext.Provider value={{ coursesGraph }}>{children}</CoursesGraphContext.Provider>
   );
 }
 

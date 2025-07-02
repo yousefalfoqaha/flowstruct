@@ -8,6 +8,7 @@ import { CoursePlacement } from '@/features/study-plan/types.ts';
 import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
 import { useStudyPlanCourses } from '@/features/study-plan/hooks/useStudyPlanCourses.ts';
 import { comparePlacement } from '@/utils/comparePlacement.ts';
+
 type CoursePlacementMultiSelectProps = {
   placement: CoursePlacement;
 };
@@ -59,8 +60,7 @@ export function CoursePlacementMultiSelect({ placement }: CoursePlacementMultiSe
         .map((courseId) => {
           const course = courses[courseId];
           if (!course) return null;
-          
-          
+
           const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
           const unmetPrerequisites = Object.keys(prerequisites).filter((prerequisiteId) => {
             const prerequisitePlacement = studyPlan.coursePlacements[Number(prerequisiteId)];

@@ -298,3 +298,4 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
     </>
   );
 }
+

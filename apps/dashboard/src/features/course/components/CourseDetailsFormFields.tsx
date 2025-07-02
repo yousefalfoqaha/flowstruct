@@ -20,7 +20,7 @@ import {
   Settings2,
   Timer,
 } from 'lucide-react';
-import { PresetType } from '@/utils/getCoursePresetSettings.ts';
+import { PresetType } from '@/features/course/hooks/useCoursePreset.ts';
 import { z } from 'zod/v4';
 import { courseDetailsSchema } from '@/features/course/schemas.ts';
 

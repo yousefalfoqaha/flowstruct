@@ -17,9 +17,19 @@ function RouteComponent() {
       subtitle="Manage study plan course placements"
       headerAction={
         <Group gap="xs">
-          <Text c="dimmed" size="xs">Move <span style={{padding: "0.2rem"}} ><ArrowLeftRight size={12} color="gray" /></span> with</Text>
+          <Text c="dimmed" size="xs">
+            Move{' '}
+            <span style={{ padding: '0.2rem' }}>
+              <ArrowLeftRight size={12} color="gray" />
+            </span>{' '}
+            with
+          </Text>
           <Group gap={5}>
-            <Kbd size="xs">Shift</Kbd> <Text c="dimmed" size="xs">+</Text> <Kbd size="xs">Scroll</Kbd>
+            <Kbd size="xs">Shift</Kbd>{' '}
+            <Text c="dimmed" size="xs">
+              +
+            </Text>{' '}
+            <Kbd size="xs">Scroll</Kbd>
           </Group>
         </Group>
       }

@@ -99,8 +99,6 @@ function ProgramMapProvider({ children }: { children: ReactNode }) {
         ) as CoursePlacement | null;
         const oldPlacement = studyPlan.coursePlacements[movingCourse];
 
-
-
         if (!targetPlacement || !oldPlacement) {
           setMovingCourse(null);
           return;

@@ -22,7 +22,7 @@ const queryClient = new QueryClient({
     },
   },
 });
-
+// yes
 export const router = createRouter({
   routeTree,
   context: { queryClient },
@@ -31,11 +31,7 @@ export const router = createRouter({
   scrollRestoration: true,
   defaultNotFoundComponent: () => <NotFoundPage />,
   defaultPendingComponent: () => (
-    <LoadingOverlay
-      visible
-      zIndex={1000}
-      loaderProps={{ type: 'bars' }}
-    />
+    <LoadingOverlay visible zIndex={1000} loaderProps={{ type: 'bars' }} />
   ),
 });
 
