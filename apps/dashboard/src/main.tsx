@@ -22,7 +22,7 @@ const queryClient = new QueryClient({
     },
   },
 });
-
+// yes
 export const router = createRouter({
   routeTree,
   context: { queryClient },
