@@ -22,7 +22,7 @@ jobs:
 
       - name: Add server to known hosts
         run: |
-          ssh-keyscan -H api.gjuplans.com >> ~/.ssh/known_hosts
+          ssh-keyscan -H 91.99.98.202 >> ~/.ssh/known_hosts
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -39,7 +39,7 @@ jobs:
       - name: Deploy JAR to Server
         run: |
           LOCAL_JAR_PATH="services/backend/target/app.jar"
-          REMOTE_SERVER="admin@api.gjuplans.com"
+          REMOTE_SERVER="admin@91.99.98.202"
           REMOTE_JAR_DIR="/opt/gjuplans"
 
           rsync -avz -e "ssh" $LOCAL_JAR_PATH $REMOTE_SERVER:$REMOTE_JAR_DIR/app.jar
