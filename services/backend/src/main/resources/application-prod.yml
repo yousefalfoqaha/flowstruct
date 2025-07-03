@@ -15,6 +15,9 @@ server:
 jwt:
   cookieSecure: true
 
+cors:
+  allowed-origins: https://api.gjuplans.com
+
 logging:
   level:
     root: WARN
