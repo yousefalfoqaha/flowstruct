@@ -1,18 +1,23 @@
 import { AppCard } from '@/shared/components/AppCard.tsx';
 import { StudyPlanDetailsFormFields } from '@/features/study-plan/components/StudyPlanDetailsFormFields.tsx';
-import { useAppForm } from '@/shared/hooks/useAppForm.ts';
 import { studyPlanDetailsSchema } from '@/features/study-plan/schemas.ts';
 import { useCreateStudyPlan } from '@/features/study-plan/hooks/useCreateStudyPlan.ts';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { Button } from '@mantine/core';
 import { Plus, X } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { customResolver } from '@/utils/customResolver.ts';
+import { z } from 'zod/v4';
 
 export function CreateStudyPlanFieldset() {
-  const form = useAppForm(studyPlanDetailsSchema, {
-    year: new Date().toISOString(),
-    track: '',
-    duration: 4,
+  const form = useForm<z.infer<typeof studyPlanDetailsSchema>>({
+    resolver: customResolver(studyPlanDetailsSchema),
+    defaultValues: {
+      year: `${new Date().getFullYear()}-01-01`,
+      track: '',
+      duration: 4,
+    },
   });
 
   const createStudyPlan = useCreateStudyPlan();
@@ -30,7 +35,7 @@ export function CreateStudyPlanFieldset() {
       {
         onSuccess: () => {
           form.reset();
-          navigate({ to: '/study-plans', search: getDefaultSearchValues() });
+          navigate({ to: '/study-plans', search: DefaultSearchValues() });
         },
       }
     );
@@ -38,13 +43,18 @@ export function CreateStudyPlanFieldset() {
 
   const footer = (
     <>
-      <Link search={getDefaultSearchValues()} to="/study-plans">
+      <Link search={DefaultSearchValues()} to="/study-plans">
         <Button variant="default" leftSection={<X size={18} />}>
           Cancel
         </Button>
       </Link>
 
-      <Button type="submit" leftSection={<Plus size={18} />} loading={createStudyPlan.isPending}>
+      <Button
+        disabled={!form.formState.isValid}
+        type="submit"
+        leftSection={<Plus size={18} />}
+        loading={createStudyPlan.isPending}
+      >
         Save Study Plan
       </Button>
     </>

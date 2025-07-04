@@ -26,10 +26,11 @@ export function SectionDetailsFormFields({ form }: Props) {
               label="Level"
               placeholder="Select a level"
               {...field}
-              data={Object.entries(SectionLevel).map(([key, value]) => ({
-                value: key,
+              data={Object.values(SectionLevel).map(value => ({
+                value: value,
                 label: value,
               }))}
+              required={true}
               error={errors.level?.message}
               leftSection={<University size={18} />}
               withAsterisk
@@ -44,12 +45,13 @@ export function SectionDetailsFormFields({ form }: Props) {
               label="Type"
               placeholder="Select a type"
               {...field}
-              data={Object.entries(SectionType).map(([key, value]) => ({
-                value: key,
+              required={true}
+              data={Object.values(SectionType).map(value => ({
+                value: value,
                 label: value,
               }))}
               error={errors.type?.message}
-              withAsterisk
+
               leftSection={<Tag size={18} />}
             />
           )}

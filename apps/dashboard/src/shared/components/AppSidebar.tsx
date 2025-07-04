@@ -2,14 +2,14 @@ import { Link } from '@tanstack/react-router';
 import classes from '@/shared/components/AppSidebar.module.css';
 import { ActionIcon, Divider, Group, Stack, Text, Title, Tooltip } from '@mantine/core';
 import { BookOpen, GraduationCap, LogOut, ScrollText } from 'lucide-react';
-import { SidebarLink } from '@/shared/types.ts';
+import { NavbarLinks } from '@/shared/types.ts';
 import { Route as ProgramsRoute } from '@/routes/_layout/programs/route.tsx';
 import { Route as StudyPlansRoute } from '@/routes/_layout/study-plans/route.tsx';
 import { Route as CoursesRoute } from '@/routes/_layout/courses';
 import { useMe } from '@/features/user/hooks/useMe.ts';
 import { useLogout } from '@/features/user/hooks/useLogout.ts';
 
-const data: SidebarLink[] = [
+const data: NavbarLinks[] = [
   { label: 'Programs', icon: GraduationCap, route: ProgramsRoute.to },
   { label: 'Study Plans', icon: ScrollText, route: StudyPlansRoute.to },
   { label: 'Courses', icon: BookOpen, route: CoursesRoute.to },

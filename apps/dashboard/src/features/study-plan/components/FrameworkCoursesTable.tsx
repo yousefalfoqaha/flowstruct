@@ -1,6 +1,5 @@
 import { Button, Flex, Group, Paper, Stack, Title } from '@mantine/core';
 import { DataTable } from '@/shared/components/DataTable.tsx';
-import { SectionsTree } from '@/features/study-plan/components/SectionsTree.tsx';
 import { StudyPlanCourseAdder } from '@/features/study-plan/components/StudyPlanCourseAdder.tsx';
 import { useDataTable } from '@/shared/hooks/useDataTable.ts';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
@@ -12,11 +11,10 @@ import { getSectionCode } from '@/utils/getSectionCode.ts';
 import { FrameworkCourse } from '@/features/study-plan/types.ts';
 import { AppCard } from '@/shared/components/AppCard.tsx';
 import { useStudyPlanCourses } from '@/features/study-plan/hooks/useStudyPlanCourses.ts';
-import { CreateSectionModal } from '@/features/study-plan/components/CreateSectionModal.tsx';
-import { ListPlus, X } from 'lucide-react';
+import { ListPlus, Plus, X } from 'lucide-react';
 import { SelectedCoursesToolbar } from '@/features/study-plan/components/SelectedCoursesToolbar.tsx';
 import { SectionColumnFilter } from '@/features/study-plan/components/SectionColumnFilter.tsx';
-import { FrameworkCoursesTableSearchSchema } from '@/shared/schemas.ts';
+import { Link } from '@tanstack/react-router';
 
 export function FrameworkCoursesTable() {
   const { data: studyPlan } = useStudyPlan();
@@ -50,23 +48,20 @@ export function FrameworkCoursesTable() {
 
   const columns = React.useMemo(() => getFrameworkCoursesTableColumns(), []);
 
-  const table = useDataTable<FrameworkCourse>(
-    {
-      data,
-      columns,
-      getRowId: (originalRow) => String(originalRow.id),
-      initialState: {
-        sorting: [
-          {
-            id: 'code',
-            desc: false,
-          },
-        ],
-        globalFilter: '',
-      },
+  const table = useDataTable<FrameworkCourse>({
+    data,
+    columns,
+    getRowId: (originalRow) => String(originalRow.id),
+    initialState: {
+      sorting: [
+        {
+          id: 'code',
+          desc: false,
+        },
+      ],
+      globalFilter: '',
     },
-    FrameworkCoursesTableSearchSchema
-  );
+  });
 
   if (studyPlan.sections.length === 0) {
     return (
@@ -76,7 +71,12 @@ export function FrameworkCoursesTable() {
           <Title mb="sm" order={2} fw={600}>
             Create New Section
           </Title>
-          <CreateSectionModal studyPlanId={studyPlan.id} />
+          <Link
+            params={{ studyPlanId: String(studyPlan.id) }}
+            to="/study-plans/$studyPlanId/sections/new"
+          >
+            <Button leftSection={<Plus size={18} />}>Create Section</Button>
+          </Link>
         </Stack>
       </Paper>
     );
@@ -86,11 +86,9 @@ export function FrameworkCoursesTable() {
     <>
       <SelectedCoursesToolbar table={table} studyPlan={studyPlan} />
       <Flex direction={{ base: 'column', lg: 'row' }} gap="lg">
-        <SectionsTree studyPlan={studyPlan} />
-
         <Flex direction="column" style={{ flex: 1 }} gap="md">
           <Group>
-            <DataTableSearch width="" placeholder="Search courses..." table={table} />
+            <DataTableSearch placeholder="Search courses..." table={table} />
 
             <SectionColumnFilter table={table} sections={studyPlan.sections} />
 
@@ -110,9 +108,9 @@ export function FrameworkCoursesTable() {
           </Group>
 
           <AppCard
-            title="Framework Courses"
+            title="Course List"
             subtitle="Manage all study plan courses"
-            headerAction={<StudyPlanCourseAdder studyPlan={studyPlan} />}
+            headerAction={<StudyPlanCourseAdder />}
           >
             <DataTable table={table} />
           </AppCard>

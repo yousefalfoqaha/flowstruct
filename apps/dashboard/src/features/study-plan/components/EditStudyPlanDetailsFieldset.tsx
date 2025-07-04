@@ -1,27 +1,31 @@
 import { StudyPlan } from '@/features/study-plan/types.ts';
-import { useAppForm } from '@/shared/hooks/useAppForm.ts';
 import { studyPlanDetailsSchema } from '@/features/study-plan/schemas.ts';
 import { AppCard } from '@/shared/components/AppCard.tsx';
 import { StudyPlanDetailsFormFields } from '@/features/study-plan/components/StudyPlanDetailsFormFields.tsx';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { Button, Text } from '@mantine/core';
 import { ChevronLeft, Pencil, Trash } from 'lucide-react';
-import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { useEditStudyPlanDetails } from '@/features/study-plan/hooks/useEditStudyPlanDetails.ts';
 import { useDeleteStudyPlan } from '@/features/study-plan/hooks/useDeleteStudyPlan.ts';
 import { modals } from '@mantine/modals';
-import dayjs from 'dayjs';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod/v4';
+import { customResolver } from '@/utils/customResolver.ts';
 
 type Props = {
   studyPlan: StudyPlan;
 };
 
 export function EditStudyPlanDetailsFieldset({ studyPlan }: Props) {
-  const form = useAppForm(studyPlanDetailsSchema, {
-    program: String(studyPlan.program),
-    year: dayjs().year(studyPlan.year).toISOString(),
-    duration: studyPlan.duration,
-    track: studyPlan.track ?? '',
+  const form = useForm<z.infer<typeof studyPlanDetailsSchema>>({
+    resolver: customResolver(studyPlanDetailsSchema),
+    defaultValues: {
+      program: String(studyPlan.program),
+      year: `${studyPlan.year}-01-01`,
+      duration: studyPlan.duration,
+      track: studyPlan.track ?? '',
+    },
   });
 
   const editStudyPlanDetails = useEditStudyPlanDetails();
@@ -55,7 +59,7 @@ export function EditStudyPlanDetailsFieldset({ studyPlan }: Props) {
       onSuccess: () =>
         navigate({
           to: '/study-plans',
-          search: getDefaultSearchValues(),
+          search: DefaultSearchValues(),
         }),
     });
 
@@ -84,6 +88,7 @@ export function EditStudyPlanDetailsFieldset({ studyPlan }: Props) {
       </Button>
 
       <Button
+        disabled={!form.formState.isValid || !form.formState.isDirty}
         type="submit"
         leftSection={<Pencil size={18} />}
         loading={editStudyPlanDetails.isPending}

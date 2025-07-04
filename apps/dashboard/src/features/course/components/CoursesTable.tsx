@@ -36,7 +36,7 @@ export function CoursesTable() {
       <DataTableSearch width="" table={table} debounce={750} />
 
       <AppCard
-        title="All Courses"
+        title="Course List"
         subtitle="Manage all university courses"
         headerAction={
           <Link to="/courses/new">

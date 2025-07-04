@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { CreateProgramFieldset } from '@/features/program/components/CreateProgramFieldset.tsx';
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
-import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 
 export const Route = createFileRoute('/_layout/programs/new')({
@@ -17,7 +17,7 @@ function RouteComponent() {
           title="Create New Program"
           linkProps={{
             to: '/programs',
-            search: getDefaultSearchValues,
+            search: DefaultSearchValues,
           }}
         />
       }

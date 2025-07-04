@@ -1,7 +1,7 @@
 import { Button, Container, Stack, Title } from '@mantine/core';
 import { ArrowLeft, SearchX } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
-import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 
 export function NotFoundPage() {
   return (
@@ -11,7 +11,7 @@ export function NotFoundPage() {
         <Title>(404) Not found...</Title>
         <Link
           to="/programs"
-          search={getDefaultSearchValues()}
+          search={DefaultSearchValues()}
           style={{ textDecoration: 'none', display: 'block', width: '100%' }}
         >
           <Button size="xl" variant="transparent" fullWidth leftSection={<ArrowLeft />}>

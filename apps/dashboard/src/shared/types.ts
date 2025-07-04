@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import { ColumnFilter } from '@tanstack/react-table';
 
 export interface ErrorObject {
@@ -21,9 +21,9 @@ export type IconResolver<TData, TVariables> =
   | ReactElement
   | ((data: TData, variables: TVariables) => ReactElement | undefined);
 
-export type SidebarLink = {
+export type NavbarLinks = {
   label: string;
-  icon: React.FC<React.SVGProps<SVGSVGElement>>;
+  icon: ReactNode;
   route: string;
 };
 

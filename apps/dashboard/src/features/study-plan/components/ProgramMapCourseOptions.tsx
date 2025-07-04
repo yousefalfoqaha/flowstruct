@@ -1,7 +1,7 @@
 import { ActionIcon, Box, Group, Menu, Slider, Tooltip } from '@mantine/core';
 import { EllipsisVertical, Folder, Scaling, Trash } from 'lucide-react';
 import { Link, useParams } from '@tanstack/react-router';
-import { getDefaultFrameworkCoursesSearchValues } from '@/utils/getDefaultFrameworkCoursesSearchValues.ts';
+import { DefaultFrameworkCoursesSearchValues } from '@/utils/defaultFrameworkCoursesSearchValues.ts';
 import { CourseSummary } from '@/features/course/types.ts';
 import { useRemoveCoursePlacement } from '@/features/study-plan/hooks/useRemoveCoursePlacement.ts';
 import { CoursePlacement, StudyPlan } from '@/features/study-plan/types.ts';
@@ -77,7 +77,7 @@ export function ProgramMapCourseOptions({ course, placement }: Props) {
           to="/study-plans/$studyPlanId/framework"
           params={{ studyPlanId: String(studyPlanId) }}
           search={{
-            ...getDefaultFrameworkCoursesSearchValues(),
+            ...DefaultFrameworkCoursesSearchValues(),
             filter: course.code,
           }}
         >

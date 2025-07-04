@@ -6,17 +6,23 @@ import { Pencil, Trash } from 'lucide-react';
 import { useEditProgramDetails } from '@/features/program/hooks/useEditProgramDetails.ts';
 import { Program } from '@/features/program/types.ts';
 import { AppCard } from '@/shared/components/AppCard.tsx';
-import { useAppForm } from '@/shared/hooks/useAppForm.ts';
 import { modals } from '@mantine/modals';
 import { useDeleteProgram } from '@/features/program/hooks/useDeleteProgram.ts';
-import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
+import { useForm } from 'react-hook-form';
+import { customResolver } from '@/utils/customResolver.ts';
+import { z } from 'zod/v4';
 
 type EditProgramFieldsetProps = {
   program: Program;
 };
 
 export function EditProgramFieldset({ program }: EditProgramFieldsetProps) {
-  const form = useAppForm(programDetailsSchema, { ...program });
+  const form = useForm<z.infer<typeof programDetailsSchema>>({
+    resolver: customResolver(programDetailsSchema),
+    defaultValues: { ...program },
+  });
+
   const editProgramDetails = useEditProgramDetails();
   const deleteProgram = useDeleteProgram();
   const navigate = useNavigate();
@@ -40,7 +46,7 @@ export function EditProgramFieldset({ program }: EditProgramFieldsetProps) {
       onSuccess: () =>
         navigate({
           to: '/programs',
-          search: getDefaultSearchValues(),
+          search: DefaultSearchValues(),
         }),
     });
 
@@ -74,6 +80,7 @@ export function EditProgramFieldset({ program }: EditProgramFieldsetProps) {
             </Button>
 
             <Button
+              disabled={!form.formState.isValid || !form.formState.isDirty}
               type="submit"
               leftSection={<Pencil size={18} />}
               loading={editProgramDetails.isPending}

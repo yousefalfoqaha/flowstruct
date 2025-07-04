@@ -14,7 +14,6 @@ import {
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { Folder, Plus, PlusCircle, X } from 'lucide-react';
-import { StudyPlan } from '@/features/study-plan/types.ts';
 import { useAddCoursesToStudyPlan } from '@/features/study-plan/hooks/useAddCoursesToStudyPlan.ts';
 import { DataTable } from '@/shared/components/DataTable.tsx';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
@@ -35,10 +34,7 @@ import classes from '@/features/study-plan/components/StudyPlanCourseAdder.modul
 import { useCoursesGraph } from '@/contexts/CoursesGraphContext.tsx';
 import { CreateCourseModal } from '@/features/course/components/CreateCourseModal';
 import { Course } from '@/features/course/types.ts';
-
-interface StudyPlanCourseAdderProps {
-  studyPlan: StudyPlan;
-}
+import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
 
 interface CourseRow {
   id: number;
@@ -49,7 +45,8 @@ interface CourseRow {
 
 type CourseMeta = Pick<CourseRow, 'code' | 'name'>;
 
-export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
+export function StudyPlanCourseAdder() {
+  const { data: studyPlan } = useStudyPlan();
   const [modalOpen, setModalOpen] = React.useState(false);
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
   const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
@@ -298,4 +295,3 @@ export function StudyPlanCourseAdder({ studyPlan }: StudyPlanCourseAdderProps) {
     </>
   );
 }
-

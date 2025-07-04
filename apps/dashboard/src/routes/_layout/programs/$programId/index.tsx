@@ -5,7 +5,7 @@ import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
 import { AppCard } from '@/shared/components/AppCard.tsx';
 import { InfoItem } from '@/shared/components/InfoItem.tsx';
 import { Degree } from '@/features/program/types.ts';
-import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
 import { EditDetailsButton } from '@/shared/components/EditDetailsButton.tsx';
@@ -26,23 +26,20 @@ function RouteComponent() {
             title={getProgramDisplayName(program)}
             linkProps={{
               to: '/programs',
-              search: getDefaultSearchValues(),
+              search: DefaultSearchValues(),
             }}
           />
-          <LastUpdated at={program.updatedAt} by={program.updatedBy} />
+          <Group gap="lg">
+            <LastUpdated at={program.updatedAt} by={program.updatedBy} />
+            <EditDetailsButton
+              to="/programs/$programId/edit"
+              params={{ programId: String(program.id) }}
+            />
+          </Group>
         </Group>
       }
     >
-      <AppCard
-        title="Program Information"
-        subtitle="Details about this program"
-        headerAction={
-          <EditDetailsButton
-            to="/programs/$programId/edit"
-            params={{ programId: String(program.id) }}
-          />
-        }
-      >
+      <AppCard title="Program Information" subtitle="Details about this program">
         <Group grow>
           <InfoItem label="Code" value={program.code} />
           <InfoItem label="Name" value={program.name} />

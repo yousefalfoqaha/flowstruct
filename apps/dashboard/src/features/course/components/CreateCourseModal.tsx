@@ -6,7 +6,9 @@ import { Plus } from 'lucide-react';
 import { Course } from '@/features/course/types.ts';
 import { getCoursePresetSettings } from '@/utils/getCoursePresetSettings.ts';
 import { useCoursePreset } from '@/features/course/hooks/useCoursePreset.ts';
-import { useAppForm } from '@/shared/hooks/useAppForm.ts';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod/v4';
+import { customResolver } from '@/utils/customResolver.ts';
 
 interface CreateCourseModalProps {
   opened: boolean;
@@ -21,19 +23,23 @@ export function CreateCourseModal({
   openCourseSearch,
   selectCreatedCourse,
 }: CreateCourseModalProps) {
-  const form = useAppForm(courseDetailsSchema, {
-    code: '',
-    name: '',
-    isRemedial: false,
-    ...getCoursePresetSettings('lecture'),
+  const form = useForm<z.infer<typeof courseDetailsSchema>>({
+    resolver: customResolver(courseDetailsSchema),
+    defaultValues: {
+      code: '',
+      name: '',
+      isRemedial: false,
+      ...getCoursePresetSettings('lecture'),
+    },
   });
+
   const { preset, changePreset } = useCoursePreset(form);
   const createCourse = useCreateCourse();
 
   const handleClose = () => {
+    form.reset();
     setOpened(false);
     openCourseSearch();
-    form.reset();
   };
 
   const onSubmit = form.handleSubmit((data) => {

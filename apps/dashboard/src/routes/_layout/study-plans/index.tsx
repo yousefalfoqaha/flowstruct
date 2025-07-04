@@ -1,23 +1,30 @@
-import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
+import { createFileRoute, Link, stripSearchParams } from '@tanstack/react-router';
 import { StudyPlansTable } from '@/features/study-plan/components/StudyPlansTable.tsx';
-import { ScrollText } from 'lucide-react';
-import { TableSearchSchema } from '@/shared/schemas.ts';
-import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
-import { PageHeader } from '@/shared/components/PageHeader.tsx';
-import { PageLayout } from '@/shared/components/PageLayout.tsx';
+import { getTableSearchSchema } from '@/shared/schemas.ts';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
+import { Button, Group, Stack, Title } from '@mantine/core';
+import { Plus } from 'lucide-react';
 
 export const Route = createFileRoute('/_layout/study-plans/')({
   component: RouteComponent,
-  validateSearch: TableSearchSchema,
+  validateSearch: getTableSearchSchema(DefaultSearchValues()),
   search: {
-    middlewares: [stripSearchParams(getDefaultSearchValues())],
+    middlewares: [stripSearchParams(DefaultSearchValues())],
   },
 });
 
 function RouteComponent() {
   return (
-    <PageLayout header={<PageHeader title="Study Plans" icon={<ScrollText />} />}>
+    <Stack gap="lg">
+      <Group justify="space-between">
+        <Title order={2} fw={600}>
+          Study Plans
+        </Title>
+        <Link to="/study-plans/new">
+          <Button leftSection={<Plus size={18} />}>Create New Study Plan</Button>
+        </Link>
+      </Group>
       <StudyPlansTable />
-    </PageLayout>
+    </Stack>
   );
 }

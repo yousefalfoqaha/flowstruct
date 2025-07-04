@@ -1,21 +1,17 @@
 import { useMatches, useNavigate, useParams } from '@tanstack/react-router';
 import { Route as DetailsRoute } from '@/routes/_layout/study-plans/$studyPlanId/details';
-import { Folder, Map, ReceiptText } from 'lucide-react';
+import { Folder, List, Map, ReceiptText } from 'lucide-react';
 import { Route as FrameworkRoute } from '@/routes/_layout/study-plans/$studyPlanId/framework.tsx';
 import { Route as ProgramMapRoute } from '@/routes/_layout/study-plans/$studyPlanId/program-map.tsx';
-import { ReactNode } from 'react';
+import { Route as SectionsRoute } from '@/routes/_layout/study-plans/$studyPlanId/sections';
 import { Tabs } from '@mantine/core';
+import { NavbarLinks } from '@/shared/types.ts';
 
-type TabLink = {
-  label: string;
-  path: string;
-  icon: ReactNode;
-};
-
-const tabs: TabLink[] = [
-  { label: 'Details', path: DetailsRoute.to, icon: <ReceiptText size={18} /> },
-  { label: 'Framework', path: FrameworkRoute.to, icon: <Folder size={18} /> },
-  { label: 'Program Map', path: ProgramMapRoute.to, icon: <Map size={18} /> },
+const tabs: NavbarLinks[] = [
+  { label: 'Details', icon: <ReceiptText size={18} />, route: DetailsRoute.to },
+  { label: 'Sections', icon: <List size={18}/>, route: SectionsRoute.to},
+  { label: 'Framework', icon: <Folder size={18} />, route: FrameworkRoute.to },
+  { label: 'Program Map', icon: <Map size={18} />, route: ProgramMapRoute.to },
 ];
 
 export function StudyPlanTabs() {
@@ -24,7 +20,7 @@ export function StudyPlanTabs() {
   const navigate = useNavigate();
 
   const fullPath = matches.at(-1)?.fullPath ?? '';
-  const activeTab = tabs.find((tab) => fullPath.includes(tab.path))?.path ?? DetailsRoute.to;
+  const activeTab = tabs.find((tab) => fullPath.includes(tab.route))?.route ?? DetailsRoute.to;
 
   return (
     <Tabs
@@ -39,7 +35,7 @@ export function StudyPlanTabs() {
     >
       <Tabs.List>
         {tabs.map((tab, index) => (
-          <Tabs.Tab key={index} value={tab.path} leftSection={tab.icon}>
+          <Tabs.Tab key={index} value={tab.route} leftSection={tab.icon}>
             {tab.label}
           </Tabs.Tab>
         ))}

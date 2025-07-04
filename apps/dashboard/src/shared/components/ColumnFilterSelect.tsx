@@ -15,14 +15,14 @@ export function ColumnFilterSelect<TData>({
   options,
 }: ColumnFilterSelectProps<TData>) {
   const column = table.getColumn(columnId as string);
-  const value = column?.getFilterValue() as string;
+  const value = column?.getFilterValue() as string ?? '';
 
   return (
     <Select
       placeholder={placeholder}
       data={options}
       value={value}
-      onChange={(val) => table.setGlobalFilter(val || '')}
+      onChange={(val) => column?.setFilterValue(val)}
       clearable
     />
   );
