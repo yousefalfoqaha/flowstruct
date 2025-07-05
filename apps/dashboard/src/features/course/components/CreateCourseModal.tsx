@@ -29,6 +29,7 @@ export function CreateCourseModal({
       code: '',
       name: '',
       isRemedial: false,
+      ects: 0,
       ...getCoursePresetSettings('lecture'),
     },
   });
@@ -61,7 +62,13 @@ export function CreateCourseModal({
             overlayProps={{ radius: 'sm', blur: 2 }}
           />
           <CourseDetailsFormFields form={form} preset={preset} changePreset={changePreset} />
-          <Button leftSection={<Plus size={18} />} type="submit" fullWidth mt="md">
+          <Button
+            disabled={!form.formState.isValid}
+            leftSection={<Plus size={18} />}
+            type="submit"
+            fullWidth
+            mt="md"
+          >
             Create and Select Course
           </Button>
         </Stack>

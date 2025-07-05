@@ -19,6 +19,7 @@ export function CreateCourseFieldset() {
       code: '',
       name: '',
       isRemedial: false,
+      ects: 0,
       ...getCoursePresetSettings('lecture'),
     },
   });

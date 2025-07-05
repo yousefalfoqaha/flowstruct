@@ -10,8 +10,9 @@ import { Group, Stack } from '@mantine/core';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
-import { ProgramFilter } from '@/features/study-plan/components/ProgramFilter.tsx';
 import { StudyPlanYearFilter } from '@/features/study-plan/components/StudyPlanYearFilter.tsx';
+import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
+import { GraduationCap } from 'lucide-react';
 
 export function StudyPlansTable() {
   const { data: studyPlans } = useStudyPlanList();
@@ -33,9 +34,17 @@ export function StudyPlansTable() {
 
   return (
     <Stack>
-      <Group grow preventGrowOverflow={false}>
+      <Group>
         <DataTableSearch width={800} table={table} placeholder="Search any study plan..." />
-        <ProgramFilter table={table} programs={programs} />
+
+        <ColumnFilterSelect
+          table={table}
+          columnId="programName"
+          data={programs.map((p) => getProgramDisplayName(p))}
+          leftSection={<GraduationCap size={16} />}
+          placeholder="Filter by program..."
+        />
+
         <StudyPlanYearFilter table={table} />
       </Group>
 

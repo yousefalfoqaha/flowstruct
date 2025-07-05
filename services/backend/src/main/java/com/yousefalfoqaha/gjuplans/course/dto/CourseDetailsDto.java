@@ -16,6 +16,7 @@ public record CourseDetailsDto(
         int creditHours,
 
         @NotNull(message = "A course must provide a valid ECTS number.")
+        @Min(value = 0, message = "Course cannot have less than 0 ECTS.")
         int ects,
 
         @Min(value = 0, message = "Course cannot have less than 0 lecture hours.")

@@ -13,7 +13,7 @@ import {
   Text,
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { Folder, Plus, PlusCircle, X } from 'lucide-react';
+import { List, Plus, PlusCircle, X } from 'lucide-react';
 import { useAddCoursesToStudyPlan } from '@/features/study-plan/hooks/useAddCoursesToStudyPlan.ts';
 import { DataTable } from '@/shared/components/DataTable.tsx';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
@@ -106,6 +106,7 @@ export function StudyPlanCourseAdder() {
       pagination,
       rowSelection: rowSelection,
     },
+
     enableRowSelection: (row) => !coursesGraph.has(row.original.id),
     getRowId: (row) => String(row.id),
     onRowSelectionChange: (updaterOrValue) => {
@@ -134,6 +135,7 @@ export function StudyPlanCourseAdder() {
     manualPagination: true,
     manualFiltering: true,
     pageCount: data?.totalPages ?? 1,
+    rowCount: data?.totalCourses,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -217,7 +219,7 @@ export function StudyPlanCourseAdder() {
         centered
       >
         <Stack>
-          <Group grow preventGrowOverflow={false}>
+          <Group>
             <DataTableSearch table={table} placeholder="Filter courses..." debounce={DEBOUNCE_MS} />
 
             <Button
@@ -273,7 +275,7 @@ export function StudyPlanCourseAdder() {
 
             <Select
               flex={1}
-              leftSection={<Folder size={16} />}
+              leftSection={<List size={16} />}
               placeholder="Select section"
               searchable
               data={sectionOptions}

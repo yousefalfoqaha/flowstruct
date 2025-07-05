@@ -16,7 +16,7 @@ export function getStudyPlansTableColumns() {
     accessor('year', {
       header: 'Year',
       cell: ({ row }) => (
-        <p>
+        <p style={{ textWrap: 'nowrap' }}>
           {row.original.year} - {row.original.year + 1}
         </p>
       ),

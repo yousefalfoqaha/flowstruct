@@ -11,7 +11,6 @@ import { publishStatusBadge } from '@/shared/components/PublishStatusBadge.tsx';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 import { StudyPlanTabs } from '@/features/study-plan/components/StudyPlanTabs.tsx';
 import { CoursesGraphProvider } from '@/contexts/CoursesGraphContext';
-import { PublishButton } from '@/features/study-plan/components/PublishButton.tsx';
 import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
 
 export const Route = createFileRoute('/_layout/study-plans/$studyPlanId')({
@@ -46,14 +45,13 @@ function RouteComponent() {
 
   const header = (
     <Group justify="space-between">
-      <Group gap="lg">
+      <Group gap="lg" wrap="nowrap">
         <PageHeaderWithBack title={title} linkProps={{ to: '/study-plans' }} />
         {publishStatusBadge(studyPlan.isPublished)}
       </Group>
 
-      <Group mb="auto">
+      <Group mb="auto" justify="space-between">
         <LastUpdated at={studyPlan.updatedAt} by={studyPlan.updatedBy} />
-        <PublishButton studyPlan={studyPlan} />
       </Group>
     </Group>
   );

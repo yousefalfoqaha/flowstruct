@@ -10,7 +10,7 @@ import { AppCard } from '@/shared/components/AppCard.tsx';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
 import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
 import { Link } from '@tanstack/react-router';
-import { Plus } from 'lucide-react';
+import { Plus, Tag, University } from 'lucide-react';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 
 export function SectionsTable() {
@@ -57,23 +57,25 @@ export function SectionsTable() {
     <Stack>
       <Group>
         <DataTableSearch placeholder="Search sections..." table={table} />
-        <ColumnFilterSelect<Section>
+        <ColumnFilterSelect
           table={table}
           columnId="level"
-          options={Object.values(SectionLevel).map((value) => ({
+          data={Object.values(SectionLevel).map((value) => ({
             label: value,
             value: value,
           }))}
+          leftSection={<University size={16} />}
           placeholder="Filter by level..."
         />
 
-        <ColumnFilterSelect<Section>
+        <ColumnFilterSelect
           table={table}
           columnId="type"
-          options={Object.values(SectionType).map((value) => ({
+          data={Object.values(SectionType).map((value) => ({
             label: value,
             value: value,
           }))}
+          leftSection={<Tag size={16} />}
           placeholder="Filter by type..."
         />
       </Group>

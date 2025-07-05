@@ -17,7 +17,7 @@ export const Route = createFileRoute('/_layout/study-plans/new')({
 
 function RouteComponent() {
   return (
-    <PageLayout header={<PageHeaderWithBack title="Create New Course" linkProps={{ to: '..' }} />}>
+    <PageLayout header={<PageHeaderWithBack title="Create New Study Plan" linkProps={{ to: '..' }} />}>
       <CreateStudyPlanFieldset />
     </PageLayout>
   );

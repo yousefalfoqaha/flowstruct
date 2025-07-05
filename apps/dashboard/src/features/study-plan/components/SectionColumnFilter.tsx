@@ -3,6 +3,7 @@ import { FrameworkCourse, Section } from '@/features/study-plan/types.ts';
 import { Table } from '@tanstack/react-table';
 import { getSectionDisplayName } from '@/utils/getSectionDisplayName.ts';
 import React from 'react';
+import { List } from 'lucide-react';
 
 type Props = {
   table: Table<FrameworkCourse>;
@@ -36,6 +37,7 @@ export function SectionColumnFilter({ table, sections }: Props) {
       clearable
       value={values ? values.map((val) => String(val)) : []}
       data={data}
+      leftSection={<List size={16} />}
       placeholder="Filter by section..."
       searchable
       nothingFoundMessage="No sections found..."
