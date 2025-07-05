@@ -21,10 +21,9 @@ export function EditStudyPlanDetailsFieldset({ studyPlan }: Props) {
   const form = useForm<z.infer<typeof studyPlanDetailsSchema>>({
     resolver: customResolver(studyPlanDetailsSchema),
     defaultValues: {
+      ...studyPlan,
       program: String(studyPlan.program),
       year: `${studyPlan.year}-01-01`,
-      duration: studyPlan.duration,
-      track: studyPlan.track ?? '',
     },
   });
 

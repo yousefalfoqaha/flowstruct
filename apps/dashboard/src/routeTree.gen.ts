@@ -38,6 +38,8 @@ import { Route as LayoutStudyPlansStudyPlanIdSectionsIndexImport } from './route
 import { Route as LayoutStudyPlansStudyPlanIdDetailsIndexImport } from './routes/_layout/study-plans/$studyPlanId/details/index'
 import { Route as LayoutStudyPlansStudyPlanIdSectionsNewImport } from './routes/_layout/study-plans/$studyPlanId/sections/new'
 import { Route as LayoutStudyPlansStudyPlanIdDetailsEditImport } from './routes/_layout/study-plans/$studyPlanId/details/edit'
+import { Route as LayoutStudyPlansStudyPlanIdSectionsSectionIdIndexImport } from './routes/_layout/study-plans/$studyPlanId/sections/$sectionId/index'
+import { Route as LayoutStudyPlansStudyPlanIdSectionsSectionIdEditImport } from './routes/_layout/study-plans/$studyPlanId/sections/$sectionId/edit'
 
 // Create/Update Routes
 
@@ -216,6 +218,20 @@ const LayoutStudyPlansStudyPlanIdDetailsEditRoute =
     id: '/edit',
     path: '/edit',
     getParentRoute: () => LayoutStudyPlansStudyPlanIdDetailsRouteRoute,
+  } as any)
+
+const LayoutStudyPlansStudyPlanIdSectionsSectionIdIndexRoute =
+  LayoutStudyPlansStudyPlanIdSectionsSectionIdIndexImport.update({
+    id: '/sections/$sectionId/',
+    path: '/sections/$sectionId/',
+    getParentRoute: () => LayoutStudyPlansStudyPlanIdRouteRoute,
+  } as any)
+
+const LayoutStudyPlansStudyPlanIdSectionsSectionIdEditRoute =
+  LayoutStudyPlansStudyPlanIdSectionsSectionIdEditImport.update({
+    id: '/sections/$sectionId/edit',
+    path: '/sections/$sectionId/edit',
+    getParentRoute: () => LayoutStudyPlansStudyPlanIdRouteRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -411,6 +427,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutStudyPlansStudyPlanIdSectionsIndexImport
       parentRoute: typeof LayoutStudyPlansStudyPlanIdRouteImport
     }
+    '/_layout/study-plans/$studyPlanId/sections/$sectionId/edit': {
+      id: '/_layout/study-plans/$studyPlanId/sections/$sectionId/edit'
+      path: '/sections/$sectionId/edit'
+      fullPath: '/study-plans/$studyPlanId/sections/$sectionId/edit'
+      preLoaderRoute: typeof LayoutStudyPlansStudyPlanIdSectionsSectionIdEditImport
+      parentRoute: typeof LayoutStudyPlansStudyPlanIdRouteImport
+    }
+    '/_layout/study-plans/$studyPlanId/sections/$sectionId/': {
+      id: '/_layout/study-plans/$studyPlanId/sections/$sectionId/'
+      path: '/sections/$sectionId'
+      fullPath: '/study-plans/$studyPlanId/sections/$sectionId'
+      preLoaderRoute: typeof LayoutStudyPlansStudyPlanIdSectionsSectionIdIndexImport
+      parentRoute: typeof LayoutStudyPlansStudyPlanIdRouteImport
+    }
   }
 }
 
@@ -504,6 +534,8 @@ interface LayoutStudyPlansStudyPlanIdRouteRouteChildren {
   LayoutStudyPlansStudyPlanIdIndexRoute: typeof LayoutStudyPlansStudyPlanIdIndexRoute
   LayoutStudyPlansStudyPlanIdSectionsNewRoute: typeof LayoutStudyPlansStudyPlanIdSectionsNewRoute
   LayoutStudyPlansStudyPlanIdSectionsIndexRoute: typeof LayoutStudyPlansStudyPlanIdSectionsIndexRoute
+  LayoutStudyPlansStudyPlanIdSectionsSectionIdEditRoute: typeof LayoutStudyPlansStudyPlanIdSectionsSectionIdEditRoute
+  LayoutStudyPlansStudyPlanIdSectionsSectionIdIndexRoute: typeof LayoutStudyPlansStudyPlanIdSectionsSectionIdIndexRoute
 }
 
 const LayoutStudyPlansStudyPlanIdRouteRouteChildren: LayoutStudyPlansStudyPlanIdRouteRouteChildren =
@@ -520,6 +552,10 @@ const LayoutStudyPlansStudyPlanIdRouteRouteChildren: LayoutStudyPlansStudyPlanId
       LayoutStudyPlansStudyPlanIdSectionsNewRoute,
     LayoutStudyPlansStudyPlanIdSectionsIndexRoute:
       LayoutStudyPlansStudyPlanIdSectionsIndexRoute,
+    LayoutStudyPlansStudyPlanIdSectionsSectionIdEditRoute:
+      LayoutStudyPlansStudyPlanIdSectionsSectionIdEditRoute,
+    LayoutStudyPlansStudyPlanIdSectionsSectionIdIndexRoute:
+      LayoutStudyPlansStudyPlanIdSectionsSectionIdIndexRoute,
   }
 
 const LayoutStudyPlansStudyPlanIdRouteRouteWithChildren =
@@ -589,6 +625,8 @@ export interface FileRoutesByFullPath {
   '/study-plans/$studyPlanId/sections/new': typeof LayoutStudyPlansStudyPlanIdSectionsNewRoute
   '/study-plans/$studyPlanId/details/': typeof LayoutStudyPlansStudyPlanIdDetailsIndexRoute
   '/study-plans/$studyPlanId/sections': typeof LayoutStudyPlansStudyPlanIdSectionsIndexRoute
+  '/study-plans/$studyPlanId/sections/$sectionId/edit': typeof LayoutStudyPlansStudyPlanIdSectionsSectionIdEditRoute
+  '/study-plans/$studyPlanId/sections/$sectionId': typeof LayoutStudyPlansStudyPlanIdSectionsSectionIdIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -612,6 +650,8 @@ export interface FileRoutesByTo {
   '/study-plans/$studyPlanId/sections/new': typeof LayoutStudyPlansStudyPlanIdSectionsNewRoute
   '/study-plans/$studyPlanId/details': typeof LayoutStudyPlansStudyPlanIdDetailsIndexRoute
   '/study-plans/$studyPlanId/sections': typeof LayoutStudyPlansStudyPlanIdSectionsIndexRoute
+  '/study-plans/$studyPlanId/sections/$sectionId/edit': typeof LayoutStudyPlansStudyPlanIdSectionsSectionIdEditRoute
+  '/study-plans/$studyPlanId/sections/$sectionId': typeof LayoutStudyPlansStudyPlanIdSectionsSectionIdIndexRoute
 }
 
 export interface FileRoutesById {
@@ -643,6 +683,8 @@ export interface FileRoutesById {
   '/_layout/study-plans/$studyPlanId/sections/new': typeof LayoutStudyPlansStudyPlanIdSectionsNewRoute
   '/_layout/study-plans/$studyPlanId/details/': typeof LayoutStudyPlansStudyPlanIdDetailsIndexRoute
   '/_layout/study-plans/$studyPlanId/sections/': typeof LayoutStudyPlansStudyPlanIdSectionsIndexRoute
+  '/_layout/study-plans/$studyPlanId/sections/$sectionId/edit': typeof LayoutStudyPlansStudyPlanIdSectionsSectionIdEditRoute
+  '/_layout/study-plans/$studyPlanId/sections/$sectionId/': typeof LayoutStudyPlansStudyPlanIdSectionsSectionIdIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -675,6 +717,8 @@ export interface FileRouteTypes {
     | '/study-plans/$studyPlanId/sections/new'
     | '/study-plans/$studyPlanId/details/'
     | '/study-plans/$studyPlanId/sections'
+    | '/study-plans/$studyPlanId/sections/$sectionId/edit'
+    | '/study-plans/$studyPlanId/sections/$sectionId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -697,6 +741,8 @@ export interface FileRouteTypes {
     | '/study-plans/$studyPlanId/sections/new'
     | '/study-plans/$studyPlanId/details'
     | '/study-plans/$studyPlanId/sections'
+    | '/study-plans/$studyPlanId/sections/$sectionId/edit'
+    | '/study-plans/$studyPlanId/sections/$sectionId'
   id:
     | '__root__'
     | '/'
@@ -726,6 +772,8 @@ export interface FileRouteTypes {
     | '/_layout/study-plans/$studyPlanId/sections/new'
     | '/_layout/study-plans/$studyPlanId/details/'
     | '/_layout/study-plans/$studyPlanId/sections/'
+    | '/_layout/study-plans/$studyPlanId/sections/$sectionId/edit'
+    | '/_layout/study-plans/$studyPlanId/sections/$sectionId/'
   fileRoutesById: FileRoutesById
 }
 
@@ -822,7 +870,9 @@ export const routeTree = rootRoute
         "/_layout/study-plans/$studyPlanId/program-map",
         "/_layout/study-plans/$studyPlanId/",
         "/_layout/study-plans/$studyPlanId/sections/new",
-        "/_layout/study-plans/$studyPlanId/sections/"
+        "/_layout/study-plans/$studyPlanId/sections/",
+        "/_layout/study-plans/$studyPlanId/sections/$sectionId/edit",
+        "/_layout/study-plans/$studyPlanId/sections/$sectionId/"
       ]
     },
     "/_layout/courses/new": {
@@ -899,6 +949,14 @@ export const routeTree = rootRoute
     },
     "/_layout/study-plans/$studyPlanId/sections/": {
       "filePath": "_layout/study-plans/$studyPlanId/sections/index.tsx",
+      "parent": "/_layout/study-plans/$studyPlanId"
+    },
+    "/_layout/study-plans/$studyPlanId/sections/$sectionId/edit": {
+      "filePath": "_layout/study-plans/$studyPlanId/sections/$sectionId/edit.tsx",
+      "parent": "/_layout/study-plans/$studyPlanId"
+    },
+    "/_layout/study-plans/$studyPlanId/sections/$sectionId/": {
+      "filePath": "_layout/study-plans/$studyPlanId/sections/$sectionId/index.tsx",
       "parent": "/_layout/study-plans/$studyPlanId"
     }
   }

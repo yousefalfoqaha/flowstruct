@@ -5,12 +5,12 @@ export const studyPlanDetailsSchema = z.object({
   program: z.string(),
   year: z.string(),
   duration: z.number().min(1, { error: 'Must be at least 1 year' }).default(4),
-  track: z.string(),
+  track: z.string().trim(),
 });
 
 export const sectionDetailsSchema = z.object({
   level: z.enum(SectionLevel),
   type: z.enum(SectionType),
   requiredCreditHours: z.number().nonnegative({ error: 'Must be positive' }),
-  name: z.string(),
+  name: z.string().trim(),
 });

@@ -2,13 +2,15 @@ import { DataTable } from '@/shared/components/DataTable.tsx';
 import { useProgramList } from '@/features/program/hooks/useProgramList.ts';
 import { getProgramsTableColumns } from '@/features/program/components/ProgramsTableColumns.tsx';
 import { useDataTable } from '@/shared/hooks/useDataTable.ts';
-import { Program } from '@/features/program/types.ts';
+import { Degree, Program } from '@/features/program/types.ts';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
-import { Group, Stack } from '@mantine/core';
+import { Button, Group, Stack } from '@mantine/core';
 import React from 'react';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
+import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
+import { Album, Plus } from 'lucide-react';
 import { AppCard } from '@/shared/components/AppCard.tsx';
-import { ProgramDegreeFilter } from '@/features/program/components/ProgramDegreeFilter.tsx';
+import { Link } from '@tanstack/react-router';
 
 export function ProgramsTable() {
   const { data } = useProgramList();
@@ -17,12 +19,29 @@ export function ProgramsTable() {
 
   return (
     <Stack gap="md">
-      <Group grow preventGrowOverflow={false}>
+      <Group>
         <DataTableSearch width={800} table={table} placeholder="Search any program..." />
-        <ProgramDegreeFilter table={table} />
+        <ColumnFilterSelect
+          table={table}
+          columnId="degree"
+          data={Object.entries(Degree).map(([key, value]) => ({
+            value: key,
+            label: `${value} (${key})`,
+          }))}
+          leftSection={<Album size={16} />}
+          placeholder="Filter by degree..."
+        />
       </Group>
 
-      <AppCard title="Program List" subtitle={`Manage all university programs`}>
+      <AppCard
+        title="Program List"
+        subtitle={`Manage all university programs`}
+        headerAction={
+          <Link to="/programs/new">
+            <Button leftSection={<Plus size={18} />}>Create New Program</Button>
+          </Link>
+        }
+      >
         <DataTable table={table} />
       </AppCard>
 

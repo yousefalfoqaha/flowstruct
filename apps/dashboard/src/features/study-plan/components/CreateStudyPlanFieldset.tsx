@@ -15,8 +15,8 @@ export function CreateStudyPlanFieldset() {
     resolver: customResolver(studyPlanDetailsSchema),
     defaultValues: {
       year: `${new Date().getFullYear()}-01-01`,
-      track: '',
       duration: 4,
+      track: ''
     },
   });
 

@@ -6,13 +6,14 @@ import React from 'react';
 import { getStudyPlansTableColumns } from '@/features/study-plan/components/StudyPlansTableColumns.tsx';
 import { AppCard } from '@/shared/components/AppCard.tsx';
 import { useProgramList } from '@/features/program/hooks/useProgramList.ts';
-import { Group, Stack } from '@mantine/core';
+import { Button, Group, Stack } from '@mantine/core';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
 import { StudyPlanYearFilter } from '@/features/study-plan/components/StudyPlanYearFilter.tsx';
 import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
-import { GraduationCap } from 'lucide-react';
+import { GraduationCap, Plus } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
 
 export function StudyPlansTable() {
   const { data: studyPlans } = useStudyPlanList();
@@ -48,7 +49,15 @@ export function StudyPlansTable() {
         <StudyPlanYearFilter table={table} />
       </Group>
 
-      <AppCard title="Study Plan List" subtitle="Manage all university study plans">
+      <AppCard
+        title="Study Plan List"
+        subtitle="Manage all university study plans"
+        headerAction={
+          <Link to="/study-plans/new">
+            <Button leftSection={<Plus size={18} />}>Create New Study Plan</Button>
+          </Link>
+        }
+      >
         <DataTable table={table} />
       </AppCard>
 

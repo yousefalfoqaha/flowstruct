@@ -29,7 +29,7 @@ export function getStudyPlansTableColumns() {
     }),
     accessor('track', {
       header: 'Track',
-      cell: ({ row }) => row.getValue('track') ?? '---',
+      cell: ({ row }) => (row.getValue('track') === '' ? '---' : row.getValue('track')),
     }),
     accessor('isPublished', {
       header: 'Status',

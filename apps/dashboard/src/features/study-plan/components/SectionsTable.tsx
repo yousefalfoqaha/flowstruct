@@ -12,6 +12,8 @@ import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
 import { Link } from '@tanstack/react-router';
 import { Plus, Tag, University } from 'lucide-react';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
+import { SectionOptionsMenu } from '@/features/study-plan/components/SectionOptionsMenu.tsx';
+import { MoveSectionMenu } from '@/features/study-plan/components/MoveSectionMenu.tsx';
 
 export function SectionsTable() {
   const { data: studyPlan } = useStudyPlan();
@@ -21,6 +23,7 @@ export function SectionsTable() {
   const columns = React.useMemo(
     () => [
       display({
+        id: 'code',
         header: 'Code',
         cell: ({ row }) => <Badge variant="default">{getSectionCode(row.original)}</Badge>,
       }),
@@ -38,11 +41,24 @@ export function SectionsTable() {
       }),
       accessor('name', {
         header: 'Name',
-        cell: ({ row }) => (row.original.name ? row.original.name : '---'),
+        cell: ({ row }) => (row.original.name !== '' ? row.original.name : '---'),
       }),
       display({
         header: 'Courses',
         cell: ({ row }) => `${row.original.courses.length}`,
+      }),
+      display({
+        header: 'Actions',
+        id: 'actions',
+        cell: ({ row }) => {
+          const canMove = row.original.position !== 0;
+          return (
+            <Group justify="end" gap={0}>
+              {canMove && <MoveSectionMenu section={row.original} />}
+              <SectionOptionsMenu section={row.original} />
+            </Group>
+          );
+        },
       }),
     ],
     []

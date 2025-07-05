@@ -2,20 +2,21 @@ import { ActionIcon, Menu, Text } from '@mantine/core';
 import { EllipsisVertical, Pencil, Trash } from 'lucide-react';
 import { Section } from '@/features/study-plan/types.ts';
 import { modals } from '@mantine/modals';
-import { EditSectionDetailsModal } from '@/features/study-plan/components/EditSectionDetailsModal.tsx';
 import { useDeleteSection } from '@/features/study-plan/hooks/useDeleteSection.ts';
+import { useNavigate, useParams } from '@tanstack/react-router';
 
 type Props = {
-  studyPlanId: number;
   section: Section;
 };
 
-export function SectionOptionsMenu({ section, studyPlanId }: Props) {
+export function SectionOptionsMenu({ section }: Props) {
+  const { studyPlanId } = useParams({ from: '/_layout/study-plans/$studyPlanId' });
   const deleteSection = useDeleteSection();
+  const navigate = useNavigate();
 
-  const handleConfirm = () =>
+  const handleConfirmDelete = () =>
     deleteSection.mutate({
-      studyPlanId: studyPlanId,
+      studyPlanId: Number(studyPlanId),
       sectionId: section.id,
     });
 
@@ -31,15 +32,12 @@ export function SectionOptionsMenu({ section, studyPlanId }: Props) {
 
       <Menu.Dropdown>
         <Menu.Item
-          onClick={() => {
-            modals.open({
-              title: `Edit ${section.level} ${section.type} ${
-                section.name ? `- ${section.name}` : ''
-              } Details`,
-              children: <EditSectionDetailsModal studyPlanId={studyPlanId} section={section} />,
-              centered: true,
-            });
-          }}
+          onClick={() =>
+            navigate({
+              to: '/study-plans/$studyPlanId/sections/$sectionId/edit',
+              params: { studyPlanId, sectionId: String(section.id) },
+            })
+          }
           leftSection={<Pencil size={14} />}
         >
           Edit details
@@ -59,7 +57,7 @@ export function SectionOptionsMenu({ section, studyPlanId }: Props) {
                 </Text>
               ),
               labels: { confirm: 'Confirm', cancel: 'Cancel' },
-              onConfirm: handleConfirm,
+              onConfirm: handleConfirmDelete,
             });
           }}
         >

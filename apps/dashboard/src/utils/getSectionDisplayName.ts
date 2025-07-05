@@ -5,7 +5,7 @@ export const getSectionDisplayName = (
   section: Pick<Section, 'name' | 'level' | 'type' | 'position'>
 ) => {
   const sectionCode = getSectionCode(section);
-  const displayName = section.name
+  const displayName = section.name !== ''
     ? `- ${section.name}`
     : sectionCode.split('.').length > 2
       ? '- General'

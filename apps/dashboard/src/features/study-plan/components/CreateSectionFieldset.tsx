@@ -6,10 +6,10 @@ import { SectionDetailsFormFields } from '@/features/study-plan/components/Secti
 import { Button } from '@mantine/core';
 import { CancelButton } from '@/shared/components/CancelButton.tsx';
 import { Plus } from 'lucide-react';
-import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
 import { customResolver } from '@/utils/customResolver.ts';
+import { DefaultFrameworkCoursesSearchValues } from '@/utils/defaultFrameworkCoursesSearchValues.ts';
 
 export function CreateSectionFieldset() {
   const form = useForm<z.infer<typeof sectionDetailsSchema>>({
@@ -23,14 +23,14 @@ export function CreateSectionFieldset() {
   });
   const createSection = useCreateSection();
   const navigate = useNavigate();
-  console.log(form.formState.errors);
+
   const { studyPlanId } = useParams({ from: '/_layout/study-plans/$studyPlanId' });
 
   const backToSections = () =>
     navigate({
       to: '/study-plans/$studyPlanId/sections',
       params: { studyPlanId },
-      search: DefaultSearchValues(),
+      search: DefaultFrameworkCoursesSearchValues(),
     });
 
   const onSubmit = form.handleSubmit((data) => {

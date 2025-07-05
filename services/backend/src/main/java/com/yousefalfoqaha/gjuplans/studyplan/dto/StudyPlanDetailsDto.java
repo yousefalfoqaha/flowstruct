@@ -10,6 +10,7 @@ public record StudyPlanDetailsDto(
         @Min(value = 1, message = "Study plan must be at least 1 year in duration.")
         int duration,
 
+        @NotNull(message = "Track cannot be undefined.")
         String track,
 
         boolean isPublished,

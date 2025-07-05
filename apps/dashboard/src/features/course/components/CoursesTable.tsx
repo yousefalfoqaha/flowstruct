@@ -33,7 +33,7 @@ export function CoursesTable() {
 
   return (
     <Stack>
-      <DataTableSearch width="" table={table} debounce={750} />
+      <DataTableSearch width="" placeholder="Search any course..." table={table} debounce={750} />
 
       <AppCard
         title="Course List"
