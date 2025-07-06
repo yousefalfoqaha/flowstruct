@@ -1,33 +1,14 @@
-import { ReactNode, useState } from 'react';
-import cx from 'clsx';
-import {
-  Avatar,
-  Container,
-  Group,
-  Image,
-  Menu,
-  Tabs,
-  Text,
-  Title,
-  UnstyledButton,
-} from '@mantine/core';
+import { ReactNode } from 'react';
+import { Container, Group, Image, Tabs, Title } from '@mantine/core';
 import classes from './AppLayout.module.css';
 import { useMatches, useNavigate } from '@tanstack/react-router';
-import {
-  BookOpen,
-  ChevronDown,
-  GraduationCap,
-  LogOut,
-  ScrollText,
-  Settings,
-  Trash,
-} from 'lucide-react';
-import { useMe } from '@/features/user/hooks/useMe.ts';
+import { BookOpen, GraduationCap, ScrollText } from 'lucide-react';
 import { NavbarLinks } from '@/shared/types.ts';
-import { Route as ProgramsRoute } from '@/routes/_layout/programs/route.tsx';
-import { Route as StudyPlansRoute } from '@/routes/_layout/study-plans/route.tsx';
+import { Route as ProgramsRoute } from '@/routes/_layout/programs';
+import { Route as StudyPlansRoute } from '@/routes/_layout/study-plans';
 import { Route as CoursesRoute } from '@/routes/_layout/courses';
 import { Route as DetailsRoute } from '@/routes/_layout/study-plans/$studyPlanId/details';
+import { User } from '@/shared/components/User.tsx';
 
 const tabs: NavbarLinks[] = [
   { label: 'Programs', icon: <GraduationCap size={18} />, route: ProgramsRoute.to },
@@ -40,8 +21,6 @@ type Props = {
 };
 
 export function AppLayout({ children }: Props) {
-  const [userMenuOpened, setUserMenuOpened] = useState(false);
-  const { data: me } = useMe();
   const navigate = useNavigate();
   const matches = useMatches();
   const items = tabs.map((tab, index) => (
@@ -70,42 +49,7 @@ export function AppLayout({ children }: Props) {
                 GJUPlans Admin
               </Title>
             </Group>
-
-            <Menu
-              width="200"
-              shadow="sm"
-              position="bottom-end"
-              transitionProps={{ transition: 'pop-top-right' }}
-              onClose={() => setUserMenuOpened(false)}
-              onOpen={() => setUserMenuOpened(true)}
-              withinPortal
-            >
-              <Menu.Target>
-                <UnstyledButton
-                  className={cx(classes.user, { [classes.userActive]: userMenuOpened })}
-                >
-                  <Group>
-                    <Avatar size={32} radius="xl" />
-                    <div>
-                      <Text size="md">{me.username}</Text>
-                      <Text c="dimmed" size="xs">
-                        Administrator
-                      </Text>
-                    </div>
-                    <ChevronDown size={14} />
-                  </Group>
-                </UnstyledButton>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item leftSection={<Settings size={14} />}>Account settings</Menu.Item>
-                <Menu.Item leftSection={<LogOut size={14} />}>Logout</Menu.Item>
-
-                <Menu.Divider />
-                <Menu.Item color="red" leftSection={<Trash size={14} />}>
-                  Delete account
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+            <User />
           </Group>
           <Container size="lg">
             <Tabs

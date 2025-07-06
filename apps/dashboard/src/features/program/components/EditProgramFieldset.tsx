@@ -85,7 +85,7 @@ export function EditProgramFieldset({ program }: EditProgramFieldsetProps) {
               leftSection={<Pencil size={18} />}
               loading={editProgramDetails.isPending}
             >
-              Update Details
+              Save Changes
             </Button>
           </>
         }

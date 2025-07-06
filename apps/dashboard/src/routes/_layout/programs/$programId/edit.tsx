@@ -8,9 +8,6 @@ import { PageLayout } from '@/shared/components/PageLayout.tsx';
 
 export const Route = createFileRoute('/_layout/programs/$programId/edit')({
   component: RouteComponent,
-  loader: () => ({
-    crumb: 'Edit Details',
-  }),
 });
 
 function RouteComponent() {

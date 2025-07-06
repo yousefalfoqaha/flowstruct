@@ -6,17 +6,17 @@ import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
 import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
 import React from 'react';
-import { getFrameworkCoursesTableColumns } from '@/features/study-plan/components/FrameworkCoursesTableColumns.tsx';
+import { getStudyPlanCoursesTableColumns } from '@/features/study-plan/components/StudyPlanCoursesTableColumns.tsx';
 import { getSectionCode } from '@/utils/getSectionCode.ts';
 import { FrameworkCourse } from '@/features/study-plan/types.ts';
 import { AppCard } from '@/shared/components/AppCard.tsx';
 import { useStudyPlanCourses } from '@/features/study-plan/hooks/useStudyPlanCourses.ts';
-import { ListPlus, Plus, X } from 'lucide-react';
+import { ListPlus, Plus } from 'lucide-react';
 import { SelectedCoursesToolbar } from '@/features/study-plan/components/SelectedCoursesToolbar.tsx';
 import { SectionColumnFilter } from '@/features/study-plan/components/SectionColumnFilter.tsx';
 import { Link } from '@tanstack/react-router';
 
-export function FrameworkCoursesTable() {
+export function StudyPlanCoursesTable() {
   const { data: studyPlan } = useStudyPlan();
   const { data: courses } = useStudyPlanCourses();
 
@@ -46,7 +46,7 @@ export function FrameworkCoursesTable() {
     return rows;
   }, [studyPlan, courses]);
 
-  const columns = React.useMemo(() => getFrameworkCoursesTableColumns(), []);
+  const columns = React.useMemo(() => getStudyPlanCoursesTableColumns(), []);
 
   const table = useDataTable<FrameworkCourse>({
     data,
@@ -91,20 +91,6 @@ export function FrameworkCoursesTable() {
             <DataTableSearch placeholder="Search courses..." table={table} />
 
             <SectionColumnFilter table={table} sections={studyPlan.sections} />
-
-            {table.getPreFilteredRowModel().rows.length !==
-              table.getFilteredRowModel().rows.length && (
-              <Button
-                leftSection={<X size={14} />}
-                variant="subtle"
-                onClick={() => {
-                  table.resetColumnFilters();
-                  table.resetGlobalFilter();
-                }}
-              >
-                Clear
-              </Button>
-            )}
           </Group>
 
           <AppCard

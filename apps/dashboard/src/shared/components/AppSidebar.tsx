@@ -4,7 +4,7 @@ import { ActionIcon, Divider, Group, Stack, Text, Title, Tooltip } from '@mantin
 import { BookOpen, GraduationCap, LogOut, ScrollText } from 'lucide-react';
 import { NavbarLinks } from '@/shared/types.ts';
 import { Route as ProgramsRoute } from '@/routes/_layout/programs/route.tsx';
-import { Route as StudyPlansRoute } from '@/routes/_layout/study-plans/route.tsx';
+import { Route as StudyPlansRoute } from '@/routes/_layout/study-plans/index.tsx';
 import { Route as CoursesRoute } from '@/routes/_layout/courses';
 import { useMe } from '@/features/user/hooks/useMe.ts';
 import { useLogout } from '@/features/user/hooks/useLogout.ts';

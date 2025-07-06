@@ -49,7 +49,7 @@ export function EditCourseFieldset({ course }: Props) {
         type="submit"
         leftSection={<Pencil size={18} />}
       >
-        Save Details
+        Save Changes
       </Button>
     </Box>
   );

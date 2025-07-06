@@ -4,7 +4,6 @@ import { useDataTable } from '@/shared/hooks/useDataTable.ts';
 import { StudyPlanRow } from '@/features/study-plan/types.ts';
 import React from 'react';
 import { getStudyPlansTableColumns } from '@/features/study-plan/components/StudyPlansTableColumns.tsx';
-import { AppCard } from '@/shared/components/AppCard.tsx';
 import { useProgramList } from '@/features/program/hooks/useProgramList.ts';
 import { Button, Group, Stack } from '@mantine/core';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
@@ -13,6 +12,7 @@ import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
 import { StudyPlanYearFilter } from '@/features/study-plan/components/StudyPlanYearFilter.tsx';
 import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
 import { GraduationCap, Plus } from 'lucide-react';
+import { AppCard } from '@/shared/components/AppCard.tsx';
 import { Link } from '@tanstack/react-router';
 
 export function StudyPlansTable() {

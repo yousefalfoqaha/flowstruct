@@ -10,8 +10,13 @@ import { PageLayout } from '@/shared/components/PageLayout.tsx';
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
 import { EditDetailsButton } from '@/shared/components/EditDetailsButton.tsx';
 import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
+import { ProgramQuery } from '@/features/program/queries.ts';
 
 export const Route = createFileRoute('/_layout/programs/$programId/')({
+  loader: async ({ context: { queryClient }, params }) => {
+    const programId = parseInt(params.programId);
+    queryClient.ensureQueryData(ProgramQuery(programId));
+  },
   component: RouteComponent,
 });
 
@@ -29,17 +34,20 @@ function RouteComponent() {
               search: DefaultSearchValues(),
             }}
           />
-          <Group gap="lg">
-            <LastUpdated at={program.updatedAt} by={program.updatedBy} />
-            <EditDetailsButton
-              to="/programs/$programId/edit"
-              params={{ programId: String(program.id) }}
-            />
-          </Group>
+          <LastUpdated at={program.updatedAt} by={program.updatedBy} />
         </Group>
       }
     >
-      <AppCard title="Program Information" subtitle="Details about this program">
+      <AppCard
+        title="Program Information"
+        subtitle="Details about this program"
+        headerAction={
+          <EditDetailsButton
+            to="/programs/$programId/edit"
+            params={{ programId: String(program.id) }}
+          />
+        }
+      >
         <Group grow>
           <InfoItem label="Code" value={program.code} />
           <InfoItem label="Name" value={program.name} />

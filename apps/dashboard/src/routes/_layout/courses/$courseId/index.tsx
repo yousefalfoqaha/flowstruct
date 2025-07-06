@@ -1,4 +1,4 @@
-import { createFileRoute, useLoaderData } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
 import { getCourseDisplayName } from '@/utils/getCourseDisplayName.ts';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
@@ -8,13 +8,19 @@ import { Group } from '@mantine/core';
 import { InfoItem } from '@/shared/components/InfoItem.tsx';
 import { CourseType } from '@/features/course/types.ts';
 import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
+import { CourseQuery } from '@/features/course/queries.ts';
+import { useRouteCourse } from '@/features/course/hooks/useRouteCourse.ts';
 
 export const Route = createFileRoute('/_layout/courses/$courseId/')({
+  loader: async ({ context: { queryClient }, params }) => {
+    const courseId = Number(params.courseId);
+    queryClient.ensureQueryData(CourseQuery(courseId));
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { course } = useLoaderData({ from: '/_layout/courses/$courseId' });
+  const { data: course } = useRouteCourse();
 
   return (
     <PageLayout
@@ -29,12 +35,10 @@ function RouteComponent() {
         title="Course Information"
         subtitle="Details about this course"
         headerAction={
-          <Group gap="lg">
-            <EditDetailsButton
-              to="/courses/$courseId/edit"
-              params={{ courseId: String(course.id) }}
-            />
-          </Group>
+          <EditDetailsButton
+            to="/courses/$courseId/edit"
+            params={{ courseId: String(course.id) }}
+          />
         }
       >
         <Group grow>

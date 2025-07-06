@@ -1,11 +1,10 @@
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
-import { FrameworkCoursesTable } from '@/features/study-plan/components/FrameworkCoursesTable.tsx';
+import { StudyPlanCoursesTable } from '@/features/study-plan/components/StudyPlanCoursesTable.tsx';
 import { DefaultFrameworkCoursesSearchValues } from '@/utils/defaultFrameworkCoursesSearchValues.ts';
 import { getTableSearchSchema } from '@/shared/schemas.ts';
 
-export const Route = createFileRoute('/_layout/study-plans/$studyPlanId/framework')({
+export const Route = createFileRoute('/_layout/study-plans/$studyPlanId/courses')({
   component: RouteComponent,
-  loader: () => ({ crumb: 'Framework' }),
   validateSearch: getTableSearchSchema(DefaultFrameworkCoursesSearchValues()),
   search: {
     middlewares: [stripSearchParams(DefaultFrameworkCoursesSearchValues())],
@@ -13,5 +12,5 @@ export const Route = createFileRoute('/_layout/study-plans/$studyPlanId/framewor
 });
 
 function RouteComponent() {
-  return <FrameworkCoursesTable />;
+  return <StudyPlanCoursesTable />;
 }

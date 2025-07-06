@@ -44,7 +44,7 @@ export function CoursesTable() {
           </Link>
         }
       >
-        <LoadingOverlay visible={isPending} zIndex={1000} overlayProps={{ radius: 'sm' }} />
+        <LoadingOverlay visible={isPending} zIndex={1000} loaderProps={{ type: 'bars' }} />
         <DataTable table={table} />
       </AppCard>
 

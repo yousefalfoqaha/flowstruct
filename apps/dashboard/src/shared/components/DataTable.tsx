@@ -8,7 +8,7 @@ type DataTableProps<TData> = {
 
 export function DataTable<TData>({ table }: DataTableProps<TData>) {
   return (
-    <Table.ScrollContainer minWidth={250}>
+    <Table.ScrollContainer scrollAreaProps={{offsetScrollbars: false}} minWidth={250}>
       <Table horizontalSpacing="md" verticalSpacing="sm">
         <Table.Thead>
           {table.getHeaderGroups().map((headerGroup) => (

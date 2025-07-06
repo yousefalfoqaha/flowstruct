@@ -92,7 +92,7 @@ export function EditStudyPlanDetailsFieldset({ studyPlan }: Props) {
         leftSection={<Pencil size={18} />}
         loading={editStudyPlanDetails.isPending}
       >
-        Update Details
+        Save Changes
       </Button>
     </>
   );

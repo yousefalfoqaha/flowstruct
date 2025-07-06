@@ -25,7 +25,7 @@ export function LoginForm() {
     login.mutate(data, {
       onSuccess: () =>
         navigate({
-          to: '/',
+          to: '/programs',
           search: DefaultSearchValues(),
         }),
     });

@@ -6,7 +6,6 @@ import { PageLayout } from '@/shared/components/PageLayout.tsx';
 
 export const Route = createFileRoute('/_layout/courses/new')({
   component: RouteComponent,
-  loader: () => ({ crumb: 'Create New Course' }),
 });
 
 function RouteComponent() {

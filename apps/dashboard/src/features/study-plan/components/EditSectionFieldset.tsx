@@ -5,7 +5,7 @@ import { z } from 'zod/v4';
 import { sectionDetailsSchema } from '@/features/study-plan/schemas.ts';
 import { customResolver } from '@/utils/customResolver.ts';
 import { Section } from '@/features/study-plan/types.ts';
-import { Pencil, X } from 'lucide-react';
+import { Pencil, Trash } from 'lucide-react';
 import { Button } from '@mantine/core';
 import { useDeleteSection } from '@/features/study-plan/hooks/useDeleteSection.ts';
 import { useNavigate, useParams } from '@tanstack/react-router';
@@ -65,7 +65,7 @@ export function EditSectionFieldset({ section }: Props) {
       <Button
         loading={deleteSection.isPending}
         color="red"
-        leftSection={<X size={18} />}
+        leftSection={<Trash size={18} />}
         onClick={handleDelete}
       >
         Delete Section

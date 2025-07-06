@@ -5,7 +5,6 @@ import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 
 export const Route = createFileRoute('/_layout/programs/new')({
-  loader: () => ({ crumb: 'Create New Program' }),
   component: RouteComponent,
 });
 

@@ -1,7 +1,7 @@
 import { useMatches, useNavigate, useParams } from '@tanstack/react-router';
 import { Route as DetailsRoute } from '@/routes/_layout/study-plans/$studyPlanId/details';
-import { Folder, List, Map, ReceiptText } from 'lucide-react';
-import { Route as FrameworkRoute } from '@/routes/_layout/study-plans/$studyPlanId/framework.tsx';
+import { BookOpen, List, Map, ReceiptText } from 'lucide-react';
+import { Route as StudyPlanCoursesRoute } from '@/routes/_layout/study-plans/$studyPlanId/courses.tsx';
 import { Route as ProgramMapRoute } from '@/routes/_layout/study-plans/$studyPlanId/program-map.tsx';
 import { Route as SectionsRoute } from '@/routes/_layout/study-plans/$studyPlanId/sections';
 import { Tabs } from '@mantine/core';
@@ -9,8 +9,8 @@ import { NavbarLinks } from '@/shared/types.ts';
 
 const tabs: NavbarLinks[] = [
   { label: 'Details', icon: <ReceiptText size={18} />, route: DetailsRoute.to },
-  { label: 'Sections', icon: <List size={18}/>, route: SectionsRoute.to},
-  { label: 'Framework', icon: <Folder size={18} />, route: FrameworkRoute.to },
+  { label: 'Sections', icon: <List size={18} />, route: SectionsRoute.to },
+  { label: 'Courses', icon: <BookOpen size={18} />, route: StudyPlanCoursesRoute.to },
   { label: 'Program Map', icon: <Map size={18} />, route: ProgramMapRoute.to },
 ];
 
