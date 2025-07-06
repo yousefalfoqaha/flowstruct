@@ -27,7 +27,7 @@ export type Section = {
   level: SectionLevel;
   type: SectionType;
   requiredCreditHours: number;
-  name: string | null;
+  name: string;
   position: number;
   courses: number[];
 };
@@ -43,7 +43,7 @@ export type StudyPlan = {
   id: number;
   year: number;
   duration: number;
-  track: string | null;
+  track: string;
   isPublished: boolean;
   program: number;
   sections: Section[];

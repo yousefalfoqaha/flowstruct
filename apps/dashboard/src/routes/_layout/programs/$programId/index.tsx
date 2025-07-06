@@ -5,13 +5,18 @@ import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
 import { AppCard } from '@/shared/components/AppCard.tsx';
 import { InfoItem } from '@/shared/components/InfoItem.tsx';
 import { Degree } from '@/features/program/types.ts';
-import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
 import { EditDetailsButton } from '@/shared/components/EditDetailsButton.tsx';
 import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
+import { ProgramQuery } from '@/features/program/queries.ts';
 
 export const Route = createFileRoute('/_layout/programs/$programId/')({
+  loader: async ({ context: { queryClient }, params }) => {
+    const programId = parseInt(params.programId);
+    queryClient.ensureQueryData(ProgramQuery(programId));
+  },
   component: RouteComponent,
 });
 
@@ -26,7 +31,7 @@ function RouteComponent() {
             title={getProgramDisplayName(program)}
             linkProps={{
               to: '/programs',
-              search: getDefaultSearchValues(),
+              search: DefaultSearchValues(),
             }}
           />
           <LastUpdated at={program.updatedAt} by={program.updatedBy} />

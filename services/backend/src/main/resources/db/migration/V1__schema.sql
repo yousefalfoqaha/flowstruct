@@ -42,7 +42,7 @@ CREATE TABLE study_plan
     id           SERIAL PRIMARY KEY,
     year         INT                      NOT NULL,
     duration     INT                      NOT NULL DEFAULT (1),
-    track        VARCHAR(255),
+    track        VARCHAR(255)             NOT NULL,
     is_published BOOLEAN                           DEFAULT (FALSE),
     program      INT                      NOT NULL,
     version      BIGINT                   NOT NULL DEFAULT (0),
@@ -59,7 +59,7 @@ CREATE TABLE section
     level                 VARCHAR(255) NOT NULL,
     type                  VARCHAR(255) NOT NULL,
     required_credit_hours INT          NOT NULL,
-    name                  VARCHAR(255),
+    name                  VARCHAR(255) NOT NULL,
     position              INT          NOT NULL DEFAULT (0),
     study_plan            INT          NOT NULL,
     UNIQUE (level, type, position, study_plan)

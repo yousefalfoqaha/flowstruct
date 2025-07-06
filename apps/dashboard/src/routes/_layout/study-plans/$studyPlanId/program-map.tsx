@@ -6,7 +6,6 @@ import { Group, Kbd, Text } from '@mantine/core';
 import { ArrowLeftRight } from 'lucide-react';
 
 export const Route = createFileRoute('/_layout/study-plans/$studyPlanId/program-map')({
-  loader: () => ({ crumb: 'Program Map' }),
   component: RouteComponent,
 });
 

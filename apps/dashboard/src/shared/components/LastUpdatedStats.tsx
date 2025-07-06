@@ -12,6 +12,6 @@ export function LastUpdatedStats({ at, by }: Props) {
   const timeAgo = formatTimeAgo(new Date(at));
   let user;
   if (by) user = users[by];
-
+  
   return `${timeAgo} ${user ? `(${user.username})` : ''}`;
 }

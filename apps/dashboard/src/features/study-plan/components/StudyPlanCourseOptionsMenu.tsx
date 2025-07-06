@@ -12,7 +12,7 @@ type Props = {
   sectionId: number;
 };
 
-export function FrameworkCourseOptionsMenu({ course, sectionId }: Props) {
+export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
   const { studyPlanId } = useParams({ from: '/_layout/study-plans/$studyPlanId' });
   const removeCoursesFromStudyPlan = useRemoveCoursesFromStudyPlan();
 

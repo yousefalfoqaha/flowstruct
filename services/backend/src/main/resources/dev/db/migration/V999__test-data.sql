@@ -131,9 +131,9 @@ VALUES ('CS', 'Computer Science', 'BSc');
 INSERT INTO section (level, type, required_credit_hours, name, "position", study_plan)
 VALUES ('University', 'Requirement', 9, 'Dual Studies', 2, 1),
        ('Program', 'Requirement', 12, 'Special Courses for the General Track', 2, 1),
-       ('Program', 'Requirement', 81, NULL, 1, 1),
-       ('School', 'Requirement', 27, NULL, 0, 1),
-       ('University', 'Requirement', 21, NULL, 1, 1);
+       ('Program', 'Requirement', 81, '', 1, 1),
+       ('School', 'Requirement', 27, '', 0, 1),
+       ('University', 'Requirement', 21, '', 1, 1);
 
 INSERT INTO study_plan (year, track, program, is_published, duration)
 VALUES (2023, 'General Track (Dual Studies)', 1, false, 4);

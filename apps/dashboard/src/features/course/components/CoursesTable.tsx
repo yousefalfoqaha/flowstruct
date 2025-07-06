@@ -33,10 +33,10 @@ export function CoursesTable() {
 
   return (
     <Stack>
-      <DataTableSearch width="" table={table} debounce={750} />
+      <DataTableSearch width="" placeholder="Search any course..." table={table} debounce={750} />
 
       <AppCard
-        title="All Courses"
+        title="Course List"
         subtitle="Manage all university courses"
         headerAction={
           <Link to="/courses/new">
@@ -44,7 +44,7 @@ export function CoursesTable() {
           </Link>
         }
       >
-        <LoadingOverlay visible={isPending} zIndex={1000} overlayProps={{ radius: 'sm' }} />
+        <LoadingOverlay visible={isPending} zIndex={1000} loaderProps={{ type: 'bars' }} />
         <DataTable table={table} />
       </AppCard>
 

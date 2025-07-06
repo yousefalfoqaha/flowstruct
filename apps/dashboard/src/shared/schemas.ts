@@ -1,22 +1,18 @@
 import { z } from 'zod/v4';
-import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
+import { TableSearchOptions } from '@/shared/types.ts';
 
-const defaultValues = getDefaultSearchValues();
-
-export const TableSearchSchema = z.object({
-  filter: z.string().catch(defaultValues.filter),
-  page: z.number().catch(defaultValues.page),
-  size: z.number().catch(defaultValues.size),
-  columnFilters: z
-    .array(
-      z.object({
-        id: z.string(),
-        value: z.unknown(),
-      })
-    )
-    .catch(defaultValues.columnFilters),
-});
-
-export const FrameworkCoursesTableSearchSchema = TableSearchSchema.extend({
-  size: z.number().catch(7),
-});
+export const getTableSearchSchema = (defaultSearchValues: TableSearchOptions) => {
+  return z.object({
+    filter: z.string().catch(defaultSearchValues.filter),
+    page: z.number().catch(defaultSearchValues.page),
+    size: z.number().catch(defaultSearchValues.size),
+    columnFilters: z
+      .array(
+        z.object({
+          id: z.string(),
+          value: z.unknown(),
+        })
+      )
+      .catch(defaultSearchValues.columnFilters),
+  });
+}

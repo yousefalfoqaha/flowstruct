@@ -16,7 +16,7 @@ export function getStudyPlansTableColumns() {
     accessor('year', {
       header: 'Year',
       cell: ({ row }) => (
-        <p>
+        <p style={{ textWrap: 'nowrap' }}>
           {row.original.year} - {row.original.year + 1}
         </p>
       ),
@@ -29,7 +29,7 @@ export function getStudyPlansTableColumns() {
     }),
     accessor('track', {
       header: 'Track',
-      cell: ({ row }) => row.getValue('track') ?? '---',
+      cell: ({ row }) => (row.getValue('track') === '' ? '---' : row.getValue('track')),
     }),
     accessor('isPublished', {
       header: 'Status',

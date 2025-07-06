@@ -1,23 +1,30 @@
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
 import { StudyPlansTable } from '@/features/study-plan/components/StudyPlansTable.tsx';
-import { ScrollText } from 'lucide-react';
-import { TableSearchSchema } from '@/shared/schemas.ts';
-import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
-import { PageHeader } from '@/shared/components/PageHeader.tsx';
-import { PageLayout } from '@/shared/components/PageLayout.tsx';
+import { getTableSearchSchema } from '@/shared/schemas.ts';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
+import { StudyPlanListQuery } from '@/features/study-plan/queries.ts';
+import { ProgramListQuery } from '@/features/program/queries.ts';
+import { Stack, Title } from '@mantine/core';
 
 export const Route = createFileRoute('/_layout/study-plans/')({
   component: RouteComponent,
-  validateSearch: TableSearchSchema,
+  loader: ({ context: { queryClient } }) => {
+    queryClient.ensureQueryData(StudyPlanListQuery);
+    queryClient.ensureQueryData(ProgramListQuery);
+  },
+  validateSearch: getTableSearchSchema(DefaultSearchValues()),
   search: {
-    middlewares: [stripSearchParams(getDefaultSearchValues())],
+    middlewares: [stripSearchParams(DefaultSearchValues())],
   },
 });
 
 function RouteComponent() {
   return (
-    <PageLayout header={<PageHeader title="Study Plans" icon={<ScrollText />} />}>
+    <Stack gap="lg">
+      <Title order={2} fw={600}>
+        Study Plans
+      </Title>
       <StudyPlansTable />
-    </PageLayout>
+    </Stack>
   );
 }

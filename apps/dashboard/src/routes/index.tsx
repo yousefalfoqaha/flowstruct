@@ -1,10 +1,14 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router';
-import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import { MeQuery } from '@/features/user/queries.ts';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 
 export const Route = createFileRoute('/')({
-  component: RouteComponent,
+  beforeLoad: ({ context: { queryClient } }) => {
+    try {
+      queryClient.ensureQueryData(MeQuery);
+      redirect({ to: '/programs', search: DefaultSearchValues() });
+    } catch {
+      throw redirect({ to: '/login' });
+    }
+  },
 });
-
-function RouteComponent() {
-  return <Navigate to="/programs" search={getDefaultSearchValues()} />;
-}

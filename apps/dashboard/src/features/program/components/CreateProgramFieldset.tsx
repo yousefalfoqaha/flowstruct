@@ -5,14 +5,20 @@ import { useCreateProgram } from '@/features/program/hooks/useCreateProgram.ts';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { Plus, X } from 'lucide-react';
 import { AppCard } from '@/shared/components/AppCard.tsx';
-import { useAppForm } from '@/shared/hooks/useAppForm.ts';
-import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
+import { useForm } from 'react-hook-form';
+import { customResolver } from '@/utils/customResolver.ts';
+import { z } from 'zod/v4';
 
 export function CreateProgramFieldset() {
-  const form = useAppForm(programDetailsSchema, {
-    code: '',
-    name: '',
+  const form = useForm<z.infer<typeof programDetailsSchema>>({
+    resolver: customResolver(programDetailsSchema),
+    defaultValues: {
+      code: '',
+      name: '',
+    },
   });
+
   const createProgram = useCreateProgram();
   const navigate = useNavigate();
 
@@ -22,7 +28,7 @@ export function CreateProgramFieldset() {
         form.reset();
         navigate({
           to: '/programs',
-          search: getDefaultSearchValues(),
+          search: DefaultSearchValues(),
         });
       },
     });
@@ -30,13 +36,18 @@ export function CreateProgramFieldset() {
 
   const footer = (
     <>
-      <Link search={getDefaultSearchValues()} to="/programs">
+      <Link search={DefaultSearchValues()} to="/programs">
         <Button variant="default" leftSection={<X size={18} />}>
           Cancel
         </Button>
       </Link>
 
-      <Button type="submit" leftSection={<Plus size={18} />} loading={createProgram.isPending}>
+      <Button
+        disabled={!form.formState.isValid}
+        type="submit"
+        leftSection={<Plus size={18} />}
+        loading={createProgram.isPending}
+      >
         Save Program
       </Button>
     </>

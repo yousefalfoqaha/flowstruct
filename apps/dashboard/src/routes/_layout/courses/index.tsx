@@ -1,26 +1,28 @@
 import { createFileRoute, retainSearchParams, stripSearchParams } from '@tanstack/react-router';
-import { BookOpen } from 'lucide-react';
 import { CoursesTable } from '@/features/course/components/CoursesTable.tsx';
-import { TableSearchSchema } from '@/shared/schemas.ts';
-import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
-import { PageHeader } from '@/shared/components/PageHeader.tsx';
-import { PageLayout } from '@/shared/components/PageLayout.tsx';
+import { getTableSearchSchema } from '@/shared/schemas.ts';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
+import { PaginatedCourseListQuery } from '@/features/course/queries.ts';
+import { Stack, Title } from '@mantine/core';
 
 export const Route = createFileRoute('/_layout/courses/')({
-  component: RouteComponent,
-  validateSearch: TableSearchSchema,
-  search: {
-    middlewares: [
-      stripSearchParams(getDefaultSearchValues()),
-      retainSearchParams(['page', 'size']),
-    ],
+  loader: async ({ context: { queryClient } }) => {
+    queryClient.ensureQueryData(PaginatedCourseListQuery(DefaultSearchValues()));
   },
+  validateSearch: getTableSearchSchema(DefaultSearchValues()),
+  search: {
+    middlewares: [stripSearchParams(DefaultSearchValues()), retainSearchParams(['page', 'size'])],
+  },
+  component: RouteComponent,
 });
 
 function RouteComponent() {
   return (
-    <PageLayout header={<PageHeader title="Courses" icon={<BookOpen />} />}>
+    <Stack gap="lg">
+      <Title order={2} fw={600}>
+        Courses
+      </Title>
       <CoursesTable />
-    </PageLayout>
+    </Stack>
   );
 }

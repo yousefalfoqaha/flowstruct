@@ -7,7 +7,6 @@ import { EditCourseFieldset } from '@/features/course/components/EditCourseField
 
 export const Route = createFileRoute('/_layout/courses/$courseId/edit')({
   component: RouteComponent,
-  loader: () => ({ crumb: 'Edit Details' }),
 });
 
 function RouteComponent() {

@@ -4,16 +4,16 @@ import { useDataTable } from '@/shared/hooks/useDataTable.ts';
 import { StudyPlanRow } from '@/features/study-plan/types.ts';
 import React from 'react';
 import { getStudyPlansTableColumns } from '@/features/study-plan/components/StudyPlansTableColumns.tsx';
-import { AppCard } from '@/shared/components/AppCard.tsx';
 import { useProgramList } from '@/features/program/hooks/useProgramList.ts';
 import { Button, Group, Stack } from '@mantine/core';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
-import { Link } from '@tanstack/react-router';
-import { Plus } from 'lucide-react';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
-import { ProgramFilter } from '@/features/study-plan/components/ProgramFilter.tsx';
 import { StudyPlanYearFilter } from '@/features/study-plan/components/StudyPlanYearFilter.tsx';
+import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
+import { GraduationCap, Plus } from 'lucide-react';
+import { AppCard } from '@/shared/components/AppCard.tsx';
+import { Link } from '@tanstack/react-router';
 
 export function StudyPlansTable() {
   const { data: studyPlans } = useStudyPlanList();
@@ -35,14 +35,22 @@ export function StudyPlansTable() {
 
   return (
     <Stack>
-      <Group grow preventGrowOverflow={false}>
+      <Group>
         <DataTableSearch width={800} table={table} placeholder="Search any study plan..." />
-        <ProgramFilter table={table} programs={programs} />
+
+        <ColumnFilterSelect
+          table={table}
+          columnId="programName"
+          data={programs.map((p) => getProgramDisplayName(p))}
+          leftSection={<GraduationCap size={16} />}
+          placeholder="Filter by program..."
+        />
+
         <StudyPlanYearFilter table={table} />
       </Group>
 
       <AppCard
-        title="All Study Plans"
+        title="Study Plan List"
         subtitle="Manage all university study plans"
         headerAction={
           <Link to="/study-plans/new">

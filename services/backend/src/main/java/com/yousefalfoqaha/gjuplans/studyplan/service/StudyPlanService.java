@@ -234,7 +234,7 @@ public class StudyPlanService {
 
         studyPlan.setYear(details.year());
         studyPlan.setDuration(details.duration());
-        studyPlan.setTrack(details.track().trim().isEmpty() ? null : details.track());
+        studyPlan.setTrack(details.track().trim());
         studyPlan.setPublished(details.isPublished());
 
         markAsDraft(studyPlan);
@@ -247,7 +247,7 @@ public class StudyPlanService {
                 null,
                 details.year(),
                 details.duration(),
-                details.track().trim().isEmpty() ? null : details.track(),
+                details.track().trim(),
                 details.isPublished(),
                 AggregateReference.to(details.program()),
                 null,
@@ -277,7 +277,7 @@ public class StudyPlanService {
         newSection.setLevel(details.level());
         newSection.setType(details.type());
         newSection.setRequiredCreditHours(details.requiredCreditHours());
-        newSection.setName(details.name().trim().isEmpty() ? null : details.name());
+        newSection.setName(details.name().trim());
 
         var sectionSiblings = studyPlan.getSections()
                 .stream()
@@ -310,7 +310,7 @@ public class StudyPlanService {
                             section.setLevel(details.level());
                             section.setType(details.type());
                             section.setRequiredCreditHours(details.requiredCreditHours());
-                            section.setName(details.name().trim().isEmpty() ? null : details.name());
+                            section.setName(details.name().trim());
                         }, () -> {
                             throw new SectionNotFoundException("Section was not found");
                         }

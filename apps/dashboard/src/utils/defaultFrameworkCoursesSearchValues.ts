@@ -1,8 +1,8 @@
 import { TableSearchOptions } from '@/shared/types.ts';
 
-export const getDefaultSearchValues = (): TableSearchOptions => ({
+export const DefaultFrameworkCoursesSearchValues = (): TableSearchOptions => ({
   filter: '',
   page: 0,
-  size: 10,
+  size: 7,
   columnFilters: [],
-});
+})

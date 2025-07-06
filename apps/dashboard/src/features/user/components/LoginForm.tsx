@@ -1,18 +1,23 @@
 import { Button, Container, Paper, PasswordInput, Stack, TextInput, Title } from '@mantine/core';
 import classes from './LoginForm.module.css';
-import { useAppForm } from '@/shared/hooks/useAppForm.ts';
 import { LoginSchema } from '@/features/user/schemas.ts';
 import { useLogin } from '@/features/user/hooks/useLogin.ts';
 import { useNavigate } from '@tanstack/react-router';
-import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
-import { Controller } from 'react-hook-form';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
+import { Controller, useForm } from 'react-hook-form';
 import { LogIn } from 'lucide-react';
+import { z } from 'zod/v4';
+import { customResolver } from '@/utils/customResolver.ts';
 
 export function LoginForm() {
-  const form = useAppForm(LoginSchema, {
-    username: '',
-    password: '',
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: customResolver(LoginSchema),
+    defaultValues: {
+      username: '',
+      password: '',
+    },
   });
+
   const login = useLogin();
   const navigate = useNavigate();
 
@@ -20,8 +25,8 @@ export function LoginForm() {
     login.mutate(data, {
       onSuccess: () =>
         navigate({
-          to: '/',
-          search: getDefaultSearchValues(),
+          to: '/programs',
+          search: DefaultSearchValues(),
         }),
     });
   });

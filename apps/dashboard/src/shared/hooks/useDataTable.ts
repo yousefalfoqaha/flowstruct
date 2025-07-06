@@ -11,7 +11,8 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useLocation, useNavigate, useSearch } from '@tanstack/react-router';
-import { TableSearchSchema } from '@/shared/schemas';
+import { getTableSearchSchema } from '@/shared/schemas.ts';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 
 type useDataTableProps<TData> = Omit<
   TableOptions<TData>,
@@ -19,14 +20,15 @@ type useDataTableProps<TData> = Omit<
 >;
 
 export const useDataTable = <TData>(
-  props: useDataTableProps<TData>,
-  searchSchema = TableSearchSchema
+  props: useDataTableProps<TData>
 ) => {
   const rawSearch = useSearch({ strict: false });
+
+  const searchSchema = getTableSearchSchema(DefaultSearchValues());
   const parsed = searchSchema.safeParse(rawSearch);
   if (!parsed.success) {
     throw new Error(
-      'useDataTable hook must be used in a route with a compatible table‑search schema'
+      'useDataTable hook must be used in a route with a table search schema'
     );
   }
   const params = parsed.data;
@@ -53,7 +55,7 @@ export const useDataTable = <TData>(
     [location.pathname, navigate, params.filter]
   );
 
-  const onColumnFilterChange = React.useCallback(
+  const onColumnFiltersChange = React.useCallback(
     (updaterOrValue: Updater<ColumnFiltersState>) => {
       const next =
         typeof updaterOrValue === 'function'
@@ -111,7 +113,7 @@ export const useDataTable = <TData>(
       },
     },
     onGlobalFilterChange,
-    onColumnFiltersChange: onColumnFilterChange,
+    onColumnFiltersChange,
     onPaginationChange,
     autoResetPageIndex: false,
   });

@@ -1,5 +1,4 @@
 import { Course } from '@/features/course/types.ts';
-import { useAppForm } from '@/shared/hooks/useAppForm.ts';
 import { courseDetailsSchema } from '@/features/course/schemas.ts';
 import { useEditCourseDetails } from '@/features/course/hooks/useEditCourseDetails.ts';
 import { useNavigate } from '@tanstack/react-router';
@@ -8,13 +7,20 @@ import { Box, Button } from '@mantine/core';
 import { Pencil } from 'lucide-react';
 import { AppCard } from '@/shared/components/AppCard.tsx';
 import { useCoursePreset } from '@/features/course/hooks/useCoursePreset.ts';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod/v4';
+import { customResolver } from '@/utils/customResolver.ts';
 
 type Props = {
   course: Course;
 };
 
 export function EditCourseFieldset({ course }: Props) {
-  const form = useAppForm(courseDetailsSchema, { ...course });
+  const form = useForm<z.infer<typeof courseDetailsSchema>>({
+    resolver: customResolver(courseDetailsSchema),
+    defaultValues: { ...course },
+  });
+
   const { preset, changePreset } = useCoursePreset(form);
   const editCourseDetails = useEditCourseDetails();
   const navigate = useNavigate();
@@ -38,11 +44,12 @@ export function EditCourseFieldset({ course }: Props) {
   const footer = (
     <Box ml="auto">
       <Button
+        disabled={!form.formState.isValid || !form.formState.isDirty}
         loading={editCourseDetails.isPending}
         type="submit"
         leftSection={<Pencil size={18} />}
       >
-        Save Details
+        Save Changes
       </Button>
     </Box>
   );

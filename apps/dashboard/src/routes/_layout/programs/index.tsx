@@ -1,23 +1,24 @@
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
 import { ProgramsTable } from '@/features/program/components/ProgramsTable.tsx';
-import { GraduationCap } from 'lucide-react';
-import { TableSearchSchema } from '@/shared/schemas.ts';
-import { getDefaultSearchValues } from '@/utils/getDefaultSearchValues.ts';
-import { PageHeader } from '@/shared/components/PageHeader.tsx';
-import { PageLayout } from '@/shared/components/PageLayout.tsx';
+import { getTableSearchSchema } from '@/shared/schemas.ts';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
+import { Stack, Title } from '@mantine/core';
 
 export const Route = createFileRoute('/_layout/programs/')({
-  component: RouteComponent,
-  validateSearch: TableSearchSchema,
+  validateSearch: getTableSearchSchema(DefaultSearchValues()),
   search: {
-    middlewares: [stripSearchParams(getDefaultSearchValues())],
+    middlewares: [stripSearchParams(DefaultSearchValues())],
   },
+  component: RouteComponent,
 });
 
 function RouteComponent() {
   return (
-    <PageLayout header={<PageHeader title="Programs" icon={<GraduationCap />} />}>
+    <Stack gap="lg">
+      <Title order={2} fw={600}>
+        Programs
+      </Title>
       <ProgramsTable />
-    </PageLayout>
+    </Stack>
   );
 }

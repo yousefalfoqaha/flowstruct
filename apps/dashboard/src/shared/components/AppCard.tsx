@@ -2,7 +2,7 @@ import { Card, Group, Stack, Text } from '@mantine/core';
 import { ReactNode } from 'react';
 
 type AppCardProps = {
-  title: string;
+  title?: string;
   subtitle?: string;
   children: ReactNode;
   footer?: ReactNode;

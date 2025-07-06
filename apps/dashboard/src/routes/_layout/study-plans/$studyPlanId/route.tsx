@@ -1,30 +1,25 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { StudyPlanCourseListQuery, StudyPlanQuery } from '@/features/study-plan/queries.ts';
-import { getStudyPlanDisplayName } from '@/utils/getStudyPlanDisplayName.ts';
 import { ProgramQuery } from '@/features/program/queries.ts';
+import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
+import { getStudyPlanDisplayName } from '@/utils/getStudyPlanDisplayName.ts';
 import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
 import { useProgram } from '@/features/program/hooks/useProgram.ts';
 import { Divider, Group, Stack, Text, Title } from '@mantine/core';
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
-import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
 import { publishStatusBadge } from '@/shared/components/PublishStatusBadge.tsx';
+import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 import { StudyPlanTabs } from '@/features/study-plan/components/StudyPlanTabs.tsx';
-import { CoursesGraphProvider } from '@/contexts/CoursesGraphContext';
-import { PublishButton } from '@/features/study-plan/components/PublishButton.tsx';
-import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
+import { CoursesGraphProvider } from '@/contexts/CoursesGraphContext.tsx';
 
 export const Route = createFileRoute('/_layout/study-plans/$studyPlanId')({
   loader: async ({ context: { queryClient }, params }) => {
     const studyPlanId = Number(params.studyPlanId);
 
+    queryClient.ensureQueryData(StudyPlanCourseListQuery(studyPlanId));
     const studyPlan = await queryClient.ensureQueryData(StudyPlanQuery(studyPlanId));
-    queryClient.ensureQueryData(StudyPlanCourseListQuery(studyPlanId)).then();
-    const program = await queryClient.ensureQueryData(ProgramQuery(studyPlan.program));
-
-    return {
-      crumb: `${getProgramDisplayName(program)} - ${getStudyPlanDisplayName(studyPlan)}`,
-    };
+    queryClient.ensureQueryData(ProgramQuery(studyPlan.program));
   },
   component: RouteComponent,
 });
@@ -46,14 +41,13 @@ function RouteComponent() {
 
   const header = (
     <Group justify="space-between">
-      <Group gap="lg">
+      <Group gap="lg" wrap="nowrap">
         <PageHeaderWithBack title={title} linkProps={{ to: '/study-plans' }} />
         {publishStatusBadge(studyPlan.isPublished)}
       </Group>
 
-      <Group mb="auto">
+      <Group mb="auto" justify="space-between">
         <LastUpdated at={studyPlan.updatedAt} by={studyPlan.updatedBy} />
-        <PublishButton studyPlan={studyPlan} />
       </Group>
     </Group>
   );
