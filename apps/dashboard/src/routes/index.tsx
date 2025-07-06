@@ -9,6 +9,6 @@ export const Route = createFileRoute('/')({
     } catch {
       throw redirect({ to: '/login' });
     }
-    redirect({ to: '/programs', search: DefaultSearchValues() });
+    throw redirect({ to: '/programs', search: DefaultSearchValues() });
   },
 });
