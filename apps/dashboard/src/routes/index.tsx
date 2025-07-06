@@ -6,9 +6,9 @@ export const Route = createFileRoute('/')({
   beforeLoad: ({ context: { queryClient } }) => {
     try {
       queryClient.ensureQueryData(MeQuery);
-      redirect({ to: '/programs', search: DefaultSearchValues() });
     } catch {
       throw redirect({ to: '/login' });
     }
+    redirect({ to: '/programs', search: DefaultSearchValues() });
   },
 });
