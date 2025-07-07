@@ -70,7 +70,7 @@ public class CourseService {
     public CourseDto editCourseDetails(long courseId, CourseDetailsDto details) {
         var course = findCourse(courseId);
 
-        if (courseRepository.existsByCodeIgnoreCase(course.getCode()) && !course.getCode().equalsIgnoreCase(details.code())) {
+        if (courseRepository.existsByCodeIgnoreCase(details.code()) && !course.getCode().equalsIgnoreCase(details.code())) {
             throw new CourseExistsException("Course with code " + details.code() + " already exists.");
         }
 
