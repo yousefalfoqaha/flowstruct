@@ -1,11 +1,13 @@
-const API_BASE_URL = 'http://localhost:8080/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const api = async <T>(endpoint: string) => {
   const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
+  const BACKEND_API_KEY = import.meta.env.VITE_BACKEND_API_KEY;
+
   const response = await fetch(url, {
     headers: {
-      'X-Backend-Api-Key': import.meta.env.VITE_BACKEND_API_KEY,
+      'X-Backend-Api-Key': BACKEND_API_KEY,
     },
     credentials: 'include',
   });
