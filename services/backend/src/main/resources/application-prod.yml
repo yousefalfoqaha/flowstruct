@@ -2,8 +2,6 @@ spring:
   config:
     activate:
       on-profile: prod
-  datasource:
-    url: jdbc:postgresql://localhost:${POSTGRES_PORT}/${POSTGRES_DB}
 
 server:
   servlet:
@@ -14,9 +12,6 @@ server:
 
 jwt:
   cookieSecure: true
-
-cors:
-  allowed-origins: https://admin.gjuplans.com
 
 logging:
   level:

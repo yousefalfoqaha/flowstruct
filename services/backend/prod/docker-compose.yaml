@@ -1,11 +1,8 @@
-name: gjuplans-backend
-
 services:
   backend:
     build:
-      context: .
-      target: build
-    command: ./mvnw spring-boot:run
+      # TODO: pull image from docker hub
+      context: ..
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
       BACKEND_API_KEY: ${BACKEND_API_KEY}
@@ -15,10 +12,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_PORT: ${POSTGRES_PORT}
-    volumes:
-      - ./src:/app/src
-    ports:
-      - "8080:8080"
+    networks:
+      - caddy
     depends_on:
       - database
 
@@ -32,8 +27,24 @@ services:
       POSTGRES_PORT: ${POSTGRES_PORT}
     volumes:
       - pg_data:/var/lib/postgresql/data
+
+  reverse_proxy:
+    image: caddy:2.10.0-alpine
+    restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - caddy
+
+networks:
+  caddy:
 
 volumes:
   pg_data:
+  caddy_data:
+  caddy_config:

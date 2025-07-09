@@ -18,6 +18,9 @@ public class CorsConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        System.out.println(Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .toList());
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(
                 Arrays.stream(allowedOrigins.split(","))
