@@ -5,14 +5,12 @@ spring:
   flyway:
     locations: "classpath:db/migration,classpath:dev/db/migration"
 
-server:
-  servlet:
-    session:
-      cookie:
-        secure: false
-
 jwt:
-  cookieSecure: false
+  cookie:
+    secure: false
+
+cors:
+  allowed-origins: http://localhost:5173, http://localhost:4321
 
 logging:
   level:

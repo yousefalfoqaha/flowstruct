@@ -19,7 +19,7 @@ import java.util.function.Function;
 public class JwtService {
     private final SecretKey secretKey;
 
-    @Value("${jwt.cookieExpiry}")
+    @Value("${jwt.cookie.expiry}")
     private int cookieExpiry;
 
     public JwtService() {

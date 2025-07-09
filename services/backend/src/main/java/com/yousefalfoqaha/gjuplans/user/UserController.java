@@ -22,10 +22,10 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
 
-    @Value("${jwt.cookieExpiry}")
+    @Value("${jwt.cookie.expiry}")
     private int cookieExpiry;
 
-    @Value("${jwt.cookieSecure}")
+    @Value("${jwt.cookie.secure}")
     private boolean cookieSecure;
 
     @PostMapping("/login")

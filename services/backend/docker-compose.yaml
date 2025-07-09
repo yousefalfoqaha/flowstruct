@@ -2,19 +2,17 @@ name: gjuplans-backend
 
 services:
   backend:
+    container_name: backend
     build:
       context: .
       target: build
     command: ./mvnw spring-boot:run
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
-      BACKEND_API_KEY: ${BACKEND_API_KEY}
-      JWT_COOKIEEXPIRY: ${JWT_COOKIEEXPIRY}
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_PORT: ${POSTGRES_PORT}
+      BACKEND_API_KEY: ${BACKEND_API_KEY}
     volumes:
       - ./src:/app/src
     ports:
@@ -24,12 +22,11 @@ services:
 
   database:
     image: postgres:16.9-alpine
-    container_name: postgres
+    container_name: database
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_PORT: ${POSTGRES_PORT}
     volumes:
       - pg_data:/var/lib/postgresql/data
     ports:

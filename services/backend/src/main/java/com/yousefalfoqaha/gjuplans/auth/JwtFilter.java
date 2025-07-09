@@ -27,7 +27,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final AppUserDetailsService appUserDetailsService;
 
-    @Value("${jwt.cookieSecure}")
+    @Value("${jwt.cookie.secure}")
     private boolean cookieSecure;
 
     @Override

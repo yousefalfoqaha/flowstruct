@@ -3,15 +3,12 @@ spring:
     activate:
       on-profile: prod
 
-server:
-  servlet:
-    session:
-      cookie:
-        secure: true
-  forward-headers-strategy: native
-
 jwt:
-  cookieSecure: true
+  cookie:
+    secure: false
+
+cors:
+  allowed-origins: https://admin.gjuplans.com
 
 logging:
   level:

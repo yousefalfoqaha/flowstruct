@@ -2,7 +2,7 @@ spring:
   application:
     name: gjuplans
   datasource:
-    url: jdbc:postgresql://database:${POSTGRES_PORT}/${POSTGRES_DB}
+    url: jdbc:postgresql://database:5432/${POSTGRES_DB}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
   flyway:
@@ -14,10 +14,11 @@ spring:
     password: ${POSTGRES_PASSWORD}
 
 jwt:
-  cookieExpiry: ${JWT_COOKIEEXPIRY}
+  cookie:
+    expiry: 1800
 
-cors:
-  allowed-origins: ${ALLOWED_ORIGINS}
+server:
+  forward-headers-strategy: native
 
 backend:
   api:
