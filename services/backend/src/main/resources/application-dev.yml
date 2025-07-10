@@ -10,7 +10,7 @@ jwt:
     secure: false
 
 cors:
-  allowed-origins: http://localhost:5173, http://localhost:4321
+  allowed-origins: http://${ADMIN_BASE_URL}:5173, http://${ADMIN_BASE_URL}:4321
 
 logging:
   level:

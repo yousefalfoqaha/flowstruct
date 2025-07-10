@@ -1,7 +1,0 @@
-admin.gjuplans.com {
-    reverse_proxy backend:8080
-}
-
-admin-staging.gjuplans.com {
-    reverse_proxy backend:8081
-}

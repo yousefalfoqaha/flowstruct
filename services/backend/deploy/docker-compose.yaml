@@ -1,14 +1,13 @@
 services:
   backend:
-    build:
-      # TODO: pull image from docker hub
-      context: ..
+    image: gjuplans/backend:${BACKEND_IMAGE_TAG}
     environment:
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       BACKEND_API_KEY: ${BACKEND_API_KEY}
+      ADMIN_BASE_URL: ${ADMIN_BASE_URL}
     networks:
       - caddy
     depends_on:
@@ -25,6 +24,8 @@ services:
 
   reverse_proxy:
     image: caddy:2.10.0-alpine
+    environment:
+      ADMIN_BASE_URL: ${ADMIN_BASE_URL}
     restart: unless-stopped
     ports:
       - "80:80"

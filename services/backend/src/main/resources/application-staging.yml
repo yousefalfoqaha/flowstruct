@@ -10,10 +10,7 @@ jwt:
     secure: true
 
 cors:
-  allowed-origins: https://admin-staging.gjuplans.com
-
-server:
-  port: 8081
+  allowed-origins: https://${ADMIN_BASE_URL}
 
 logging:
   level:
