@@ -12,6 +12,7 @@ services:
       - caddy
     depends_on:
       - database
+    restart: always
 
   database:
     image: postgres:16.9-alpine
@@ -21,12 +22,12 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - pg_data:/var/lib/postgresql/data
+    restart: always
 
   reverse_proxy:
     image: caddy:2.10.0-alpine
     environment:
       ADMIN_BASE_URL: ${ADMIN_BASE_URL}
-    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -36,6 +37,7 @@ services:
       - caddy_config:/config
     networks:
       - caddy
+    restart: always
 
 networks:
   caddy:
