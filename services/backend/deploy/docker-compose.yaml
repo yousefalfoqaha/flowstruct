@@ -10,6 +10,7 @@ services:
       ADMIN_BASE_URL: ${ADMIN_BASE_URL}
     networks:
       - caddy
+      - app
     depends_on:
       - database
     restart: always
@@ -22,6 +23,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - pg_data:/var/lib/postgresql/data
+    networks:
+      - app
     restart: always
 
   reverse_proxy:
@@ -41,6 +44,7 @@ services:
 
 networks:
   caddy:
+  app:
 
 volumes:
   pg_data:

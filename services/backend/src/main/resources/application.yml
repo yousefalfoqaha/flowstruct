@@ -2,7 +2,7 @@ spring:
   application:
     name: gjuplans
   datasource:
-    url: jdbc:postgresql://database:5432/${POSTGRES_DB}
+    url: jdbc:postgresql://database/${POSTGRES_DB}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
   flyway:
