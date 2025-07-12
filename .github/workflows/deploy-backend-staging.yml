@@ -24,7 +24,7 @@ jobs:
         run: |
           ssh-keyscan -H ${{ vars.STAGING_VPS_IP }} >> ~/.ssh/known_hosts
 
-      - name: Login to DockerHub
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
@@ -33,17 +33,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push
-        uses: docker/bake-action@v6
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
         with:
-          source: .
+          context: ./services/backend
+          file: ./services/backend/Dockerfile
           push: true
-          set: |
-            *.tags=gjuplans/backend:staging
+          tags: gjuplans/backend:staging
 
       - name: Pull backend image
         env:
-          VPS_IP: ${{ vars.STAGING_VPS_IP}}
+          VPS_IP: ${{ vars.STAGING_VPS_IP }}
         run: |
           COMPOSE_PATH="services/backend/docker-compose.deploy.yaml"
           CADDYFILE_PATH="services/backend/Caddyfile"
