@@ -26,7 +26,7 @@ Thumbs.db
 Dockerfile
 .dockerignore
 docker-compose.yml
-deploy/docker-compose.yaml
+docker-compose.deploy.yaml
 
 # Logs
 *.log

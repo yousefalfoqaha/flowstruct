@@ -50,7 +50,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Profile("prod")
+    @Profile({"prod", "staging"})
     public SecurityFilterChain prodSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
@@ -73,7 +73,6 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
