@@ -13,7 +13,7 @@ jobs:
     with:
       branch: main
       path: services/backend
-      image_tag: latest
+      image_tag: prod
       vps_ip: ${{ vars.PROD_VPS_IP }}
     secrets:
       ssh_key: ${{ secrets.BACKEND_DEPLOY_KEY }}
