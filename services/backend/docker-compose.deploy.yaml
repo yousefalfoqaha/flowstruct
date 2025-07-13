@@ -30,7 +30,7 @@ services:
   reverse_proxy:
     image: caddy:2.10.0-alpine
     environment:
-      ADMIN_BASE_URL: ${ADMIN_BASE_URL}
+      API_BASE_URL: ${API_BASE_URL}
     ports:
       - "80:80"
       - "443:443"
