@@ -63,6 +63,6 @@ jobs:
 
           ssh $REMOTE_VPS << EOF
             cd /opt/gjuplans
-            sudo docker compose -f $REMOTE_DIR/docker-compose.yaml pull
-            sudo docker compose -f $REMOTE_DIR/docker-compose.yaml up -d
+            docker compose -f $REMOTE_DIR/docker-compose.yaml pull
+            docker compose -f $REMOTE_DIR/docker-compose.yaml up -d
           EOF
