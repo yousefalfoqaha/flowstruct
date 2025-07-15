@@ -30,7 +30,7 @@ import {
 } from '@tanstack/react-table';
 import { getSectionDisplayName } from '@/utils/getSectionDisplayName.ts';
 import { usePaginatedCourseList } from '@/features/course/hooks/usePaginatedCourseList.ts';
-import classes from '@/features/study-plan/components/StudyPlanCourseAdder.module.css';
+import classes from '@/shared/components/PillGroupBox.module.css';
 import { useCoursesGraph } from '@/contexts/CoursesGraphContext.tsx';
 import { CreateCourseModal } from '@/features/course/components/CreateCourseModal';
 import { Course } from '@/features/course/types.ts';
@@ -240,6 +240,7 @@ export function StudyPlanCourseAdder() {
           </Box>
 
           <DataTablePagination table={table} />
+
           <Box className={classes.box}>
             <Pill.Group style={{ alignContent: 'start' }}>
               {Object.entries(selectedCourses).map(([id, metadata]) => {

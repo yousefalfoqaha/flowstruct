@@ -8,10 +8,6 @@ import { Stack, Title } from '@mantine/core';
 
 export const Route = createFileRoute('/_layout/study-plans/')({
   component: RouteComponent,
-  loader: ({ context: { queryClient } }) => {
-    queryClient.ensureQueryData(StudyPlanListQuery);
-    queryClient.ensureQueryData(ProgramListQuery);
-  },
   validateSearch: getTableSearchSchema(DefaultSearchValues()),
   search: {
     middlewares: [stripSearchParams(DefaultSearchValues())],

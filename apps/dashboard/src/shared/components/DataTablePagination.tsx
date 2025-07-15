@@ -6,15 +6,17 @@ type Props<TData> = {
   table: Table<TData>;
 };
 
-export function DataTablePagination<TData>({ table }: Props<TData>) {
+export function DataTablePagination<TData>({ table}: Props<TData>) {
   const { pageSize, pageIndex } = table.getState().pagination;
   const PAGE_SIZES = ['5', '7', '10', '20', '50'];
 
   return (
     <Group justify="space-between">
-      <Text c="dimmed" size="sm">
-        {table.getRowCount()} row(s) total.
-      </Text>
+      <Group>
+        <Text c="dimmed" size="sm">
+          {table.getRowCount()} row(s) total.
+        </Text>
+      </Group>
 
       <Group wrap="nowrap">
         <>

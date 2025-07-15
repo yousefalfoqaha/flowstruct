@@ -14,23 +14,14 @@ import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
 import { GraduationCap, Plus } from 'lucide-react';
 import { AppCard } from '@/shared/components/AppCard.tsx';
 import { Link } from '@tanstack/react-router';
+import { getStudyPlanRows } from '@/utils/getStudyPlanRows.ts';
 
 export function StudyPlansTable() {
   const { data: studyPlans } = useStudyPlanList();
   const { data: programs } = useProgramList();
 
   const columns = React.useMemo(() => getStudyPlansTableColumns(), []);
-
-  const data: StudyPlanRow[] = React.useMemo(() => {
-    return studyPlans.map((studyPlan) => {
-      const program = programs.find((p) => p.id === studyPlan.program);
-      return {
-        ...studyPlan,
-        programName: program ? getProgramDisplayName(program) : 'Undefined',
-      };
-    });
-  }, [programs, studyPlans]);
-
+  const data: StudyPlanRow[] = getStudyPlanRows(studyPlans, programs);
   const table = useDataTable<StudyPlanRow>({ data, columns });
 
   return (
