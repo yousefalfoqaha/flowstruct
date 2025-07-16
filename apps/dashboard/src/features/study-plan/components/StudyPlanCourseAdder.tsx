@@ -3,14 +3,14 @@ import {
   Badge,
   Box,
   Button,
-  Checkbox,
+  Checkbox, Divider,
   Group,
   LoadingOverlay,
   Modal,
   Pill,
   Select,
   Stack,
-  Text,
+  Text, Title,
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { List, Plus, PlusCircle, X } from 'lucide-react';
@@ -93,7 +93,10 @@ export function StudyPlanCourseAdder() {
         cell: ({ row }) => <Badge variant="default">{row.original.code}</Badge>,
       }) as ColumnDef<CourseRow>,
       columnHelper.accessor('name', { header: 'Name' }) as ColumnDef<CourseRow>,
-      columnHelper.accessor('creditHours', { header: 'Credits' }) as ColumnDef<CourseRow>,
+      columnHelper.accessor('creditHours', {
+        header: 'Cr.',
+        cell: ({ row }) => <p>{row.original.creditHours} Cr.</p>,
+      }) as ColumnDef<CourseRow>,
     ],
     []
   );
@@ -214,16 +217,25 @@ export function StudyPlanCourseAdder() {
       <Modal
         opened={modalOpen}
         onClose={() => setModalOpen(false)}
-        title="Add Courses to Study Plan"
+        title={
+          <div>
+            <Title order={4} fw={600} lh="md">Add Courses to Study Plan</Title>
+            <Text size="xs" c="dimmed">
+              Select courses from the catalog and add them to a section
+            </Text>
+          </div>
+        }
         size="xl"
         centered
       >
         <Stack>
+
+          <Divider />
           <Group>
             <DataTableSearch table={table} placeholder="Filter courses..." debounce={DEBOUNCE_MS} />
 
             <Button
-              variant="outline"
+              variant="white"
               leftSection={<Plus size={16} />}
               onClick={() => {
                 setModalOpen(false);
@@ -240,6 +252,8 @@ export function StudyPlanCourseAdder() {
           </Box>
 
           <DataTablePagination table={table} />
+
+          <Divider />
 
           <Box className={classes.box}>
             <Pill.Group style={{ alignContent: 'start' }}>
@@ -271,7 +285,7 @@ export function StudyPlanCourseAdder() {
                 setSelectedCourses({});
               }}
             >
-              Clear
+              Clear {!noSelection && `(${Object.keys(selectedCourses).length})`}
             </Button>
 
             <Select

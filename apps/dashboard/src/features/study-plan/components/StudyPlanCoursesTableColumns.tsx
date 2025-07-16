@@ -54,14 +54,14 @@ export function getStudyPlanCoursesTableColumns(): ColumnDef<FrameworkCourse>[] 
     }) as ColumnDef<FrameworkCourse>,
 
     columnHelper.accessor('creditHours', {
-      header: 'Credits',
+      header: 'Cr.',
       sortingFn: 'alphanumeric',
       cell: ({ row }) => <p>{row.original.creditHours} Cr.</p>,
     }) as ColumnDef<FrameworkCourse>,
 
     columnHelper.display({
       id: 'prerequisites',
-      header: 'Prerequisites / Corequisites',
+      header: 'Pre / Corequisites',
       cell: ({ row }) => <PrerequisitePillGroup parentCourseId={row.original.id} />,
     }),
 

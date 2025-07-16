@@ -5,7 +5,6 @@ import { getStudyPlanRows } from '@/utils/getStudyPlanRows.ts';
 import {
   Box,
   Button,
-  Card,
   Checkbox,
   Divider,
   Group,
@@ -16,7 +15,7 @@ import {
   Title,
   Tooltip,
 } from '@mantine/core';
-import { Globe } from 'lucide-react';
+import { Globe, X } from 'lucide-react';
 
 export function PublishStudyPlansModal() {
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -24,7 +23,9 @@ export function PublishStudyPlansModal() {
 
   const { data: programs } = useProgramList();
   const { data: studyPlans } = useStudyPlanList();
+
   const drafts = React.useMemo(() => studyPlans.filter((sp) => !sp.isPublished), [studyPlans]);
+
   const rows = React.useMemo(() => getStudyPlanRows(drafts, programs), [drafts, programs]);
 
   const toggle = (id: string) => {
@@ -35,8 +36,13 @@ export function PublishStudyPlansModal() {
     });
   };
 
+  const handlePublish = () => {
+    // publish logic using Array.from(selectedIds)
+    console.log('Publishing:', Array.from(selectedIds));
+  };
+
   const draftCount = selectedIds.size;
-  const tooltip = draftCount ? `${draftCount} selected` : 'Select study plans to publish';
+  const tooltip = 'Publish updated study plan drafts';
 
   return (
     <>
@@ -55,57 +61,103 @@ export function PublishStudyPlansModal() {
         opened={modalOpen}
         onClose={() => setModalOpen(false)}
         title={
-          <div>
-            <Title order={4}>Publish Draft Study Plans</Title>
-            <Text size="sm" c="dimmed">
+          <Box>
+            <Title order={4} fw={600} lh="md">
+              Publish Draft Study Plans
+            </Title>
+            <Text size="xs" c="dimmed">
               Select the drafts you want to publish
             </Text>
-          </div>
+          </Box>
         }
         size="lg"
         centered
       >
         <Stack>
-          <Button
-            variant="filled"
-            leftSection={<Globe size={16} />}
-            disabled={!draftCount}
-            onClick={() => {
-              /* publish logic using Array.from(selectedIds) */
-            }}
-          >
-            Publish {draftCount} Draft(s)
-          </Button>
-
           <Divider />
 
-          <ScrollArea h={250}>
+          <ScrollArea.Autosize mah={350}>
             <Stack>
               {rows.map((plan) => {
                 const id = String(plan.id);
                 const isChecked = selectedIds.has(id);
+
                 return (
-                  <Card key={id} withBorder shadow="sm" padding="md">
-                    <Group>
-                      <Checkbox checked={isChecked} onChange={() => toggle(id)} size="sm" />
-                      <Box>
-                        <Text>{plan.programName}</Text>
-                        <Text size="sm" c="dimmed">
-                          {plan.year} - {plan.year + 1}
-                          {plan.track && ` | ${plan.track}`}
-                        </Text>
-                      </Box>
-                    </Group>
-                  </Card>
+                  <Group
+                    key={id}
+                    gap="md"
+                    wrap="nowrap"
+                    p="sm"
+                    style={{
+                      borderRadius: '8px',
+                      backgroundColor: isChecked ? 'var(--mantine-color-blue-0)' : 'transparent',
+                      border: isChecked
+                        ? '1px solid var(--mantine-color-blue-2)'
+                        : '1px solid transparent',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onClick={() => toggle(id)}
+                  >
+                    <Checkbox
+                      checked={isChecked}
+                      onChange={() => toggle(id)}
+                      size="sm"
+                      style={{ pointerEvents: 'none' }}
+                    />
+
+                    <Box flex={1}>
+                      <Text lh="xl">
+                        {plan.programName}
+                      </Text>
+                      <Text size="xs" c="dimmed">
+                        {plan.year} - {plan.year + 1}
+                        {plan.track && ` • ${plan.track}`}
+                      </Text>
+                    </Box>
+                  </Group>
                 );
               })}
+
               {!rows.length && (
-                <Text ta="center" c="dimmed">
-                  No draft study plans found.
-                </Text>
+                <Box ta="center" py="xl">
+                  <Text c="dimmed" size="sm">
+                    No draft study plans found.
+                  </Text>
+                </Box>
               )}
             </Stack>
-          </ScrollArea>
+          </ScrollArea.Autosize>
+
+          <Divider />
+
+          <Group justify="space-between">
+            <Text size="sm" c="dimmed">
+              {draftCount > 0 && `${draftCount} draft(s) selected`}
+            </Text>
+
+            <Group gap="sm">
+              <Button
+                leftSection={<X size={16} />}
+                variant="default"
+                onClick={() => {
+                  setSelectedIds(new Set());
+                  setModalOpen(false);
+                }}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                variant="filled"
+                leftSection={<Globe size={16} />}
+                disabled={!draftCount}
+                onClick={handlePublish}
+              >
+                Publish Draft(s)
+              </Button>
+            </Group>
+          </Group>
         </Stack>
       </Modal>
     </>

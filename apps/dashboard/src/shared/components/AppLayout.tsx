@@ -40,9 +40,9 @@ export function AppLayout({ children }: Props) {
           <Group justify="space-between" pt="lg" pb="sm">
             <Group>
               <Image
-                src="https://www.localized.world/_next/image?url=https%3A%2F%2Fcdn.localized.world%2Forganizations%2F6%2F3207769b-3b1c-4344-b5fd-048ce05c454a.png&w=2440&q=75"
-                h={40}
-                w={40}
+                src="/logo.png"
+                h={45}
+                w={45}
                 mt={4}
               />
 

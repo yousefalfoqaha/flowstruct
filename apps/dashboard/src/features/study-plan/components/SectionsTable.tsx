@@ -6,14 +6,13 @@ import { useDataTable } from '@/shared/hooks/useDataTable.ts';
 import { DataTable } from '@/shared/components/DataTable.tsx';
 import { getSectionCode } from '@/utils/getSectionCode.ts';
 import { Badge, Button, Group, Stack } from '@mantine/core';
-import { AppCard } from '@/shared/components/AppCard.tsx';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
 import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
-import { Link } from '@tanstack/react-router';
 import { Plus, Tag, University } from 'lucide-react';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 import { SectionOptionsMenu } from '@/features/study-plan/components/SectionOptionsMenu.tsx';
 import { MoveSectionMenu } from '@/features/study-plan/components/MoveSectionMenu.tsx';
+import { Link } from '@tanstack/react-router';
 
 export function SectionsTable() {
   const { data: studyPlan } = useStudyPlan();
@@ -36,7 +35,7 @@ export function SectionsTable() {
         header: 'Type',
       }),
       accessor('requiredCreditHours', {
-        header: 'Required Credits',
+        header: 'Required Cr.',
         cell: ({ row }) => `${row.original.requiredCreditHours} Cr.`,
       }),
       accessor('name', {
@@ -94,22 +93,17 @@ export function SectionsTable() {
           leftSection={<Tag size={16} />}
           placeholder="Filter by type..."
         />
+
+        <Link
+          params={{ studyPlanId: String(studyPlan.id) }}
+          to="/study-plans/$studyPlanId/sections/new"
+        >
+          <Button leftSection={<Plus size={18} />}>Create New Section</Button>
+        </Link>
       </Group>
 
-      <AppCard
-        title="Section List"
-        subtitle="Manage all study plan sections"
-        headerAction={
-          <Link
-            params={{ studyPlanId: String(studyPlan.id) }}
-            to="/study-plans/$studyPlanId/sections/new"
-          >
-            <Button leftSection={<Plus size={18} />}>Create New Section</Button>
-          </Link>
-        }
-      >
-        <DataTable table={table} />
-      </AppCard>
+      <DataTable table={table} />
+
       <DataTablePagination table={table} />
     </Stack>
   );

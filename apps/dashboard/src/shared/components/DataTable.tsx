@@ -1,6 +1,7 @@
 import { Table as TanStackTable } from '@tanstack/table-core';
 import { flexRender } from '@tanstack/react-table';
 import { Table, Text } from '@mantine/core';
+import classes from '@/shared/components/DataTable.module.css';
 
 type DataTableProps<TData> = {
   table: TanStackTable<TData>;
@@ -8,11 +9,11 @@ type DataTableProps<TData> = {
 
 export function DataTable<TData>({ table }: DataTableProps<TData>) {
   return (
-    <Table.ScrollContainer scrollAreaProps={{offsetScrollbars: false}} minWidth={250}>
-      <Table horizontalSpacing="md" verticalSpacing="sm">
+    <Table.ScrollContainer className={classes.wrapper} scrollAreaProps={{offsetScrollbars: false}} minWidth={250}>
+      <Table horizontalSpacing="xl" verticalSpacing="lg" className={classes.table}>
         <Table.Thead>
           {table.getHeaderGroups().map((headerGroup) => (
-            <Table.Tr key={headerGroup.id}>
+            <Table.Tr className={classes.thead} key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
                 <Table.Th key={header.id}>
                   {header.isPlaceholder

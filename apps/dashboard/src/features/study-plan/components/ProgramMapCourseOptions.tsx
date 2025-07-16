@@ -74,7 +74,7 @@ export function ProgramMapCourseOptions({ course, placement }: Props) {
         <Menu.Label>Actions</Menu.Label>
 
         <Link
-          to="/study-plans/$studyPlanId/framework"
+          to="/study-plans/$studyPlanId/courses"
           params={{ studyPlanId: String(studyPlanId) }}
           search={{
             ...DefaultFrameworkCoursesSearchValues(),

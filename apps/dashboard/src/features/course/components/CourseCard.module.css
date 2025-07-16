@@ -8,7 +8,7 @@
 .container {
   background-color: var(--mantine-color-gray-0);
   user-select: none;
-  min-height: 8rem;
+  min-height: 9rem;
   height: 100%;
   border-radius: var(--mantine-radius-md);
   border: 1px solid var(--mantine-color-gray-3);
@@ -19,6 +19,7 @@
   position: relative;
   overflow: hidden;
   transition: 0.2s ease-in-out;
+  z-index: 10;
 }
 
 .errorIndicator {
@@ -37,13 +38,8 @@
   z-index: 20;
 }
 
-.cell {
-  position: relative;
-  width: 100%;
-}
-
 .header {
-  font-size: var(--mantine-font-size-xs);
+  font-size: var(--mantine-font-size-sm);
   margin-top: -0.25rem;
 }
 
@@ -56,8 +52,8 @@
 
 .conflict {
   composes: container;
-  background-color: var(--mantine-color-red-light);
-  border: 1px solid var(--mantine-color-red-filled);
+  background-color: var(--mantine-color-red-0);
+  border: 1px solid var(--mantine-color-red-3);
 }
 
 .disabled {
@@ -68,8 +64,7 @@
 .moving {
   composes: container;
   background-color: var(--mantine-primary-color-light);
-  border: 1px solid var(--mantine-primary-color-filled);
-  box-shadow: 0 0 0 2px var(--mantine-primary-color-light);
+  border: 1px solid var(--mantine-primary-color-3);
 }
 
 .name {

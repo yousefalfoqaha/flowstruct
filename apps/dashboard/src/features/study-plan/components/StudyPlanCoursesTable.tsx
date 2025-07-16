@@ -1,6 +1,5 @@
-import { Button, Flex, Group, Paper, Stack, Title } from '@mantine/core';
+import { Button, Group, Paper, Stack, Title } from '@mantine/core';
 import { DataTable } from '@/shared/components/DataTable.tsx';
-import { StudyPlanCourseAdder } from '@/features/study-plan/components/StudyPlanCourseAdder.tsx';
 import { useDataTable } from '@/shared/hooks/useDataTable.ts';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
@@ -9,12 +8,12 @@ import React from 'react';
 import { getStudyPlanCoursesTableColumns } from '@/features/study-plan/components/StudyPlanCoursesTableColumns.tsx';
 import { getSectionCode } from '@/utils/getSectionCode.ts';
 import { FrameworkCourse } from '@/features/study-plan/types.ts';
-import { AppCard } from '@/shared/components/AppCard.tsx';
 import { useStudyPlanCourses } from '@/features/study-plan/hooks/useStudyPlanCourses.ts';
 import { ListPlus, Plus } from 'lucide-react';
 import { SelectedCoursesToolbar } from '@/features/study-plan/components/SelectedCoursesToolbar.tsx';
 import { SectionColumnFilter } from '@/features/study-plan/components/SectionColumnFilter.tsx';
 import { Link } from '@tanstack/react-router';
+import { StudyPlanCourseAdder } from '@/features/study-plan/components/StudyPlanCourseAdder.tsx';
 
 export function StudyPlanCoursesTable() {
   const { data: studyPlan } = useStudyPlan();
@@ -85,25 +84,19 @@ export function StudyPlanCoursesTable() {
   return (
     <>
       <SelectedCoursesToolbar table={table} studyPlan={studyPlan} />
-      <Flex direction={{ base: 'column', lg: 'row' }} gap="lg">
-        <Flex direction="column" style={{ flex: 1 }} gap="md">
-          <Group>
-            <DataTableSearch placeholder="Search courses..." table={table} />
+      <Stack>
+        <Group>
+          <DataTableSearch placeholder="Search courses..." table={table} />
 
-            <SectionColumnFilter table={table} sections={studyPlan.sections} />
-          </Group>
+          <SectionColumnFilter table={table} sections={studyPlan.sections} />
 
-          <AppCard
-            title="Course List"
-            subtitle="Manage all study plan courses"
-            headerAction={<StudyPlanCourseAdder />}
-          >
-            <DataTable table={table} />
-          </AppCard>
+          <StudyPlanCourseAdder />
+        </Group>
 
-          <DataTablePagination table={table} />
-        </Flex>
-      </Flex>
+        <DataTable table={table} />
+
+        <DataTablePagination table={table} />
+      </Stack>
     </>
   );
 }

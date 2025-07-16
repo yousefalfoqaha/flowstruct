@@ -16,7 +16,7 @@ export function getCoursesTableColumns() {
       header: 'Name',
     }),
     accessor('creditHours', {
-      header: 'Credits',
+      header: 'Cr.',
       cell: ({ cell }) => `${cell.getValue()} Cr.`,
     }),
     accessor('type', {

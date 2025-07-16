@@ -1,5 +1,5 @@
 .header {
-    border-bottom: 1px solid light-dark(var(--mantine-color-gray-2), transparent);
+    border-bottom: 1px solid var(--mantine-color-gray-3);
     background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
 }
 

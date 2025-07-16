@@ -27,6 +27,8 @@ export function CoursePlacementMultiSelect({ placement }: CoursePlacementMultiSe
   const { data: studyPlan } = useStudyPlan();
   const { data: courses } = useStudyPlanCourses();
 
+  const SEMESTER_NAMES = ['first', 'second', 'summer'];
+
   const placeCourses = usePlaceCoursesInSemester();
 
   const handlePlaceCourses = () =>
@@ -112,8 +114,9 @@ export function CoursePlacementMultiSelect({ placement }: CoursePlacementMultiSe
       <Popover.Target>
         <Button
           fullWidth
-          variant="subtle"
+          variant="transparent"
           size="compact-xs"
+          my="xs"
           onClick={() => setOpened((o) => !o)}
           leftSection={<Plus size={14} />}
         >
@@ -144,7 +147,7 @@ export function CoursePlacementMultiSelect({ placement }: CoursePlacementMultiSe
             data={data}
             value={selectedCourses}
             onChange={setSelectedCourses}
-            label={`Add courses to year ${placement.year}, semester ${placement.semester}`}
+            label={`Add courses to year ${placement.year}, ${SEMESTER_NAMES[placement.semester - 1]} semester`}
             placeholder="Search framework courses"
             searchable
             hidePickedOptions

@@ -8,7 +8,7 @@ type Props = {
 
 export function PageLayout({ header, children }: Props) {
   return (
-    <Stack gap="lg">
+    <Stack>
       {header}
       {children}
     </Stack>

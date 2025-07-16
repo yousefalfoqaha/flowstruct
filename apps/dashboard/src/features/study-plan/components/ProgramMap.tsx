@@ -1,4 +1,4 @@
-import { ScrollArea } from '@mantine/core';
+import { Badge, ScrollArea } from '@mantine/core';
 import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
 import { useStudyPlanCourses } from '@/features/study-plan/hooks/useStudyPlanCourses.ts';
 import { useProgramMap } from '@/contexts/ProgramMapContext.tsx';
@@ -34,115 +34,119 @@ export function ProgramMap() {
   });
 
   return (
-    <ScrollArea offsetScrollbars type="never">
-      <div
-        className={classes.headerGrid}
-        style={{
-          gridTemplateColumns: `repeat(${gridWidth}, 1fr)`,
-        }}
-      >
-        {Array.from({ length: studyPlan.duration }, (_, yearIndex) => {
-          const year = studyPlan.year + yearIndex;
+    <div className={classes.programMapContainer}>
+      <ScrollArea type="never">
+        <div className={classes.wrapper}>
+          <div
+            className={classes.headerGrid}
+            style={{
+              gridTemplateColumns: `repeat(${gridWidth}, 1fr)`,
+            }}
+          >
+            {Array.from({ length: studyPlan.duration }, (_, yearIndex) => {
+              const year = studyPlan.year + yearIndex;
 
-          return (
-            <div
-              key={`year-${yearIndex + 1}`}
-              className={`${classes.headerCell} ${classes.yearHeader}`}
-              style={{
-                gridColumn: `span ${SEMESTERS_PER_YEAR}`,
-              }}
-            >
-              {year} / {year + 1}
-            </div>
-          );
-        })}
+              return (
+                <div
+                  key={`year-${yearIndex + 1}`}
+                  className={`${classes.headerCell} ${classes.yearHeader}`}
+                  style={{
+                    gridColumn: `span ${SEMESTERS_PER_YEAR}`,
+                  }}
+                >
+                    {year} / {year + 1}
+                </div>
+              );
+            })}
 
-        {Array.from(coursesByTermIndex.keys()).map((termIndex) => {
-          const semester = semesterTypes[getPlacementFromTermIndex(termIndex).semester - 1];
+            {Array.from(coursesByTermIndex.keys()).map((termIndex) => {
+              const semester = semesterTypes[getPlacementFromTermIndex(termIndex).semester - 1];
 
-          return (
-            <div
-              key={`semester-${termIndex}`}
-              className={`${classes.headerCell} ${classes.semesterHeader}`}
-              style={{
-                gridColumn: termIndex + 1,
-              }}
-            >
-              {semester} - {totalCredits.get(termIndex)} Cr.
-            </div>
-          );
-        })}
-      </div>
+              return (
+                <div
+                  key={`semester-${termIndex}`}
+                  className={`${classes.headerCell} ${classes.semesterHeader}`}
+                  style={{
+                    gridColumn: termIndex + 1,
+                  }}
+                >
+                  {semester} - {totalCredits.get(termIndex)} Cr.
+                </div>
+              );
+            })}
+          </div>
 
-      <div
-        onDragOver={dragHandlers.onDragOver}
-        onDragLeave={dragHandlers.onDragLeave}
-        className={classes.programMap}
-        style={{
-          gridTemplateColumns: `repeat(${gridWidth}, 1fr)`,
-          gridTemplateRows: `repeat(${gridHeight}, 1fr)`,
-        }}
-      >
-        {Array.from(courseGridMap.entries()).map(([courseId, gridCell]) => {
-          const course = courses[courseId];
-          if (!course) return null;
+          <div
+            onDragOver={dragHandlers.onDragOver}
+            onDragLeave={dragHandlers.onDragLeave}
+            className={classes.programMap}
+            style={{
+              gridTemplateColumns: `repeat(${gridWidth}, 1fr)`,
+              gridTemplateRows: `repeat(${gridHeight}, 1fr)`,
+            }}
+          >
+            {Array.from(courseGridMap.entries()).map(([courseId, gridCell]) => {
+              const course = courses[courseId];
+              if (!course) return null;
 
-          const placement = studyPlan.coursePlacements[course.id];
-          const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
+              const placement = studyPlan.coursePlacements[course.id];
+              const prerequisites = studyPlan.coursePrerequisites[courseId] ?? {};
 
-          const unmetPrerequisite = (prerequisiteId: string) => {
-            const prerequisitePlacement = studyPlan.coursePlacements[Number(prerequisiteId)];
-            return (
-              prerequisitePlacement === undefined ||
-              comparePlacement(placement, prerequisitePlacement) <= 0
-            );
-          };
+              const unmetPrerequisite = (prerequisiteId: string) => {
+                const prerequisitePlacement = studyPlan.coursePlacements[Number(prerequisiteId)];
+                return (
+                  prerequisitePlacement === undefined ||
+                  comparePlacement(placement, prerequisitePlacement) <= 0
+                );
+              };
 
-          const missingPrerequisites = Object.keys(prerequisites)
-            .filter(unmetPrerequisite)
-            .map((prerequisiteId) => courses[Number(prerequisiteId)].code);
+              const missingPrerequisites = Object.keys(prerequisites)
+                .filter(unmetPrerequisite)
+                .map((prerequisiteId) => courses[Number(prerequisiteId)].code);
 
-          return (
-            <div
-              key={courseId}
-              className={classes.cell}
-              style={{
-                gridColumn: gridCell.column,
-                gridRow: `${gridCell.row} / span ${gridCell.span}`,
-              }}
-            >
-              <CourseCard
-                course={course}
-                placement={placement}
-                missingPrerequisites={missingPrerequisites}
-              />
-            </div>
-          );
-        })}
+              return (
+                <div
+                  key={courseId}
+                  className={classes.cell}
+                  style={{
+                    gridColumn: gridCell.column,
+                    gridRow: `${gridCell.row} / span ${gridCell.span}`,
+                  }}
+                >
+                  <CourseCard
+                    course={course}
+                    placement={placement}
+                    missingPrerequisites={missingPrerequisites}
+                  />
+                </div>
+              );
+            })}
 
-        {Array.from(coursesByTermIndex.entries()).map(([termIndex, termCourses]) => {
-          const placement = {
-            ...getPlacementFromTermIndex(termIndex),
-            position: termCourses.length + 1,
-            span: 1,
-          } as CoursePlacement;
-          const columnHeight = columnHeights.get(termIndex) || 1;
+            {Array.from(coursesByTermIndex.entries()).map(([termIndex, termCourses]) => {
+              const placement = {
+                ...getPlacementFromTermIndex(termIndex),
+                position: termCourses.length + 1,
+                span: 1,
+              } as CoursePlacement;
+              const columnHeight = columnHeights.get(termIndex) || 1;
 
-          return (
-            <div
-              key={`drop-${termIndex}`}
-              className={classes.cell}
-              style={{
-                gridColumn: termIndex + 1,
-                gridRow: columnHeight,
-              }}
-            >
-              <DropIndicator placement={placement} />
-              <CoursePlacementMultiSelect placement={placement} />
-            </div>
-          );
-        })}
-      </div>
-    </ScrollArea>
+              return (
+                <div
+                  key={`drop-${termIndex}`}
+                  className={classes.cell}
+                  style={{
+                    gridColumn: termIndex + 1,
+                    gridRow: columnHeight,
+                  }}
+                >
+                  <DropIndicator placement={placement} />
+                  <CoursePlacementMultiSelect placement={placement} />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </ScrollArea>
+    </div>
   );
 }

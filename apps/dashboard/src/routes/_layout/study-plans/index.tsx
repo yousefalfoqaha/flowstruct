@@ -1,10 +1,10 @@
-import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
+import { createFileRoute, Link, stripSearchParams } from '@tanstack/react-router';
 import { StudyPlansTable } from '@/features/study-plan/components/StudyPlansTable.tsx';
 import { getTableSearchSchema } from '@/shared/schemas.ts';
 import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
-import { StudyPlanListQuery } from '@/features/study-plan/queries.ts';
-import { ProgramListQuery } from '@/features/program/queries.ts';
-import { Stack, Title } from '@mantine/core';
+import { Button, Group, Stack, Text, Title } from '@mantine/core';
+import { Plus } from 'lucide-react';
+import React from 'react';
 
 export const Route = createFileRoute('/_layout/study-plans/')({
   component: RouteComponent,
@@ -17,9 +17,21 @@ export const Route = createFileRoute('/_layout/study-plans/')({
 function RouteComponent() {
   return (
     <Stack gap="lg">
-      <Title order={2} fw={600}>
-        Study Plans
-      </Title>
+      <Group justify="space-between">
+        <div>
+          <Title lh="md" order={2} fw={600}>
+            Study Plans
+          </Title>
+          <Text c="dimmed" size="sm">
+            Manage all university study plans
+          </Text>
+        </div>
+
+        <Link to="/study-plans/new">
+          <Button leftSection={<Plus size={18} />}>Create New Study Plan</Button>
+        </Link>
+      </Group>
+
       <StudyPlansTable />
     </Stack>
   );

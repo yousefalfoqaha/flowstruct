@@ -4,13 +4,11 @@ import { getProgramsTableColumns } from '@/features/program/components/ProgramsT
 import { useDataTable } from '@/shared/hooks/useDataTable.ts';
 import { Degree, Program } from '@/features/program/types.ts';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
-import { Button, Group, Stack } from '@mantine/core';
+import { Group, Stack } from '@mantine/core';
 import React from 'react';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
-import { Album, Plus } from 'lucide-react';
-import { AppCard } from '@/shared/components/AppCard.tsx';
-import { Link } from '@tanstack/react-router';
+import { Album } from 'lucide-react';
 
 export function ProgramsTable() {
   const { data } = useProgramList();
@@ -33,17 +31,7 @@ export function ProgramsTable() {
         />
       </Group>
 
-      <AppCard
-        title="Program List"
-        subtitle={`Manage all university programs`}
-        headerAction={
-          <Link to="/programs/new">
-            <Button leftSection={<Plus size={18} />}>Create New Program</Button>
-          </Link>
-        }
-      >
-        <DataTable table={table} />
-      </AppCard>
+      <DataTable table={table} />
 
       <DataTablePagination table={table} />
     </Stack>
