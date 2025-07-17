@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   Checkbox,
-  Divider,
   Group,
   Modal,
   ScrollArea,
@@ -16,6 +15,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { Globe, X } from 'lucide-react';
+import classes from '@/shared/components/PublishStudyPlanModal.module.css';
 
 export function PublishStudyPlansModal() {
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -74,10 +74,8 @@ export function PublishStudyPlansModal() {
         centered
       >
         <Stack>
-          <Divider />
-
-          <ScrollArea.Autosize mah={350}>
-            <Stack>
+          <div className={classes.draftList}>
+            <ScrollArea.Autosize mah={500}>
               {rows.map((plan) => {
                 const id = String(plan.id);
                 const isChecked = selectedIds.has(id);
@@ -89,13 +87,12 @@ export function PublishStudyPlansModal() {
                     wrap="nowrap"
                     p="sm"
                     style={{
-                      borderRadius: '8px',
-                      backgroundColor: isChecked ? 'var(--mantine-color-blue-0)' : 'transparent',
-                      border: isChecked
-                        ? '1px solid var(--mantine-color-blue-2)'
-                        : '1px solid transparent',
+                      backgroundColor: isChecked
+                        ? 'var(--mantine-color-blue-light)'
+                        : 'transparent',
                       cursor: 'pointer',
                       transition: 'all 0.2s ease',
+                      userSelect: 'none',
                     }}
                     onClick={() => toggle(id)}
                   >
@@ -107,9 +104,7 @@ export function PublishStudyPlansModal() {
                     />
 
                     <Box flex={1}>
-                      <Text lh="xl">
-                        {plan.programName}
-                      </Text>
+                      <Text lh="xl">{plan.programName}</Text>
                       <Text size="xs" c="dimmed">
                         {plan.year} - {plan.year + 1}
                         {plan.track && ` • ${plan.track}`}
@@ -126,10 +121,8 @@ export function PublishStudyPlansModal() {
                   </Text>
                 </Box>
               )}
-            </Stack>
-          </ScrollArea.Autosize>
-
-          <Divider />
+            </ScrollArea.Autosize>
+          </div>
 
           <Group justify="space-between">
             <Text size="sm" c="dimmed">

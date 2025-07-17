@@ -34,8 +34,7 @@ export function ProgramMap() {
   });
 
   return (
-    <div className={classes.programMapContainer}>
-      <ScrollArea type="never">
+      <div className={classes.programMapContainer}>
         <div className={classes.wrapper}>
           <div
             className={classes.headerGrid}
@@ -146,7 +145,7 @@ export function ProgramMap() {
             })}
           </div>
         </div>
-      </ScrollArea>
-    </div>
+      </div>
+
   );
 }

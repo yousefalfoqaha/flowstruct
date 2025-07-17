@@ -8,16 +8,14 @@ export const Route = createFileRoute('/_layout/study-plans/new')({
   component: RouteComponent,
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(ProgramListQuery);
-
-    return {
-      crumb: 'Create New Study Plan',
-    };
   },
 });
 
 function RouteComponent() {
   return (
-    <PageLayout header={<PageHeaderWithBack title="Create New Study Plan" linkProps={{ to: '..' }} />}>
+    <PageLayout
+      header={<PageHeaderWithBack title="Create New Study Plan" linkProps={{ to: '..' }} />}
+    >
       <CreateStudyPlanFieldset />
     </PageLayout>
   );

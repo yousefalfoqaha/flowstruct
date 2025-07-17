@@ -54,7 +54,10 @@ function RouteComponent() {
 
   return (
     <PageLayout header={header}>
-      <StudyPlanTabs />
+      <div>
+        <StudyPlanTabs />
+      </div>
+      <Divider />
       <CoursesGraphProvider>
         <Outlet />
       </CoursesGraphProvider>

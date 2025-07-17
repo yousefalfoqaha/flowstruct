@@ -1,11 +1,21 @@
-.header {
-    border-bottom: 1px solid var(--mantine-color-gray-3);
-    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+.root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Full height */
+    overflow: hidden;
 }
 
-.mainSection {
+.header {
+    top: 0;
+    z-index: 100;
+    background-color: var(--mantine-color-gray-0);
+    border-bottom: 1px solid var(--mantine-color-gray-3);
+}
+
+.content {
+    flex: 1;
+    overflow-y: auto;
     padding: var(--mantine-spacing-lg);
-    /*background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));*/
 }
 
 .user {

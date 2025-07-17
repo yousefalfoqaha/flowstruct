@@ -4,7 +4,6 @@ import { getTableSearchSchema } from '@/shared/schemas.ts';
 import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { Button, Group, Stack, Text, Title } from '@mantine/core';
 import { Plus } from 'lucide-react';
-import React from 'react';
 
 export const Route = createFileRoute('/_layout/study-plans/')({
   component: RouteComponent,

@@ -4,15 +4,18 @@
   border-radius: var(--mantine-radius-default);
   background-color: var(--mantine-color-white);
   overflow: hidden;
+  height: 100%;
 }
 
 .programMap {
   display: grid;
   justify-items: center;
+  gap: var(--mantine-spacing-md);
+  padding: var(--mantine-spacing-md);
 }
 
 .dropIndicator {
-  top: 0.1rem;
+  top: -0.7rem;
   height: 0.4rem;
   border-radius: var(--mantine-radius-default);
   width: 10rem;
@@ -25,28 +28,25 @@
 .wrapper {
   position: relative;
   min-width: fit-content;
-  overflow: hidden;
+  overflow: scroll;
 }
 
 .cell {
-  padding-top: var(--mantine-spacing-md);
-  padding-left: var(--mantine-spacing-md);
-  padding-right: var(--mantine-spacing-md);
   position: relative;
   display: flex;
   justify-content: center;
-  width: 12rem;
+  width: 11rem;
 }
 
-.cell::after {
-  content: "";
-  position: absolute;
-  background-color: var(--mantine-color-gray-3);
-  height: 100vh;
-  width: 1px;
-  left: -1px;
-  top: 0;
-}
+/*.cell::after {*/
+/*  content: "";*/
+/*  position: absolute;*/
+/*  background-color: var(--mantine-color-gray-3);*/
+/*  height: 100vh;*/
+/*  width: 1px;*/
+/*  left: 0;*/
+/*  top: 0;*/
+/*}*/
 
 /*.cell::before {*/
 /*  content: "";*/
@@ -55,7 +55,7 @@
 /*  height: 1px;*/
 /*  width: 100vw;*/
 /*  left: 0;*/
-/*  top: -1px;*/
+/*  top: 0;*/
 /*}*/
 
 .headerGrid {
@@ -64,10 +64,11 @@
   top: 0;
   background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
   border-bottom: 1px solid var(--mantine-color-gray-3);
+  padding: var(--mantine-spacing-md);
 }
 
 .headerCell {
-  width: 12rem;
+  width: 11rem;
   color: var(--mantine-color-dimmed);
   display: flex;
   justify-content: center;
@@ -78,17 +79,16 @@
 }
 
 .yearHeader {
-  padding-top: var(--mantine-spacing-md);
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: var(--mantine-spacing-md);
   grid-row: 1;
+  /*font-weight: 600;*/
+  /*color: black;*/
   font-size: var(--mantine-font-size-sm);
-  font-weight: 600;
-  color: black;
 }
 
 .semesterHeader {
   font-size: var(--mantine-font-size-sm);
   grid-row: 2;
-  padding: var(--mantine-spacing-md);
 }

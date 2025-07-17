@@ -229,8 +229,6 @@ export function StudyPlanCourseAdder() {
         centered
       >
         <Stack>
-
-          <Divider />
           <Group>
             <DataTableSearch table={table} placeholder="Filter courses..." debounce={DEBOUNCE_MS} />
 
@@ -293,6 +291,7 @@ export function StudyPlanCourseAdder() {
               leftSection={<List size={16} />}
               placeholder="Select section"
               searchable
+              clearable
               data={sectionOptions}
               value={selectedSection}
               onChange={setSelectedSection}

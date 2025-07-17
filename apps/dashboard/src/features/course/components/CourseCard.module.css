@@ -10,7 +10,7 @@
   user-select: none;
   min-height: 9rem;
   height: 100%;
-  border-radius: var(--mantine-radius-md);
+  border-radius: var(--mantine-radius-default);
   border: 1px solid var(--mantine-color-gray-3);
   padding: var(--mantine-spacing-md);
   display: flex;

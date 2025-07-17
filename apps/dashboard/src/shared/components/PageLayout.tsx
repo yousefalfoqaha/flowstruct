@@ -1,5 +1,5 @@
-import { Stack } from '@mantine/core';
 import { ReactNode } from 'react';
+import { Stack } from '@mantine/core';
 
 type Props = {
   header: ReactNode;

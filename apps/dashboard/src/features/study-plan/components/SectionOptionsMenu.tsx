@@ -31,6 +31,8 @@ export function SectionOptionsMenu({ section }: Props) {
       </Menu.Target>
 
       <Menu.Dropdown>
+        <Menu.Label>Actions</Menu.Label>
+
         <Menu.Item
           onClick={() =>
             navigate({

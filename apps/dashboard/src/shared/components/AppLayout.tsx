@@ -24,6 +24,7 @@ type Props = {
 export function AppLayout({ children }: Props) {
   const navigate = useNavigate();
   const matches = useMatches();
+
   const items = tabs.map((tab, index) => (
     <Tabs.Tab value={tab.route} leftSection={tab.icon} key={index}>
       {tab.label}
@@ -39,25 +40,24 @@ export function AppLayout({ children }: Props) {
         <Container size="xl">
           <Group justify="space-between" pt="lg" pb="sm">
             <Group>
-              <Image
-                src="/logo.png"
-                h={45}
-                w={45}
-                mt={4}
-              />
+              <Image src="/logo.png" h={45} w={45} mt={4} />
 
               <Title size="xl" fw={600}>
                 GJUPlans Admin
               </Title>
             </Group>
+
             <Group gap="lg">
               <Suspense fallback="Loading...">
                 <PublishStudyPlansModal />
               </Suspense>
+
               <Divider orientation="vertical" />
+
               <User />
             </Group>
           </Group>
+
           <Container size="lg">
             <Tabs
               value={activeTab}
@@ -79,7 +79,8 @@ export function AppLayout({ children }: Props) {
           </Container>
         </Container>
       </div>
-      <div className={classes.mainSection}>
+
+      <div className={classes.content}>
         <Container size="xl">{children}</Container>
       </div>
     </>
