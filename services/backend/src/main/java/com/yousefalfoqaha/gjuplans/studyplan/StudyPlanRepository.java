@@ -13,7 +13,14 @@ public interface StudyPlanRepository extends CrudRepository<StudyPlan, Long> {
 
     @Query(
             "SELECT id, year, duration, track, is_published, program, created_at, updated_at, updated_by " +
-            "FROM study_plan"
+                    "FROM study_plan"
     )
     List<StudyPlanSummaryDto> findAllStudyPlanSummaries();
+
+    @Query(
+            "UPDATE study_plan " +
+            "SET is_published = TRUE " +
+            "WHERE id IN :draftStudyPlans"
+    )
+    void markAllStudyPlansPublsihed(List<Long> draftStudyPlans);
 }

@@ -116,7 +116,6 @@ export function CoursePlacementMultiSelect({ placement }: CoursePlacementMultiSe
           fullWidth
           variant="transparent"
           size="compact-xs"
-          my="xs"
           onClick={() => setOpened((o) => !o)}
           leftSection={<Plus size={14} />}
         >
