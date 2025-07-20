@@ -86,11 +86,6 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public void markStudyPlansPublished(List<Long> draftStudyPlanIds) {
-        studyPlanRepository.markAllStudyPlansPublsihed(draftStudyPlanIds);
-    }
-
-    @Transactional
     public StudyPlanDto moveCourseToSemester(
             long studyPlanId,
             long courseId,
