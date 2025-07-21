@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk AS build
+FROM eclipse-temurin:21-jdk AS base
 WORKDIR /app
 
 COPY --chmod=755 mvnw ./
@@ -9,6 +9,7 @@ RUN ./mvnw dependency:go-offline
 
 COPY src src
 
+FROM base AS build
 RUN ./mvnw clean package -DskipTests
 
 FROM eclipse-temurin:21-jre AS prod

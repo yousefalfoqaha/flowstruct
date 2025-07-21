@@ -1,4 +1,4 @@
-import { Button, LoadingOverlay, Modal, Stack } from '@mantine/core';
+import { Button, Modal, Stack } from '@mantine/core';
 import { useCreateCourse } from '@/features/course/hooks/useCreateCourse.ts';
 import { courseDetailsSchema } from '@/features/course/schemas.ts';
 import { CourseDetailsFormFields } from '@/features/course/components/CourseDetailsFormFields.tsx';
@@ -46,8 +46,8 @@ export function CreateCourseModal({
   const onSubmit = form.handleSubmit((data) => {
     createCourse.mutate(data, {
       onSuccess: (newCourse) => {
-        selectCreatedCourse(newCourse);
         handleClose();
+        selectCreatedCourse(newCourse);
       },
     });
   });
@@ -56,16 +56,12 @@ export function CreateCourseModal({
     <Modal size="xl" opened={opened} onClose={handleClose} title="Create Course" centered>
       <form onSubmit={onSubmit}>
         <Stack>
-          <LoadingOverlay
-            visible={createCourse.isPending}
-            zIndex={1000}
-            overlayProps={{ radius: 'sm', blur: 2 }}
-          />
           <CourseDetailsFormFields form={form} preset={preset} changePreset={changePreset} />
           <Button
             disabled={!form.formState.isValid}
             leftSection={<Plus size={18} />}
             type="submit"
+            loading={createCourse.isPending}
             fullWidth
             mt="md"
           >

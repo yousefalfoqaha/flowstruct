@@ -70,7 +70,7 @@ public class StudyPlanController {
             @RequestParam(value = "draftStudyPlans", defaultValue = "") List<Long> draftStudyPlanIds
     ) {
         studyPlanPublishingService.publishStudyPlans(draftStudyPlanIds);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{studyPlanId}")
@@ -271,16 +271,6 @@ public class StudyPlanController {
     ) {
         return new ResponseEntity<>(
                 studyPlanService.removeCourseFromSemester(studyPlanId, courseId),
-                HttpStatus.OK
-        );
-    }
-
-    @PutMapping("/{studyPlanId}/publish")
-    public ResponseEntity<StudyPlanDto> publishStudyPlan(
-            @PathVariable long studyPlanId
-    ) {
-        return new ResponseEntity<>(
-                studyPlanService.publishStudyPlan(studyPlanId),
                 HttpStatus.OK
         );
     }

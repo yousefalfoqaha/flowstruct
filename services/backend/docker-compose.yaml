@@ -2,7 +2,7 @@ services:
   backend:
     build:
       context: .
-      target: build
+      target: base
     command: ./mvnw spring-boot:run
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE}

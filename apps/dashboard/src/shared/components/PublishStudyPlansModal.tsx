@@ -16,32 +16,37 @@ import {
 } from '@mantine/core';
 import { Globe, X } from 'lucide-react';
 import classes from '@/shared/components/PublishStudyPlanModal.module.css';
+import { usePublishStudyPlans } from '@/features/study-plan/hooks/usePublishStudyPlans.ts';
 
 export function PublishStudyPlansModal() {
   const [modalOpen, setModalOpen] = React.useState(false);
-  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set());
+  const [selectedStudyPlans, setSelectedStudyPlans] = React.useState<Set<number>>(new Set());
 
   const { data: programs } = useProgramList();
   const { data: studyPlans } = useStudyPlanList();
+  const publishStudyPlans = usePublishStudyPlans();
 
   const drafts = React.useMemo(() => studyPlans.filter((sp) => !sp.isPublished), [studyPlans]);
-
   const rows = React.useMemo(() => getStudyPlanRows(drafts, programs), [drafts, programs]);
 
-  const toggle = (id: string) => {
-    setSelectedIds((prev) => {
+  const toggle = (studyPlanId: number) => {
+    setSelectedStudyPlans((prev) => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      next.has(studyPlanId) ? next.delete(studyPlanId) : next.add(studyPlanId);
       return next;
     });
   };
 
   const handlePublish = () => {
-    // publish logic using Array.from(selectedIds)
-    console.log('Publishing:', Array.from(selectedIds));
+    publishStudyPlans.mutate(Array.from(selectedStudyPlans), {
+      onSuccess: () => {
+        setSelectedStudyPlans(new Set());
+        setModalOpen(false);
+      },
+    });
   };
 
-  const draftCount = selectedIds.size;
+  const draftCount = selectedStudyPlans.size;
   const tooltip = 'Publish updated study plan drafts';
 
   return (
@@ -53,7 +58,7 @@ export function PublishStudyPlansModal() {
           disabled={!rows.length}
           onClick={() => setModalOpen(true)}
         >
-          {rows.length ? 'Publish Study Plans' : 'Published'}
+          {rows.length ? 'Publish Study Plans' : 'All Study Plans Published'}
         </Button>
       </Tooltip>
 
@@ -77,8 +82,8 @@ export function PublishStudyPlansModal() {
           <div className={classes.draftList}>
             <ScrollArea.Autosize mah={500}>
               {rows.map((plan) => {
-                const id = String(plan.id);
-                const isChecked = selectedIds.has(id);
+                const id = plan.id;
+                const isChecked = selectedStudyPlans.has(id);
 
                 return (
                   <Group
@@ -134,7 +139,7 @@ export function PublishStudyPlansModal() {
                 leftSection={<X size={16} />}
                 variant="default"
                 onClick={() => {
-                  setSelectedIds(new Set());
+                  setSelectedStudyPlans(new Set());
                   setModalOpen(false);
                 }}
               >
@@ -146,6 +151,7 @@ export function PublishStudyPlansModal() {
                 leftSection={<Globe size={16} />}
                 disabled={!draftCount}
                 onClick={handlePublish}
+                loading={publishStudyPlans.isPending}
               >
                 Publish Draft(s)
               </Button>

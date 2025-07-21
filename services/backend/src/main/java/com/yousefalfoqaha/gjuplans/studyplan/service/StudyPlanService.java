@@ -627,15 +627,6 @@ public class StudyPlanService {
                 .orElseThrow(() -> new StudyPlanNotFoundException("Study plan with id " + studyPlanId + " was not found."));
     }
 
-    @Transactional
-    public StudyPlanDto publishStudyPlan(long studyPlanId) {
-        var studyPlan = findStudyPlan(studyPlanId);
-
-        studyPlan.setPublished(true);
-
-        return saveAndMapStudyPlan(studyPlan);
-    }
-
     private void markAsDraft(StudyPlan studyPlan) {
         if (studyPlan.isPublished()) {
             studyPlan.setPublished(false);

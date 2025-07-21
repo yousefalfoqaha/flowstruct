@@ -51,7 +51,7 @@ export function StudyPlanCourseAdder() {
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
   const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
-  const DEBOUNCE_MS = 300;
+  const DEBOUNCE_MS = 500;
   const [filter, setFilter] = React.useState('');
   const [debouncedFilter] = useDebouncedValue(filter, DEBOUNCE_MS);
   const [pagination, setPagination] = React.useState<PaginationState>({
@@ -95,7 +95,7 @@ export function StudyPlanCourseAdder() {
       columnHelper.accessor('name', { header: 'Name' }) as ColumnDef<CourseRow>,
       columnHelper.accessor('creditHours', {
         header: 'Cr.',
-        cell: ({ row }) => <p>{row.original.creditHours} Cr.</p>,
+        cell: ({ row }) => <p style={{textWrap: 'nowrap'}}>{row.original.creditHours} Cr.</p>,
       }) as ColumnDef<CourseRow>,
     ],
     []
@@ -184,6 +184,8 @@ export function StudyPlanCourseAdder() {
   const noSelection = Object.keys(selectedCourses).length === 0;
 
   const selectCreatedCourse = (course: Course) => {
+    setFilter('');
+
     const courseId = String(course.id);
 
     setRowSelection((prev) => ({
@@ -199,7 +201,6 @@ export function StudyPlanCourseAdder() {
       },
     }));
 
-    setFilter('');
   };
 
   return (

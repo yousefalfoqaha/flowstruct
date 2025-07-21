@@ -56,7 +56,7 @@ export function getStudyPlanCoursesTableColumns(): ColumnDef<FrameworkCourse>[] 
     columnHelper.accessor('creditHours', {
       header: 'Cr.',
       sortingFn: 'alphanumeric',
-      cell: ({ row }) => <p>{row.original.creditHours} Cr.</p>,
+      cell: ({ row }) => <p style={{ textWrap: 'nowrap' }}>{row.original.creditHours} Cr.</p>,
     }) as ColumnDef<FrameworkCourse>,
 
     columnHelper.display({

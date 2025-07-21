@@ -20,6 +20,13 @@ export const createStudyPlan = ({ studyPlanDetails }: { studyPlanDetails: Partia
     body: studyPlanDetails,
   });
 
+export const publishStudyPlans = (studyPlanIds: number[]) =>
+  api.post<void>([ENDPOINT, 'publish'], {
+    params: {
+      draftStudyPlans: studyPlanIds,
+    },
+  });
+
 export const moveCourseToSemester = ({
   studyPlanId,
   courseId,
@@ -32,9 +39,6 @@ export const moveCourseToSemester = ({
   api.put<StudyPlan>([ENDPOINT, studyPlanId, 'course-placements', courseId], {
     body: targetPlacement,
   });
-
-export const publishStudyPlan = (studyPlanId: number) =>
-  api.put<StudyPlan>([ENDPOINT, studyPlanId, 'publish']);
 
 export const deleteStudyPlan = (studyPlanId: number) => api.delete<void>([ENDPOINT, studyPlanId]);
 

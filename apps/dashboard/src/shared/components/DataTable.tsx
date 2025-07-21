@@ -1,7 +1,8 @@
 import { Table as TanStackTable } from '@tanstack/table-core';
 import { flexRender } from '@tanstack/react-table';
-import { Table, Text } from '@mantine/core';
+import { Group, Table, Text } from '@mantine/core';
 import classes from '@/shared/components/DataTable.module.css';
+import { SearchX } from 'lucide-react';
 
 type DataTableProps<TData> = {
   table: TanStackTable<TData>;
@@ -10,7 +11,7 @@ type DataTableProps<TData> = {
 export function DataTable<TData>({ table }: DataTableProps<TData>) {
   return (
     <Table.ScrollContainer className={classes.wrapper} scrollAreaProps={{offsetScrollbars: false}} minWidth={250}>
-      <Table horizontalSpacing="xl" verticalSpacing="lg" className={classes.table}>
+      <Table horizontalSpacing="lg" verticalSpacing="md" className={classes.table}>
         <Table.Thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <Table.Tr className={classes.thead} key={headerGroup.id}>
@@ -42,9 +43,12 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
           ) : (
             <Table.Tr>
               <Table.Td colSpan={table.getLeafHeaders().length}>
-                <Text c="dimmed" size="sm" ta="center" pt="sm">
-                  No results.
-                </Text>
+                <Group justify="center" gap="sm">
+                  <SearchX size={16} color="gray" />
+                  <Text c="dimmed" size="sm" ta="center" py="xs">
+                    No results.
+                  </Text>
+                </Group>
               </Table.Td>
             </Table.Tr>
           )}

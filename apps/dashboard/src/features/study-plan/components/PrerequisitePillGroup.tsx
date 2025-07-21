@@ -34,7 +34,7 @@ export function PrerequisitePillGroup({ parentCourseId }: PrerequisitePillGroupP
   const corequisites = studyPlan.courseCorequisites[parentCourseId] ?? [];
 
   return (
-    <Flex align="center" w={250} wrap="wrap" gap={7}>
+    <Flex align="center" w={200} wrap="wrap" gap={7}>
       {Object.keys(prerequisites).map((prerequisiteId) => {
         const prerequisite = courses[Number(prerequisiteId)];
         if (!prerequisite) return null;
