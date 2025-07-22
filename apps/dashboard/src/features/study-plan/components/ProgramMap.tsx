@@ -36,7 +36,7 @@ export function ProgramMap() {
     totalCredits.set(termIndex, sum);
   });
 
-  if (Object.keys(courses).length === 0) {
+  if (studyPlan.sections.flatMap((s) => s.courses).length === 0) {
     return (
       <Paper withBorder p="xl">
         <Stack align="center" gap="xs">
