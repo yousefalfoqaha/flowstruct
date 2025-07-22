@@ -96,7 +96,6 @@ export function PublishStudyPlansModal() {
                         ? 'var(--mantine-color-blue-light)'
                         : 'transparent',
                       cursor: 'pointer',
-                      transition: 'all 0.2s ease',
                       userSelect: 'none',
                     }}
                     onClick={() => toggle(id)}

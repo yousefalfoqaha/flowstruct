@@ -10,6 +10,10 @@ import { createCourseGridCellMap } from '@/utils/createCourseGridCellMap.ts';
 import React from 'react';
 import { CoursePlacement } from '@/features/study-plan/types.ts';
 import { comparePlacement } from '@/utils/comparePlacement.ts';
+import { Button, Paper, Stack, Text, Title } from '@mantine/core';
+import { BookOpen, BookPlus } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { DefaultFrameworkCoursesSearchValues } from '@/utils/defaultFrameworkCoursesSearchValues.ts';
 
 export function ProgramMap() {
   const { data: studyPlan } = useStudyPlan();
@@ -31,6 +35,32 @@ export function ProgramMap() {
       .reduce((acc, id) => acc + (courses[id]?.creditHours || 0), 0);
     totalCredits.set(termIndex, sum);
   });
+
+  if (Object.keys(courses).length === 0) {
+    return (
+      <Paper withBorder p="xl">
+        <Stack align="center" gap="xs">
+          <BookPlus size={32} />
+          <Title order={2} fw={600}>
+            Add Courses
+          </Title>
+          <Text mb="md" c="dimmed" size="sm">
+            Add courses to the study plan first before placing them here
+          </Text>
+
+          <Link
+            params={{ studyPlanId: String(studyPlan.id) }}
+            to="/study-plans/$studyPlanId/courses"
+            search={DefaultFrameworkCoursesSearchValues()}
+          >
+            <Button variant="outline" leftSection={<BookOpen size={18} />}>
+              Go to Courses
+            </Button>
+          </Link>
+        </Stack>
+      </Paper>
+    );
+  }
 
   return (
     <div className={classes.programMapContainer}>

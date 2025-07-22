@@ -1,6 +1,7 @@
 import {
   Center,
   Checkbox,
+  FocusTrap,
   Group,
   NumberInput,
   Radio,
@@ -47,15 +48,18 @@ export function CourseDetailsFormFields({
           name="code"
           control={control}
           render={({ field }) => (
-            <TextInput
-              w="25%"
-              label="Code"
-              leftSection={<Hash size={18} />}
-              {...field}
-              error={errors.code?.message}
-              autoComplete="off"
-              withAsterisk
-            />
+            <FocusTrap active={true}>
+              <TextInput
+                data-autofocus
+                w="25%"
+                label="Code"
+                leftSection={<Hash size={18} />}
+                {...field}
+                error={errors.code?.message}
+                autoComplete="off"
+                withAsterisk
+              />
+            </FocusTrap>
           )}
         />
 

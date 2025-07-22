@@ -36,7 +36,7 @@ export function SectionsTable() {
       }),
       accessor('requiredCreditHours', {
         header: 'Required Cr.',
-        cell: ({ row }) => `${row.original.requiredCreditHours} Cr.`,
+        cell: ({ row }) => <p style={{textWrap: 'nowrap'}}>{row.original.req} Cr.</p>,
       }),
       accessor('name', {
         header: 'Name',
@@ -52,7 +52,7 @@ export function SectionsTable() {
         cell: ({ row }) => {
           const canMove = row.original.position !== 0;
           return (
-            <Group justify="end" gap={0}>
+            <Group wrap="nowrap" justify="end" gap={0}>
               {canMove && <MoveSectionMenu section={row.original} />}
               <SectionOptionsMenu section={row.original} />
             </Group>

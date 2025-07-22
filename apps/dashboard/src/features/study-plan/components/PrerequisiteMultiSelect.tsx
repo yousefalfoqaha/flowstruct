@@ -188,6 +188,7 @@ export function PrerequisiteMultiSelect({
                   option: classes.option,
                 },
               }}
+              nothingFoundMessage="No results"
               renderOption={renderOption}
               data={data}
               value={selectedCourses}

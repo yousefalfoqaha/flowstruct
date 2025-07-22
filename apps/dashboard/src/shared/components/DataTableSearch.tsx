@@ -26,6 +26,7 @@ export function DataTableSearch<TData>({
 
   return (
     <Input
+      data-autofocus
       flex={1}
       w={width}
       leftSection={<Search size={18} />}

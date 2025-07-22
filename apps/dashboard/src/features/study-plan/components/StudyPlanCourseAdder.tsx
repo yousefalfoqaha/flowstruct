@@ -3,7 +3,7 @@ import {
   Badge,
   Box,
   Button,
-  Checkbox, Divider,
+  Checkbox, Divider, FocusTrap,
   Group,
   LoadingOverlay,
   Modal,
@@ -231,7 +231,9 @@ export function StudyPlanCourseAdder() {
       >
         <Stack>
           <Group>
-            <DataTableSearch table={table} placeholder="Filter courses..." debounce={DEBOUNCE_MS} />
+            <FocusTrap active={modalOpen}>
+              <DataTableSearch table={table} placeholder="Filter courses..." debounce={DEBOUNCE_MS} />
+            </FocusTrap>
 
             <Button
               variant="white"

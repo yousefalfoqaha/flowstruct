@@ -60,7 +60,7 @@ export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
               title: 'Please confirm your action',
               children: (
                 <Text size="sm">
-                  Deleting these courses will remove them from the program map and any prerequisite
+                  Removing these courses will remove them from the program map and any prerequisite
                   relationships. Are you sure you want to proceed?
                 </Text>
               ),

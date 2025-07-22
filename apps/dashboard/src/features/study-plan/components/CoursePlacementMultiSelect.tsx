@@ -141,6 +141,7 @@ export function CoursePlacementMultiSelect({ placement }: CoursePlacementMultiSe
                 option: classes.option,
               },
             }}
+            nothingFoundMessage="No results"
             withCheckIcon
             renderOption={renderOption}
             data={data}

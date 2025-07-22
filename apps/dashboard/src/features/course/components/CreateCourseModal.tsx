@@ -60,6 +60,7 @@ export function CreateCourseModal({
       <form onSubmit={onSubmit}>
         <Stack>
           <CourseDetailsFormFields form={form} preset={preset} changePreset={changePreset} />
+
           <Button
             disabled={!form.formState.isValid}
             leftSection={<Plus size={18} />}

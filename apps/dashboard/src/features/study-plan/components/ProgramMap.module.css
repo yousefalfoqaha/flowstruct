@@ -35,7 +35,7 @@
   position: relative;
   display: flex;
   justify-content: center;
-  width: 11rem;
+  width: 10rem;
 }
 
 /*.cell::after {*/
@@ -68,7 +68,7 @@
 }
 
 .headerCell {
-  width: 11rem;
+  width: 10rem;
   color: var(--mantine-color-dimmed);
   display: flex;
   justify-content: center;

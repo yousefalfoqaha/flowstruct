@@ -1,4 +1,4 @@
-import { Button, Group, Paper, Stack, Title } from '@mantine/core';
+import { Button, Group, Paper, Stack, Text, Title } from '@mantine/core';
 import { DataTable } from '@/shared/components/DataTable.tsx';
 import { useDataTable } from '@/shared/hooks/useDataTable.ts';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
@@ -9,11 +9,12 @@ import { getStudyPlanCoursesTableColumns } from '@/features/study-plan/component
 import { getSectionCode } from '@/utils/getSectionCode.ts';
 import { FrameworkCourse } from '@/features/study-plan/types.ts';
 import { useStudyPlanCourses } from '@/features/study-plan/hooks/useStudyPlanCourses.ts';
-import { ListPlus, Plus } from 'lucide-react';
+import { List, ListPlus } from 'lucide-react';
 import { SelectedCoursesToolbar } from '@/features/study-plan/components/SelectedCoursesToolbar.tsx';
 import { SectionColumnFilter } from '@/features/study-plan/components/SectionColumnFilter.tsx';
 import { Link } from '@tanstack/react-router';
 import { StudyPlanCourseAdder } from '@/features/study-plan/components/StudyPlanCourseAdder.tsx';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 
 export function StudyPlanCoursesTable() {
   const { data: studyPlan } = useStudyPlan();
@@ -64,17 +65,24 @@ export function StudyPlanCoursesTable() {
 
   if (studyPlan.sections.length === 0) {
     return (
-      <Paper withBorder shadow="sm">
-        <Stack align="center" gap="xs" my={32}>
+      <Paper withBorder p="xl">
+        <Stack align="center" gap="xs">
           <ListPlus size={32} />
-          <Title mb="sm" order={2} fw={600}>
-            Create New Section
+          <Title order={2} fw={600}>
+            Create a Section
           </Title>
+          <Text mb="md" c="dimmed" size="sm">
+            Create a section first to add courses to the study plan
+          </Text>
+
           <Link
             params={{ studyPlanId: String(studyPlan.id) }}
-            to="/study-plans/$studyPlanId/sections/new"
+            to="/study-plans/$studyPlanId/sections"
+            search={DefaultSearchValues()}
           >
-            <Button leftSection={<Plus size={18} />}>Create Section</Button>
+            <Button variant="outline" leftSection={<List size={18} />}>
+              Go to Sections
+            </Button>
           </Link>
         </Stack>
       </Paper>
