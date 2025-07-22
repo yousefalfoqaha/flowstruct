@@ -51,7 +51,7 @@ export function useAppMutation<
     },
     onError: (error, variables, context) => {
       const errorObject = error as ErrorObject;
-      console.log(error);
+
       errorObject.messages.forEach((message) => {
         notifications.show({
           title: 'Error...',

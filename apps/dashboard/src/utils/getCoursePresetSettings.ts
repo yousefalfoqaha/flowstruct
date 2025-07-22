@@ -6,7 +6,7 @@ export const getCoursePresetSettings = (preset: PresetType) => {
     creditHours: 0,
     lectureHours: 0,
     practicalHours: 0,
-    type: 'custom',
+    type: 'F2F',
   };
 
   switch (preset) {

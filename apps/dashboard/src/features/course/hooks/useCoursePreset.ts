@@ -13,26 +13,24 @@ const presetSchema = courseDetailsSchema.pick({
   type: true,
 });
 
-type PresetFields = z.infer<typeof presetSchema>;
-
 export const useCoursePreset = (form: UseFormReturn<z.infer<typeof courseDetailsSchema>>) => {
   const [preset, setPreset] = React.useState<PresetType>('lecture');
 
-  const changePreset = (value: string) => {
-    setPreset(value as PresetType);
+  const changePreset = (preset: PresetType) => {
+    setPreset(preset);
     form.reset((prevValues) => ({
       ...prevValues,
-      ...getCoursePresetSettings(value as PresetType),
+      ...getCoursePresetSettings(preset),
     }));
   };
 
   React.useEffect(() => {
     const subscription = form.watch((_, { name, type }) => {
-      if (type !== 'change') return;
+      if (type !== 'change' || !name) return;
 
-      const presetFields = Object.keys(presetSchema.keyof());
+      const presetFields = Object.keys(presetSchema.def.shape);
 
-      const presetFieldsModified = presetFields.includes(name as keyof PresetFields);
+      const presetFieldsModified = presetFields.includes(name);
       if (presetFieldsModified) setPreset('custom');
     });
     return () => subscription.unsubscribe();

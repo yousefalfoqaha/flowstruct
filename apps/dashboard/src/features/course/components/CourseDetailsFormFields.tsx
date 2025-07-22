@@ -27,7 +27,7 @@ import { courseDetailsSchema } from '@/features/course/schemas.ts';
 type CourseDetailsFormFieldsProps = {
   form: UseFormReturn<z.infer<typeof courseDetailsSchema>>;
   preset: PresetType;
-  changePreset: (value: string) => void;
+  changePreset: (value: PresetType) => void;
 };
 
 export function CourseDetailsFormFields({
@@ -82,7 +82,7 @@ export function CourseDetailsFormFields({
         <Text></Text>
         <SegmentedControl
           value={preset}
-          onChange={changePreset}
+          onChange={changePreset as (value: string) => void}
           withItemsBorders={false}
           fullWidth
           data={[

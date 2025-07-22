@@ -28,7 +28,7 @@ export function CreateCourseFieldset() {
   const createCourse = useCreateCourse();
   const navigate = useNavigate();
 
-/  const onSubmit = form.handleSubmit((data) => {
+  const onSubmit = form.handleSubmit((data) => {
     createCourse.mutate(data, {
       onSuccess: () => {
         navigate({
