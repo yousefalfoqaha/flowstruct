@@ -6,7 +6,7 @@ export const programDetailsSchema = z.object({
     .string()
     .trim()
     .nonempty()
-    .transform((val) => val.toLocaleUpperCase()),
+    .transform((val) => val.toLocaleUpperCase().replace(/\s+/g, '')),
   name: z.string().trim().nonempty(),
   degree: z.enum(Object.keys(Degree)),
 });

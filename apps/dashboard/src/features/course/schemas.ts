@@ -6,8 +6,7 @@ export const courseDetailsSchema = z.object({
     .string()
     .trim()
     .nonempty()
-    .transform((val) => val.toLocaleUpperCase())
-    .transform((str) => str.replace(/\s+/g, '')),
+    .transform((val) => val.toLocaleUpperCase().replace(/\s+/g, '')),
   name: z.string().trim().nonempty(),
   creditHours: z.number().min(0, { error: 'Must be positive' }),
   ects: z.number().min(0, { error: 'Must be positive' }),

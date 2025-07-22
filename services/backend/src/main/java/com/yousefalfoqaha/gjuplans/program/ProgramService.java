@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.gjuplans.program;
 
+import com.yousefalfoqaha.gjuplans.common.CodeFormatter;
 import com.yousefalfoqaha.gjuplans.program.domain.Program;
 import com.yousefalfoqaha.gjuplans.program.dto.ProgramDetailsDto;
 import com.yousefalfoqaha.gjuplans.program.dto.ProgramDto;
@@ -17,6 +18,7 @@ import java.util.function.Function;
 public class ProgramService {
     private final ProgramRepository programRepository;
     private final ProgramDtoMapper programDtoMapper;
+    private final CodeFormatter codeFormatter;
 
     public List<ProgramDto> getAllPrograms() {
         return programRepository.findAll()
@@ -31,19 +33,20 @@ public class ProgramService {
     }
 
     @Transactional
-    public ProgramDto editProgramDetails(long programId, ProgramDetailsDto request) {
+    public ProgramDto editProgramDetails(long programId, ProgramDetailsDto details) {
         Program program = findProgram(programId);
+        String userEnteredCode = codeFormatter.apply(details.code());
 
         if (
-                programRepository.existsByCodeAndDegree(request.code(), request.degree()) &&
-                        !(program.getCode().equalsIgnoreCase(request.code()) && program.getDegree().equals(request.degree()))
+                programRepository.existsByCodeAndDegree(userEnteredCode, details.degree()) &&
+                        !(program.getCode().equalsIgnoreCase(userEnteredCode) && program.getDegree().equals(details.degree()))
         ) {
-            throw new UniqueProgramException("Program with code " + request.code() + " and degree " + request.degree() + " already exists.");
+            throw new UniqueProgramException("Program with code " + userEnteredCode + " and degree " + details.degree() + " already exists.");
         }
 
-        program.setCode(request.code());
-        program.setName(request.name());
-        program.setDegree(request.degree());
+        program.setCode(userEnteredCode);
+        program.setName(details.name().trim());
+        program.setDegree(details.degree());
 
         Program updatedProgram = programRepository.save(program);
         return programDtoMapper.apply(updatedProgram);
@@ -51,14 +54,16 @@ public class ProgramService {
 
     @Transactional
     public ProgramDto createProgram(ProgramDetailsDto details) {
-        if (programRepository.existsByCodeAndDegree(details.code(), details.degree())) {
-            throw new UniqueProgramException("Program with code " + details.code() + " and degree " + details.degree() + " already exists.");
+        String userEnteredCode = codeFormatter.apply(details.code());
+
+        if (programRepository.existsByCodeAndDegree(userEnteredCode, details.degree())) {
+            throw new UniqueProgramException("Program with code " + userEnteredCode + " and degree " + details.degree() + " already exists.");
         }
 
         var newProgram = new Program(
                 null,
-                details.code(),
-                details.name(),
+                userEnteredCode,
+                details.name().trim(),
                 details.degree(),
                 null,
                 null,

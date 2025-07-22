@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.gjuplans.course;
 
+import com.yousefalfoqaha.gjuplans.common.CodeFormatter;
 import com.yousefalfoqaha.gjuplans.course.domain.Course;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDetailsDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
@@ -29,6 +30,7 @@ public class CourseService {
     private final CourseDtoMapper courseDtoMapper;
     private final CourseSummaryResponseMapper courseSummaryResponseMapper;
     private final CoursesPageResponseMapper coursesPageResponseMapper;
+    private final CodeFormatter codeFormatter;
 
     public CoursesPageDto getPaginatedCourseList(int page, int size, String filter) {
         Pageable pageable = PageRequest.of(page, size);
@@ -70,12 +72,15 @@ public class CourseService {
     public CourseDto editCourseDetails(long courseId, CourseDetailsDto details) {
         var course = findCourse(courseId);
 
-        if (courseRepository.existsByCodeIgnoreCase(details.code()) && !course.getCode().equalsIgnoreCase(details.code())) {
+        String courseCode = codeFormatter.apply(course.getCode());
+        String userEnteredCode = codeFormatter.apply(details.code());
+
+        if (courseRepository.existsByCodeIgnoreCase(userEnteredCode) && !courseCode.equalsIgnoreCase(userEnteredCode)) {
             throw new CourseExistsException("Course with code " + details.code() + " already exists.");
         }
 
-        course.setCode(details.code());
-        course.setName(details.name());
+        course.setCode(userEnteredCode);
+        course.setName(details.name().trim());
         course.setCreditHours(details.creditHours());
         course.setEcts(details.ects());
         course.setLectureHours(details.lectureHours());
@@ -87,14 +92,16 @@ public class CourseService {
     }
 
     public CourseDto createCourse(CourseDetailsDto details) {
-        if (courseRepository.existsByCodeIgnoreCase(details.code())) {
-            throw new CourseExistsException("Course with code " + details.code() + " already exists.");
+        String userEnteredCode = codeFormatter.apply(details.code());
+
+        if (courseRepository.existsByCodeIgnoreCase(userEnteredCode)) {
+            throw new CourseExistsException("Course with code " + userEnteredCode + " already exists.");
         }
 
         var newCourse = new Course(
                 null,
-                details.code().toUpperCase(),
-                details.name(),
+                userEnteredCode,
+                details.name().trim(),
                 details.creditHours(),
                 details.ects(),
                 details.lectureHours(),
