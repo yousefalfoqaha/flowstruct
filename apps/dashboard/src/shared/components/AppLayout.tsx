@@ -1,4 +1,4 @@
-import { ReactNode, Suspense } from 'react';
+import { ReactNode } from 'react';
 import { Container, Divider, Group, Image, Tabs, Title } from '@mantine/core';
 import classes from './AppLayout.module.css';
 import { useMatches, useNavigate } from '@tanstack/react-router';
@@ -48,9 +48,7 @@ export function AppLayout({ children }: Props) {
             </Group>
 
             <Group gap="lg">
-              <Suspense fallback="Loading...">
-                <PublishStudyPlansModal />
-              </Suspense>
+              <PublishStudyPlansModal />
 
               <Divider orientation="vertical" />
 

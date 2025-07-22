@@ -20,7 +20,7 @@ export function EditCourseFieldset({ course }: Props) {
     resolver: customResolver(courseDetailsSchema),
     defaultValues: { ...course },
   });
-
+ 1
   const { preset, changePreset } = useCoursePreset(form);
   const editCourseDetails = useEditCourseDetails();
   const navigate = useNavigate();

@@ -58,7 +58,7 @@ export function PublishStudyPlansModal() {
           disabled={!rows.length}
           onClick={() => setModalOpen(true)}
         >
-          {rows.length ? 'Publish Study Plans' : 'All Study Plans Published'}
+          {rows.length ? 'Publish Study Plans' : 'Study Plans Published'}
         </Button>
       </Tooltip>
 

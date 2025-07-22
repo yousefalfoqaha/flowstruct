@@ -1,12 +1,14 @@
 import { z } from 'zod/v4';
 import { CourseType } from '@/features/course/types.ts';
 
-export const  courseDetailsSchema = z.object({
+export const courseDetailsSchema = z.object({
   code: z
     .string()
+    .trim()
     .nonempty()
-    .transform((val) => val.toLocaleUpperCase()),
-  name: z.string().nonempty(),
+    .transform((val) => val.toLocaleUpperCase())
+    .transform((str) => str.replace(/\s+/g, '')),
+  name: z.string().trim().nonempty(),
   creditHours: z.number().min(0, { error: 'Must be positive' }),
   ects: z.number().min(0, { error: 'Must be positive' }),
   lectureHours: z.number().min(0, { error: 'Must be positive' }),
