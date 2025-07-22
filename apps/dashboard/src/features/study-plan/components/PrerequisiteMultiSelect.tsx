@@ -194,6 +194,7 @@ export function PrerequisiteMultiSelect({
               onChange={setSelectedCourses}
               label={`Assign ${requisiteType === 'PRE' ? 'prerequisites' : 'corequisites'} to ${courses[parentCourseId]?.code}`}
               placeholder="Search framework courses"
+              selectFirstOptionOnChange
               searchable
               hidePickedOptions
             />

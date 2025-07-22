@@ -146,6 +146,7 @@ export function CoursePlacementMultiSelect({ placement }: CoursePlacementMultiSe
             data={data}
             value={selectedCourses}
             onChange={setSelectedCourses}
+            selectFirstOptionOnChange
             label={`Add courses to year ${placement.year}, ${SEMESTER_NAMES[placement.semester - 1]} semester`}
             placeholder="Search framework courses"
             searchable
