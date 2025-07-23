@@ -15,7 +15,6 @@
 
 .gridContainer {
     overflow: hidden;
-    position: relative;
     border: 1px solid var(--mantine-color-gray-3);
     border-radius: var(--mantine-radius-default);
     background-color: var(--mantine-color-white);
@@ -41,7 +40,6 @@
 }
 
 .wrapper {
-    position: relative;
     min-width: fit-content;
 }
 

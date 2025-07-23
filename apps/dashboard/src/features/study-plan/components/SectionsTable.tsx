@@ -36,7 +36,9 @@ export function SectionsTable() {
       }),
       accessor('requiredCreditHours', {
         header: 'Required Cr.',
-        cell: ({ row }) => <p style={{textWrap: 'nowrap'}}>{row.original.req} Cr.</p>,
+        cell: ({ row }) => (
+          <p style={{ textWrap: 'nowrap' }}>{row.original.requiredCreditHours} Cr.</p>
+        ),
       }),
       accessor('name', {
         header: 'Name',
