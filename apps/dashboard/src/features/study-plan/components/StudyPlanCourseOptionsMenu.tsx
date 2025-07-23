@@ -6,8 +6,8 @@ import { SectionsMenuItems } from '@/features/study-plan/components/SectionsMenu
 import { FrameworkCourse } from '@/features/study-plan/types.ts';
 import { useRemoveCoursesFromStudyPlan } from '@/features/study-plan/hooks/useRemoveCourseFromSection.ts';
 import { useParams } from '@tanstack/react-router';
-import { EditCourseModal } from '@/features/course/components/EditCourseModal.tsx';
 import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
+import { EditCourseModal } from '@/features/course/components/EditCourseModal.tsx';
 
 type Props = {
   course: FrameworkCourse;
