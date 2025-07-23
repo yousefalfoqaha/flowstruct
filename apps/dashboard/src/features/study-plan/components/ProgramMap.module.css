@@ -1,41 +1,54 @@
 .programMapContainer {
-  position: relative;
-  border: 1px solid var(--mantine-color-gray-3);
-  border-radius: var(--mantine-radius-default);
-  background-color: var(--mantine-color-white);
-  overflow: hidden;
-  height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-md);
+}
+
+.navigationContainer {
+    display: flex;
+    position: sticky;
+    top: var(--mantine-spacing-md);
+    gap: var(--mantine-spacing-md);
+    justify-content: center;
+    z-index: 30;
+}
+
+.gridContainer {
+    position: relative;
+    border: 1px solid var(--mantine-color-gray-3);
+    border-radius: var(--mantine-radius-default);
+    background-color: var(--mantine-color-white);
+    height: 100%;
 }
 
 .programMap {
-  display: grid;
-  justify-items: center;
-  gap: var(--mantine-spacing-md);
-  padding: var(--mantine-spacing-md);
+    display: grid;
+    justify-items: center;
+    gap: var(--mantine-spacing-md);
+    padding: var(--mantine-spacing-md);
 }
 
 .dropIndicator {
-  top: -0.7rem;
-  height: 0.4rem;
-  border-radius: var(--mantine-radius-default);
-  width: 10rem;
-  background-color: var(--mantine-primary-color-3);
-  position: absolute;
-  opacity: 0;
-  z-index: 20;
+    top: -0.7rem;
+    height: 0.4rem;
+    border-radius: var(--mantine-radius-default);
+    width: 10rem;
+    background-color: var(--mantine-primary-color-3);
+    position: absolute;
+    opacity: 0;
+    z-index: 20;
 }
 
 .wrapper {
-  position: relative;
-  min-width: fit-content;
-  overflow: scroll;
+    position: relative;
+    min-width: fit-content;
 }
 
 .cell {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  width: 10rem;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 10rem;
 }
 
 /*.cell::after {*/
@@ -59,36 +72,36 @@
 /*}*/
 
 .headerGrid {
-  display: grid;
-  position: sticky;
-  top: 0;
-  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
-  border-bottom: 1px solid var(--mantine-color-gray-3);
-  padding: var(--mantine-spacing-md);
+    display: grid;
+    position: sticky;
+    top: 0;
+    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+    border-bottom: 1px solid var(--mantine-color-gray-3);
+    padding: var(--mantine-spacing-md);
 }
 
 .headerCell {
-  width: 10rem;
-  color: var(--mantine-color-dimmed);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
-  white-space: nowrap;
-  position: relative;
+    width: 10rem;
+    color: var(--mantine-color-dimmed);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    white-space: nowrap;
+    position: relative;
 }
 
 .yearHeader {
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: var(--mantine-spacing-md);
-  grid-row: 1;
-  /*font-weight: 600;*/
-  /*color: black;*/
-  font-size: var(--mantine-font-size-sm);
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: var(--mantine-spacing-md);
+    grid-row: 1;
+    /*font-weight: 600;*/
+    /*color: black;*/
+    font-size: var(--mantine-font-size-sm);
 }
 
 .semesterHeader {
-  font-size: var(--mantine-font-size-sm);
-  grid-row: 2;
+    font-size: var(--mantine-font-size-sm);
+    grid-row: 2;
 }
