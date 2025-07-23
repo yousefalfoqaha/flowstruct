@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
 import { customResolver } from '@/utils/customResolver.ts';
 import { useCourse } from '@/features/course/hooks/useCourse.ts';
-import React from 'react';
 import { modals } from '@mantine/modals';
 import { useEditCourseDetails } from '@/features/course/hooks/useEditCourseDetails.ts';
 

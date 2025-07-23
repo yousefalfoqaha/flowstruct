@@ -3,14 +3,16 @@ import {
   Badge,
   Box,
   Button,
-  Checkbox, Divider, FocusTrap,
+  Checkbox,
+  Divider,
   Group,
   LoadingOverlay,
   Modal,
   Pill,
   Select,
   Stack,
-  Text, Title,
+  Text,
+  Title,
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { List, Plus, PlusCircle, X } from 'lucide-react';
@@ -95,7 +97,7 @@ export function StudyPlanCourseAdder() {
       columnHelper.accessor('name', { header: 'Name' }) as ColumnDef<CourseRow>,
       columnHelper.accessor('creditHours', {
         header: 'Cr.',
-        cell: ({ row }) => <p style={{textWrap: 'nowrap'}}>{row.original.creditHours} Cr.</p>,
+        cell: ({ row }) => <p style={{ textWrap: 'nowrap' }}>{row.original.creditHours} Cr.</p>,
       }) as ColumnDef<CourseRow>,
     ],
     []
@@ -200,7 +202,6 @@ export function StudyPlanCourseAdder() {
         name: course.name,
       },
     }));
-
   };
 
   return (
@@ -220,7 +221,9 @@ export function StudyPlanCourseAdder() {
         onClose={() => setModalOpen(false)}
         title={
           <div>
-            <Title order={4} fw={600} lh="md">Add Courses to Study Plan</Title>
+            <Title order={4} fw={600} lh="md">
+              Add Courses to Study Plan
+            </Title>
             <Text size="xs" c="dimmed">
               Select courses from the catalog and add them to a section
             </Text>
@@ -231,7 +234,7 @@ export function StudyPlanCourseAdder() {
       >
         <Stack>
           <Group>
-              <DataTableSearch table={table} placeholder="Filter courses..." debounce={DEBOUNCE_MS} />
+            <DataTableSearch table={table} placeholder="Filter courses..." debounce={DEBOUNCE_MS} />
 
             <Button
               variant="white"

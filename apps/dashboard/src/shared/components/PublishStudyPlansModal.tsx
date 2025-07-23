@@ -70,7 +70,7 @@ export function PublishStudyPlansModal() {
             title="Publish Draft Study Plans"
             subtitle="Select the drafts you want to re-publish"
           />
-        }
+      }
         size="lg"
         centered
       >

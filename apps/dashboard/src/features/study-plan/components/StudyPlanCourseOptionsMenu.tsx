@@ -28,29 +28,20 @@ export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
         </Text>
       ),
       labels: { confirm: 'Remove Courses', cancel: 'Cancel' },
-      closeOnConfirm: false,
-      confirmProps: {
-        loading: removeCourse.isPending,
-      },
       onConfirm: () => {
-        removeCourse.mutate(
-          {
-            courseIds: [course.id],
-            studyPlanId: Number(studyPlanId),
-          },
-          {
-            onSuccess: () => {
-              modals.closeAll();
-            },
-          }
-        );
+        removeCourse.mutate({
+          courseIds: [course.id],
+          studyPlanId: Number(studyPlanId),
+        });
+
+        modals.closeAll();
       },
     });
 
   return (
     <Menu>
       <Menu.Target>
-        <ActionIcon color="gray" variant="transparent">
+        <ActionIcon loading={removeCourse.isPending} color="gray" variant="transparent">
           <Ellipsis size={14} />
         </ActionIcon>
       </Menu.Target>
@@ -79,6 +70,7 @@ export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
                     >
                       Remove
                     </Button>
+
                     <Button
                       onClick={() =>
                         modals.open({
