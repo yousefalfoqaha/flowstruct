@@ -18,7 +18,7 @@ function RouteComponent() {
         <PageHeaderWithBack
           title={getCourseDisplayName(course)}
           linkProps={{
-            to: '/courses/$courseId',
+            to: '..',
             params: { courseId: String(course.id) },
           }}
         />

@@ -11,12 +11,12 @@ import {
   ScrollArea,
   Stack,
   Text,
-  Title,
   Tooltip,
 } from '@mantine/core';
 import { Globe, X } from 'lucide-react';
 import classes from '@/shared/components/PublishStudyPlanModal.module.css';
 import { usePublishStudyPlans } from '@/features/study-plan/hooks/usePublishStudyPlans.ts';
+import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 
 export function PublishStudyPlansModal() {
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -66,14 +66,10 @@ export function PublishStudyPlansModal() {
         opened={modalOpen}
         onClose={() => setModalOpen(false)}
         title={
-          <Box>
-            <Title order={4} fw={600} lh="md">
-              Publish Draft Study Plans
-            </Title>
-            <Text size="xs" c="dimmed">
-              Select the drafts you want to publish
-            </Text>
-          </Box>
+          <ModalHeader
+            title="Publish Draft Study Plans"
+            subtitle="Select the drafts you want to re-publish"
+          />
         }
         size="lg"
         centered

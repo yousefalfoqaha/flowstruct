@@ -231,9 +231,7 @@ export function StudyPlanCourseAdder() {
       >
         <Stack>
           <Group>
-            <FocusTrap active={modalOpen}>
               <DataTableSearch table={table} placeholder="Filter courses..." debounce={DEBOUNCE_MS} />
-            </FocusTrap>
 
             <Button
               variant="white"

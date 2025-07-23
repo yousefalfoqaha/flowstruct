@@ -1,11 +1,13 @@
-import { ActionIcon, Menu, Text } from '@mantine/core';
-import { ArrowLeftRight, Ellipsis, ScrollText, Trash } from 'lucide-react';
+import { ActionIcon, Button, Group, Menu, Stack, Text } from '@mantine/core';
+import { ArrowLeftRight, Ellipsis, Pencil, ScrollText, X } from 'lucide-react';
 import { modals } from '@mantine/modals';
 import { CourseDetailsDisplay } from '@/features/course/components/CourseDetailsDisplay.tsx';
 import { SectionsMenuItems } from '@/features/study-plan/components/SectionsMenuItems.tsx';
 import { FrameworkCourse } from '@/features/study-plan/types.ts';
 import { useRemoveCoursesFromStudyPlan } from '@/features/study-plan/hooks/useRemoveCourseFromSection.ts';
 import { useParams } from '@tanstack/react-router';
+import { EditCourseModal } from '@/features/course/components/EditCourseModal.tsx';
+import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 
 type Props = {
   course: FrameworkCourse;
@@ -14,7 +16,36 @@ type Props = {
 
 export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
   const { studyPlanId } = useParams({ from: '/_layout/study-plans/$studyPlanId' });
-  const removeCoursesFromStudyPlan = useRemoveCoursesFromStudyPlan();
+  const removeCourse = useRemoveCoursesFromStudyPlan();
+
+  const removeCourseConfirmModal = () =>
+    modals.openConfirmModal({
+      title: 'Please confirm your action',
+      children: (
+        <Text size="sm">
+          Removing these courses will remove them from the program map and any prerequisite
+          relationships. Are you sure you want to proceed?
+        </Text>
+      ),
+      labels: { confirm: 'Remove Courses', cancel: 'Cancel' },
+      closeOnConfirm: false,
+      confirmProps: {
+        loading: removeCourse.isPending,
+      },
+      onConfirm: () => {
+        removeCourse.mutate(
+          {
+            courseIds: [course.id],
+            studyPlanId: Number(studyPlanId),
+          },
+          {
+            onSuccess: () => {
+              modals.closeAll();
+            },
+          }
+        );
+      },
+    });
 
   return (
     <Menu>
@@ -31,9 +62,47 @@ export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
           leftSection={<ScrollText size={14} />}
           onClick={() =>
             modals.open({
-              title: `${course.code}: ${course.name} Details`,
-              children: <CourseDetailsDisplay courseId={course.id} />,
+              title: (
+                <ModalHeader
+                  title={`${course.code}: ${course.name}`}
+                  subtitle="Details about this course"
+                />
+              ),
+              children: (
+                <Stack>
+                  <CourseDetailsDisplay courseId={course.id} />
+                  <Group justify="space-between">
+                    <Button
+                      color="red"
+                      leftSection={<X size={18} />}
+                      onClick={removeCourseConfirmModal}
+                    >
+                      Remove
+                    </Button>
+                    <Button
+                      onClick={() =>
+                        modals.open({
+                          title: (
+                            <ModalHeader
+                              title={`${course.code}: ${course.name}`}
+                              subtitle="Update the details for this course"
+                            />
+                          ),
+                          children: <EditCourseModal courseId={course.id} />,
+                          size: 'lg',
+                          centered: true,
+                        })
+                      }
+                      variant="outline"
+                      leftSection={<Pencil size={16} />}
+                    >
+                      Edit Details
+                    </Button>
+                  </Group>
+                </Stack>
+              ),
               centered: true,
+              size: 'lg',
             })
           }
         >
@@ -52,27 +121,7 @@ export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
 
         <Menu.Divider />
 
-        <Menu.Item
-          color="red"
-          leftSection={<Trash size={14} />}
-          onClick={() =>
-            modals.openConfirmModal({
-              title: 'Please confirm your action',
-              children: (
-                <Text size="sm">
-                  Removing these courses will remove them from the program map and any prerequisite
-                  relationships. Are you sure you want to proceed?
-                </Text>
-              ),
-              labels: { confirm: 'Remove Courses', cancel: 'Cancel' },
-              onConfirm: () =>
-                removeCoursesFromStudyPlan.mutate({
-                  courseIds: [course.id],
-                  studyPlanId: Number(studyPlanId),
-                }),
-            })
-          }
-        >
+        <Menu.Item color="red" leftSection={<X size={14} />} onClick={removeCourseConfirmModal}>
           Remove
         </Menu.Item>
       </Menu.Dropdown>

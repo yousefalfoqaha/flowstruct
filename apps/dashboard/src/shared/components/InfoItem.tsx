@@ -9,7 +9,7 @@ type InfoItemProps = {
 
 export function InfoItem({ label, value, suffix }: InfoItemProps) {
   return (
-    <div>
+    <div className={classes.container}>
       <p className={classes.label}>{label}</p>
       <p>
         {value} {suffix}

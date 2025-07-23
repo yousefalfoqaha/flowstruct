@@ -76,7 +76,7 @@ export function CourseCard({ course, placement, missingPrerequisites }: CourseCa
             <p className={classes.name}>{course.name}</p>
           </div>
 
-          <div className={classes.removeButton}>
+          <div className={classes.optionsButton}>
             <ProgramMapCourseOptions course={course} placement={placement} />
           </div>
 

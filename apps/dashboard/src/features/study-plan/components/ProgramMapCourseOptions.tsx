@@ -1,5 +1,5 @@
 import { ActionIcon, Box, Group, Menu, Slider, Tooltip } from '@mantine/core';
-import { EllipsisVertical, Folder, Scaling, Trash } from 'lucide-react';
+import { EllipsisVertical, Folder, Scaling, X } from 'lucide-react';
 import { Link, useParams } from '@tanstack/react-router';
 import { DefaultFrameworkCoursesSearchValues } from '@/utils/defaultFrameworkCoursesSearchValues.ts';
 import { CourseSummary } from '@/features/course/types.ts';
@@ -106,11 +106,7 @@ export function ProgramMapCourseOptions({ course, placement }: Props) {
 
         <Menu.Divider />
 
-        <Menu.Item
-          color="red"
-          leftSection={<Trash size={14} />}
-          onClick={handleRemoveCoursePlacement}
-        >
+        <Menu.Item color="red" leftSection={<X size={14} />} onClick={handleRemoveCoursePlacement}>
           Remove
         </Menu.Item>
       </Menu.Dropdown>
