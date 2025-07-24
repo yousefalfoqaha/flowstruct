@@ -1,6 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan.service;
 
 import com.yousefalfoqaha.gjuplans.common.EmptyListException;
+import com.yousefalfoqaha.gjuplans.common.InvalidDetailsException;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanDtoMapper;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanRepository;
@@ -83,6 +84,45 @@ public class StudyPlanService {
                 studyPlanResponse.courseCorequisites(),
                 courseSequences
         );
+    }
+
+    @Transactional
+    public StudyPlanDto cloneStudyPlan(long studyPlanToCloneId, StudyPlanDetailsDto cloneDetails) {
+        var studyPlanToClone = findStudyPlan(studyPlanToCloneId);
+
+        if (!Objects.equals(studyPlanToClone.getProgram().getId(), cloneDetails.program())) {
+            throw new InvalidDetailsException("Cloned study plan must come from the same program.");
+        }
+
+        studyPlanToClone.getCoursePlacements()
+                .entrySet()
+                .removeIf(entry -> entry.getValue().getYear() > cloneDetails.duration());
+
+        Set<Section> sectionClones = studyPlanToClone.getSections().stream()
+                .map(section -> {
+                    section.setId(null);
+                    return section;
+                })
+                .collect(Collectors.toSet());
+
+        StudyPlan studyPlanClone = new StudyPlan(
+                null,
+                cloneDetails.year(),
+                cloneDetails.duration(),
+                cloneDetails.track(),
+                false,
+                studyPlanToClone.getProgram(),
+                null,
+                null,
+                null,
+                null,
+                sectionClones,
+                studyPlanToClone.getCoursePlacements(),
+                studyPlanToClone.getCoursePrerequisites(),
+                studyPlanToClone.getCourseCorequisites()
+        );
+
+        return saveAndMapStudyPlan(studyPlanClone);
     }
 
     @Transactional
@@ -236,6 +276,10 @@ public class StudyPlanService {
         studyPlan.setDuration(details.duration());
         studyPlan.setTrack(details.track().trim());
         studyPlan.setPublished(details.isPublished());
+
+        studyPlan.getCoursePlacements()
+                .entrySet()
+                .removeIf(entry -> entry.getValue().getYear() > studyPlan.getDuration());
 
         markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);

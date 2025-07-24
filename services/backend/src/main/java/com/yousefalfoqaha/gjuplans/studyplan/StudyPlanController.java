@@ -110,6 +110,17 @@ public class StudyPlanController {
         );
     }
 
+    @PostMapping("/{studyPlanId}/clone")
+    public ResponseEntity<StudyPlanDto> cloneStudyPlan(
+            @PathVariable long studyPlanId,
+            @Valid @RequestBody StudyPlanDetailsDto cloneDetails
+    ) {
+        return new ResponseEntity<>(
+                studyPlanService.cloneStudyPlan(studyPlanId, cloneDetails),
+                HttpStatus.OK
+        );
+    }
+
     @PutMapping("/{studyPlanId}/create-section")
     public ResponseEntity<StudyPlanDto> createSection(
             @PathVariable long studyPlanId,

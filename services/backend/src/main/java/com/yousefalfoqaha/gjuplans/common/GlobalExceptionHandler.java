@@ -48,6 +48,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(InvalidDetailsException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            InvalidDetailsException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.BAD_REQUEST.value(),
+                        List.of(exception.getMessage()),
+                        new Date()
+                ),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorObject> handleException(
             MethodArgumentNotValidException exception
