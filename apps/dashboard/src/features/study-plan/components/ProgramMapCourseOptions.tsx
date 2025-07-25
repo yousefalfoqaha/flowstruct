@@ -1,5 +1,5 @@
 import { ActionIcon, Box, Group, Menu, Slider, Tooltip } from '@mantine/core';
-import { EllipsisVertical, Folder, Scaling, X } from 'lucide-react';
+import { BookOpen, EllipsisVertical, Scaling, X } from 'lucide-react';
 import { Link, useParams } from '@tanstack/react-router';
 import { DefaultFrameworkCoursesSearchValues } from '@/utils/defaultFrameworkCoursesSearchValues.ts';
 import { CourseSummary } from '@/features/course/types.ts';
@@ -74,6 +74,7 @@ export function ProgramMapCourseOptions({ course, placement }: Props) {
         <Menu.Label>Actions</Menu.Label>
 
         <Link
+          style={{ textDecoration: 'none' }}
           to="/study-plans/$studyPlanId/courses"
           params={{ studyPlanId: String(studyPlanId) }}
           search={{
@@ -81,7 +82,7 @@ export function ProgramMapCourseOptions({ course, placement }: Props) {
             filter: course.code,
           }}
         >
-          <Menu.Item leftSection={<Folder size={14} />}>View in framework</Menu.Item>
+          <Menu.Item leftSection={<BookOpen size={14} />}>View in courses</Menu.Item>
         </Link>
 
         <Box px="sm" py="xs">

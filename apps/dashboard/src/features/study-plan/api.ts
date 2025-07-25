@@ -20,6 +20,17 @@ export const createStudyPlan = ({ studyPlanDetails }: { studyPlanDetails: Partia
     body: studyPlanDetails,
   });
 
+export const cloneStudyPlan = ({
+  studyPlanToCloneId,
+  cloneDetails,
+}: {
+  studyPlanToCloneId: number;
+  cloneDetails: Partial<StudyPlan>;
+}) =>
+  api.post<StudyPlan>([ENDPOINT, studyPlanToCloneId, 'clone'], {
+    body: cloneDetails,
+  });
+
 export const publishStudyPlans = (studyPlanIds: number[]) =>
   api.post<void>([ENDPOINT, 'publish'], {
     params: {

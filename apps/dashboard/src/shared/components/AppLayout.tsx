@@ -60,7 +60,6 @@ export function AppLayout({ children }: Props) {
             <Tabs
               value={activeTab}
               variant="outline"
-              visibleFrom="sm"
               onChange={(val) =>
                 navigate({
                   to: val ?? '',

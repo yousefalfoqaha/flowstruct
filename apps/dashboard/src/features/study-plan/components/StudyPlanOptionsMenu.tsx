@@ -1,9 +1,11 @@
 import { ActionIcon, Menu, Text } from '@mantine/core';
-import { Ellipsis, Pencil, ScrollText, Trash } from 'lucide-react';
+import { CopyPlus, Ellipsis, Pencil, ScrollText, Trash } from 'lucide-react';
 import { useDeleteStudyPlan } from '@/features/study-plan/hooks/useDeleteStudyPlan.ts';
 import { StudyPlanSummary } from '@/features/study-plan/types.ts';
 import { Link } from '@tanstack/react-router';
 import { modals } from '@mantine/modals';
+import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
+import { CloneStudyPlanDetailsFormFields } from '@/features/study-plan/components/CloneStudyPlanDetailsFormFields.tsx';
 
 type Props = {
   studyPlan: StudyPlanSummary;
@@ -38,6 +40,25 @@ export function StudyPlanOptionsMenu({ studyPlan }: Props) {
         >
           <Menu.Item leftSection={<Pencil size={14} />}>Edit details</Menu.Item>
         </Link>
+
+        <Menu.Item
+          leftSection={<CopyPlus size={14} />}
+          onClick={() =>
+            modals.open({
+              title: (
+                <ModalHeader
+                  title="Cloned Study Plan Details"
+                  subtitle="Modify the details of the new cloned study plan"
+                />
+              ),
+              centered: true,
+              size: 'lg',
+              children: <CloneStudyPlanDetailsFormFields studyPlanToClone={studyPlan} />,
+            })
+          }
+        >
+          Clone
+        </Menu.Item>
 
         <Menu.Divider />
 
