@@ -12,4 +12,3 @@ public class ProdDiagnostics {
         System.out.println("prod profile is active.");
     }
 }
-

@@ -5,7 +5,9 @@ import com.yousefalfoqaha.gjuplans.program.exception.InvalidDegreeException;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.*;
-import com.yousefalfoqaha.gjuplans.user.InvalidCredentialsException;
+import com.yousefalfoqaha.gjuplans.user.exception.InvalidCredentialsException;
+import com.yousefalfoqaha.gjuplans.user.exception.InvalidPasswordException;
+import com.yousefalfoqaha.gjuplans.user.exception.UserNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
@@ -34,9 +36,37 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            UserNotFoundException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.NOT_FOUND.value(),
+                        List.of(exception.getMessage()),
+                        new Date()
+                ),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
     @ExceptionHandler(EmptyListException.class)
     public ResponseEntity<ErrorObject> handleException(
             EmptyListException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.BAD_REQUEST.value(),
+                        List.of(exception.getMessage()),
+                        new Date()
+                ),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            InvalidPasswordException exception
     ) {
         return new ResponseEntity<>(
                 new ErrorObject(

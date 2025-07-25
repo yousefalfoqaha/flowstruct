@@ -1,6 +1,7 @@
 package com.yousefalfoqaha.gjuplans.user;
 
 import com.yousefalfoqaha.gjuplans.user.dto.LoginDetailsDto;
+import com.yousefalfoqaha.gjuplans.user.dto.UserDetailsDto;
 import com.yousefalfoqaha.gjuplans.user.dto.UserDto;
 import com.yousefalfoqaha.gjuplans.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -68,4 +69,11 @@ public class UserController {
         return new ResponseEntity<>(userService.getMe(), HttpStatus.OK);
     }
 
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserDto> editUserDetails(@PathVariable long userId, @Valid @RequestBody UserDetailsDto details) {
+        return new ResponseEntity<>(
+                userService.editUserDetails(userId, details),
+                HttpStatus.OK
+        );
+    }
 }

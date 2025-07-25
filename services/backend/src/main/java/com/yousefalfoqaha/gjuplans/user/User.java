@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.*;
 import org.springframework.data.relational.core.mapping.Table;
+
+import java.time.Instant;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,4 +22,16 @@ public class User {
     String username;
 
     String password;
+
+    @Version
+    private Long version;
+
+    @CreatedDate
+    private Instant createdAt;
+
+    @LastModifiedDate
+    private Instant updatedAt;
+
+    @LastModifiedBy
+    private Long updatedBy;
 }
