@@ -1,19 +1,17 @@
 package com.yousefalfoqaha.gjuplans.user.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record UserDetailsDto(
 
-        @NotBlank(message = "Username required.")
-        @Size(min = 3, message = "Username must be at least 3 characters long.")
+        @NotBlank(message = "Please provide a username.")
+        @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters long.")
         String username,
 
-        @NotNull(message = "Undefined new password field.")
-        String newPassword,
-
-        @NotNull(message = "Undefined confirm password field.")
-        String confirmPassword
+        @NotBlank(message = "Please provide an email address.")
+        @Email(message = "Please provide a valid email address.")
+        String email
 ) {
 }

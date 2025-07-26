@@ -5,11 +5,11 @@ import com.yousefalfoqaha.gjuplans.user.User;
 import com.yousefalfoqaha.gjuplans.user.UserDtoMapper;
 import com.yousefalfoqaha.gjuplans.user.UserRepository;
 import com.yousefalfoqaha.gjuplans.user.dto.LoginDetailsDto;
+import com.yousefalfoqaha.gjuplans.user.dto.PasswordDetailsDto;
 import com.yousefalfoqaha.gjuplans.user.dto.UserDetailsDto;
 import com.yousefalfoqaha.gjuplans.user.dto.UserDto;
 import com.yousefalfoqaha.gjuplans.user.exception.InvalidCredentialsException;
 import com.yousefalfoqaha.gjuplans.user.exception.InvalidPasswordException;
-import com.yousefalfoqaha.gjuplans.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,11 +46,7 @@ public class UserService {
     }
 
     public UserDto getMe() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("No account was found."));
-
-        return userDtoMapper.apply(user);
+        return userDtoMapper.apply(getCurrentUser());
     }
 
     public Map<Long, UserDto> getAllUsers() {
@@ -64,30 +59,38 @@ public class UserService {
                 ));
     }
 
-    public UserDto editUserDetails(long userId, UserDetailsDto details) {
-        var user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("No user was found."));
+    public UserDto editMyDetails(UserDetailsDto details) {
+        User me = getCurrentUser();
 
-        user.setUsername(details.username());
+        me.setUsername(details.username().trim());
+        me.setEmail(details.email().trim());
 
-        String newPassword = details.newPassword().trim();
-        String confirmPassword = details.confirmPassword().trim();
+        return saveAndMapUser(me);
+    }
 
-        if (!Objects.equals(newPassword, confirmPassword)) {
+    public UserDto changeMyPassword(PasswordDetailsDto passwordDetails) {
+        String newPassword = passwordDetails.newPassword().trim();
+        String confirmPassword = passwordDetails.confirmPassword().trim();
+
+        if (!confirmPassword.equals(newPassword)) {
             throw new InvalidPasswordException("New and confirmed passwords must be the same.");
         }
 
-        if (newPassword.isEmpty()) {
-            return saveAndMapUser(user);
+        User me = getCurrentUser();
+
+        if (!passwordEncoder.matches(passwordDetails.currentPassword(), me.getPassword())) {
+            throw new InvalidPasswordException("Enter the correct current password.");
         }
 
-        if (newPassword.length() <= 8) {
-            throw new InvalidPasswordException("Password needs to be longer than 7 characters.");
-        }
+        me.setPassword(passwordEncoder.encode(newPassword));
 
-        newPassword = passwordEncoder.encode(newPassword);
-        user.setPassword(newPassword);
+        return saveAndMapUser(me);
+    }
 
-        return saveAndMapUser(user);
+    private User getCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("No user was found."));
     }
 
     private UserDto saveAndMapUser(User user) {
