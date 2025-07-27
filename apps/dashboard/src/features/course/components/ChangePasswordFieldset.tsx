@@ -50,7 +50,11 @@ export function ChangePasswordFieldset() {
             Cancel
           </Button>
 
-          <Button type="submit" leftSection={<Pencil size={18} />}>
+          <Button
+            type="submit"
+            loading={changePassword.isPending}
+            leftSection={<Pencil size={18} />}
+          >
             Save Changes
           </Button>
         </Group>
