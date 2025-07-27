@@ -1,4 +1,4 @@
-import { Button, Stack } from '@mantine/core';
+import { Button, Fieldset, Stack } from '@mantine/core';
 import { courseDetailsSchema } from '@/features/course/schemas.ts';
 import { CourseDetailsFormFields } from '@/features/course/components/CourseDetailsFormFields.tsx';
 import { Plus } from 'lucide-react';
@@ -40,7 +40,9 @@ export function EditCourseModal({ courseId }: Props) {
   return (
     <form onSubmit={onSubmit}>
       <Stack>
-        <CourseDetailsFormFields form={form} preset={preset} changePreset={changePreset} />
+        <Fieldset>
+          <CourseDetailsFormFields form={form} preset={preset} changePreset={changePreset} />
+        </Fieldset>
 
         <Button
           disabled={!form.formState.isValid}
@@ -48,7 +50,6 @@ export function EditCourseModal({ courseId }: Props) {
           type="submit"
           loading={editCourseDetails.isPending}
           fullWidth
-          mt="md"
         >
           Save Changes
         </Button>

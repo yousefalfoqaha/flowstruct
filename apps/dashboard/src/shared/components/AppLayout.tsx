@@ -8,7 +8,7 @@ import { Route as ProgramsRoute } from '@/routes/_layout/programs';
 import { Route as StudyPlansRoute } from '@/routes/_layout/study-plans';
 import { Route as CoursesRoute } from '@/routes/_layout/courses';
 import { Route as DetailsRoute } from '@/routes/_layout/study-plans/$studyPlanId/details';
-import { User } from '@/shared/components/User.tsx';
+import { User } from '@/features/user/components/User.tsx';
 import { PublishStudyPlansModal } from '@/shared/components/PublishStudyPlansModal.tsx';
 
 const tabs: NavbarLinks[] = [
@@ -39,10 +39,10 @@ export function AppLayout({ children }: Props) {
       <div className={classes.header}>
         <Container size="xl">
           <Group justify="space-between" pt="lg" pb="sm">
-            <Group>
-              <Image src="/logo.png" h={45} w={45} mt={4} />
+            <Group gap="xs">
+              <Image src="/logo.png" h={45} w={45} />
 
-              <Title size="xl" fw={600}>
+              <Title order={3} fw={600}>
                 GJUPlans Admin
               </Title>
             </Group>

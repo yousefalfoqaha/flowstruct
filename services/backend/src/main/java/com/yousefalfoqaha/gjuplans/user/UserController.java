@@ -93,10 +93,8 @@ public class UserController {
     }
 
     @PutMapping("/me/password")
-    public ResponseEntity<UserDto> changeMyPassword(@Valid @RequestBody PasswordDetailsDto passwordDetails) {
-        return new ResponseEntity<>(
-                userService.changeMyPassword(passwordDetails),
-                HttpStatus.OK
-        );
+    public ResponseEntity<Void> changeMyPassword(@Valid @RequestBody PasswordDetailsDto passwordDetails) {
+        userService.changeMyPassword(passwordDetails);
+        return ResponseEntity.noContent().build();
     }
 }

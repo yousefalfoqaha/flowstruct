@@ -81,7 +81,7 @@ export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
                             />
                           ),
                           children: <EditCourseModal courseId={course.id} />,
-                          size: 'lg',
+                          size: 'xl',
                           centered: true,
                         })
                       }
@@ -98,7 +98,7 @@ export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
             })
           }
         >
-          View details
+          View
         </Menu.Item>
 
         <Menu.Sub>

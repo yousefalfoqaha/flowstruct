@@ -69,7 +69,7 @@ public class UserService {
         return new UserWithTokenDto(userDtoMapper.apply(me), token);
     }
 
-    public UserDto changeMyPassword(PasswordDetailsDto passwordDetails) {
+    public void changeMyPassword(PasswordDetailsDto passwordDetails) {
         String newPassword = passwordDetails.newPassword().trim();
         String confirmPassword = passwordDetails.confirmPassword().trim();
 
@@ -85,7 +85,7 @@ public class UserService {
 
         me.setPassword(passwordEncoder.encode(newPassword));
 
-        return saveAndMapUser(me);
+        userRepository.save(me);
     }
 
     private User getCurrentUser() {

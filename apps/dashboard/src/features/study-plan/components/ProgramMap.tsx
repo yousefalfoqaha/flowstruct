@@ -10,7 +10,7 @@ import { createCourseGridCellMap } from '@/utils/createCourseGridCellMap.ts';
 import React from 'react';
 import { CoursePlacement } from '@/features/study-plan/types.ts';
 import { comparePlacement } from '@/utils/comparePlacement.ts';
-import { Button, Paper, Stack, Text, Title } from '@mantine/core';
+import { Button, Paper, Stack, Text, Title, ScrollArea } from '@mantine/core';
 import { BookOpen, BookPlus, MoveLeft, MoveRight } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { DefaultFrameworkCoursesSearchValues } from '@/utils/defaultFrameworkCoursesSearchValues.ts';
@@ -98,7 +98,7 @@ export function ProgramMap() {
         </Button>
       </div>
 
-      <div ref={scrollableRef} className={classes.gridContainer}>
+      <ScrollArea offsetScrollbars scrollbarSize={5} viewportRef={scrollableRef} className={classes.gridContainer}>
         <div className={classes.wrapper}>
           <div
             className={classes.headerGrid}
@@ -209,7 +209,7 @@ export function ProgramMap() {
             })}
           </div>
         </div>
-      </div>
+      </ScrollArea>
     </div>
   );
 }

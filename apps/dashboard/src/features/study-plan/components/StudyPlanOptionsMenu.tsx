@@ -41,6 +41,8 @@ export function StudyPlanOptionsMenu({ studyPlan }: Props) {
           <Menu.Item leftSection={<Pencil size={14} />}>Edit details</Menu.Item>
         </Link>
 
+        <Menu.Divider />
+
         <Menu.Item
           leftSection={<CopyPlus size={14} />}
           onClick={() =>
@@ -59,8 +61,6 @@ export function StudyPlanOptionsMenu({ studyPlan }: Props) {
         >
           Clone
         </Menu.Item>
-
-        <Menu.Divider />
 
         <Menu.Item
           color="red"

@@ -2,7 +2,7 @@ import { Group, LoadingOverlay, Stack } from '@mantine/core';
 import { InfoItem } from '@/shared/components/InfoItem.tsx';
 import { CourseType } from '@/features/course/types.ts';
 import { useCourse } from '@/features/course/hooks/useCourse.ts';
-import classes from '@/features/course/components/CourseDetailsModal.module.css';
+import classes from '@/shared/components/DetailsContainer.module.css';
 
 type Props = {
   courseId: number;
@@ -17,7 +17,7 @@ export function CourseDetailsDisplay({ courseId }: Props) {
   if (!course) return;
 
   return (
-    <div className={classes.courseInformation}>
+    <div className={classes.detailsContainer}>
       <Stack>
         <Group grow>
           <InfoItem label="Code" value={course.code} />

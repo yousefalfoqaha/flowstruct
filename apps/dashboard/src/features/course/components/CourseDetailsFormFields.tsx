@@ -1,7 +1,6 @@
 import {
   Center,
   Checkbox,
-  FocusTrap,
   Group,
   NumberInput,
   Radio,
@@ -25,17 +24,13 @@ import { PresetType } from '@/features/course/hooks/useCoursePreset.ts';
 import { z } from 'zod/v4';
 import { courseDetailsSchema } from '@/features/course/schemas.ts';
 
-type CourseDetailsFormFieldsProps = {
+type Props = {
   form: UseFormReturn<z.infer<typeof courseDetailsSchema>>;
   preset: PresetType;
   changePreset: (value: PresetType) => void;
 };
 
-export function CourseDetailsFormFields({
-  form,
-  preset,
-  changePreset,
-}: CourseDetailsFormFieldsProps) {
+export function CourseDetailsFormFields({ form, preset, changePreset }: Props) {
   const {
     control,
     formState: { errors },
@@ -48,18 +43,16 @@ export function CourseDetailsFormFields({
           name="code"
           control={control}
           render={({ field }) => (
-            <FocusTrap active={true}>
-              <TextInput
-                data-autofocus
-                w="25%"
-                label="Code"
-                leftSection={<Hash size={18} />}
-                {...field}
-                error={errors.code?.message}
-                autoComplete="off"
-                withAsterisk
-              />
-            </FocusTrap>
+            <TextInput
+              data-autofocus
+              w="25%"
+              label="Code"
+              leftSection={<Hash size={18} />}
+              {...field}
+              error={errors.code?.message}
+              autoComplete="off"
+              withAsterisk
+            />
           )}
         />
 

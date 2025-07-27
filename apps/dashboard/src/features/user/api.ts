@@ -15,3 +15,25 @@ export const getMe = () => api.get<User>([ENDPOINT, 'me']);
 export const logoutUser = () => api.post([ENDPOINT, 'logout']);
 
 export const getUserList = () => api.get<Record<number, User>>([ENDPOINT]);
+
+export const editUserDetails = ({ details }: { details: Partial<User> }) =>
+  api.put<User>([ENDPOINT, 'me'], {
+    body: details,
+  });
+
+export const changePassword = ({
+  currentPassword,
+  newPassword,
+  confirmPassword,
+}: {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}) =>
+  api.put<void>([ENDPOINT, 'me', 'password'], {
+    body: {
+      currentPassword,
+      newPassword,
+      confirmPassword,
+    },
+  });
