@@ -1,4 +1,4 @@
-import { Button, Modal, Stack } from '@mantine/core';
+import { Button, Fieldset, Modal, Stack } from '@mantine/core';
 import { useCreateCourse } from '@/features/course/hooks/useCreateCourse.ts';
 import { courseDetailsSchema } from '@/features/course/schemas.ts';
 import { CourseDetailsFormFields } from '@/features/course/components/CourseDetailsFormFields.tsx';
@@ -9,6 +9,7 @@ import { PresetType, useCoursePreset } from '@/features/course/hooks/useCoursePr
 import { useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
 import { customResolver } from '@/utils/customResolver.ts';
+import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 
 interface CreateCourseModalProps {
   opened: boolean;
@@ -56,10 +57,20 @@ export function CreateCourseModal({
   });
 
   return (
-    <Modal size="xl" opened={opened} onClose={handleClose} title="Create Course" centered>
+    <Modal
+      size="xl"
+      opened={opened}
+      onClose={handleClose}
+      title={
+        <ModalHeader title="Create New Course" subtitle="Enter the details for the new course" />
+      }
+      centered
+    >
       <form onSubmit={onSubmit}>
         <Stack>
-          <CourseDetailsFormFields form={form} preset={preset} changePreset={changePreset} />
+          <Fieldset>
+            <CourseDetailsFormFields form={form} preset={preset} changePreset={changePreset} />
+          </Fieldset>
 
           <Button
             disabled={!form.formState.isValid}
@@ -67,7 +78,6 @@ export function CreateCourseModal({
             type="submit"
             loading={createCourse.isPending}
             fullWidth
-            mt="md"
           >
             Create and Select Course
           </Button>

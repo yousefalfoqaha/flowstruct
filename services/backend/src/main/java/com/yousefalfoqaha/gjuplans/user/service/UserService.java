@@ -78,11 +78,13 @@ public class UserService {
 
         User me = getCurrentUser();
 
-        if (!passwordEncoder.matches(passwordDetails.currentPassword(), me.getPassword())) {
+        try {
+            if (passwordEncoder.matches(passwordDetails.currentPassword().trim(), me.getPassword())) {
+                me.setPassword(passwordEncoder.encode(newPassword));
+            }
+        } catch (IllegalArgumentException e) {
             throw new InvalidPasswordException("Enter the correct current password.");
         }
-
-        me.setPassword(passwordEncoder.encode(newPassword));
 
         return saveAndMapUser(me);
     }

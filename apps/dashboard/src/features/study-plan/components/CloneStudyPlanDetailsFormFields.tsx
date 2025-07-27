@@ -5,7 +5,7 @@ import { studyPlanDetailsSchema } from '@/features/study-plan/schemas.ts';
 import { customResolver } from '@/utils/customResolver.ts';
 import { StudyPlanSummary } from '@/features/study-plan/types.ts';
 import { useCloneStudyPlan } from '@/features/study-plan/hooks/useCloneStudyPlan.ts';
-import { Button, Group, Stack } from '@mantine/core';
+import { Button, Fieldset, Group, Stack } from '@mantine/core';
 import { CopyPlus, X } from 'lucide-react';
 import { modals } from '@mantine/modals';
 
@@ -47,7 +47,9 @@ export function CloneStudyPlanDetailsFormFields({ studyPlanToClone }: Props) {
   return (
     <form onSubmit={onSubmit}>
       <Stack>
-        <StudyPlanDetailsFormFields form={form} disableProgramSelect={true} />
+        <Fieldset>
+          <StudyPlanDetailsFormFields form={form} disableProgramSelect={true} />
+        </Fieldset>
 
         <Group justify="space-between">
           <Button onClick={() => modals.closeAll()} variant="default" leftSection={<X size={18} />}>
