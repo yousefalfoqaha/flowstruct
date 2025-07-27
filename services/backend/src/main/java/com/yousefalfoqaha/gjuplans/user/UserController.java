@@ -1,9 +1,6 @@
 package com.yousefalfoqaha.gjuplans.user;
 
-import com.yousefalfoqaha.gjuplans.user.dto.LoginDetailsDto;
-import com.yousefalfoqaha.gjuplans.user.dto.PasswordDetailsDto;
-import com.yousefalfoqaha.gjuplans.user.dto.UserDetailsDto;
-import com.yousefalfoqaha.gjuplans.user.dto.UserDto;
+import com.yousefalfoqaha.gjuplans.user.dto.*;
 import com.yousefalfoqaha.gjuplans.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -78,35 +75,25 @@ public class UserController {
             @Valid @RequestBody UserDetailsDto details,
             HttpServletResponse response
     ) {
-        ResponseCookie emptyCookie = ResponseCookie.from("accessToken")
+        UserWithTokenDto userWithToken = userService.editMyDetails(details);
+
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", userWithToken.token())
                 .httpOnly(true)
                 .secure(cookieSecure)
                 .path("/")
-                .maxAge(0)
+                .maxAge(Duration.ofSeconds(cookieExpiry))
                 .build();
 
-        response.addHeader(HttpHeaders.SET_COOKIE, emptyCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
 
         return new ResponseEntity<>(
-                userService.editMyDetails(details),
+                userWithToken.user(),
                 HttpStatus.OK
         );
     }
 
     @PutMapping("/me/password")
-    public ResponseEntity<UserDto> changeMyPassword(
-            @Valid @RequestBody PasswordDetailsDto passwordDetails,
-            HttpServletResponse response
-    ) {
-        ResponseCookie emptyCookie = ResponseCookie.from("accessToken")
-                .httpOnly(true)
-                .secure(cookieSecure)
-                .path("/")
-                .maxAge(0)
-                .build();
-
-        response.addHeader(HttpHeaders.SET_COOKIE, emptyCookie.toString());
-
+    public ResponseEntity<UserDto> changeMyPassword(@Valid @RequestBody PasswordDetailsDto passwordDetails) {
         return new ResponseEntity<>(
                 userService.changeMyPassword(passwordDetails),
                 HttpStatus.OK

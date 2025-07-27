@@ -1,7 +1,10 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
   config:
     activate:
       on-profile: dev
+    import: file:.env[.properties]
   flyway:
     locations: "classpath:db/migration,classpath:dev/db/migration"
 

@@ -1,24 +1,4 @@
 services:
-  backend:
-    build:
-      context: .
-      target: base
-    command: ./mvnw spring-boot:run
-    environment:
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      BACKEND_API_KEY: ${BACKEND_API_KEY}
-      ADMIN_BASE_URL: ${ADMIN_BASE_URL}
-    volumes:
-      - ./src:/app/src
-      - ~/.m2:/root/.m2
-    ports:
-      - "8080:8080"
-    depends_on:
-      - database
-
   database:
     image: postgres:16.9-alpine
     environment:

@@ -4,10 +4,7 @@ import com.yousefalfoqaha.gjuplans.auth.JwtService;
 import com.yousefalfoqaha.gjuplans.user.User;
 import com.yousefalfoqaha.gjuplans.user.UserDtoMapper;
 import com.yousefalfoqaha.gjuplans.user.UserRepository;
-import com.yousefalfoqaha.gjuplans.user.dto.LoginDetailsDto;
-import com.yousefalfoqaha.gjuplans.user.dto.PasswordDetailsDto;
-import com.yousefalfoqaha.gjuplans.user.dto.UserDetailsDto;
-import com.yousefalfoqaha.gjuplans.user.dto.UserDto;
+import com.yousefalfoqaha.gjuplans.user.dto.*;
 import com.yousefalfoqaha.gjuplans.user.exception.InvalidCredentialsException;
 import com.yousefalfoqaha.gjuplans.user.exception.InvalidPasswordException;
 import lombok.RequiredArgsConstructor;
@@ -59,13 +56,17 @@ public class UserService {
                 ));
     }
 
-    public UserDto editMyDetails(UserDetailsDto details) {
+    public UserWithTokenDto editMyDetails(UserDetailsDto details) {
         User me = getCurrentUser();
 
         me.setUsername(details.username().trim());
         me.setEmail(details.email().trim());
 
-        return saveAndMapUser(me);
+        userRepository.save(me);
+
+        String token = jwtService.generateToken(me.getUsername());
+
+        return new UserWithTokenDto(userDtoMapper.apply(me), token);
     }
 
     public UserDto changeMyPassword(PasswordDetailsDto passwordDetails) {
@@ -78,13 +79,11 @@ public class UserService {
 
         User me = getCurrentUser();
 
-        try {
-            if (passwordEncoder.matches(passwordDetails.currentPassword().trim(), me.getPassword())) {
-                me.setPassword(passwordEncoder.encode(newPassword));
-            }
-        } catch (IllegalArgumentException e) {
+        if (!passwordEncoder.matches(passwordDetails.currentPassword().trim(), me.getPassword())) {
             throw new InvalidPasswordException("Enter the correct current password.");
         }
+
+        me.setPassword(passwordEncoder.encode(newPassword));
 
         return saveAndMapUser(me);
     }
