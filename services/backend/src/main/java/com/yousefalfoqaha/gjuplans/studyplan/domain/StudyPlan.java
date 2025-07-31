@@ -30,7 +30,7 @@ public class StudyPlan {
 
     private String track;
 
-    private boolean isPublished;
+    private String draft;
 
     private AggregateReference<Program, Long> program;
 
@@ -68,5 +68,27 @@ public class StudyPlan {
         return courseCorequisites
                 .stream()
                 .collect(Collectors.groupingBy(courseCorequisite -> courseCorequisite.getCourse().getId()));
+    }
+
+    public StudyPlan(
+            Long id,
+            int year,
+            int duration,
+            String track,
+            AggregateReference<Program, Long> program,
+            Set<Section> sections,
+            Map<Long, Placement> coursePlacements,
+            Set<CoursePrerequisite> coursePrerequisites,
+            Set<CourseCorequisite> courseCorequisites
+    ) {
+        this.id = id;
+        this.year = year;
+        this.duration = duration;
+        this.track = track;
+        this.program = program;
+        this.sections = sections;
+        this.coursePlacements = coursePlacements;
+        this.coursePrerequisites = coursePrerequisites;
+        this.courseCorequisites = courseCorequisites;
     }
 }

@@ -1,5 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yousefalfoqaha.gjuplans.common.EmptyListException;
 import com.yousefalfoqaha.gjuplans.common.InvalidDetailsException;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
@@ -24,6 +26,7 @@ public class StudyPlanService {
     private final StudyPlanRepository studyPlanRepository;
     private final StudyPlanGraphService studyPlanGraphService;
     private final StudyPlanDtoMapper studyPlanDtoMapper;
+    private ObjectMapper objectMapper;
 
     public StudyPlanDto getStudyPlan(long studyPlanId) {
         var studyPlan = findStudyPlan(studyPlanId);
@@ -105,12 +108,14 @@ public class StudyPlanService {
                 })
                 .collect(Collectors.toSet());
 
+        StudyPlan draftStudyPlan = new StudyPlan();
+
         StudyPlan studyPlanClone = new StudyPlan(
                 null,
                 cloneDetails.year(),
                 cloneDetails.duration(),
                 cloneDetails.track(),
-                false,
+                new StudyPlan(),
                 studyPlanToClone.getProgram(),
                 null,
                 null,
@@ -190,7 +195,6 @@ public class StudyPlanService {
         deleteCoursePlacement(studyPlan, courseId, oldPlacement);
         insertCoursePlacement(studyPlan, courseId, newPlacement);
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -264,7 +268,6 @@ public class StudyPlanService {
             studyPlan.getCoursePlacements().put(courseId, individualCoursePlacement);
         }
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -281,7 +284,6 @@ public class StudyPlanService {
                 .entrySet()
                 .removeIf(entry -> entry.getValue().getYear() > studyPlan.getDuration());
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -304,7 +306,6 @@ public class StudyPlanService {
                 new HashSet<>()
         );
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -339,7 +340,6 @@ public class StudyPlanService {
 
         studyPlan.getSections().add(newSection);
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -360,7 +360,6 @@ public class StudyPlanService {
                         }
                 );
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -404,7 +403,6 @@ public class StudyPlanService {
 
         studyPlan.getSections().remove(section);
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -440,7 +438,6 @@ public class StudyPlanService {
 
         section.getCourses().addAll(toBeAddedCourses);
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -464,7 +461,6 @@ public class StudyPlanService {
             deleteCoursePlacement(studyPlan, courseId, studyPlan.getCoursePlacements().get(courseId));
         }
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -501,7 +497,6 @@ public class StudyPlanService {
             );
         }
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -522,7 +517,6 @@ public class StudyPlanService {
             );
         }
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -540,7 +534,6 @@ public class StudyPlanService {
 
         if (!removed) throw new CourseNotFoundException("Corequisite not found");
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -559,7 +552,6 @@ public class StudyPlanService {
 
         if (!removed) throw new CourseNotFoundException("Prerequisite not found");
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -586,7 +578,6 @@ public class StudyPlanService {
             targetSection.addCourse(courseId);
         }
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -632,7 +623,6 @@ public class StudyPlanService {
         targetSection.setPosition(newPosition);
         swappedSection.setPosition(currentPosition);
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -652,7 +642,6 @@ public class StudyPlanService {
 
         coursePlacement.setSpan(span);
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
     }
 
@@ -662,19 +651,21 @@ public class StudyPlanService {
 
         deleteCoursePlacement(studyPlan, courseId, studyPlan.getCoursePlacements().get(courseId));
 
-        markAsDraft(studyPlan);
         return saveAndMapStudyPlan(studyPlan);
+    }
+
+    private StudyPlanDraft getDraft(StudyPlan studyPlan) throws JsonProcessingException {
+        String draftString = studyPlan.getDraft();
+        if (draftString == null) {
+            draftString = "{}";
+        }
+
+        return objectMapper.readValue(draftString, StudyPlanDraft.class);
     }
 
     private StudyPlan findStudyPlan(long studyPlanId) {
         return studyPlanRepository.findById(studyPlanId)
                 .orElseThrow(() -> new StudyPlanNotFoundException("Study plan with id " + studyPlanId + " was not found."));
-    }
-
-    private void markAsDraft(StudyPlan studyPlan) {
-        if (studyPlan.isPublished()) {
-            studyPlan.setPublished(false);
-        }
     }
 
     private StudyPlanDto saveAndMapStudyPlan(StudyPlan studyPlan) {

@@ -24,7 +24,7 @@ public class StudyPlanDtoMapper implements Function<StudyPlan, StudyPlanDto> {
                 studyPlan.getYear(),
                 studyPlan.getDuration(),
                 studyPlan.getTrack(),
-                studyPlan.isPublished(),
+                null,
                 studyPlan.getProgram().getId(),
                 studyPlan.getCreatedAt(),
                 studyPlan.getUpdatedAt(),
