@@ -93,15 +93,4 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("No user was found."));
     }
-
-    private UserDto saveAndMapUser(User user) {
-        try {
-            User savedUser = userRepository.save(user);
-            return userDtoMapper.apply(savedUser);
-        } catch (OptimisticLockingFailureException e) {
-            throw new OptimisticLockingFailureException(
-                    "This user has been modified by another user while you were editing. Please refresh to see the latest details."
-            );
-        }
-    }
 }
