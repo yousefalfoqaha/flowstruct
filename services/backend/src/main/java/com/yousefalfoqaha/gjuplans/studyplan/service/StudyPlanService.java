@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yousefalfoqaha.gjuplans.common.EmptyListException;
 import com.yousefalfoqaha.gjuplans.common.InvalidDetailsException;
+import com.yousefalfoqaha.gjuplans.common.PublishStatus;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanDtoMapper;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanRepository;
@@ -97,6 +98,7 @@ public class StudyPlanService {
             throw new InvalidDetailsException("Cloned study plan must come from the same program.");
         }
 
+
         studyPlanToClone.getCoursePlacements()
                 .entrySet()
                 .removeIf(entry -> entry.getValue().getYear() > cloneDetails.duration());
@@ -108,14 +110,24 @@ public class StudyPlanService {
                 })
                 .collect(Collectors.toSet());
 
-        StudyPlan draftStudyPlan = new StudyPlan();
+        var draft = new StudyPlanDraft(
+                cloneDetails.year(),
+                cloneDetails.duration(),
+                cloneDetails.track(),
+                studyPlanToClone.getProgram(),
+                sectionClones,
+                studyPlanToClone.getCoursePlacements(),
+                studyPlanToClone.getCoursePrerequisites(),
+                studyPlanToClone.getCourseCorequisites()
+        );
 
         StudyPlan studyPlanClone = new StudyPlan(
                 null,
                 cloneDetails.year(),
                 cloneDetails.duration(),
                 cloneDetails.track(),
-                new StudyPlan(),
+                PublishStatus.DRAFT,
+                draft,
                 studyPlanToClone.getProgram(),
                 null,
                 null,

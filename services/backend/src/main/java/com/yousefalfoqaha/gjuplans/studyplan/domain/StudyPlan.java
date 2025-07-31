@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan.domain;
 
+import com.yousefalfoqaha.gjuplans.common.PublishStatus;
 import com.yousefalfoqaha.gjuplans.program.domain.Program;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,7 +31,9 @@ public class StudyPlan {
 
     private String track;
 
-    private String draft;
+    private PublishStatus status;
+
+    private StudyPlanDraft draft;
 
     private AggregateReference<Program, Long> program;
 
@@ -68,27 +71,5 @@ public class StudyPlan {
         return courseCorequisites
                 .stream()
                 .collect(Collectors.groupingBy(courseCorequisite -> courseCorequisite.getCourse().getId()));
-    }
-
-    public StudyPlan(
-            Long id,
-            int year,
-            int duration,
-            String track,
-            AggregateReference<Program, Long> program,
-            Set<Section> sections,
-            Map<Long, Placement> coursePlacements,
-            Set<CoursePrerequisite> coursePrerequisites,
-            Set<CourseCorequisite> courseCorequisites
-    ) {
-        this.id = id;
-        this.year = year;
-        this.duration = duration;
-        this.track = track;
-        this.program = program;
-        this.sections = sections;
-        this.coursePlacements = coursePlacements;
-        this.coursePrerequisites = coursePrerequisites;
-        this.courseCorequisites = courseCorequisites;
     }
 }

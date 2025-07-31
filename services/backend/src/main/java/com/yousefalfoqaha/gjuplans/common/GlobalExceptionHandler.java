@@ -126,6 +126,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(InvalidDraftException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            InvalidDraftException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.CONFLICT.value(),
+                        List.of(exception.getMessage()),
+                        new Date()
+                ),
+                HttpStatus.CONFLICT
+        );
+    }
+
     @ExceptionHandler(InvalidSpanException.class)
     public ResponseEntity<ErrorObject> handleException(
             InvalidSpanException exception
