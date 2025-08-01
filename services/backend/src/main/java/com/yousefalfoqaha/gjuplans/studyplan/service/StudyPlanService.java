@@ -1,7 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yousefalfoqaha.gjuplans.common.EmptyListException;
 import com.yousefalfoqaha.gjuplans.common.InvalidDetailsException;
 import com.yousefalfoqaha.gjuplans.common.PublishStatus;
@@ -27,7 +26,6 @@ public class StudyPlanService {
     private final StudyPlanRepository studyPlanRepository;
     private final StudyPlanGraphService studyPlanGraphService;
     private final StudyPlanDtoMapper studyPlanDtoMapper;
-    private ObjectMapper objectMapper;
 
     public StudyPlanDto getStudyPlan(long studyPlanId) {
         var studyPlan = findStudyPlan(studyPlanId);
@@ -290,7 +288,6 @@ public class StudyPlanService {
         studyPlan.setYear(details.year());
         studyPlan.setDuration(details.duration());
         studyPlan.setTrack(details.track().trim());
-        studyPlan.setPublished(details.isPublished());
 
         studyPlan.getCoursePlacements()
                 .entrySet()
@@ -664,15 +661,6 @@ public class StudyPlanService {
         deleteCoursePlacement(studyPlan, courseId, studyPlan.getCoursePlacements().get(courseId));
 
         return saveAndMapStudyPlan(studyPlan);
-    }
-
-    private StudyPlanDraft getDraft(StudyPlan studyPlan) throws JsonProcessingException {
-        String draftString = studyPlan.getDraft();
-        if (draftString == null) {
-            draftString = "{}";
-        }
-
-        return objectMapper.readValue(draftString, StudyPlanDraft.class);
     }
 
     private StudyPlan findStudyPlan(long studyPlanId) {

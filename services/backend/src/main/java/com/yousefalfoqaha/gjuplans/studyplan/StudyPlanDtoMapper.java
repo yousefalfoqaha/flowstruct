@@ -9,6 +9,7 @@ import com.yousefalfoqaha.gjuplans.studyplan.dto.SectionDto;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDto;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.function.Function;
@@ -24,7 +25,7 @@ public class StudyPlanDtoMapper implements Function<StudyPlan, StudyPlanDto> {
                 studyPlan.getYear(),
                 studyPlan.getDuration(),
                 studyPlan.getTrack(),
-                null,
+                studyPlan.getStatus(),
                 studyPlan.getProgram().getId(),
                 studyPlan.getCreatedAt(),
                 studyPlan.getUpdatedAt(),

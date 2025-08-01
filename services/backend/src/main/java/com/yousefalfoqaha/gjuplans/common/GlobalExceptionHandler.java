@@ -140,6 +140,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(PendingResourceException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            PendingResourceException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.CONFLICT.value(),
+                        List.of(exception.getMessage()),
+                        new Date()
+                ),
+                HttpStatus.CONFLICT
+        );
+    }
+
     @ExceptionHandler(InvalidSpanException.class)
     public ResponseEntity<ErrorObject> handleException(
             InvalidSpanException exception

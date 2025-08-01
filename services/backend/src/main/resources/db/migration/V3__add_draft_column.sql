@@ -1,10 +1,12 @@
 ALTER TABLE program
-    ADD COLUMN draft JSONB;
+    ADD COLUMN status VARCHAR(255) DEFAULT ('DRAFT') NOT NULL,
+    ADD COLUMN draft  JSONB;
 
 ALTER TABLE study_plan
-DROP
-COLUMN is_published
-    ADD COLUMN draft JSONB;
+    DROP COLUMN is_published,
+    ADD COLUMN status VARCHAR(255) DEFAULT ('DRAFT') NOT NULL,
+    ADD COLUMN draft  JSONB;
 
 ALTER TABLE course
-    ADD COLUMN draft JSONB;
+    ADD COLUMN status VARCHAR(255) DEFAULT ('DRAFT') NOT NULL,
+    ADD COLUMN draft  JSONB;

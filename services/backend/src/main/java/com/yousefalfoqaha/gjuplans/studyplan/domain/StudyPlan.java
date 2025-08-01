@@ -61,6 +61,23 @@ public class StudyPlan {
     @MappedCollection(idColumn = "study_plan")
     private Set<CourseCorequisite> courseCorequisites = new HashSet<>();
 
+    public StudyPlanDraft getDraft() {
+        if (this.status == PublishStatus.PUBLISHED || this.draft == null) {
+            this.draft = new StudyPlanDraft(
+                    this.year,
+                    this.duration,
+                    this.track,
+                    this.program,
+                    this.sections,
+                    this.coursePlacements,
+                    this.coursePrerequisites,
+                    this.courseCorequisites
+            );
+        }
+
+        return this.draft;
+    }
+
     public Map<Long, List<CoursePrerequisite>> getCoursePrerequisitesMap() {
         return coursePrerequisites
                 .stream()
