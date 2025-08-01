@@ -36,58 +36,6 @@ public class StudyPlanService {
         return studyPlanRepository.findAllStudyPlanSummaries();
     }
 
-    public StudyPlanWithSequencesDto getStudyPlanWithSequences(long studyPlanId) {
-        var studyPlan = findStudyPlan(studyPlanId);
-
-        var studyPlanResponse = studyPlanDtoMapper.apply(studyPlan);
-
-        var courseSequencesMap = studyPlanGraphService.buildStudyPlanSequences(
-                studyPlanResponse.coursePrerequisites(),
-                studyPlan.getSections()
-                        .stream()
-                        .flatMap(s -> s.getCourses().stream().map(c -> c.getCourse().getId()))
-                        .toList()
-        );
-
-        var courseSequences = courseSequencesMap.entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> {
-                            var sequences = entry.getValue();
-                            return new SequencesDto(
-                                    sequences.getPrerequisiteSequence()
-                                            .stream()
-                                            .filter(prerequisiteSequenceId -> {
-                                                var prerequisites = studyPlanResponse.coursePrerequisites().get(entry.getKey());
-                                                if (prerequisites == null) return true;
-
-                                                return prerequisites.keySet()
-                                                        .stream()
-                                                        .noneMatch(prerequisiteId -> Objects.equals(prerequisiteId, prerequisiteSequenceId));
-                                            })
-                                            .collect(Collectors.toSet()),
-                                    sequences.getPostrequisiteSequence(),
-                                    sequences.getLevel()
-                            );
-                        }
-                ));
-
-        return new StudyPlanWithSequencesDto(
-                studyPlanResponse.id(),
-                studyPlanResponse.year(),
-                studyPlanResponse.duration(),
-                studyPlanResponse.track(),
-                studyPlanResponse.isPublished(),
-                studyPlanResponse.program(),
-                studyPlanResponse.sections(),
-                studyPlanResponse.coursePlacements(),
-                studyPlanResponse.coursePrerequisites(),
-                studyPlanResponse.courseCorequisites(),
-                courseSequences
-        );
-    }
-
     @Transactional
     public StudyPlanDto cloneStudyPlan(long studyPlanToCloneId, StudyPlanDetailsDto cloneDetails) {
         var studyPlanToClone = findStudyPlan(studyPlanToCloneId);
@@ -95,7 +43,6 @@ public class StudyPlanService {
         if (!Objects.equals(studyPlanToClone.getProgram().getId(), cloneDetails.program())) {
             throw new InvalidDetailsException("Cloned study plan must come from the same program.");
         }
-
 
         studyPlanToClone.getCoursePlacements()
                 .entrySet()
@@ -108,24 +55,13 @@ public class StudyPlanService {
                 })
                 .collect(Collectors.toSet());
 
-        var draft = new StudyPlanDraft(
-                cloneDetails.year(),
-                cloneDetails.duration(),
-                cloneDetails.track(),
-                studyPlanToClone.getProgram(),
-                sectionClones,
-                studyPlanToClone.getCoursePlacements(),
-                studyPlanToClone.getCoursePrerequisites(),
-                studyPlanToClone.getCourseCorequisites()
-        );
-
         StudyPlan studyPlanClone = new StudyPlan(
                 null,
                 cloneDetails.year(),
                 cloneDetails.duration(),
                 cloneDetails.track(),
                 PublishStatus.DRAFT,
-                draft,
+                null,
                 studyPlanToClone.getProgram(),
                 null,
                 null,
@@ -147,12 +83,13 @@ public class StudyPlanService {
             PlacementDto targetPlacement
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
+        var draft = studyPlan.getDraft();
 
-        if (targetPlacement.year() > studyPlan.getDuration()) {
+        if (targetPlacement.year() > draft.getDuration()) {
             throw new OutOfBoundsPositionException("Out of bounds year");
         }
 
-        var oldPlacement = studyPlan.getCoursePlacements().get(courseId);
+        var oldPlacement = draft.getCoursePlacements().get(courseId);
         var newPlacement = new Placement(
                 targetPlacement.year(),
                 targetPlacement.semester(),
@@ -168,11 +105,11 @@ public class StudyPlanService {
             throw new InvalidCoursePlacement("Course is already in the same place");
         }
 
-        boolean prerequisitesFulfilled = studyPlan.getCoursePrerequisites()
+        boolean prerequisitesFulfilled = draft.getCoursePrerequisites()
                 .stream()
                 .filter(cp -> Objects.equals(cp.getCourse().getId(), courseId))
                 .allMatch(cp -> {
-                    var prerequisitePlacement = studyPlan.getCoursePlacements().get(cp.getPrerequisite().getId());
+                    var prerequisitePlacement = draft.getCoursePlacements().get(cp.getPrerequisite().getId());
 
                     if (prerequisitePlacement == null) {
                         return true;
@@ -185,11 +122,11 @@ public class StudyPlanService {
             throw new InvalidCoursePlacement("Cannot place a course in the same or earlier term as its prerequisite");
         }
 
-        boolean postrequisitesFulfilled = studyPlan.getCoursePrerequisites()
+        boolean postrequisitesFulfilled = draft.getCoursePrerequisites()
                 .stream()
                 .filter(cp -> Objects.equals(cp.getPrerequisite().getId(), courseId))
                 .allMatch(cp -> {
-                    var postrequisitePlacement = studyPlan.getCoursePlacements().get(cp.getCourse().getId());
+                    var postrequisitePlacement = draft.getCoursePlacements().get(cp.getCourse().getId());
 
                     if (postrequisitePlacement == null) {
                         return true;
@@ -202,8 +139,8 @@ public class StudyPlanService {
             throw new InvalidCoursePlacement("Cannot place a course in the same or later term as its postrequisite");
         }
 
-        deleteCoursePlacement(studyPlan, courseId, oldPlacement);
-        insertCoursePlacement(studyPlan, courseId, newPlacement);
+        deleteCoursePlacement(draft, courseId, oldPlacement);
+        insertCoursePlacement(draft, courseId, newPlacement);
 
         return saveAndMapStudyPlan(studyPlan);
     }
@@ -215,7 +152,7 @@ public class StudyPlanService {
         return Integer.compare(p1.getSemester(), p2.getSemester());
     }
 
-    private void shiftPositions(StudyPlan studyPlan, Placement placement, int delta) {
+    private void shiftPositions(StudyPlanDraft studyPlan, Placement placement, int delta) {
         studyPlan.getCoursePlacements().values()
                 .stream()
                 .filter(p ->
@@ -229,13 +166,15 @@ public class StudyPlanService {
     @Transactional
     public StudyPlanDto placeCoursesInSemester(long studyPlanId, List<Long> courseIds, PlacementDto targetPlacement) {
         var studyPlan = findStudyPlan(studyPlanId);
-        var coursePrerequisitesMap = studyPlan.getCoursePrerequisitesMap();
+        var draft = studyPlan.getDraft();
 
-        if (targetPlacement.year() > studyPlan.getDuration()) {
+        var coursePrerequisitesMap = draft.coursePrerequisitesMap();
+
+        if (targetPlacement.year() > draft.getDuration()) {
             throw new OutOfBoundsPositionException("Out of bounds year");
         }
 
-        int lastPosition = studyPlan.getCoursePlacements().values()
+        int lastPosition = draft.getCoursePlacements().values()
                 .stream()
                 .filter(currentPlacement ->
                         comparePlacement(
@@ -253,7 +192,7 @@ public class StudyPlanService {
                 .orElse(0);
 
         for (var courseId : courseIds) {
-            if (studyPlan.getCoursePlacements().containsKey(courseId)) {
+            if (draft.getCoursePlacements().containsKey(courseId)) {
                 throw new CourseAlreadyAddedException("A course already exists in the program map.");
             }
 
@@ -268,14 +207,14 @@ public class StudyPlanService {
 
             if (prerequisites != null) {
                 prerequisites.forEach(prerequisite -> {
-                    var prerequisitePlacement = studyPlan.getCoursePlacements().get(prerequisite.getPrerequisite().getId());
+                    var prerequisitePlacement = draft.getCoursePlacements().get(prerequisite.getPrerequisite().getId());
                     if (prerequisitePlacement == null || comparePlacement(prerequisitePlacement, individualCoursePlacement) >= 0) {
                         throw new InvalidCoursePlacement("A course has missing prerequisites or has prerequisites in later semesters.");
                     }
                 });
             }
 
-            studyPlan.getCoursePlacements().put(courseId, individualCoursePlacement);
+            draft.getCoursePlacements().put(courseId, individualCoursePlacement);
         }
 
         return saveAndMapStudyPlan(studyPlan);
@@ -303,7 +242,8 @@ public class StudyPlanService {
                 details.year(),
                 details.duration(),
                 details.track().trim(),
-                details.isPublished(),
+                PublishStatus.DRAFT,
+                null,
                 AggregateReference.to(details.program()),
                 null,
                 null,
@@ -326,6 +266,7 @@ public class StudyPlanService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public StudyPlanDto createSection(long studyPlanId, SectionDetailsDto details) {
         var studyPlan = findStudyPlan(studyPlanId);
+        var draft = studyPlan.getDraft();
 
         Section newSection = new Section();
         newSection.setLevel(details.level());
@@ -333,7 +274,7 @@ public class StudyPlanService {
         newSection.setRequiredCreditHours(details.requiredCreditHours());
         newSection.setName(details.name().trim());
 
-        var sectionSiblings = studyPlan.getSections()
+        var sectionSiblings = draft.getSections()
                 .stream()
                 .filter(s -> s.getLevel() == newSection.getLevel() && s.getType() == newSection.getType())
                 .toList();
@@ -347,7 +288,7 @@ public class StudyPlanService {
             newSection.setPosition(sectionSiblings.size() + 1);
         }
 
-        studyPlan.getSections().add(newSection);
+        draft.getSections().add(newSection);
 
         return saveAndMapStudyPlan(studyPlan);
     }
@@ -355,8 +296,9 @@ public class StudyPlanService {
     @Transactional
     public StudyPlanDto editSectionDetails(long studyPlanId, long sectionId, SectionDetailsDto details) {
         var studyPlan = findStudyPlan(studyPlanId);
+        var draft = studyPlan.getDraft();
 
-        studyPlan.getSections().stream()
+        draft.getSections().stream()
                 .filter(s -> s.getId() == sectionId)
                 .findFirst()
                 .ifPresentOrElse(section -> {
@@ -375,18 +317,19 @@ public class StudyPlanService {
     @Transactional
     public StudyPlanDto deleteSection(long studyPlanId, long sectionId) {
         var studyPlan = findStudyPlan(studyPlanId);
+        var draft = studyPlan.getDraft();
 
-        var section = studyPlan.getSections().stream()
+        var section = draft.getSections().stream()
                 .filter(s -> s.getId() == sectionId)
                 .findFirst()
                 .orElseThrow(() -> new SectionNotFoundException("Section not found"));
 
-        var sectionSiblings = studyPlan.getSections()
+        var sectionSiblings = draft.getSections()
                 .stream()
                 .filter(s -> s.getLevel() == section.getLevel() && s.getType() == section.getType())
                 .toList();
 
-        studyPlan.getSections().stream()
+        draft.getSections().stream()
                 .filter(s -> s.getLevel() == section.getLevel() &&
                         s.getType() == section.getType() &&
                         s.getPosition() > section.getPosition())
@@ -400,17 +343,17 @@ public class StudyPlanService {
             remainingSection.setPosition(0);
         }
 
-        section.getCourses().forEach(sectionCourse -> studyPlan.getCoursePlacements().remove(sectionCourse.getCourse().getId()));
+        section.getCourses().forEach(sectionCourse -> draft.getCoursePlacements().remove(sectionCourse.getCourse().getId()));
 
-        studyPlan.getCoursePrerequisites().removeIf(coursePrerequisite ->
+        draft.getCoursePrerequisites().removeIf(coursePrerequisite ->
                 section.hasCourse(coursePrerequisite.getPrerequisite().getId())
         );
 
-        studyPlan.getCourseCorequisites().removeIf(courseCorequisite ->
+        draft.getCourseCorequisites().removeIf(courseCorequisite ->
                 section.hasCourse(courseCorequisite.getCorequisite().getId())
         );
 
-        studyPlan.getSections().remove(section);
+        draft.getSections().remove(section);
 
         return saveAndMapStudyPlan(studyPlan);
     }
@@ -426,8 +369,9 @@ public class StudyPlanService {
         }
 
         var studyPlan = findStudyPlan(studyPlanId);
+        var draft = studyPlan.getDraft();
 
-        var section = studyPlan.getSections().stream()
+        var section = draft.getSections().stream()
                 .filter(s -> s.getId() == sectionId)
                 .findFirst()
                 .orElseThrow(() -> new SectionNotFoundException("Section was not found"));
@@ -435,7 +379,7 @@ public class StudyPlanService {
         Set<SectionCourse> toBeAddedCourses = courseIds
                 .stream()
                 .filter(courseId -> {
-                    boolean alreadyAdded = studyPlan.getSections().stream()
+                    boolean alreadyAdded = draft.getSections().stream()
                             .anyMatch(s -> s.hasCourse(courseId));
                     if (alreadyAdded) {
                         throw new CourseExistsException("Course was already added in another section");
@@ -453,33 +397,34 @@ public class StudyPlanService {
     @Transactional
     public StudyPlanDto removeCoursesFromStudyPlan(long studyPlanId, List<Long> courseIds) {
         var studyPlan = findStudyPlan(studyPlanId);
+        var draft = studyPlan.getDraft();
 
         for (var courseId : courseIds) {
-            studyPlan.getSections().forEach(section -> section.removeCourse(courseId));
+            draft.getSections().forEach(section -> section.removeCourse(courseId));
 
-            studyPlan.getCoursePrerequisites().removeIf(coursePrerequisite ->
+            draft.getCoursePrerequisites().removeIf(coursePrerequisite ->
                     Objects.equals(coursePrerequisite.getCourse().getId(), courseId)
                             || Objects.equals(coursePrerequisite.getPrerequisite().getId(), courseId)
             );
 
-            studyPlan.getCourseCorequisites().removeIf(coursePrerequisite ->
+            draft.getCourseCorequisites().removeIf(coursePrerequisite ->
                     Objects.equals(coursePrerequisite.getCourse().getId(), courseId)
                             || Objects.equals(coursePrerequisite.getCorequisite().getId(), courseId)
             );
 
-            deleteCoursePlacement(studyPlan, courseId, studyPlan.getCoursePlacements().get(courseId));
+            deleteCoursePlacement(draft, courseId, draft.getCoursePlacements().get(courseId));
         }
 
         return saveAndMapStudyPlan(studyPlan);
     }
 
-    private void insertCoursePlacement(StudyPlan studyPlan, long courseId, Placement placement) {
+    private void insertCoursePlacement(StudyPlanDraft studyPlan, long courseId, Placement placement) {
         if (placement == null) return;
         shiftPositions(studyPlan, placement, +1);
         studyPlan.getCoursePlacements().put(courseId, placement);
     }
 
-    private void deleteCoursePlacement(StudyPlan studyPlan, long courseId, Placement placement) {
+    private void deleteCoursePlacement(StudyPlanDraft studyPlan, long courseId, Placement placement) {
         if (placement == null) return;
         studyPlan.getCoursePlacements().remove(courseId);
         shiftPositions(studyPlan, placement, -1);
@@ -493,11 +438,12 @@ public class StudyPlanService {
             Relation relation
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
+        var draft = studyPlan.getDraft();
 
-        studyPlanGraphService.validatePrerequisites(courseId, studyPlan, prerequisites);
+        studyPlanGraphService.validatePrerequisites(courseId, draft, prerequisites);
 
         for (var prerequisite : prerequisites) {
-            studyPlan.getCoursePrerequisites().add(
+            draft.getCoursePrerequisites().add(
                     new CoursePrerequisite(
                             AggregateReference.to(courseId),
                             AggregateReference.to(prerequisite),
@@ -516,9 +462,10 @@ public class StudyPlanService {
             List<Long> corequisiteIds
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
+        var draft = studyPlan.getDraft();
 
         for (var corequisiteId : corequisiteIds) {
-            studyPlan.getCourseCorequisites().add(
+            draft.getCourseCorequisites().add(
                     new CourseCorequisite(
                             AggregateReference.to(courseId),
                             AggregateReference.to(corequisiteId)
@@ -536,8 +483,9 @@ public class StudyPlanService {
             long corequisiteId
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
+        var draft = studyPlan.getDraft();
 
-        boolean removed = studyPlan.getCourseCorequisites().removeIf(courseCorequisite ->
+        boolean removed = draft.getCourseCorequisites().removeIf(courseCorequisite ->
                 courseCorequisite.getCourse().getId() == courseId && courseCorequisite.getCorequisite().getId() == corequisiteId
         );
 
@@ -553,8 +501,9 @@ public class StudyPlanService {
             long prerequisiteId
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
+        var draft = studyPlan.getDraft();
 
-        boolean removed = studyPlan.getCoursePrerequisites().removeIf(coursePrerequisite ->
+        boolean removed = draft.getCoursePrerequisites().removeIf(coursePrerequisite ->
                 coursePrerequisite.getCourse().getId() == courseId
                         && coursePrerequisite.getPrerequisite().getId() == prerequisiteId
         );
@@ -571,17 +520,18 @@ public class StudyPlanService {
             long targetSectionId
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
+        var draft = studyPlan.getDraft();
 
-        var targetSection = studyPlan.getSections().stream()
+        var targetSection = draft.getSections().stream()
                 .filter(section -> section.getId() == targetSectionId)
                 .findFirst()
                 .orElseThrow(() -> new SectionNotFoundException("Target section not found"));
 
         for (long courseId : courseIds) {
-            studyPlan.getSections().forEach(section -> section.removeCourse(courseId));
+            draft.getSections().forEach(section -> section.removeCourse(courseId));
 
             if (targetSection.getType() == SectionType.Elective || targetSection.getType() == SectionType.Remedial) {
-                studyPlan.getCoursePlacements().remove(courseId);
+                draft.getCoursePlacements().remove(courseId);
             }
 
             targetSection.addCourse(courseId);
@@ -597,14 +547,15 @@ public class StudyPlanService {
             MoveDirection direction
     ) {
         var studyPlan = findStudyPlan(studyPlanId);
+        var draft = studyPlan.getDraft();
 
-        var targetSection = studyPlan.getSections()
+        var targetSection = draft.getSections()
                 .stream()
                 .filter(s -> s.getId() == sectionId)
                 .findFirst()
                 .orElseThrow(() -> new SectionNotFoundException("Section not found."));
 
-        var sectionsList = studyPlan.getSections()
+        var sectionsList = draft.getSections()
                 .stream()
                 .filter(s -> s.getLevel() == targetSection.getLevel() && s.getType() == targetSection.getType())
                 .toList();
@@ -642,8 +593,9 @@ public class StudyPlanService {
         }
 
         var studyPlan = findStudyPlan(studyPlanId);
+        var draft = studyPlan.getDraft();
 
-        var coursePlacement = studyPlan.getCoursePlacements().get(courseId);
+        var coursePlacement = draft.getCoursePlacements().get(courseId);
 
         if (coursePlacement == null) {
             throw new CourseNotPlacedException("Course not placed in a term");
@@ -657,8 +609,9 @@ public class StudyPlanService {
     @Transactional
     public StudyPlanDto removeCourseFromSemester(long studyPlanId, long courseId) {
         var studyPlan = findStudyPlan(studyPlanId);
+        var draft = studyPlan.getDraft();
 
-        deleteCoursePlacement(studyPlan, courseId, studyPlan.getCoursePlacements().get(courseId));
+        deleteCoursePlacement(draft, courseId, draft.getCoursePlacements().get(courseId));
 
         return saveAndMapStudyPlan(studyPlan);
     }

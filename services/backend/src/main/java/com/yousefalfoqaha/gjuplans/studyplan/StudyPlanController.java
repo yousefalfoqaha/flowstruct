@@ -49,14 +49,6 @@ public class StudyPlanController {
         );
     }
 
-    @GetMapping("/{studyPlanId}/with-sequences")
-    public ResponseEntity<StudyPlanWithSequencesDto> getStudyPlanCoursesWithSequences(@PathVariable long studyPlanId) {
-        return new ResponseEntity<>(
-                studyPlanService.getStudyPlanWithSequences(studyPlanId),
-                HttpStatus.OK
-        );
-    }
-
     @GetMapping("/{studyPlanId}")
     public ResponseEntity<StudyPlanDto> getStudyPlan(@PathVariable long studyPlanId) {
         return new ResponseEntity<>(

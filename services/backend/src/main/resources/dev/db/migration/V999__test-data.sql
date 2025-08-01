@@ -135,5 +135,5 @@ VALUES ('University', 'Requirement', 9, 'Dual Studies', 2, 1),
        ('School', 'Requirement', 27, '', 0, 1),
        ('University', 'Requirement', 21, '', 1, 1);
 
-INSERT INTO study_plan (year, track, program, is_published, duration)
-VALUES (2023, 'General Track (Dual Studies)', 1, false, 4);
+INSERT INTO study_plan (year, track, program, duration)
+VALUES (2023, 'General Track (Dual Studies)', 1, 4);

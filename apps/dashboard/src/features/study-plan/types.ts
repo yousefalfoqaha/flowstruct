@@ -44,7 +44,7 @@ export type StudyPlan = {
   year: number;
   duration: number;
   track: string;
-  isPublished: boolean;
+  status: string;
   program: number;
   sections: Section[];
   coursePlacements: Record<number, CoursePlacement>;
@@ -72,7 +72,7 @@ export type StudyPlanSummary = Pick<
   | 'year'
   | 'duration'
   | 'track'
-  | 'isPublished'
+  | 'status'
   | 'program'
   | 'createdAt'
   | 'updatedAt'

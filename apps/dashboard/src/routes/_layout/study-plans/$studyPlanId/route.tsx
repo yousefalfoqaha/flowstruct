@@ -43,7 +43,7 @@ function RouteComponent() {
     <Group justify="space-between">
       <Group gap="lg" wrap="nowrap">
         <PageHeaderWithBack title={title} linkProps={{ to: '/study-plans' }} />
-        {publishStatusBadge(studyPlan.isPublished)}
+        {publishStatusBadge(studyPlan.status)}
       </Group>
 
       <Group mb="auto" justify="space-between">

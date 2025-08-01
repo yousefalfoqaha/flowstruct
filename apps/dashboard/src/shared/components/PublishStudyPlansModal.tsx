@@ -26,7 +26,10 @@ export function PublishStudyPlansModal() {
   const { data: studyPlans } = useStudyPlanList();
   const publishStudyPlans = usePublishStudyPlans();
 
-  const drafts = React.useMemo(() => studyPlans.filter((sp) => !sp.isPublished), [studyPlans]);
+  const drafts = React.useMemo(
+    () => studyPlans.filter((sp) => sp.status === 'DRAFT'),
+    [studyPlans]
+  );
   const rows = React.useMemo(() => getStudyPlanRows(drafts, programs), [drafts, programs]);
 
   const toggle = (studyPlanId: number) => {
@@ -70,7 +73,7 @@ export function PublishStudyPlansModal() {
             title="Publish Draft Study Plans"
             subtitle="Select the drafts you want to re-publish"
           />
-      }
+        }
         size="lg"
         centered
       >

@@ -31,9 +31,9 @@ export function getStudyPlansTableColumns() {
       header: 'Track',
       cell: ({ row }) => (row.getValue('track') === '' ? '---' : row.getValue('track')),
     }),
-    accessor('isPublished', {
+    accessor('status', {
       header: 'Status',
-      cell: ({ row }) => publishStatusBadge(row.getValue('isPublished')),
+      cell: ({ row }) => publishStatusBadge(row.getValue('status')),
     }),
     display({
       id: 'last-updated',

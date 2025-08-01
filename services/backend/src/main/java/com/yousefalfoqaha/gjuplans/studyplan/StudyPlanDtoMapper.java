@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan;
 
+import com.yousefalfoqaha.gjuplans.common.PublishStatus;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.Section;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionLevel;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionType;
@@ -9,7 +10,6 @@ import com.yousefalfoqaha.gjuplans.studyplan.dto.SectionDto;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDto;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.function.Function;
@@ -20,12 +20,25 @@ public class StudyPlanDtoMapper implements Function<StudyPlan, StudyPlanDto> {
 
     @Override
     public StudyPlanDto apply(StudyPlan studyPlan) {
+        if (studyPlan.getStatus() == PublishStatus.DRAFT) {
+            var draft = studyPlan.getDraft();
+
+            studyPlan.setYear(draft.getYear());
+            studyPlan.setDuration(draft.getDuration());
+            studyPlan.setProgram(draft.getProgram());
+            studyPlan.setTrack(draft.getTrack());
+            studyPlan.setSections(draft.getSections());
+            studyPlan.setCoursePlacements(draft.getCoursePlacements());
+            studyPlan.setCoursePrerequisites(draft.getCoursePrerequisites());
+            studyPlan.setCourseCorequisites(draft.getCourseCorequisites());
+        }
+
         return new StudyPlanDto(
                 studyPlan.getId(),
                 studyPlan.getYear(),
                 studyPlan.getDuration(),
                 studyPlan.getTrack(),
-                studyPlan.getStatus(),
+                studyPlan.getStatus().name(),
                 studyPlan.getProgram().getId(),
                 studyPlan.getCreatedAt(),
                 studyPlan.getUpdatedAt(),

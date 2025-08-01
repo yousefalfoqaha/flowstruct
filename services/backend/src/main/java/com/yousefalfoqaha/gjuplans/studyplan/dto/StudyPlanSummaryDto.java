@@ -7,7 +7,7 @@ public record StudyPlanSummaryDto(
         int year,
         int duration,
         String track,
-        boolean isPublished,
+        String status,
         long program,
         Instant createdAt,
         Instant updatedAt,

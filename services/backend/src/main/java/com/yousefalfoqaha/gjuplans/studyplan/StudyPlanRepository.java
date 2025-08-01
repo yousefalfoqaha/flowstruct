@@ -14,7 +14,7 @@ import java.util.List;
 public interface StudyPlanRepository extends CrudRepository<StudyPlan, Long> {
 
     @Query(
-            "SELECT id, year, duration, track, is_published, program, created_at, updated_at, updated_by " +
+            "SELECT id, year, duration, track, status, program, created_at, updated_at, updated_by " +
                     "FROM study_plan"
     )
     List<StudyPlanSummaryDto> findAllStudyPlanSummaries();
@@ -22,7 +22,7 @@ public interface StudyPlanRepository extends CrudRepository<StudyPlan, Long> {
     @Modifying
     @Query(
             "UPDATE study_plan " +
-            "SET is_published = TRUE " +
+            "SET status = 'PUBLISHED'" +
             "WHERE id IN (:draftStudyPlans)"
     )
     void markAllStudyPlansPublsihed(Collection<Long> draftStudyPlans);
