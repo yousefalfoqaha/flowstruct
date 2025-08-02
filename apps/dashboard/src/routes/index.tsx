@@ -10,5 +10,5 @@ export const Route = createFileRoute('/')({
       throw redirect({ to: '/login' });
     }
   },
-  component: () => <Navigate to="/programs" search={DefaultSearchValues()} />,
+  component: () => <Navigate to="/publishes" search={DefaultSearchValues()} />,
 });

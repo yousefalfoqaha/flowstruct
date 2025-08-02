@@ -47,7 +47,14 @@ export function User() {
                 </Text>
               </div>
 
-              <ChevronDown color="gray" size={14} />
+              <ChevronDown
+                color="gray"
+                size={14}
+                style={{
+                  transform: `rotate(${userMenuOpened ? '180' : '0'}deg)`,
+                  transition: 'transform 150ms ease-in-out',
+                }}
+              />
             </Group>
           </UnstyledButton>
         </Menu.Target>
@@ -107,7 +114,7 @@ export function User() {
                 ),
                 children: <ChangePasswordFieldset />,
                 centered: true,
-                size: 'lg'
+                size: 'lg',
               })
             }
           >
@@ -116,7 +123,7 @@ export function User() {
 
           <Menu.Item
             onClick={() => logout.mutate()}
-            leftSection={<LogOut style={{color: 'var(--mantine-primary-color-8)'}} size={14} />}
+            leftSection={<LogOut style={{ color: 'var(--mantine-primary-color-8)' }} size={14} />}
           >
             Log out
           </Menu.Item>

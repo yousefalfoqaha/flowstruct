@@ -225,14 +225,15 @@ public class StudyPlanService {
     @Transactional
     public StudyPlanDto editStudyPlanDetails(long studyPlanId, StudyPlanDetailsDto details) {
         var studyPlan = findStudyPlan(studyPlanId);
+        var draft = studyPlan.getDraft();
 
-        studyPlan.setYear(details.year());
-        studyPlan.setDuration(details.duration());
-        studyPlan.setTrack(details.track().trim());
+        draft.setYear(details.year());
+        draft.setDuration(details.duration());
+        draft.setTrack(details.track().trim());
 
-        studyPlan.getCoursePlacements()
+        draft.getCoursePlacements()
                 .entrySet()
-                .removeIf(entry -> entry.getValue().getYear() > studyPlan.getDuration());
+                .removeIf(entry -> entry.getValue().getYear() > draft.getDuration());
 
         return saveAndMapStudyPlan(studyPlan);
     }

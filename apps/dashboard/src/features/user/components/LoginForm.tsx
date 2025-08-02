@@ -3,7 +3,6 @@ import classes from './LoginForm.module.css';
 import { LoginSchema } from '@/features/user/schemas.ts';
 import { useLogin } from '@/features/user/hooks/useLogin.ts';
 import { useNavigate } from '@tanstack/react-router';
-import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { Controller, useForm } from 'react-hook-form';
 import { LogIn } from 'lucide-react';
 import { z } from 'zod/v4';
@@ -25,8 +24,7 @@ export function LoginForm() {
     login.mutate(data, {
       onSuccess: () =>
         navigate({
-          to: '/programs',
-          search: DefaultSearchValues(),
+          to: '/',
         }),
     });
   });
