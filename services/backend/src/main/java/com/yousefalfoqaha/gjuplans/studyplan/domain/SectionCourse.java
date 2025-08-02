@@ -17,6 +17,7 @@ import java.util.Objects;
 @Setter
 @Table("section_course")
 public class SectionCourse {
+
     private AggregateReference<Course, Long> course;
 
     public SectionCourse(SectionCourse other) {

@@ -1,9 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yousefalfoqaha.gjuplans.common.EmptyListException;
 import com.yousefalfoqaha.gjuplans.common.InvalidDetailsException;
-import com.yousefalfoqaha.gjuplans.common.PublishStatus;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanDtoMapper;
 import com.yousefalfoqaha.gjuplans.studyplan.StudyPlanRepository;
@@ -34,6 +32,10 @@ public class StudyPlanService {
 
     public List<StudyPlanSummaryDto> getAllStudyPlans() {
         return studyPlanRepository.findAllStudyPlanSummaries();
+    }
+
+    public void markStudyPlansPublished(List<Long> draftStudyPlanIds) {
+        studyPlanRepository.markAllStudyPlansPublsihed(draftStudyPlanIds);
     }
 
     @Transactional

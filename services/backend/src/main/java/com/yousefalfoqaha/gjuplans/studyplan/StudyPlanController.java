@@ -6,7 +6,6 @@ import com.yousefalfoqaha.gjuplans.studyplan.domain.MoveDirection;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.Relation;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.*;
 import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanCourseService;
-import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanPublishingService;
 import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import java.util.Map;
 public class StudyPlanController {
     private final StudyPlanService studyPlanService;
     private final StudyPlanCourseService studyPlanCourseService;
-    private final StudyPlanPublishingService studyPlanPublishingService;
 
     @GetMapping
     public ResponseEntity<List<StudyPlanSummaryDto>> getAllStudyPlans() {
@@ -55,14 +53,6 @@ public class StudyPlanController {
                 studyPlanService.getStudyPlan(studyPlanId),
                 HttpStatus.OK
         );
-    }
-
-    @PostMapping("/publish")
-    public ResponseEntity<Void> publishStudyPlans(
-            @RequestParam(value = "draftStudyPlans", defaultValue = "") List<Long> draftStudyPlanIds
-    ) {
-        studyPlanPublishingService.publishStudyPlans(draftStudyPlanIds);
-        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{studyPlanId}")

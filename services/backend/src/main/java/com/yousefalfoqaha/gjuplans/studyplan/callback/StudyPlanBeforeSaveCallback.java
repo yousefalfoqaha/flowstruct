@@ -31,7 +31,7 @@ public class StudyPlanBeforeSaveCallback implements BeforeSaveCallback<StudyPlan
                 studyPlan.getCourseCorequisites()
         );
 
-        if (!currentDraft.equals(lastPublishedDraft)) {
+        if (!currentDraft.equals(lastPublishedDraft) && studyPlan.getStatus() == PublishStatus.PUBLISHED) {
             studyPlan.setStatus(PublishStatus.DRAFT);
         } else {
             studyPlan.setDraft(null);
