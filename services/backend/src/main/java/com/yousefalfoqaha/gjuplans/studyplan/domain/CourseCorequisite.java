@@ -18,4 +18,14 @@ public class CourseCorequisite {
     private AggregateReference<Course, Long> course;
 
     private AggregateReference<Course, Long> corequisite;
+
+    public CourseCorequisite(CourseCorequisite other) {
+        if (other.course != null) {
+            this.course = AggregateReference.to(other.course.getId());
+        }
+        if (other.corequisite != null) {
+            this.corequisite = AggregateReference.to(other.corequisite.getId());
+        }
+    }
+
 }

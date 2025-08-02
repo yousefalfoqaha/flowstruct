@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlanDraft;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.InvalidDraftException;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.postgresql.util.PGobject;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.WritingConverter;
@@ -12,13 +13,9 @@ import org.springframework.data.convert.WritingConverter;
 import java.sql.SQLException;
 
 @WritingConverter
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class StudyPlanDraftWritingConverter implements Converter<StudyPlanDraft, PGobject> {
-    private ObjectMapper objectMapper;
-
-    public StudyPlanDraftWritingConverter(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+    private final ObjectMapper objectMapper;
 
     @Override
     public PGobject convert(StudyPlanDraft draft) {

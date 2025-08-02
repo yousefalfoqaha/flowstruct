@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudyPlanDraft {
-
     private int year;
     private int duration;
     private String track;
@@ -25,15 +24,38 @@ public class StudyPlanDraft {
     private Set<CoursePrerequisite> coursePrerequisites;
     private Set<CourseCorequisite> courseCorequisites;
 
+    public StudyPlanDraft(StudyPlan studyPlan) {
+        this.year = studyPlan.getYear();
+        this.duration = studyPlan.getDuration();
+        this.track = studyPlan.getTrack();
+        this.program = studyPlan.getProgram();
+
+        this.sections = studyPlan.getSections().stream()
+                .map(Section::new)
+                .collect(Collectors.toSet());
+
+        this.coursePlacements = studyPlan.getCoursePlacements().entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> new Placement(e.getValue())
+                ));
+
+        this.coursePrerequisites = studyPlan.getCoursePrerequisites().stream()
+                .map(CoursePrerequisite::new)
+                .collect(Collectors.toSet());
+
+        this.courseCorequisites = studyPlan.getCourseCorequisites().stream()
+                .map(CourseCorequisite::new)
+                .collect(Collectors.toSet());
+    }
+
     public Map<Long, List<CoursePrerequisite>> coursePrerequisitesMap() {
-        return coursePrerequisites
-                .stream()
+        return coursePrerequisites.stream()
                 .collect(Collectors.groupingBy(cp -> cp.getCourse().getId()));
     }
 
     public Map<Long, List<CourseCorequisite>> courseCorequisitesMap() {
-        return courseCorequisites
-                .stream()
+        return courseCorequisites.stream()
                 .collect(Collectors.groupingBy(cc -> cc.getCourse().getId()));
     }
 }

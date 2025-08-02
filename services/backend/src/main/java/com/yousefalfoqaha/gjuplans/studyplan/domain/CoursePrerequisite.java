@@ -20,4 +20,15 @@ public class CoursePrerequisite {
         private AggregateReference<Course, Long> prerequisite;
 
         private Relation relation;
+
+        public CoursePrerequisite(CoursePrerequisite other) {
+                if (other.course != null) {
+                        this.course = AggregateReference.to(other.course.getId());
+                }
+                if (other.prerequisite != null) {
+                        this.prerequisite = AggregateReference.to(other.prerequisite.getId());
+                }
+                this.relation = other.relation;
+        }
+
 }

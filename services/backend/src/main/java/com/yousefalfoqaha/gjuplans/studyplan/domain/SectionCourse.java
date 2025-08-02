@@ -19,6 +19,12 @@ import java.util.Objects;
 public class SectionCourse {
     private AggregateReference<Course, Long> course;
 
+    public SectionCourse(SectionCourse other) {
+        if (other.course != null) {
+            this.course = AggregateReference.to(other.course.getId());
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

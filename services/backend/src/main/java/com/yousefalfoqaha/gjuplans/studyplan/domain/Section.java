@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,6 +37,19 @@ public class Section {
 
     @MappedCollection(idColumn = "section")
     Set<SectionCourse> courses = new HashSet<>();
+
+    public Section(Section other) {
+        this.id = other.id;
+        this.level = other.level;
+        this.type = other.type;
+        this.requiredCreditHours = other.requiredCreditHours;
+        this.name = other.name;
+        this.position = other.position;
+
+        this.courses = other.courses.stream()
+                .map(SectionCourse::new)
+                .collect(Collectors.toSet());
+    }
 
     public boolean hasCourse(Long courseId) {
         return courses.contains(new SectionCourse(AggregateReference.to(courseId)));

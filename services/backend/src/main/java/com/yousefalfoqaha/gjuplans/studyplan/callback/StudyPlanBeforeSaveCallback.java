@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class StudyPlanBeforeSaveCallback implements BeforeSaveCallback<StudyPlan> {
 
+    // TODO: publish history query to figure out last publish (if success or pending)
     @Override
     public StudyPlan onBeforeSave(StudyPlan studyPlan, MutableAggregateChange<StudyPlan> aggregateChange) {
         if (studyPlan.getStatus() == PublishStatus.PENDING) {
@@ -30,10 +31,10 @@ public class StudyPlanBeforeSaveCallback implements BeforeSaveCallback<StudyPlan
                 studyPlan.getCourseCorequisites()
         );
 
-        if (currentDraft.equals(lastPublishedDraft)) {
-            studyPlan.setDraft(null);
-        } else {
+        if (!currentDraft.equals(lastPublishedDraft)) {
             studyPlan.setStatus(PublishStatus.DRAFT);
+        } else {
+            studyPlan.setDraft(null);
         }
 
         return studyPlan;

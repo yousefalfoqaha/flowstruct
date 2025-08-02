@@ -20,4 +20,12 @@ public class Placement {
     private int position;
 
     private int span;
+
+    public Placement(Placement other) {
+        this.year = other.year;
+        this.semester = other.semester;
+        this.position = other.position;
+        this.span = other.span;
+    }
+
 }

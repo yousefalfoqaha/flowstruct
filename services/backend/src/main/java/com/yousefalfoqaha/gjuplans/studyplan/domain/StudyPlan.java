@@ -63,16 +63,7 @@ public class StudyPlan {
 
     public StudyPlanDraft getDraft() {
         if (this.status == PublishStatus.PUBLISHED || this.draft == null) {
-            this.draft = new StudyPlanDraft(
-                    year,
-                    duration,
-                    track,
-                    program,
-                    sections,
-                    coursePlacements,
-                    coursePrerequisites,
-                    courseCorequisites
-            );
+            this.draft = new StudyPlanDraft(this);
         }
 
         return this.draft;
