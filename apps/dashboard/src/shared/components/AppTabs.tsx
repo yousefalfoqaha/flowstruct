@@ -7,7 +7,7 @@ import { BookOpen, Globe, GraduationCap, ScrollText } from 'lucide-react';
 import { Route as ProgramsRoute } from '@/routes/_layout/programs';
 import { Route as StudyPlansRoute } from '@/routes/_layout/study-plans';
 import { Route as CoursesRoute } from '@/routes/_layout/courses';
-import { Route as PublishesRoute } from '@/routes/_layout/publishes';
+import { Route as PublishesRoute } from '@/routes/_layout/publish-requests';
 
 const tabs: NavbarLinks[] = [
   { label: 'Publishes', icon: <Globe size={18} />, route: PublishesRoute.to },

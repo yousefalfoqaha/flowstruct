@@ -1,6 +1,6 @@
-package com.yousefalfoqaha.gjuplans.publish.repository;
+package com.yousefalfoqaha.gjuplans.publishrequest.repository;
 
-import com.yousefalfoqaha.gjuplans.publish.domain.PublishRequest;
+import com.yousefalfoqaha.gjuplans.publishrequest.domain.PublishRequest;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 

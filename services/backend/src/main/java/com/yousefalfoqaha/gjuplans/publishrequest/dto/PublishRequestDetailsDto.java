@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.publish.dto;
+package com.yousefalfoqaha.gjuplans.publishrequest.dto;
 
 import java.util.List;
 

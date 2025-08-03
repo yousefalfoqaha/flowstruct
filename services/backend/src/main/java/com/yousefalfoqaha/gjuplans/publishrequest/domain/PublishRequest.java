@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.publish.domain;
+package com.yousefalfoqaha.gjuplans.publishrequest.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

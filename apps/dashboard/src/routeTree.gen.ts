@@ -15,7 +15,7 @@ import { Route as LoginImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as LayoutStudyPlansIndexImport } from './routes/_layout/study-plans/index'
-import { Route as LayoutPublishesIndexImport } from './routes/_layout/publishes/index'
+import { Route as LayoutPublishRequestsIndexImport } from './routes/_layout/publish-requests/index'
 import { Route as LayoutProgramsIndexImport } from './routes/_layout/programs/index'
 import { Route as LayoutCoursesIndexImport } from './routes/_layout/courses/index'
 import { Route as LayoutStudyPlansNewImport } from './routes/_layout/study-plans/new'
@@ -60,11 +60,13 @@ const LayoutStudyPlansIndexRoute = LayoutStudyPlansIndexImport.update({
   getParentRoute: () => LayoutRouteRoute,
 } as any)
 
-const LayoutPublishesIndexRoute = LayoutPublishesIndexImport.update({
-  id: '/publishes/',
-  path: '/publishes/',
-  getParentRoute: () => LayoutRouteRoute,
-} as any)
+const LayoutPublishRequestsIndexRoute = LayoutPublishRequestsIndexImport.update(
+  {
+    id: '/publish-requests/',
+    path: '/publish-requests/',
+    getParentRoute: () => LayoutRouteRoute,
+  } as any,
+)
 
 const LayoutProgramsIndexRoute = LayoutProgramsIndexImport.update({
   id: '/programs/',
@@ -254,11 +256,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutProgramsIndexImport
       parentRoute: typeof LayoutRouteImport
     }
-    '/_layout/publishes/': {
-      id: '/_layout/publishes/'
-      path: '/publishes'
-      fullPath: '/publishes'
-      preLoaderRoute: typeof LayoutPublishesIndexImport
+    '/_layout/publish-requests/': {
+      id: '/_layout/publish-requests/'
+      path: '/publish-requests'
+      fullPath: '/publish-requests'
+      preLoaderRoute: typeof LayoutPublishRequestsIndexImport
       parentRoute: typeof LayoutRouteImport
     }
     '/_layout/study-plans/': {
@@ -400,7 +402,7 @@ interface LayoutRouteRouteChildren {
   LayoutStudyPlansNewRoute: typeof LayoutStudyPlansNewRoute
   LayoutCoursesIndexRoute: typeof LayoutCoursesIndexRoute
   LayoutProgramsIndexRoute: typeof LayoutProgramsIndexRoute
-  LayoutPublishesIndexRoute: typeof LayoutPublishesIndexRoute
+  LayoutPublishRequestsIndexRoute: typeof LayoutPublishRequestsIndexRoute
   LayoutStudyPlansIndexRoute: typeof LayoutStudyPlansIndexRoute
   LayoutCoursesCourseIdEditRoute: typeof LayoutCoursesCourseIdEditRoute
   LayoutProgramsProgramIdEditRoute: typeof LayoutProgramsProgramIdEditRoute
@@ -416,7 +418,7 @@ const LayoutRouteRouteChildren: LayoutRouteRouteChildren = {
   LayoutStudyPlansNewRoute: LayoutStudyPlansNewRoute,
   LayoutCoursesIndexRoute: LayoutCoursesIndexRoute,
   LayoutProgramsIndexRoute: LayoutProgramsIndexRoute,
-  LayoutPublishesIndexRoute: LayoutPublishesIndexRoute,
+  LayoutPublishRequestsIndexRoute: LayoutPublishRequestsIndexRoute,
   LayoutStudyPlansIndexRoute: LayoutStudyPlansIndexRoute,
   LayoutCoursesCourseIdEditRoute: LayoutCoursesCourseIdEditRoute,
   LayoutProgramsProgramIdEditRoute: LayoutProgramsProgramIdEditRoute,
@@ -438,7 +440,7 @@ export interface FileRoutesByFullPath {
   '/study-plans/new': typeof LayoutStudyPlansNewRoute
   '/courses': typeof LayoutCoursesIndexRoute
   '/programs': typeof LayoutProgramsIndexRoute
-  '/publishes': typeof LayoutPublishesIndexRoute
+  '/publish-requests': typeof LayoutPublishRequestsIndexRoute
   '/study-plans': typeof LayoutStudyPlansIndexRoute
   '/courses/$courseId/edit': typeof LayoutCoursesCourseIdEditRoute
   '/programs/$programId/edit': typeof LayoutProgramsProgramIdEditRoute
@@ -464,7 +466,7 @@ export interface FileRoutesByTo {
   '/study-plans/new': typeof LayoutStudyPlansNewRoute
   '/courses': typeof LayoutCoursesIndexRoute
   '/programs': typeof LayoutProgramsIndexRoute
-  '/publishes': typeof LayoutPublishesIndexRoute
+  '/publish-requests': typeof LayoutPublishRequestsIndexRoute
   '/study-plans': typeof LayoutStudyPlansIndexRoute
   '/courses/$courseId/edit': typeof LayoutCoursesCourseIdEditRoute
   '/programs/$programId/edit': typeof LayoutProgramsProgramIdEditRoute
@@ -491,7 +493,7 @@ export interface FileRoutesById {
   '/_layout/study-plans/new': typeof LayoutStudyPlansNewRoute
   '/_layout/courses/': typeof LayoutCoursesIndexRoute
   '/_layout/programs/': typeof LayoutProgramsIndexRoute
-  '/_layout/publishes/': typeof LayoutPublishesIndexRoute
+  '/_layout/publish-requests/': typeof LayoutPublishRequestsIndexRoute
   '/_layout/study-plans/': typeof LayoutStudyPlansIndexRoute
   '/_layout/courses/$courseId/edit': typeof LayoutCoursesCourseIdEditRoute
   '/_layout/programs/$programId/edit': typeof LayoutProgramsProgramIdEditRoute
@@ -519,7 +521,7 @@ export interface FileRouteTypes {
     | '/study-plans/new'
     | '/courses'
     | '/programs'
-    | '/publishes'
+    | '/publish-requests'
     | '/study-plans'
     | '/courses/$courseId/edit'
     | '/programs/$programId/edit'
@@ -544,7 +546,7 @@ export interface FileRouteTypes {
     | '/study-plans/new'
     | '/courses'
     | '/programs'
-    | '/publishes'
+    | '/publish-requests'
     | '/study-plans'
     | '/courses/$courseId/edit'
     | '/programs/$programId/edit'
@@ -569,7 +571,7 @@ export interface FileRouteTypes {
     | '/_layout/study-plans/new'
     | '/_layout/courses/'
     | '/_layout/programs/'
-    | '/_layout/publishes/'
+    | '/_layout/publish-requests/'
     | '/_layout/study-plans/'
     | '/_layout/courses/$courseId/edit'
     | '/_layout/programs/$programId/edit'
@@ -625,7 +627,7 @@ export const routeTree = rootRoute
         "/_layout/study-plans/new",
         "/_layout/courses/",
         "/_layout/programs/",
-        "/_layout/publishes/",
+        "/_layout/publish-requests/",
         "/_layout/study-plans/",
         "/_layout/courses/$courseId/edit",
         "/_layout/programs/$programId/edit",
@@ -670,8 +672,8 @@ export const routeTree = rootRoute
       "filePath": "_layout/programs/index.tsx",
       "parent": "/_layout"
     },
-    "/_layout/publishes/": {
-      "filePath": "_layout/publishes/index.tsx",
+    "/_layout/publish-requests/": {
+      "filePath": "_layout/publish-requests/index.tsx",
       "parent": "/_layout"
     },
     "/_layout/study-plans/": {

@@ -1,6 +1,6 @@
-package com.yousefalfoqaha.gjuplans.publish.domain;
+package com.yousefalfoqaha.gjuplans.publishrequest.domain;
 
-import com.yousefalfoqaha.gjuplans.course.domain.Course;
+import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +12,8 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table("publish_request_course")
-public class PublishRequestCourse {
+@Table("publish_request_study_plan")
+public class PublishRequestStudyPlan {
 
-    AggregateReference<Course, Long> course;
+    private AggregateReference<StudyPlan, Long> studyPlan;
 }

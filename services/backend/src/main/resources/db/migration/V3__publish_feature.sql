@@ -16,7 +16,7 @@ CREATE TABLE publish_request
 (
     id           SERIAL PRIMARY KEY,
     status       VARCHAR(255),
-    message      TEXT,
+    message      TEXT NOT NULL,
     requested_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT (NOW()),
     requested_by INT,
     FOREIGN KEY (requested_by) REFERENCES "user" (id)

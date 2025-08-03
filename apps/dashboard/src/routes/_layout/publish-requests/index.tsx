@@ -4,7 +4,7 @@ import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { Button, Group, Stack, Text, Title } from '@mantine/core';
 import { Globe } from 'lucide-react';
 
-export const Route = createFileRoute('/_layout/publishes/')({
+export const Route = createFileRoute('/_layout/publish-requests/')({
   validateSearch: getTableSearchSchema(DefaultSearchValues()),
   search: {
     middlewares: [stripSearchParams(DefaultSearchValues())],
