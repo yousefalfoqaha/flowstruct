@@ -14,7 +14,8 @@ import navigationProgressClasses from '@/shared/components/NavigationProgress.mo
 import { NavigationProgress } from '@mantine/nprogress';
 import { NotFoundPage } from '@/shared/components/NotFoundPage.tsx';
 import themeClasses from './theme.module.css';
-import { Check } from 'lucide-react';
+import { Check, X } from 'lucide-react';
+import { ErrorObject } from '@/shared/types.ts';
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -65,6 +66,21 @@ const queryClient = new QueryClient({
           withBorder: true,
         });
       }
+    },
+    onError: (error) => {
+      queryClient.invalidateQueries();
+
+      const errorObject = error as unknown as ErrorObject;
+
+      errorObject.messages.forEach((message) => {
+        notifications.show({
+          title: 'Error...',
+          message: message || 'An unknown error occurred',
+          color: 'red',
+          icon: <X size={18} />,
+          withBorder: true,
+        });
+      });
     },
   }),
   defaultOptions: {
