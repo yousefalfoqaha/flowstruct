@@ -6,6 +6,7 @@ import { Link } from '@tanstack/react-router';
 import { modals } from '@mantine/modals';
 import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 import { CloneStudyPlanDetailsFormFields } from '@/features/study-plan/components/CloneStudyPlanDetailsFormFields.tsx';
+import { useApproveStudyPlan } from '@/features/study-plan/hooks/useApproveStudyPlan.ts';
 
 type Props = {
   studyPlan: StudyPlanSummary;
@@ -13,11 +14,16 @@ type Props = {
 
 export function StudyPlanOptionsMenu({ studyPlan }: Props) {
   const deleteStudyPlan = useDeleteStudyPlan();
+  const approveStudyPlan = useApproveStudyPlan();
 
   return (
     <Menu>
       <Menu.Target>
-        <ActionIcon loading={deleteStudyPlan.isPending} variant="transparent" color="gray">
+        <ActionIcon
+          loading={deleteStudyPlan.isPending || approveStudyPlan.isPending}
+          variant="transparent"
+          color="gray"
+        >
           <Ellipsis size={14} />
         </ActionIcon>
       </Menu.Target>
@@ -43,8 +49,13 @@ export function StudyPlanOptionsMenu({ studyPlan }: Props) {
 
         <Menu.Divider />
 
-        {studyPlan.status === 'DRAFT' && (
-          <Menu.Item leftSection={<CircleCheck size={14} />}>Approve changes</Menu.Item>
+        {studyPlan.status === 'DRAFT' || studyPlan.status === 'NEW' && (
+          <Menu.Item
+            onClick={() => approveStudyPlan.mutate(studyPlan.id)}
+            leftSection={<CircleCheck size={14} />}
+          >
+            Approve changes
+          </Menu.Item>
         )}
 
         <Menu.Item
