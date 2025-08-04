@@ -1,18 +1,20 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
-import { editUserDetails } from '@/features/user/api.ts';
+import { USER_ENDPOINT } from '@/features/user/constants.ts';
 import { userKeys } from '@/features/user/queries.ts';
+import { User } from '@/features/user/types.ts';
+import { api } from '@/shared/api.ts';
 
-export const useEditUserDetails = () => {
-  const queryClient = useQueryClient();
-
-  return useAppMutation(editUserDetails, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(userKeys.me(), data);
-      queryClient.invalidateQueries({ queryKey: userKeys.list() });
-    },
-    successNotification: {
-      message: 'User details updated.'
-    }
+const editUserDetails = ({ details }: { details: Partial<User> }) =>
+  api.put<User>([USER_ENDPOINT, 'me'], {
+    body: details,
   });
-};
+
+export const useEditUserDetails = () =>
+  useAppMutation({
+    mutationFn: editUserDetails,
+    meta: {
+      setData: () => userKeys.me(),
+      invalidates: [userKeys.list()],
+      successMessage: 'User details updated.',
+    },
+  });

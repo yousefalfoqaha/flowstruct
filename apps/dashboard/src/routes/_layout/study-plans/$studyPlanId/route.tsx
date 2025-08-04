@@ -3,8 +3,8 @@ import { StudyPlanCourseListQuery, StudyPlanQuery } from '@/features/study-plan/
 import { ProgramQuery } from '@/features/program/queries.ts';
 import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
 import { getStudyPlanDisplayName } from '@/utils/getStudyPlanDisplayName.ts';
-import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
-import { useProgram } from '@/features/program/hooks/useProgram.ts';
+import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
+import { useCurrentProgram } from '@/features/program/hooks/useCurrentProgram.ts';
 import { Divider, Group, Stack, Text, Title } from '@mantine/core';
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
 import { StatusBadge } from '@/shared/components/StatusBadge.tsx';
@@ -25,8 +25,8 @@ export const Route = createFileRoute('/_layout/study-plans/$studyPlanId')({
 });
 
 function RouteComponent() {
-  const { data: studyPlan } = useStudyPlan();
-  const { data: program } = useProgram(studyPlan.program);
+  const { data: studyPlan } = useCurrentStudyPlan();
+  const { data: program } = useCurrentProgram(studyPlan.program);
 
   const title = (
     <Stack gap={5}>

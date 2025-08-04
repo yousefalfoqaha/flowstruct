@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
-import { useProgram } from '@/features/program/hooks/useProgram.ts';
+import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
+import { useCurrentProgram } from '@/features/program/hooks/useCurrentProgram.ts';
 import { AppCard } from '@/shared/components/AppCard.tsx';
 import { EditDetailsButton } from '@/shared/components/EditDetailsButton.tsx';
 import { InfoItem } from '@/shared/components/InfoItem.tsx';
@@ -12,8 +12,8 @@ export const Route = createFileRoute('/_layout/study-plans/$studyPlanId/details/
 });
 
 function RouteComponent() {
-  const { data: studyPlan } = useStudyPlan();
-  const { data: program } = useProgram(studyPlan.program);
+  const { data: studyPlan } = useCurrentStudyPlan();
+  const { data: program } = useCurrentProgram(studyPlan.program);
 
   return (
     <AppCard

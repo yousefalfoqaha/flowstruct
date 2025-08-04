@@ -1,5 +1,5 @@
 import { ActionIcon, Menu, Text } from '@mantine/core';
-import { CopyPlus, Ellipsis, Pencil, ScrollText, Trash } from 'lucide-react';
+import { CircleCheck, CopyPlus, Ellipsis, Pencil, ScrollText, Trash } from 'lucide-react';
 import { useDeleteStudyPlan } from '@/features/study-plan/hooks/useDeleteStudyPlan.ts';
 import { StudyPlanSummary } from '@/features/study-plan/types.ts';
 import { Link } from '@tanstack/react-router';
@@ -42,6 +42,10 @@ export function StudyPlanOptionsMenu({ studyPlan }: Props) {
         </Link>
 
         <Menu.Divider />
+
+        {studyPlan.status === 'DRAFT' && (
+          <Menu.Item leftSection={<CircleCheck size={14} />}>Approve changes</Menu.Item>
+        )}
 
         <Menu.Item
           leftSection={<CopyPlus size={14} />}

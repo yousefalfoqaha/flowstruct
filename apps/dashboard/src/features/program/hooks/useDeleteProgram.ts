@@ -1,18 +1,18 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { deleteProgram } from '@/features/program/api.ts';
+import { PROGRAM_ENDPOINT } from '@/features/program/constants.ts';
 import { programKeys } from '@/features/program/queries.ts';
 import { studyPlanKeys } from '@/features/study-plan/queries.ts';
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
+import { api } from '@/shared/api.ts';
 
-export const useDeleteProgram = () => {
-  const queryClient = useQueryClient();
+const deleteProgram = async (programId: number) =>
+  api.delete([PROGRAM_ENDPOINT, programId.toString()]);
 
-  return useAppMutation(deleteProgram, {
-    onSuccess: (_, programId) => {
-      queryClient.removeQueries({ queryKey: programKeys.detail(programId) });
-      queryClient.invalidateQueries({ queryKey: programKeys.list() });
-      queryClient.invalidateQueries({ queryKey: studyPlanKeys.list() });
+export const useDeleteProgram = () =>
+  useAppMutation({
+    mutationFn: deleteProgram,
+    meta: {
+      removes: (_, programId) => [programKeys.detail(programId)],
+      invalidates: [programKeys.list(), studyPlanKeys.list()],
+      successMessage: 'Program deleted.',
     },
-    successNotification: { message: 'Program deleted.' },
   });
-};

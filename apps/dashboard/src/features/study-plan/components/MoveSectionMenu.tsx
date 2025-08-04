@@ -2,14 +2,14 @@ import { ActionIcon, Menu } from '@mantine/core';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { MoveDirection, Section } from '@/features/study-plan/types.ts';
 import { useMoveSection } from '@/features/study-plan/hooks/useMoveSection.ts';
-import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
+import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
 
 type Props = {
   section: Section;
 };
 
 export function MoveSectionMenu({ section }: Props) {
-  const { data: studyPlan } = useStudyPlan();
+  const { data: studyPlan } = useCurrentStudyPlan();
   const { mutate, isPending } = useMoveSection();
 
   if (!section) return;

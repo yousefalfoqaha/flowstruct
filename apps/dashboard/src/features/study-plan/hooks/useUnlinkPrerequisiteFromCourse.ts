@@ -1,14 +1,32 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { unlinkPrerequisiteFromCourse } from '@/features/study-plan/api.ts';
+import { STUDY_PLAN_ENDPOINT } from '@/features/study-plan/constants.ts';
 import { studyPlanKeys } from '@/features/study-plan/queries.ts';
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
+import { api } from '@/shared/api.ts';
+import { StudyPlan } from '@/features/study-plan/types.ts';
 
-export const useUnlinkPrerequisiteFromCourse = () => {
-  const queryClient = useQueryClient();
-  return useAppMutation(unlinkPrerequisiteFromCourse, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(studyPlanKeys.detail(data.id), data);
-      queryClient.invalidateQueries({ queryKey: studyPlanKeys.list() });
+const unlinkPrerequisiteFromCourse = ({
+  studyPlanId,
+  courseId,
+  prerequisiteId,
+}: {
+  studyPlanId: number;
+  courseId: number;
+  prerequisiteId: number;
+}) =>
+  api.delete<StudyPlan>([
+    STUDY_PLAN_ENDPOINT,
+    studyPlanId,
+    'courses',
+    courseId,
+    'prerequisites',
+    prerequisiteId,
+  ]);
+
+export const useUnlinkPrerequisiteFromCourse = () =>
+  useAppMutation({
+    mutationFn: unlinkPrerequisiteFromCourse,
+    meta: {
+      setData: (data) => studyPlanKeys.detail(data.id),
+      invalidates: [studyPlanKeys.list()],
     },
   });
-};

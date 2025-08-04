@@ -1,18 +1,27 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
-import { editCourseDetails } from '@/features/course/api.ts';
 import { courseKeys } from '@/features/course/queries.ts';
 import { studyPlanKeys } from '@/features/study-plan/queries.ts';
+import { Course } from '@/features/course/types.ts';
+import { api } from '@/shared/api.ts';
+import { COURSE_ENDPOINT } from '@/features/course/constants.ts';
 
-export const useEditCourseDetails = () => {
-  const queryClient = useQueryClient();
-
-  return useAppMutation(editCourseDetails, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(courseKeys.detail(data.id), data);
-      queryClient.invalidateQueries({ queryKey: courseKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: studyPlanKeys.courseLists() });
-    },
-    successNotification: { message: (data) => `Updated ${data.code} details.` },
+const editCourseDetails = async ({
+  courseId,
+  courseDetails,
+}: {
+  courseId: number;
+  courseDetails: Partial<Course>;
+}) =>
+  api.put<Course>([COURSE_ENDPOINT, courseId], {
+    body: courseDetails,
   });
-};
+
+export const useEditCourseDetails = () =>
+  useAppMutation({
+    mutationFn: editCourseDetails,
+    meta: {
+      setData: (data) => courseKeys.detail(data.id),
+      invalidates: [courseKeys.lists(), studyPlanKeys.courseLists()],
+      successMessage: (data) => `Updated ${data.code} details.`,
+    },
+  });

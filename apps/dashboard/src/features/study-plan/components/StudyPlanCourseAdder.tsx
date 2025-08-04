@@ -36,7 +36,7 @@ import classes from '@/shared/components/PillGroupBox.module.css';
 import { useCoursesGraph } from '@/contexts/CoursesGraphContext.tsx';
 import { CreateCourseModal } from '@/features/course/components/CreateCourseModal';
 import { Course } from '@/features/course/types.ts';
-import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
+import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
 
 interface CourseRow {
   id: number;
@@ -48,7 +48,7 @@ interface CourseRow {
 type CourseMeta = Pick<CourseRow, 'code' | 'name'>;
 
 export function StudyPlanCourseAdder() {
-  const { data: studyPlan } = useStudyPlan();
+  const { data: studyPlan } = useCurrentStudyPlan();
   const [modalOpen, setModalOpen] = React.useState(false);
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
   const [selectedSection, setSelectedSection] = React.useState<string | null>(null);

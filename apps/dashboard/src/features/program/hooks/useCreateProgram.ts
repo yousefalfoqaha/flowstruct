@@ -1,17 +1,19 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { createProgram } from '@/features/program/api.ts';
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
 import { programKeys } from '@/features/program/queries.ts';
 import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
+import { Program } from '@/features/program/types.ts';
+import { api } from '@/shared/api.ts';
+import { PROGRAM_ENDPOINT } from '@/features/program/constants.ts';
 
-export const useCreateProgram = () => {
-  const queryClient = useQueryClient();
+const createProgram = async (newProgram: Partial<Program>) =>
+  api.post<Program>(PROGRAM_ENDPOINT, { body: newProgram });
 
-  return useAppMutation(createProgram, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(programKeys.detail(data.id), data);
-      queryClient.invalidateQueries({ queryKey: programKeys.list() });
+export const useCreateProgram = () =>
+  useAppMutation({
+    mutationFn: createProgram,
+    meta: {
+      setData: (data) => programKeys.detail(data.id),
+      invalidates: [programKeys.list()],
+      successMessage: (data) => `${getProgramDisplayName(data)} created.`,
     },
-    successNotification: { message: (data) => `${getProgramDisplayName(data)} created.` },
   });
-};

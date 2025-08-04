@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useProgram } from '@/features/program/hooks/useProgram.ts';
+import { useCurrentProgram } from '@/features/program/hooks/useCurrentProgram.ts';
 import { Group } from '@mantine/core';
 import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
 import { AppCard } from '@/shared/components/AppCard.tsx';
@@ -21,7 +21,7 @@ export const Route = createFileRoute('/_layout/programs/$programId/')({
 });
 
 function RouteComponent() {
-  const { data: program } = useProgram();
+  const { data: program } = useCurrentProgram();
 
   return (
     <PageLayout

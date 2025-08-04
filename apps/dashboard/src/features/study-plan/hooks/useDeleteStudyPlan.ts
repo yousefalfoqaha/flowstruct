@@ -1,16 +1,17 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { deleteStudyPlan } from '@/features/study-plan/api.ts';
+import { STUDY_PLAN_ENDPOINT } from '@/features/study-plan/constants.ts';
 import { studyPlanKeys } from '@/features/study-plan/queries.ts';
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
+import { api } from '@/shared/api.ts';
 
-export const useDeleteStudyPlan = () => {
-  const queryClient = useQueryClient();
+const deleteStudyPlan = (studyPlanId: number) =>
+  api.delete<void>([STUDY_PLAN_ENDPOINT, studyPlanId]);
 
-  return useAppMutation(deleteStudyPlan, {
-    onSuccess: (_, studyPlanId) => {
-      queryClient.removeQueries({ queryKey: studyPlanKeys.detail(studyPlanId) });
-      queryClient.invalidateQueries({ queryKey: studyPlanKeys.list() });
+export const useDeleteStudyPlan = () =>
+  useAppMutation({
+    mutationFn: deleteStudyPlan,
+    meta: {
+      removes: (_, studyPlanId) => [studyPlanKeys.detail(studyPlanId)],
+      invalidates: [studyPlanKeys.list()],
+      successMessage: 'Deleted study plan.',
     },
-    successNotification: { message: 'Deleted study plan.' },
   });
-};

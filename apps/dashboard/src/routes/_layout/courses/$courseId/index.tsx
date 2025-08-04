@@ -9,7 +9,7 @@ import { InfoItem } from '@/shared/components/InfoItem.tsx';
 import { CourseType } from '@/features/course/types.ts';
 import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
 import { CourseQuery } from '@/features/course/queries.ts';
-import { useRouteCourse } from '@/features/course/hooks/useRouteCourse.ts';
+import { useCurrentCourse } from '@/features/course/hooks/useCurrentCourse.ts';
 
 export const Route = createFileRoute('/_layout/courses/$courseId/')({
   loader: async ({ context: { queryClient }, params }) => {
@@ -20,7 +20,7 @@ export const Route = createFileRoute('/_layout/courses/$courseId/')({
 });
 
 function RouteComponent() {
-  const { data: course } = useRouteCourse();
+  const { data: course } = useCurrentCourse();
 
   return (
     <PageLayout

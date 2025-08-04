@@ -1,7 +1,7 @@
 import { Group, Loader, Menu, ScrollArea, Text } from '@mantine/core';
 import { useMoveCoursesToSection } from '@/features/study-plan/hooks/useMoveCoursesToSection.ts';
 import { Check } from 'lucide-react';
-import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
+import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
 import { getSectionDisplayName } from '@/utils/getSectionDisplayName.ts';
 
 type SectionsComboboxProps = {
@@ -11,7 +11,7 @@ type SectionsComboboxProps = {
 
 export function SectionsMenuItems({ courseId, sectionId }: SectionsComboboxProps) {
   const moveCourseToSection = useMoveCoursesToSection();
-  const { data: studyPlan } = useStudyPlan();
+  const { data: studyPlan } = useCurrentStudyPlan();
 
   const handleChangeCourseSection = (sectionId: number) => {
     moveCourseToSection.mutate({

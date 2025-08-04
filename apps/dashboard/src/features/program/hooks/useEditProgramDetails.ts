@@ -1,17 +1,24 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { editProgramDetails } from '@/features/program/api.ts';
+import { PROGRAM_ENDPOINT } from '@/features/program/constants.ts';
 import { programKeys } from '@/features/program/queries.ts';
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
 import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
+import { Program } from '@/features/program/types.ts';
+import { api } from '@/shared/api.ts';
 
-export const useEditProgramDetails = () => {
-  const queryClient = useQueryClient();
+const editProgramDetails = async ({
+  programId,
+  editedProgramDetails,
+}: {
+  programId: number;
+  editedProgramDetails: Partial<Program>;
+}) => api.put<Program>([PROGRAM_ENDPOINT, programId.toString()], { body: editedProgramDetails });
 
-  return useAppMutation(editProgramDetails, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(programKeys.detail(data.id), data);
-      queryClient.invalidateQueries({ queryKey: programKeys.list() });
+export const useEditProgramDetails = () =>
+  useAppMutation({
+    mutationFn: editProgramDetails,
+    meta: {
+      setData: (data) => programKeys.detail(data.id),
+      invalidates: [programKeys.list()],
+      successMessage: (data) => `Edited ${getProgramDisplayName(data)} details.`,
     },
-    successNotification: { message: (data) => `Edited ${getProgramDisplayName(data)} details.` },
   });
-};

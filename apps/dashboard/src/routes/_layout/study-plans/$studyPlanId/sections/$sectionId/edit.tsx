@@ -1,7 +1,7 @@
 import { createFileRoute, Navigate } from '@tanstack/react-router';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
-import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
+import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
 import { DefaultFrameworkCoursesSearchValues } from '@/utils/defaultFrameworkCoursesSearchValues.ts';
 import { getSectionDisplayName } from '@/utils/getSectionDisplayName.ts';
 import { EditSectionFieldset } from '@/features/study-plan/components/EditSectionFieldset.tsx';
@@ -14,7 +14,7 @@ function RouteComponent() {
   const { studyPlanId, sectionId } = Route.useParams();
   const currentSectionId = Number(sectionId);
 
-  const { data: studyPlan } = useStudyPlan();
+  const { data: studyPlan } = useCurrentStudyPlan();
   const section = studyPlan.sections.find((s) => s.id === currentSectionId);
   if (!section)
     return (

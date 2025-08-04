@@ -1,10 +1,28 @@
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
-import { changePassword } from '@/features/user/api.ts';
+import { USER_ENDPOINT } from '@/features/user/constants.ts';
+import { api } from '@/shared/api.ts';
 
-export const useChangePassword = () => {
-  return useAppMutation(changePassword, {
-    successNotification: {
-      message: 'Password changed.',
+const changePassword = ({
+  currentPassword,
+  newPassword,
+  confirmPassword,
+}: {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}) =>
+  api.put<void>([USER_ENDPOINT, 'me', 'password'], {
+    body: {
+      currentPassword,
+      newPassword,
+      confirmPassword,
     },
   });
-};
+
+export const useChangePassword = () =>
+  useAppMutation({
+    mutationFn: changePassword,
+    meta: {
+      successMessage: 'Password changed.',
+    },
+  });

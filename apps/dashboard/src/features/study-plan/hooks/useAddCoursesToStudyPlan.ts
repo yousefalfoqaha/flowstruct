@@ -1,17 +1,31 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { addCoursesToStudyPlan } from '@/features/study-plan/api.ts';
+import { STUDY_PLAN_ENDPOINT } from '@/features/study-plan/constants.ts';
 import { studyPlanKeys } from '@/features/study-plan/queries.ts';
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
+import { api } from '@/shared/api.ts';
+import { StudyPlan } from '@/features/study-plan/types.ts';
+
+const addCoursesToStudyPlan = ({
+  courseIds,
+  sectionId,
+  studyPlanId,
+}: {
+  courseIds: number[];
+  sectionId: number;
+  studyPlanId: number;
+}) =>
+  api.post<StudyPlan>([STUDY_PLAN_ENDPOINT, studyPlanId, 'sections', sectionId, 'courses'], {
+    params: {
+      courses: courseIds,
+    },
+  });
 
 export const useAddCoursesToStudyPlan = () => {
-  const queryClient = useQueryClient();
-
-  return useAppMutation(addCoursesToStudyPlan, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(studyPlanKeys.detail(data.id), data);
-      queryClient.invalidateQueries({ queryKey: studyPlanKeys.list() });
-      queryClient.invalidateQueries({ queryKey: studyPlanKeys.courseList(data.id) });
+  return useAppMutation({
+    mutationFn: addCoursesToStudyPlan,
+    meta: {
+      setData: (data) => studyPlanKeys.detail(data.id),
+      invalidates: (data) => [studyPlanKeys.list(), studyPlanKeys.courseList(data.id)],
+      successMessage: 'Course(s) added to study plan.',
     },
-    successNotification: { message: 'Course(s) added to study plan.' },
   });
 };

@@ -6,16 +6,67 @@ import '@mantine/notifications/styles.css';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 import '@mantine/core/styles.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { matchQuery, MutationCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createTheme, LoadingOverlay, MantineColorsTuple, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
-import { Notifications } from '@mantine/notifications';
+import { notifications, Notifications } from '@mantine/notifications';
 import navigationProgressClasses from '@/shared/components/NavigationProgress.module.css';
 import { NavigationProgress } from '@mantine/nprogress';
 import { NotFoundPage } from '@/shared/components/NotFoundPage.tsx';
 import themeClasses from './theme.module.css';
+import { Check } from 'lucide-react';
 
 const queryClient = new QueryClient({
+  mutationCache: new MutationCache({
+    onSuccess: (data, variables, context, mutation) => {
+      const invalidatesMeta = mutation.meta?.invalidates;
+      const removesMeta = mutation.meta?.removes;
+
+      if (invalidatesMeta) {
+        const resolvedInvalidatesMeta =
+          typeof invalidatesMeta === 'function'
+            ? invalidatesMeta(data, variables, context)
+            : invalidatesMeta;
+
+        queryClient.invalidateQueries({
+          predicate: (query) =>
+            resolvedInvalidatesMeta.some((queryKey) => matchQuery({ queryKey }, query)) ?? false,
+        });
+      }
+
+      if (removesMeta) {
+        const resolvedRemovesMeta =
+          typeof removesMeta === 'function' ? removesMeta(data, variables, context) : removesMeta;
+
+        queryClient.removeQueries({
+          predicate: (query) =>
+            resolvedRemovesMeta.some((queryKey) => matchQuery({ queryKey }, query)) ?? false,
+        });
+      }
+
+      const setDataMeta = mutation.meta?.setData;
+      if (setDataMeta) {
+        const queryKey =
+          typeof setDataMeta === 'function' ? setDataMeta(data, variables, context) : setDataMeta;
+
+        queryClient.setQueryData(queryKey, data);
+      }
+
+      const successMessage = mutation.meta?.successMessage;
+      if (successMessage) {
+        notifications.show({
+          title: 'Success!',
+          message:
+            typeof successMessage === 'function'
+              ? successMessage(data, variables, context)
+              : successMessage,
+          color: 'green',
+          icon: <Check size={18} />,
+          withBorder: true,
+        });
+      }
+    },
+  }),
   defaultOptions: {
     queries: {
       staleTime: 300000,

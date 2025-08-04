@@ -5,8 +5,8 @@ import { usePlaceCoursesInSemester } from '@/features/study-plan/hooks/useAddCou
 import classes from './CoursesMultiSelect.module.css';
 import { getSectionCode } from '@/utils/getSectionCode.ts';
 import { CoursePlacement } from '@/features/study-plan/types.ts';
-import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
-import { useStudyPlanCourses } from '@/features/study-plan/hooks/useStudyPlanCourses.ts';
+import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
+import { useCurrentStudyPlanCourses } from '@/features/study-plan/hooks/useCurrentStudyPlanCourses.ts';
 import { comparePlacement } from '@/utils/comparePlacement.ts';
 
 type CoursePlacementMultiSelectProps = {
@@ -24,8 +24,8 @@ interface CourseOption {
 export function CoursePlacementMultiSelect({ placement }: CoursePlacementMultiSelectProps) {
   const [opened, setOpened] = React.useState(false);
   const [selectedCourses, setSelectedCourses] = React.useState<string[]>([]);
-  const { data: studyPlan } = useStudyPlan();
-  const { data: courses } = useStudyPlanCourses();
+  const { data: studyPlan } = useCurrentStudyPlan();
+  const { data: courses } = useCurrentStudyPlanCourses();
 
   const SEMESTER_NAMES = ['first', 'second', 'summer'];
 

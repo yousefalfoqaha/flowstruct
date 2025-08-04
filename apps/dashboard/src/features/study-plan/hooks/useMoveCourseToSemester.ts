@@ -1,15 +1,27 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
-import { moveCourseToSemester } from '@/features/study-plan/api.ts';
+import { STUDY_PLAN_ENDPOINT } from '@/features/study-plan/constants.ts';
 import { studyPlanKeys } from '@/features/study-plan/queries.ts';
+import { CoursePlacement, StudyPlan } from '@/features/study-plan/types.ts';
+import { api } from '@/shared/api.ts';
 
-export const useMoveCourseToSemester = () => {
-  const queryClient = useQueryClient();
+const moveCourseToSemester = ({
+  studyPlanId,
+  courseId,
+  targetPlacement,
+}: {
+  studyPlanId: number;
+  courseId: number;
+  targetPlacement: CoursePlacement;
+}) =>
+  api.put<StudyPlan>([STUDY_PLAN_ENDPOINT, studyPlanId, 'course-placements', courseId], {
+    body: targetPlacement,
+  });
 
-  return useAppMutation(moveCourseToSemester, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(studyPlanKeys.detail(data.id), data);
-      queryClient.invalidateQueries({ queryKey: studyPlanKeys.list() });
+export const useMoveCourseToSemester = () =>
+  useAppMutation({
+    mutationFn: moveCourseToSemester,
+    meta: {
+      setData: (data) => studyPlanKeys.detail(data.id),
+      invalidates: [studyPlanKeys.list()],
     },
   });
-};

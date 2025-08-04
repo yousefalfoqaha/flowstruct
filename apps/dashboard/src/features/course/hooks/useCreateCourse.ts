@@ -1,18 +1,20 @@
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
-import { createCourse } from '@/features/course/api.ts';
-import { useQueryClient } from '@tanstack/react-query';
 import { courseKeys } from '@/features/course/queries.ts';
+import { Course } from '@/features/course/types.ts';
+import { api } from '@/shared/api.ts';
+import { COURSE_ENDPOINT } from '@/features/course/constants.ts';
 
-export const useCreateCourse = () => {
-  const queryClient = useQueryClient();
+const createCourse = async (newCourse: Partial<Course>) =>
+  api.post<Course>(COURSE_ENDPOINT, {
+    body: newCourse,
+  });
 
-  return useAppMutation(createCourse, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(courseKeys.detail(data.id), data);
-      queryClient.invalidateQueries({ queryKey: courseKeys.lists() });
-    },
-    successNotification: {
-      message: (data) => `Course ${data.code} created.`,
+export const useCreateCourse = () =>
+  useAppMutation({
+    mutationFn: createCourse,
+    meta: {
+      setData: (data) => courseKeys.detail(data.id),
+      invalidates: [courseKeys.lists()],
+      successMessage: (data) => `Course ${data.code} created.`,
     },
   });
-};

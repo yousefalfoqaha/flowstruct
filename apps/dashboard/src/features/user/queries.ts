@@ -1,5 +1,7 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getMe, getUserList } from '@/features/user/api.ts';
+import { USER_ENDPOINT } from '@/features/user/constants.ts';
+import { api } from '@/shared/api.ts';
+import { User } from '@/features/user/types.ts';
 
 export const userKeys = {
   all: ['users'] as const,
@@ -9,10 +11,10 @@ export const userKeys = {
 
 export const MeQuery = queryOptions({
   queryKey: userKeys.me(),
-  queryFn: () => getMe(),
+  queryFn: () => api.get<User>([USER_ENDPOINT, 'me']),
 });
 
 export const UserListQuery = queryOptions({
   queryKey: userKeys.list(),
-  queryFn: () => getUserList(),
+  queryFn: () => api.get<Record<number, User>>([USER_ENDPOINT]),
 });

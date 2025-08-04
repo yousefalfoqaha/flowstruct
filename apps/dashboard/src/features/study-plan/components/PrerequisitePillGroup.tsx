@@ -2,8 +2,8 @@ import { Flex, Indicator, Loader, Pill } from '@mantine/core';
 import { PrerequisiteMultiSelect } from '@/features/study-plan/components/PrerequisiteMultiSelect.tsx';
 import { useUnlinkPrerequisiteFromCourse } from '@/features/study-plan/hooks/useUnlinkPrerequisiteFromCourse.ts';
 import { useUnlinkCorequisiteFromCourse } from '@/features/study-plan/hooks/useUnlinkCorequisiteFromCourse.ts';
-import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
-import { useStudyPlanCourses } from '@/features/study-plan/hooks/useStudyPlanCourses.ts';
+import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
+import { useCurrentStudyPlanCourses } from '@/features/study-plan/hooks/useCurrentStudyPlanCourses.ts';
 
 type PrerequisitePillGroupProps = {
   parentCourseId: number;
@@ -13,8 +13,8 @@ export function PrerequisitePillGroup({ parentCourseId }: PrerequisitePillGroupP
   const unlinkPrerequisiteFromCourse = useUnlinkPrerequisiteFromCourse();
   const unlinkCorequisiteFromCourse = useUnlinkCorequisiteFromCourse();
 
-  const { data: studyPlan } = useStudyPlan();
-  const { data: courses } = useStudyPlanCourses();
+  const { data: studyPlan } = useCurrentStudyPlan();
+  const { data: courses } = useCurrentStudyPlanCourses();
 
   const handleRemovePrerequisite = (prerequisiteId: number) =>
     unlinkPrerequisiteFromCourse.mutate({

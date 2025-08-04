@@ -1,17 +1,23 @@
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
-import { logoutUser } from '@/features/user/api.ts';
+import { USER_ENDPOINT } from '@/features/user/constants.ts';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import { api } from '@/shared/api.ts';
+
+const logoutUser = () => api.post([USER_ENDPOINT, 'logout']);
 
 export const useLogout = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  return useAppMutation(logoutUser, {
+  return useAppMutation({
+    mutationFn: logoutUser,
     onSuccess: () => {
       navigate({ to: '/login' }).then();
       queryClient.clear();
     },
-    successNotification: { message: 'You are logged out.' },
+    meta: {
+      successMessage: 'You are logged out.',
+    },
   });
 };

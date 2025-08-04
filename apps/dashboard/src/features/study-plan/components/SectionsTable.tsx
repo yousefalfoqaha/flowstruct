@@ -1,4 +1,4 @@
-import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
+import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
 import { createColumnHelper } from '@tanstack/react-table';
 import { Section, SectionLevel, SectionType } from '@/features/study-plan/types.ts';
 import React from 'react';
@@ -15,7 +15,7 @@ import { MoveSectionMenu } from '@/features/study-plan/components/MoveSectionMen
 import { Link } from '@tanstack/react-router';
 
 export function SectionsTable() {
-  const { data: studyPlan } = useStudyPlan();
+  const { data: studyPlan } = useCurrentStudyPlan();
 
   const { accessor, display } = createColumnHelper<Section>();
 

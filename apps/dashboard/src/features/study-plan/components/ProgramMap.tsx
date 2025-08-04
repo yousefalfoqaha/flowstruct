@@ -1,5 +1,5 @@
-import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
-import { useStudyPlanCourses } from '@/features/study-plan/hooks/useStudyPlanCourses.ts';
+import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
+import { useCurrentStudyPlanCourses } from '@/features/study-plan/hooks/useCurrentStudyPlanCourses.ts';
 import { useProgramMap } from '@/contexts/ProgramMapContext.tsx';
 import classes from './ProgramMap.module.css';
 import { CourseCard } from '@/features/course/components/CourseCard.tsx';
@@ -16,8 +16,8 @@ import { Link } from '@tanstack/react-router';
 import { DefaultFrameworkCoursesSearchValues } from '@/utils/defaultFrameworkCoursesSearchValues.ts';
 
 export function ProgramMap() {
-  const { data: studyPlan } = useStudyPlan();
-  const { data: courses } = useStudyPlanCourses();
+  const { data: studyPlan } = useCurrentStudyPlan();
+  const { data: courses } = useCurrentStudyPlanCourses();
   const { dragHandlers } = useProgramMap();
 
   const scrollableRef = React.useRef<HTMLDivElement>(null);

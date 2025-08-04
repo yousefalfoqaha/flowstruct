@@ -1,6 +1,6 @@
 import React, { ReactNode, useMemo } from 'react';
 import { CourseRelation } from '@/features/study-plan/types.ts';
-import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
+import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
 
 type CoursesGraphContextType = {
   coursesGraph: Map<number, CourseRequisites>;
@@ -14,7 +14,7 @@ export type CourseRequisites = {
 const CoursesGraphContext = React.createContext<CoursesGraphContextType | undefined>(undefined);
 
 function CoursesGraphProvider({ children }: { children: ReactNode }) {
-  const { data: studyPlan } = useStudyPlan();
+  const { data: studyPlan } = useCurrentStudyPlan();
 
   const coursesGraph = useMemo(() => {
     if (!studyPlan) return new Map<number, CourseRequisites>();

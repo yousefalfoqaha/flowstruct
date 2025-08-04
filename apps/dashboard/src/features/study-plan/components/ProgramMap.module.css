@@ -14,11 +14,9 @@
 }
 
 .gridContainer {
-    overflow: hidden;
     border: 1px solid var(--mantine-color-gray-3);
     border-radius: var(--mantine-radius-default);
     background-color: var(--mantine-color-white);
-    height: 100%;
 }
 
 .programMap {
@@ -48,27 +46,8 @@
     display: flex;
     justify-content: center;
     width: 10rem;
+    min-height: 9rem;
 }
-
-/*.cell::after {*/
-/*  content: "";*/
-/*  position: absolute;*/
-/*  background-color: var(--mantine-color-gray-3);*/
-/*  height: 100vh;*/
-/*  width: 1px;*/
-/*  left: 0;*/
-/*  top: 0;*/
-/*}*/
-
-/*.cell::before {*/
-/*  content: "";*/
-/*  position: absolute;*/
-/*  background-color: var(--mantine-color-gray-3);*/
-/*  height: 1px;*/
-/*  width: 100vw;*/
-/*  left: 0;*/
-/*  top: 0;*/
-/*}*/
 
 .headerGrid {
     display: grid;
@@ -95,8 +74,6 @@
     margin-right: auto;
     margin-bottom: var(--mantine-spacing-md);
     grid-row: 1;
-    /*font-weight: 600;*/
-    /*color: black;*/
     font-size: var(--mantine-font-size-sm);
 }
 

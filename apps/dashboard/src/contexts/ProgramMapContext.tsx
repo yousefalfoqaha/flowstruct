@@ -1,5 +1,5 @@
 import React, { DragEvent, ReactNode, useCallback, useMemo } from 'react';
-import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
+import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
 import { useCoursesGraph } from '@/contexts/CoursesGraphContext.tsx';
 import { getTermIndexFromPlacement } from '@/utils/getTermIndexFromPlacement.ts';
 import { comparePlacement } from '@/utils/comparePlacement.ts';
@@ -26,7 +26,7 @@ const ProgramMapContext = React.createContext<ProgramMapContextType | undefined>
 
 function ProgramMapProvider({ children }: { children: ReactNode }) {
   const [movingCourse, setMovingCourse] = React.useState<number | null>(null);
-  const { data: studyPlan } = useStudyPlan();
+  const { data: studyPlan } = useCurrentStudyPlan();
   const { coursesGraph } = useCoursesGraph();
 
   const moveCourseToSemester = useMoveCourseToSemester();

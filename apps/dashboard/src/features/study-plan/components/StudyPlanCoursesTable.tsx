@@ -3,12 +3,12 @@ import { DataTable } from '@/shared/components/DataTable.tsx';
 import { useDataTable } from '@/shared/hooks/useDataTable.ts';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
-import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
+import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
 import React from 'react';
 import { getStudyPlanCoursesTableColumns } from '@/features/study-plan/components/StudyPlanCoursesTableColumns.tsx';
 import { getSectionCode } from '@/utils/getSectionCode.ts';
 import { FrameworkCourse } from '@/features/study-plan/types.ts';
-import { useStudyPlanCourses } from '@/features/study-plan/hooks/useStudyPlanCourses.ts';
+import { useCurrentStudyPlanCourses } from '@/features/study-plan/hooks/useCurrentStudyPlanCourses.ts';
 import { List, ListPlus } from 'lucide-react';
 import { SelectedCoursesToolbar } from '@/features/study-plan/components/SelectedCoursesToolbar.tsx';
 import { SectionColumnFilter } from '@/features/study-plan/components/SectionColumnFilter.tsx';
@@ -17,8 +17,8 @@ import { StudyPlanCourseAdder } from '@/features/study-plan/components/StudyPlan
 import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 
 export function StudyPlanCoursesTable() {
-  const { data: studyPlan } = useStudyPlan();
-  const { data: courses } = useStudyPlanCourses();
+  const { data: studyPlan } = useCurrentStudyPlan();
+  const { data: courses } = useCurrentStudyPlanCourses();
 
   const data = React.useMemo(() => {
     const rows: FrameworkCourse[] = [];

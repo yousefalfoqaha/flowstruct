@@ -1,6 +1,8 @@
-import { infiniteQueryOptions, keepPreviousData, queryOptions } from '@tanstack/react-query';
-import { getCourse, getPaginatedCourseList } from '@/features/course/api.ts';
+import { keepPreviousData, queryOptions } from '@tanstack/react-query';
+import { COURSE_ENDPOINT } from '@/features/course/constants.ts';
 import { TableSearchOptions } from '@/shared/types.ts';
+import { api } from '@/shared/api.ts';
+import { Course, CoursesPage } from '@/features/course/types.ts';
 
 export const courseKeys = {
   all: ['courses'] as const,
@@ -16,26 +18,15 @@ export const courseKeys = {
 export const CourseQuery = (courseId: number) =>
   queryOptions({
     queryKey: courseKeys.detail(courseId),
-    queryFn: () => getCourse(courseId),
+    queryFn: () => api.get<Course>([COURSE_ENDPOINT, courseId]),
   });
 
 export const PaginatedCourseListQuery = (options: Omit<TableSearchOptions, 'columnFilters'>) =>
   queryOptions({
     queryKey: courseKeys.list(options),
-    queryFn: () => getPaginatedCourseList(options),
-    placeholderData: keepPreviousData,
-  });
-
-export const InfiniteCoursesQuery = (filter: string) =>
-  infiniteQueryOptions({
-    queryKey: courseKeys.infinite(filter),
-    queryFn: ({ pageParam }) =>
-      getPaginatedCourseList({
-        page: pageParam,
-        filter: filter,
-        size: 5,
+    queryFn: () =>
+      api.get<CoursesPage>(COURSE_ENDPOINT, {
+        params: { ...options },
       }),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage) => (lastPage.isLastPage ? undefined : lastPage.page + 1),
     placeholderData: keepPreviousData,
   });
