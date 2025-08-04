@@ -12,6 +12,7 @@ import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 import { StudyPlanTabs } from '@/features/study-plan/components/StudyPlanTabs.tsx';
 import { CoursesGraphProvider } from '@/contexts/CoursesGraphContext.tsx';
+import { StudyPlanOptionsMenu } from '@/features/study-plan/components/StudyPlanOptionsMenu.tsx';
 
 export const Route = createFileRoute('/_layout/study-plans/$studyPlanId')({
   loader: async ({ context: { queryClient }, params }) => {
@@ -43,11 +44,14 @@ function RouteComponent() {
     <Group justify="space-between">
       <Group gap="lg" wrap="nowrap">
         <PageHeaderWithBack title={title} linkProps={{ to: '/study-plans' }} />
+
         {StatusBadge(studyPlan.status)}
       </Group>
 
       <Group mb="auto" justify="space-between">
         <LastUpdated at={studyPlan.updatedAt} by={studyPlan.updatedBy} />
+
+        <StudyPlanOptionsMenu studyPlan={studyPlan} />
       </Group>
     </Group>
   );

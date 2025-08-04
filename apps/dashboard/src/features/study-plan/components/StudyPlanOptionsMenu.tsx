@@ -49,7 +49,7 @@ export function StudyPlanOptionsMenu({ studyPlan }: Props) {
 
         <Menu.Divider />
 
-        {studyPlan.status === 'DRAFT' || studyPlan.status === 'NEW' && (
+        {(studyPlan.status === 'DRAFT' || studyPlan.status === 'NEW') && (
           <Menu.Item
             onClick={() => approveStudyPlan.mutate(studyPlan.id)}
             leftSection={<CircleCheck size={14} />}
