@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlanDraft;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.InvalidDraftException;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.postgresql.util.PGobject;
 import org.springframework.core.convert.converter.Converter;

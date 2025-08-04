@@ -7,7 +7,7 @@ import { useStudyPlan } from '@/features/study-plan/hooks/useStudyPlan.ts';
 import { useProgram } from '@/features/program/hooks/useProgram.ts';
 import { Divider, Group, Stack, Text, Title } from '@mantine/core';
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
-import { publishStatusBadge } from '@/shared/components/PublishStatusBadge.tsx';
+import { StatusBadge } from '@/shared/components/StatusBadge.tsx';
 import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 import { StudyPlanTabs } from '@/features/study-plan/components/StudyPlanTabs.tsx';
@@ -43,7 +43,7 @@ function RouteComponent() {
     <Group justify="space-between">
       <Group gap="lg" wrap="nowrap">
         <PageHeaderWithBack title={title} linkProps={{ to: '/study-plans' }} />
-        {publishStatusBadge(studyPlan.status)}
+        {StatusBadge(studyPlan.status)}
       </Group>
 
       <Group mb="auto" justify="space-between">

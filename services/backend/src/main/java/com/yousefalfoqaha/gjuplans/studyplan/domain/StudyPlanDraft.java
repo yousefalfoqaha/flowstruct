@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,12 +22,14 @@ public class StudyPlanDraft {
     private Map<Long, Placement> coursePlacements;
     private Set<CoursePrerequisite> coursePrerequisites;
     private Set<CourseCorequisite> courseCorequisites;
+    private Long version;
 
     public StudyPlanDraft(StudyPlan studyPlan) {
         this.year = studyPlan.getYear();
         this.duration = studyPlan.getDuration();
         this.track = studyPlan.getTrack();
         this.program = studyPlan.getProgram();
+        this.version = studyPlan.getVersion();
 
         this.sections = studyPlan.getSections().stream()
                 .map(Section::new)
@@ -47,15 +48,5 @@ public class StudyPlanDraft {
         this.courseCorequisites = studyPlan.getCourseCorequisites().stream()
                 .map(CourseCorequisite::new)
                 .collect(Collectors.toSet());
-    }
-
-    public Map<Long, List<CoursePrerequisite>> coursePrerequisitesMap() {
-        return coursePrerequisites.stream()
-                .collect(Collectors.groupingBy(cp -> cp.getCourse().getId()));
-    }
-
-    public Map<Long, List<CourseCorequisite>> courseCorequisitesMap() {
-        return courseCorequisites.stream()
-                .collect(Collectors.groupingBy(cc -> cc.getCourse().getId()));
     }
 }

@@ -1,7 +1,7 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import { StudyPlanRow } from '@/features/study-plan/types.ts';
 import { StudyPlanOptionsMenu } from '@/features/study-plan/components/StudyPlanOptionsMenu.tsx';
-import { publishStatusBadge } from '@/shared/components/PublishStatusBadge.tsx';
+import { StatusBadge } from '@/shared/components/StatusBadge.tsx';
 import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
 
 export function getStudyPlansTableColumns() {
@@ -33,7 +33,7 @@ export function getStudyPlansTableColumns() {
     }),
     accessor('status', {
       header: 'Status',
-      cell: ({ row }) => publishStatusBadge(row.getValue('status')),
+      cell: ({ row }) => StatusBadge(row.getValue('status')),
     }),
     display({
       id: 'last-updated',

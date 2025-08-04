@@ -1,18 +1,18 @@
 import { Badge } from '@mantine/core';
 import classes from '@/features/program/components/StatusBadge.module.css';
-import { Globe, Pencil, Clock } from 'lucide-react';
+import { Check, Pencil, Plus } from 'lucide-react';
 
-export function publishStatusBadge(status: string) {
+export function StatusBadge(status: string) {
   switch (status) {
-    case 'PUBLISHED':
+    case 'APPROVED':
       return (
         <Badge
           fullWidth
           variant="light"
           classNames={{ root: classes.root }}
-          leftSection={<Globe size={14} />}
+          leftSection={<Check size={14} />}
         >
-          Published
+          Approved
         </Badge>
       );
     case 'DRAFT':
@@ -26,16 +26,16 @@ export function publishStatusBadge(status: string) {
           Draft
         </Badge>
       );
-    case 'PENDING':
+    case 'NEW':
       return (
         <Badge
           fullWidth
           variant="light"
           color="yellow"
           classNames={{ root: classes.root }}
-          leftSection={<Clock size={14} />}
+          leftSection={<Plus size={14} />}
         >
-          Pending
+          New
         </Badge>
       );
     default:

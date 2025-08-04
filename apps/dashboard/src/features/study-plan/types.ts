@@ -45,6 +45,7 @@ export type StudyPlan = {
   duration: number;
   track: string;
   status: string;
+  isPending: boolean;
   program: number;
   sections: Section[];
   coursePlacements: Record<number, CoursePlacement>;
@@ -73,6 +74,7 @@ export type StudyPlanSummary = Pick<
   | 'duration'
   | 'track'
   | 'status'
+  | 'isPending'
   | 'program'
   | 'createdAt'
   | 'updatedAt'

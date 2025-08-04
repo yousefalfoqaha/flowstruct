@@ -13,6 +13,7 @@ public record StudyPlanDto(
         int duration,
         String track,
         String status,
+        boolean isPending,
         long program,
         Instant createdAt,
         Instant updatedAt,

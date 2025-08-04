@@ -1,6 +1,5 @@
 package com.yousefalfoqaha.gjuplans.studyplan.domain;
 
-import com.yousefalfoqaha.gjuplans.common.PublishStatus;
 import com.yousefalfoqaha.gjuplans.program.domain.Program;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,11 +30,11 @@ public class StudyPlan {
 
     private String track;
 
-    private PublishStatus status;
-
-    private StudyPlanDraft draft;
+    private boolean isPending;
 
     private AggregateReference<Program, Long> program;
+
+    private StudyPlanDraft approvedStudyPlan;
 
     @Version
     private Long version;
@@ -60,14 +59,6 @@ public class StudyPlan {
 
     @MappedCollection(idColumn = "study_plan")
     private Set<CourseCorequisite> courseCorequisites = new HashSet<>();
-
-    public StudyPlanDraft getDraft() {
-        if (this.status == PublishStatus.PUBLISHED || this.draft == null) {
-            this.draft = new StudyPlanDraft(this);
-        }
-
-        return this.draft;
-    }
 
     public Map<Long, List<CoursePrerequisite>> getCoursePrerequisitesMap() {
         return coursePrerequisites
