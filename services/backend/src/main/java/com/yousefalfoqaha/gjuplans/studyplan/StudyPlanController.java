@@ -55,6 +55,14 @@ public class StudyPlanController {
         );
     }
 
+    @PutMapping("/{studyPlanId}/approve")
+    public ResponseEntity<StudyPlanDto> approveStudyPlan(@PathVariable long studyPlanId) {
+        return new ResponseEntity<>(
+                studyPlanService.approveStudyPlan(studyPlanId),
+                HttpStatus.OK
+        );
+    }
+
     @PutMapping("/{studyPlanId}")
     public ResponseEntity<StudyPlanDto> editStudyPlanDetails(
             @PathVariable long studyPlanId,

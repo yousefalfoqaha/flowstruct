@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan.service;
 
+import com.yousefalfoqaha.gjuplans.common.AlreadyApprovedException;
 import com.yousefalfoqaha.gjuplans.common.EmptyListException;
 import com.yousefalfoqaha.gjuplans.common.InvalidDetailsException;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
@@ -37,6 +38,21 @@ public class StudyPlanService {
                 .stream()
                 .map(studyPlanSummaryDtoMapper)
                 .toList();
+    }
+
+    @Transactional
+    public StudyPlanDto approveStudyPlan(long studyPlanId) {
+        var studyPlan = findStudyPlan(studyPlanId);
+        StudyPlanDraft lastApprovedStudyPlan = studyPlan.getApprovedStudyPlan();
+
+        if (lastApprovedStudyPlan != null && Objects.equals(lastApprovedStudyPlan.getVersion(), studyPlan.getVersion())) {
+            throw new AlreadyApprovedException("This version has already been approved.");
+        }
+
+        studyPlan.setApprovedStudyPlan(new StudyPlanDraft(studyPlan));
+        studyPlan.getApprovedStudyPlan().setVersion(studyPlan.getVersion() + 1);
+
+        return saveAndMapStudyPlan(studyPlan);
     }
 
     @Transactional

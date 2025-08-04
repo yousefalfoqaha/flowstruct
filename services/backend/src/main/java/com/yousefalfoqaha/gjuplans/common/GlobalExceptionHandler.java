@@ -50,6 +50,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(AlreadyApprovedException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            AlreadyApprovedException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.CONFLICT.value(),
+                        List.of(exception.getMessage()),
+                        new Date()
+                ),
+                HttpStatus.CONFLICT
+        );
+    }
+
     @ExceptionHandler(EmptyListException.class)
     public ResponseEntity<ErrorObject> handleException(
             EmptyListException exception

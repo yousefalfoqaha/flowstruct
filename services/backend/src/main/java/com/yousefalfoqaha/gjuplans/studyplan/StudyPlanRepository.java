@@ -11,7 +11,7 @@ import java.util.List;
 public interface StudyPlanRepository extends CrudRepository<StudyPlan, Long> {
 
     @Query(
-            "SELECT id, year, duration, track, is_pending, (approved_study_plan ->> 'version')::BIGINT AS approved_version, program, created_at, updated_at, updated_by " +
+            "SELECT id, year, duration, track, is_pending, (approved_study_plan ->> 'version')::BIGINT AS approved_version, version, program, created_at, updated_at, updated_by " +
                     "FROM study_plan"
     )
     List<StudyPlanSummaryProjection> findAllStudyPlanSummaries();

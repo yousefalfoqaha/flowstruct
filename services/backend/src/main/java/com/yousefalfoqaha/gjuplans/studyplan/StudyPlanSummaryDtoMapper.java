@@ -11,6 +11,7 @@ public class StudyPlanSummaryDtoMapper implements Function<StudyPlanSummaryProje
 
     @Override
     public StudyPlanSummaryDto apply(StudyPlanSummaryProjection studyPlan) {
+        System.out.println(studyPlan.approvedVersion());
         String status = studyPlan.approvedVersion() == null
                 ? "NEW"
                 : !Objects.equals(studyPlan.approvedVersion(), studyPlan.version())
