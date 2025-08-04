@@ -5,7 +5,7 @@ import { getTermIndexFromPlacement } from '@/utils/getTermIndexFromPlacement.ts'
 import { comparePlacement } from '@/utils/comparePlacement.ts';
 import { CoursePlacement } from '@/features/study-plan/types.ts';
 import { getPlacementFromTermIndex } from '@/utils/getPlacementFromTermIndex';
-import classes from '@/features/study-plan/components/ProgramMap.module.css';
+import classes from '@/features/study-plan/styles/ProgramMap.module.css';
 import { useMoveCourseToSemester } from '@/features/study-plan/hooks/useMoveCourseToSemester.ts';
 
 type DragHandlers = {

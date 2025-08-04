@@ -55,10 +55,18 @@ public class StudyPlanController {
         );
     }
 
-    @PutMapping("/{studyPlanId}/approve")
-    public ResponseEntity<StudyPlanDto> approveStudyPlan(@PathVariable long studyPlanId) {
+    @PutMapping("/{studyPlanId}/approve-changes")
+    public ResponseEntity<StudyPlanDto> approveStudyPlanChanges(@PathVariable long studyPlanId) {
         return new ResponseEntity<>(
-                studyPlanService.approveStudyPlan(studyPlanId),
+                studyPlanService.approveStudyPlanChanges(studyPlanId),
+                HttpStatus.OK
+        );
+    }
+
+    @PutMapping("/{studyPlanId}/discard-changes")
+    public ResponseEntity<StudyPlanDto> discardStudyPlanChanges(@PathVariable long studyPlanId) {
+        return new ResponseEntity<>(
+                studyPlanService.discardStudyPlanChanges(studyPlanId),
                 HttpStatus.OK
         );
     }

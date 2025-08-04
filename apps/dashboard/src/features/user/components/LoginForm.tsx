@@ -1,5 +1,5 @@
 import { Button, Container, Paper, PasswordInput, Stack, TextInput, Title } from '@mantine/core';
-import classes from './LoginForm.module.css';
+import classes from '../styles/LoginForm.module.css';
 import { LoginSchema } from '@/features/user/schemas.ts';
 import { useLogin } from '@/features/user/hooks/useLogin.ts';
 import { useNavigate } from '@tanstack/react-router';

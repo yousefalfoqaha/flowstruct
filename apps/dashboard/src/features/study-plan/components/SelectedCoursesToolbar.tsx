@@ -1,4 +1,4 @@
-import classes from '@/features/study-plan/components/SelectedCoursesToolbar.module.css';
+import classes from '@/features/study-plan/styles/SelectedCoursesToolbar.module.css';
 import {
   ActionIcon,
   Combobox,

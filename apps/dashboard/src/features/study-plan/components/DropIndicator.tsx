@@ -1,4 +1,4 @@
-import classes from '@/features/study-plan/components/ProgramMap.module.css';
+import classes from '@/features/study-plan/styles/ProgramMap.module.css';
 import { CoursePlacement } from '@/features/study-plan/types.ts';
 
 type Props = {

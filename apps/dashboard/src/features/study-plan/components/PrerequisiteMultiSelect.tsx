@@ -15,7 +15,7 @@ import { useCoursesGraph } from '@/contexts/CoursesGraphContext.tsx';
 import { useLinkPrerequisitesToCourse } from '@/features/study-plan/hooks/useLinkPrerequisitesToCourse.ts';
 import { CourseRelation, StudyPlan } from '@/features/study-plan/types.ts';
 import { useLinkCorequisitesToCourse } from '@/features/study-plan/hooks/useLinkCorequisitesToCourse.ts';
-import classes from '@/features/study-plan/components/CoursesMultiSelect.module.css';
+import classes from '@/features/study-plan/styles/CoursesMultiSelect.module.css';
 import { getSectionCode } from '@/utils/getSectionCode.ts';
 import { CourseSummary } from '@/features/course/types.ts';
 

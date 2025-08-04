@@ -1,6 +1,6 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import { StudyPlanRow } from '@/features/study-plan/types.ts';
-import { StudyPlanOptionsMenu } from '@/features/study-plan/components/StudyPlanOptionsMenu.tsx';
+import { StudyPlanTableOptionsMenu } from '@/features/study-plan/components/StudyPlanTableOptionsMenu.tsx';
 import { StatusBadge } from '@/shared/components/StatusBadge.tsx';
 import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
 
@@ -45,7 +45,7 @@ export function getStudyPlansTableColumns() {
     display({
       id: 'actions',
       header: 'Actions',
-      cell: ({ row }) => <StudyPlanOptionsMenu studyPlan={row.original} />,
+      cell: ({ row }) => <StudyPlanTableOptionsMenu studyPlan={row.original} />,
     }),
   ];
 }

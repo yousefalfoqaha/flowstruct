@@ -5,9 +5,9 @@ import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
 import { studyPlanKeys } from '@/features/study-plan/queries.ts';
 
 const approveStudyPlan = (studyPlanId: number) =>
-  api.put<StudyPlan>([STUDY_PLAN_ENDPOINT, studyPlanId, 'approve']);
+  api.put<StudyPlan>([STUDY_PLAN_ENDPOINT, studyPlanId, 'approve-changes']);
 
-export const useApproveStudyPlan = () =>
+export const useApproveStudyPlanChanges = () =>
   useAppMutation({
     mutationFn: approveStudyPlan,
     meta: {

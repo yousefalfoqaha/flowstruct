@@ -41,7 +41,34 @@ public class StudyPlanService {
     }
 
     @Transactional
-    public StudyPlanDto approveStudyPlan(long studyPlanId) {
+    public StudyPlanDto discardStudyPlanChanges(long studyPlanId) {
+        var studyPlan = findStudyPlan(studyPlanId);
+        StudyPlanDraft lastApprovedStudyPlan = studyPlan.getApprovedStudyPlan();
+
+        if (lastApprovedStudyPlan == null) {
+            throw new StudyPlanNotFoundException("No last approved version was found.");
+        }
+
+        if (Objects.equals(lastApprovedStudyPlan.getVersion(), studyPlan.getVersion())) {
+            throw new AlreadyApprovedException("This version has already been approved.");
+        }
+
+        studyPlan.setYear(lastApprovedStudyPlan.getYear());
+        studyPlan.setDuration(lastApprovedStudyPlan.getDuration());
+        studyPlan.setTrack(lastApprovedStudyPlan.getTrack());
+        studyPlan.setProgram(lastApprovedStudyPlan.getProgram());
+        studyPlan.setSections(lastApprovedStudyPlan.getSections());
+        studyPlan.setCoursePlacements(lastApprovedStudyPlan.getCoursePlacements());
+        studyPlan.setCoursePrerequisites(lastApprovedStudyPlan.getCoursePrerequisites());
+        studyPlan.setCourseCorequisites(lastApprovedStudyPlan.getCourseCorequisites());
+
+        studyPlan.getApprovedStudyPlan().setVersion(studyPlan.getVersion() + 1);
+
+        return saveAndMapStudyPlan(studyPlan);
+    }
+
+    @Transactional
+    public StudyPlanDto approveStudyPlanChanges(long studyPlanId) {
         var studyPlan = findStudyPlan(studyPlanId);
         StudyPlanDraft lastApprovedStudyPlan = studyPlan.getApprovedStudyPlan();
 

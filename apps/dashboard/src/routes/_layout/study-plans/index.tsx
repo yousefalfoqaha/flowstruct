@@ -21,6 +21,7 @@ function RouteComponent() {
           <Title lh="md" order={2} fw={600}>
             Study Plans
           </Title>
+
           <Text c="dimmed" size="sm">
             Manage all university study plans
           </Text>

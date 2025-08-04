@@ -58,10 +58,10 @@ function RouteComponent() {
 
   return (
     <PageLayout header={header}>
-      <div>
-        <StudyPlanTabs />
-      </div>
+      <StudyPlanTabs />
+
       <Divider />
+
       <CoursesGraphProvider>
         <Outlet />
       </CoursesGraphProvider>

@@ -1,5 +1,5 @@
 import { CourseSummary } from '@/features/course/types.ts';
-import classes from './CourseCard.module.css';
+import classes from '../styles/CourseCard.module.css';
 import { ProgramMapCourseOptions } from '@/features/study-plan/components/ProgramMapCourseOptions.tsx';
 import { useProgramMap } from '@/contexts/ProgramMapContext.tsx';
 import { useCoursesGraph } from '@/contexts/CoursesGraphContext.tsx';

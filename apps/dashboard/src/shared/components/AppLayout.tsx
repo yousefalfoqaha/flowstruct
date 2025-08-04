@@ -13,7 +13,7 @@ export function AppLayout({ children }: Props) {
     <>
       <div className={classes.header}>
         <Container size="xl">
-          <Group justify="space-between" pt="lg" pb="sm">
+          <Group justify="space-between" pt="md" pb={8}>
             <Group gap="xs">
               <Image src="/logo.png" h={45} w={45} />
 

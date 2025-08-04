@@ -2,7 +2,7 @@ import { Button, Group, MultiSelect, MultiSelectProps, Popover, Stack, Text } fr
 import { BetweenHorizontalStart, CircleAlert, Plus } from 'lucide-react';
 import React from 'react';
 import { usePlaceCoursesInSemester } from '@/features/study-plan/hooks/useAddCoursesToSemester.ts';
-import classes from './CoursesMultiSelect.module.css';
+import classes from '../styles/CoursesMultiSelect.module.css';
 import { getSectionCode } from '@/utils/getSectionCode.ts';
 import { CoursePlacement } from '@/features/study-plan/types.ts';
 import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';

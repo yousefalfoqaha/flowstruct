@@ -1,7 +1,7 @@
 import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
 import { useCurrentStudyPlanCourses } from '@/features/study-plan/hooks/useCurrentStudyPlanCourses.ts';
 import { useProgramMap } from '@/contexts/ProgramMapContext.tsx';
-import classes from './ProgramMap.module.css';
+import classes from '../styles/ProgramMap.module.css';
 import { CourseCard } from '@/features/course/components/CourseCard.tsx';
 import { CoursePlacementMultiSelect } from '@/features/study-plan/components/CoursePlacementMultiSelect.tsx';
 import { getPlacementFromTermIndex } from '@/utils/getPlacementFromTermIndex.ts';
