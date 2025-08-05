@@ -13,11 +13,11 @@ type Props = {
 };
 
 export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
-  const deleteMutation = useDeleteStudyPlan();
-  const approveMutation = useApproveStudyPlanChanges();
-  const discardMutation = useDiscardStudyPlanChanges();
+  const deleteStudyPlan = useDeleteStudyPlan();
+  const approveStudyPlan = useApproveStudyPlanChanges();
+  const discardStudyPlan = useDiscardStudyPlanChanges();
 
-  const approveStudyPlan = () =>
+  const handleApproveStudyPlan = () =>
     modals.openConfirmModal({
       title: 'Please confirm your action',
       children: (
@@ -28,10 +28,10 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
         </Text>
       ),
       labels: { confirm: 'Approve Changes', cancel: 'Cancel' },
-      onConfirm: () => approveMutation.mutate(studyPlan.id),
+      onConfirm: () => approveStudyPlan.mutate(studyPlan.id),
     });
 
-  const deleteStudyPlan = () =>
+  const handleDeleteStudyPlan = () =>
     modals.openConfirmModal({
       title: 'Please confirm your action',
       children: (
@@ -41,10 +41,10 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
         </Text>
       ),
       labels: { confirm: 'Confirm', cancel: 'Cancel' },
-      onConfirm: () => deleteMutation.mutate(studyPlan.id),
+      onConfirm: () => deleteStudyPlan.mutate(studyPlan.id),
     });
 
-  const cloneStudyPlan = () =>
+  const handleCloneStudyPlan = () =>
     modals.open({
       title: (
         <ModalHeader
@@ -67,13 +67,13 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
         </Text>
       ),
       labels: { confirm: 'Discard Changes', cancel: 'Cancel' },
-      onConfirm: () => discardMutation.mutate(studyPlan.id),
+      onConfirm: () => discardStudyPlan.mutate(studyPlan.id),
     });
 
   return (
     <>
       {(studyPlan.status === 'DRAFT' || studyPlan.status === 'NEW') && (
-        <Menu.Item onClick={approveStudyPlan} leftSection={<CircleCheck size={14} />}>
+        <Menu.Item onClick={handleApproveStudyPlan} leftSection={<CircleCheck size={14} />}>
           Approve changes
         </Menu.Item>
       )}
@@ -86,11 +86,11 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
 
       {(studyPlan.status === 'DRAFT' || studyPlan.status === 'NEW') && <Menu.Divider />}
 
-      <Menu.Item leftSection={<CopyPlus size={14} />} onClick={cloneStudyPlan}>
+      <Menu.Item leftSection={<CopyPlus size={14} />} onClick={handleCloneStudyPlan}>
         Clone
       </Menu.Item>
 
-      <Menu.Item color="red" onClick={deleteStudyPlan} leftSection={<Trash size={14} />}>
+      <Menu.Item color="red" onClick={handleDeleteStudyPlan} leftSection={<Trash size={14} />}>
         Delete
       </Menu.Item>
     </>

@@ -30,8 +30,7 @@ export function StatusBadge(status: string) {
       return (
         <Badge
           fullWidth
-          variant="light"
-          color="yellow"
+          variant="outline"
           classNames={{ root: classes.root }}
           leftSection={<Plus size={14} />}
         >
