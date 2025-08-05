@@ -4,15 +4,16 @@ import { CourseSummary } from '@/features/course/types.ts';
 import React from 'react';
 import { getCoursesTableColumns } from '@/features/course/components/CoursesTableColumns.tsx';
 import { DataTable } from '@/shared/components/DataTable.tsx';
-import { LoadingOverlay, Stack } from '@mantine/core';
+import { Button, Group, LoadingOverlay, Stack } from '@mantine/core';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
-import { useSearch } from '@tanstack/react-router';
+import { Link, useSearch } from '@tanstack/react-router';
+import { Plus } from 'lucide-react';
 
 export function CoursesTable() {
   const columns = React.useMemo(() => getCoursesTableColumns(), []);
 
-  const search = useSearch({ from: '/_layout/courses/' });
+  const search = useSearch({ from: '/_layout/catalog/courses/' });
   const { data: coursesPage, isPending } = usePaginatedCourseList(search);
 
   const data: CourseSummary[] = React.useMemo(
@@ -31,7 +32,13 @@ export function CoursesTable() {
 
   return (
     <Stack>
-      <DataTableSearch width="" placeholder="Search any course..." table={table} debounce={750} />
+      <Group>
+        <DataTableSearch width="" placeholder="Search any course..." table={table} debounce={750} />
+
+        <Link to="/catalog/courses/new">
+          <Button leftSection={<Plus size={18} />}>Create New Course</Button>
+        </Link>
+      </Group>
 
       <LoadingOverlay visible={isPending} zIndex={1000} loaderProps={{ type: 'bars' }} />
 

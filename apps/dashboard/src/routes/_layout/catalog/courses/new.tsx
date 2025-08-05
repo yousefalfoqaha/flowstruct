@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { CreateProgramFieldset } from '@/features/program/components/CreateProgramFieldset.tsx';
+import { CreateCourseFieldset } from '@/features/course/components/CreateCourseFieldset.tsx';
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
 import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 
-export const Route = createFileRoute('/_layout/programs/new')({
+export const Route = createFileRoute('/_layout/catalog/courses/new')({
   component: RouteComponent,
 });
 
@@ -13,15 +13,15 @@ function RouteComponent() {
     <PageLayout
       header={
         <PageHeaderWithBack
-          title="Create New Program"
+          title="Create New Course"
           linkProps={{
-            to: '/programs',
+            to: '/catalog/courses',
             search: DefaultSearchValues,
           }}
         />
       }
     >
-      <CreateProgramFieldset />
+      <CreateCourseFieldset />
     </PageLayout>
   );
 }

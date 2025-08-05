@@ -35,7 +35,7 @@ export function EditProgramFieldset({ program }: EditProgramFieldsetProps) {
       },
       {
         onSuccess: () => {
-          navigate({ to: '/programs/$programId', params: { programId: String(program.id) } });
+          navigate({ to: '/catalog/programs/$programId', params: { programId: String(program.id) } });
         },
       }
     );
@@ -45,7 +45,7 @@ export function EditProgramFieldset({ program }: EditProgramFieldsetProps) {
     deleteProgram.mutate(program.id, {
       onSuccess: () =>
         navigate({
-          to: '/programs',
+          to: '/catalog/programs',
           search: DefaultSearchValues(),
         }),
     });

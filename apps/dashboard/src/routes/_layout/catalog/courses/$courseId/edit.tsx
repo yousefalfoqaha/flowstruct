@@ -5,7 +5,7 @@ import { getCourseDisplayName } from '@/utils/getCourseDisplayName.ts';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 import { EditCourseFieldset } from '@/features/course/components/EditCourseFieldset.tsx';
 
-export const Route = createFileRoute('/_layout/courses/$courseId/edit')({
+export const Route = createFileRoute('/_layout/catalog/courses/$courseId/edit')({
   component: RouteComponent,
 });
 

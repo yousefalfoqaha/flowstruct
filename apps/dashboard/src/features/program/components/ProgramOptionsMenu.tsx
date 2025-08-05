@@ -24,14 +24,14 @@ export function ProgramOptionsMenu({ program }: ProgramOptionsMenuProps) {
         <Menu.Label>Actions</Menu.Label>
         <Link
           style={{ textDecoration: 'none' }}
-          to="/programs/$programId"
+          to="/catalog/programs/$programId"
           params={{ programId: String(program.id) }}
         >
           <Menu.Item leftSection={<ScrollText size={14} />}>View</Menu.Item>
         </Link>
         <Link
           style={{ textDecoration: 'none' }}
-          to="/programs/$programId/edit"
+          to="/catalog/programs/$programId/edit"
           params={{ programId: String(program.id) }}
         >
           <Menu.Item leftSection={<Pencil size={14} />}>Edit details</Menu.Item>

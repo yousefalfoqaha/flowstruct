@@ -21,7 +21,7 @@ export function CourseOptionsMenu({ course }: Props) {
 
         <Link
           style={{ textDecoration: 'none' }}
-          to="/courses/$courseId"
+          to="/catalog/courses/$courseId"
           params={{ courseId: String(course.id) }}
         >
           <Menu.Item leftSection={<ScrollText size={14} />}>View</Menu.Item>
@@ -29,7 +29,7 @@ export function CourseOptionsMenu({ course }: Props) {
 
         <Link
           style={{ textDecoration: 'none' }}
-          to="/courses/$courseId/edit"
+          to="/catalog/courses/$courseId/edit"
           params={{ courseId: String(course.id) }}
         >
           <Menu.Item leftSection={<Pencil size={14} />}>Edit details</Menu.Item>

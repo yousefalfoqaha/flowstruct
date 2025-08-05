@@ -11,7 +11,7 @@ import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
 import { CourseQuery } from '@/features/course/queries.ts';
 import { useCurrentCourse } from '@/features/course/hooks/useCurrentCourse.ts';
 
-export const Route = createFileRoute('/_layout/courses/$courseId/')({
+export const Route = createFileRoute('/_layout/catalog/courses/$courseId/')({
   loader: async ({ context: { queryClient }, params }) => {
     const courseId = Number(params.courseId);
     queryClient.ensureQueryData(CourseQuery(courseId));
@@ -26,7 +26,7 @@ function RouteComponent() {
     <PageLayout
       header={
         <Group gap="lg" justify="space-between">
-          <PageHeaderWithBack title={getCourseDisplayName(course)} linkProps={{ to: '/courses' }} />
+          <PageHeaderWithBack title={getCourseDisplayName(course)} linkProps={{ to: '/catalog/courses' }} />
           <LastUpdated at={course.updatedAt} by={course.updatedBy} />
         </Group>
       }
@@ -36,7 +36,7 @@ function RouteComponent() {
         subtitle="Details about this course"
         headerAction={
           <EditDetailsButton
-            to="/courses/$courseId/edit"
+            to="/catalog/courses/$courseId/edit"
             params={{ courseId: String(course.id) }}
           />
         }

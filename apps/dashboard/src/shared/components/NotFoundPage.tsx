@@ -10,7 +10,7 @@ export function NotFoundPage() {
         <SearchX color="red" size={70} />
         <Title>(404) Not found...</Title>
         <Link
-          to="/programs"
+          to="/catalog/programs"
           search={DefaultSearchValues()}
           style={{ textDecoration: 'none', display: 'block', width: '100%' }}
         >

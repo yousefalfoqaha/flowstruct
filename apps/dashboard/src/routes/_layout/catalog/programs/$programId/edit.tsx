@@ -6,7 +6,7 @@ import { EditProgramFieldset } from '@/features/program/components/EditProgramFi
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 
-export const Route = createFileRoute('/_layout/programs/$programId/edit')({
+export const Route = createFileRoute('/_layout/catalog/programs/$programId/edit')({
   component: RouteComponent,
 });
 
@@ -20,7 +20,7 @@ function RouteComponent() {
           <PageHeaderWithBack
             title={getProgramDisplayName(program)}
             linkProps={{
-              to: '/programs/$programId',
+              to: '/catalog/programs/$programId',
               params: { programId: String(program.id) },
             }}
           />

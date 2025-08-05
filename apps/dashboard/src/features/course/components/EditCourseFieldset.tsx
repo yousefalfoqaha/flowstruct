@@ -34,7 +34,7 @@ export function EditCourseFieldset({ course }: Props) {
       {
         onSuccess: () =>
           navigate({
-            to: '/courses/$courseId',
+            to: '/catalog/courses/$courseId',
             params: { courseId: String(course.id) },
           }),
       }

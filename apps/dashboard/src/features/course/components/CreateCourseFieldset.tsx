@@ -32,7 +32,7 @@ export function CreateCourseFieldset() {
     createCourse.mutate(data, {
       onSuccess: () => {
         navigate({
-          to: '/courses',
+          to: '/catalog/courses',
           search: DefaultSearchValues(),
         });
         form.reset();
@@ -42,7 +42,7 @@ export function CreateCourseFieldset() {
 
   const footer = (
     <>
-      <Link to="/courses" search={DefaultSearchValues()}>
+      <Link to="/catalog/courses" search={DefaultSearchValues()}>
         <Button variant="default" leftSection={<X size={18} />}>
           Cancel
         </Button>

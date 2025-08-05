@@ -3,15 +3,13 @@ import { Tabs } from '@mantine/core';
 import { Route as DetailsRoute } from '@/routes/_layout/study-plans/$studyPlanId/details';
 import classes from '@/shared/components/AppTabs.module.css';
 import { NavbarLinks } from '@/shared/types.ts';
-import { BookOpen, GraduationCap, ScrollText } from 'lucide-react';
-import { Route as ProgramsRoute } from '@/routes/_layout/programs';
+import { LibraryBig, ScrollText } from 'lucide-react';
 import { Route as StudyPlansRoute } from '@/routes/_layout/study-plans';
-import { Route as CoursesRoute } from '@/routes/_layout/courses';
+import { Route as CatalogRoute } from '@/routes/_layout/catalog';
 
 const tabs: NavbarLinks[] = [
-  { label: 'Programs', icon: <GraduationCap size={18} />, route: ProgramsRoute.to },
   { label: 'Study Plans', icon: <ScrollText size={18} />, route: StudyPlansRoute.to },
-  { label: 'Courses', icon: <BookOpen size={18} />, route: CoursesRoute.to },
+  { label: 'Catalog', icon: <LibraryBig size={18} />, route: CatalogRoute.to },
 ];
 
 export function AppTabs() {

@@ -12,7 +12,7 @@ import { EditDetailsButton } from '@/shared/components/EditDetailsButton.tsx';
 import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
 import { ProgramQuery } from '@/features/program/queries.ts';
 
-export const Route = createFileRoute('/_layout/programs/$programId/')({
+export const Route = createFileRoute('/_layout/catalog/programs/$programId/')({
   loader: async ({ context: { queryClient }, params }) => {
     const programId = parseInt(params.programId);
     queryClient.ensureQueryData(ProgramQuery(programId));
@@ -30,7 +30,7 @@ function RouteComponent() {
           <PageHeaderWithBack
             title={getProgramDisplayName(program)}
             linkProps={{
-              to: '/programs',
+              to: '/catalog/programs',
               search: DefaultSearchValues(),
             }}
           />
@@ -43,7 +43,7 @@ function RouteComponent() {
         subtitle="Details about this program"
         headerAction={
           <EditDetailsButton
-            to="/programs/$programId/edit"
+            to="/catalog/programs/$programId/edit"
             params={{ programId: String(program.id) }}
           />
         }

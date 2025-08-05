@@ -27,7 +27,7 @@ export function CreateProgramFieldset() {
       onSuccess: () => {
         form.reset();
         navigate({
-          to: '/programs',
+          to: '/catalog/programs',
           search: DefaultSearchValues(),
         });
       },
@@ -36,7 +36,7 @@ export function CreateProgramFieldset() {
 
   const footer = (
     <>
-      <Link search={DefaultSearchValues()} to="/programs">
+      <Link search={DefaultSearchValues()} to="/catalog/programs">
         <Button variant="default" leftSection={<X size={18} />}>
           Cancel
         </Button>
