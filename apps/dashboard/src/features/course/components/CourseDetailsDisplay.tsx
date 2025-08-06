@@ -2,7 +2,7 @@ import { Group, LoadingOverlay, Stack } from '@mantine/core';
 import { InfoItem } from '@/shared/components/InfoItem.tsx';
 import { CourseType } from '@/features/course/types.ts';
 import { useCourse } from '@/features/course/hooks/useCourse.ts';
-import classes from '@/shared/components/DetailsContainer.module.css';
+import classes from '@/shared/styles/DetailsContainer.module.css';
 
 type Props = {
   courseId: number;

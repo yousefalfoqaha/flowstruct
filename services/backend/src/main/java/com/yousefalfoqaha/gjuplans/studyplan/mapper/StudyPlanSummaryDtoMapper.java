@@ -1,5 +1,6 @@
-package com.yousefalfoqaha.gjuplans.studyplan;
+package com.yousefalfoqaha.gjuplans.studyplan.mapper;
 
+import com.yousefalfoqaha.gjuplans.studyplan.projection.StudyPlanSummaryProjection;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanSummaryDto;
 import org.springframework.stereotype.Service;
 

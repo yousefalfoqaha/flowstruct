@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.gjuplans.user;
 
+import com.yousefalfoqaha.gjuplans.user.domain.User;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,12 +12,12 @@ import java.util.Collections;
 public record AppUserDetails(User user) implements UserDetails, CredentialsContainer {
     @Override
     public void eraseCredentials() {
-        this.user.password = null;
+        this.user.setPassword(null);
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMINISTRATIVE"));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + this.user.getRole()));
     }
 
     @Override

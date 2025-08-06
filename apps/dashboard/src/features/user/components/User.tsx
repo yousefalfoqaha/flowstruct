@@ -1,5 +1,5 @@
 import { Avatar, Button, Group, Menu, Stack, Text, UnstyledButton } from '@mantine/core';
-import classes from '@/shared/components/AppLayout.module.css';
+import classes from '@/shared/styles/AppLayout.module.css';
 import { useMe } from '@/features/user/hooks/useMe.ts';
 import { useLogout } from '@/features/user/hooks/useLogout.ts';
 import React from 'react';

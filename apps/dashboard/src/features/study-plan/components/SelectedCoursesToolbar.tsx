@@ -49,7 +49,7 @@ export function SelectedCoursesToolbar({ table, studyPlan }: Props) {
       {
         studyPlanId: Number(studyPlan.id),
         courseIds: selectedRows.map((row) => row.original.id),
-        targetSectionId: sectionId,
+        sectionId,
       },
       {
         onSuccess: () => {

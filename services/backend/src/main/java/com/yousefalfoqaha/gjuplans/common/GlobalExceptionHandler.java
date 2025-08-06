@@ -64,6 +64,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ApprovalRequestException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            ApprovalRequestException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.CONFLICT.value(),
+                        List.of(exception.getMessage()),
+                        new Date()
+                ),
+                HttpStatus.CONFLICT
+        );
+    }
+
     @ExceptionHandler(EmptyListException.class)
     public ResponseEntity<ErrorObject> handleException(
             EmptyListException exception

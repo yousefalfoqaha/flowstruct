@@ -11,7 +11,7 @@ export const createSection = ({
   studyPlanId: number;
   sectionDetails: Partial<Section>;
 }) =>
-  api.put<StudyPlan>([STUDY_PLAN_ENDPOINT, studyPlanId, 'create-section'], {
+  api.post<StudyPlan>([STUDY_PLAN_ENDPOINT, studyPlanId, 'sections'], {
     body: sectionDetails,
   });
 

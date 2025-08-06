@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Container, Group, Image, Title } from '@mantine/core';
-import classes from './AppLayout.module.css';
+import classes from '../styles/AppLayout.module.css';
 import { User } from '@/features/user/components/User.tsx';
 import { AppTabs } from '@/shared/components/AppTabs.tsx';
 

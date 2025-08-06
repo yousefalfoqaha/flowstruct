@@ -30,8 +30,6 @@ public class StudyPlan {
 
     private String track;
 
-    private boolean isPending;
-
     private AggregateReference<Program, Long> program;
 
     private StudyPlanDraft approvedStudyPlan;

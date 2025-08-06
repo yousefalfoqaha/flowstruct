@@ -1,7 +1,7 @@
 import { Table as TanStackTable } from '@tanstack/table-core';
 import { flexRender } from '@tanstack/react-table';
 import { Group, Table, Text } from '@mantine/core';
-import classes from '@/shared/components/DataTable.module.css';
+import classes from '@/shared/styles/DataTable.module.css';
 import { SearchX } from 'lucide-react';
 
 type DataTableProps<TData> = {

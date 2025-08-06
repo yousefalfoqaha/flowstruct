@@ -13,9 +13,10 @@ const addCoursesToStudyPlan = ({
   sectionId: number;
   studyPlanId: number;
 }) =>
-  api.post<StudyPlan>([STUDY_PLAN_ENDPOINT, studyPlanId, 'sections', sectionId, 'courses'], {
+  api.post<StudyPlan>([STUDY_PLAN_ENDPOINT, studyPlanId, 'courses'], {
     params: {
       courses: courseIds,
+      section: sectionId,
     },
   });
 

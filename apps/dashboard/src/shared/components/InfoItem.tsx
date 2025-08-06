@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import classes from './InfoItem.module.css';
+import classes from '../styles/InfoItem.module.css';
 
 type InfoItemProps = {
   label: string;

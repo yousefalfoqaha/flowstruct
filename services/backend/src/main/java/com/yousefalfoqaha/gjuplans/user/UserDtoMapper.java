@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.gjuplans.user;
 
+import com.yousefalfoqaha.gjuplans.user.domain.User;
 import com.yousefalfoqaha.gjuplans.user.dto.UserDto;
 import org.springframework.stereotype.Service;
 

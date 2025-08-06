@@ -10,7 +10,7 @@ import { matchQuery, MutationCache, QueryClient, QueryClientProvider } from '@ta
 import { createTheme, LoadingOverlay, MantineColorsTuple, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { notifications, Notifications } from '@mantine/notifications';
-import navigationProgressClasses from '@/shared/components/NavigationProgress.module.css';
+import navigationProgressClasses from '@/shared/styles/NavigationProgress.module.css';
 import { NavigationProgress } from '@mantine/nprogress';
 import { NotFoundPage } from '@/shared/components/NotFoundPage.tsx';
 import themeClasses from './theme.module.css';

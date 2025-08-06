@@ -7,20 +7,18 @@ import { StudyPlan } from '@/features/study-plan/types.ts';
 const moveCoursesToSection = ({
   studyPlanId,
   courseIds,
-  targetSectionId,
+  sectionId,
 }: {
   studyPlanId: number;
   courseIds: number[];
-  targetSectionId: number;
+  sectionId: number;
 }) =>
-  api.put<StudyPlan>(
-    [STUDY_PLAN_ENDPOINT, studyPlanId, 'sections', targetSectionId, 'move-courses'],
-    {
-      params: {
-        courses: courseIds,
-      },
-    }
-  );
+  api.put<StudyPlan>([STUDY_PLAN_ENDPOINT, studyPlanId, 'courses', 'move'], {
+    params: {
+      courses: courseIds,
+      section: sectionId,
+    },
+  });
 
 export const useMoveCoursesToSection = () =>
   useAppMutation({

@@ -17,7 +17,7 @@ export function SectionsMenuItems({ courseId, sectionId }: SectionsComboboxProps
     moveCourseToSection.mutate({
       studyPlanId: studyPlan.id,
       courseIds: [courseId],
-      targetSectionId: sectionId,
+      sectionId,
     });
   };
 

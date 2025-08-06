@@ -1,14 +1,13 @@
 package com.yousefalfoqaha.gjuplans.user.service;
 
 import com.yousefalfoqaha.gjuplans.auth.JwtService;
-import com.yousefalfoqaha.gjuplans.user.User;
+import com.yousefalfoqaha.gjuplans.user.domain.User;
 import com.yousefalfoqaha.gjuplans.user.UserDtoMapper;
 import com.yousefalfoqaha.gjuplans.user.UserRepository;
 import com.yousefalfoqaha.gjuplans.user.dto.*;
 import com.yousefalfoqaha.gjuplans.user.exception.InvalidCredentialsException;
 import com.yousefalfoqaha.gjuplans.user.exception.InvalidPasswordException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -88,7 +87,7 @@ public class UserService {
         userRepository.save(me);
     }
 
-    private User getCurrentUser() {
+    public User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("No user was found."));

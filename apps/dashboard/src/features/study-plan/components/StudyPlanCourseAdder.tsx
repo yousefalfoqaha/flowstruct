@@ -32,7 +32,7 @@ import {
 } from '@tanstack/react-table';
 import { getSectionDisplayName } from '@/utils/getSectionDisplayName.ts';
 import { usePaginatedCourseList } from '@/features/course/hooks/usePaginatedCourseList.ts';
-import classes from '@/shared/components/PillGroupBox.module.css';
+import classes from '@/shared/styles/PillGroupBox.module.css';
 import { useCoursesGraph } from '@/contexts/CoursesGraphContext.tsx';
 import { CreateCourseModal } from '@/features/course/components/CreateCourseModal';
 import { Course } from '@/features/course/types.ts';

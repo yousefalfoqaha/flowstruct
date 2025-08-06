@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.studyplan;
+package com.yousefalfoqaha.gjuplans.studyplan.projection;
 
 import java.time.Instant;
 
@@ -7,7 +7,6 @@ public record StudyPlanSummaryProjection(
         int year,
         int duration,
         String track,
-        boolean isPending,
         Long version,
         Long approvedVersion,
         int program,

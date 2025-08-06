@@ -1,7 +1,7 @@
 import { useMatches, useNavigate } from '@tanstack/react-router';
 import { Tabs } from '@mantine/core';
 import { Route as DetailsRoute } from '@/routes/_layout/study-plans/$studyPlanId/details';
-import classes from '@/shared/components/AppTabs.module.css';
+import classes from '@/shared/styles/AppTabs.module.css';
 import { NavbarLinks } from '@/shared/types.ts';
 import { LibraryBig, ScrollText } from 'lucide-react';
 import { Route as StudyPlansRoute } from '@/routes/_layout/study-plans';

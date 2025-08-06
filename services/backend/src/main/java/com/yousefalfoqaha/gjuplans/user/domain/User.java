@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.user;
+package com.yousefalfoqaha.gjuplans.user.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,11 +22,13 @@ public class User {
     @Id
     private long id;
 
-    String username;
+    private String username;
 
-    String email;
+    private String email;
 
-    String password;
+    private Role role;
+
+    private String password;
 
     @Version
     private Long version;
