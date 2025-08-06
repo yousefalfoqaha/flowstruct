@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.user;
+package com.yousefalfoqaha.gjuplans.user.controller;
 
 import com.yousefalfoqaha.gjuplans.user.dto.*;
 import com.yousefalfoqaha.gjuplans.user.service.UserService;

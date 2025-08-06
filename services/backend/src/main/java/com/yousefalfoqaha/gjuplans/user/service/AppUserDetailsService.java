@@ -1,7 +1,7 @@
 package com.yousefalfoqaha.gjuplans.user.service;
 
-import com.yousefalfoqaha.gjuplans.user.AppUserDetails;
-import com.yousefalfoqaha.gjuplans.user.UserRepository;
+import com.yousefalfoqaha.gjuplans.common.AppUserDetails;
+import com.yousefalfoqaha.gjuplans.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

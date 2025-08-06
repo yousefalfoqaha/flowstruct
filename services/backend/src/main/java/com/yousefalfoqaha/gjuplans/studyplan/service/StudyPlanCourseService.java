@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan.service;
 
-import com.yousefalfoqaha.gjuplans.course.CourseService;
+import com.yousefalfoqaha.gjuplans.course.service.CourseService;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseSummaryDto;
 import lombok.RequiredArgsConstructor;

@@ -2,8 +2,8 @@ package com.yousefalfoqaha.gjuplans.user.service;
 
 import com.yousefalfoqaha.gjuplans.auth.JwtService;
 import com.yousefalfoqaha.gjuplans.user.domain.User;
-import com.yousefalfoqaha.gjuplans.user.UserDtoMapper;
-import com.yousefalfoqaha.gjuplans.user.UserRepository;
+import com.yousefalfoqaha.gjuplans.user.mapper.UserDtoMapper;
+import com.yousefalfoqaha.gjuplans.user.repository.UserRepository;
 import com.yousefalfoqaha.gjuplans.user.dto.*;
 import com.yousefalfoqaha.gjuplans.user.exception.InvalidCredentialsException;
 import com.yousefalfoqaha.gjuplans.user.exception.InvalidPasswordException;

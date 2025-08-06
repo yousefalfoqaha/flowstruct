@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.user;
+package com.yousefalfoqaha.gjuplans.user.mapper;
 
 import com.yousefalfoqaha.gjuplans.user.domain.User;
 import com.yousefalfoqaha.gjuplans.user.dto.UserDto;

@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.user;
+package com.yousefalfoqaha.gjuplans.user.repository;
 
 import com.yousefalfoqaha.gjuplans.user.domain.User;
 import org.springframework.data.repository.ListCrudRepository;
