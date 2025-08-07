@@ -1,6 +1,5 @@
 package com.yousefalfoqaha.gjuplans.auth;
 
-import com.yousefalfoqaha.gjuplans.user.service.AppUserDetailsService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

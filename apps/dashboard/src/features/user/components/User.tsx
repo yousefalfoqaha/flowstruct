@@ -43,7 +43,7 @@ export function User() {
                 <Text>{me.username}</Text>
 
                 <Text c="dimmed" size="xs">
-                  Administrator
+                  {me.role}
                 </Text>
               </div>
 

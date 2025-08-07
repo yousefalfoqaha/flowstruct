@@ -6,6 +6,7 @@ public record UserDto(
         long id,
         String username,
         String email,
+        String role,
         Instant createdAt,
         Instant updatedAt
 ) {

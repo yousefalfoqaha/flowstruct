@@ -15,6 +15,7 @@ public class UserDtoMapper implements Function<User, UserDto> {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
+                user.getRole().name(),
                 user.getCreatedAt(),
                 user.getUpdatedAt()
         );

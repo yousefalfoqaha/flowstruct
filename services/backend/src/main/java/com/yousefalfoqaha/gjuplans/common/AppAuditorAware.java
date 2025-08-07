@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.gjuplans.common;
 
+import com.yousefalfoqaha.gjuplans.auth.AppUserDetails;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
