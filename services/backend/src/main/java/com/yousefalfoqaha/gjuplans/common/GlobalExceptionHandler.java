@@ -1,6 +1,10 @@
 package com.yousefalfoqaha.gjuplans.common;
 
 import com.yousefalfoqaha.gjuplans.common.dto.ErrorObject;
+import com.yousefalfoqaha.gjuplans.common.exception.AlreadyApprovedException;
+import com.yousefalfoqaha.gjuplans.common.exception.EmptyListException;
+import com.yousefalfoqaha.gjuplans.common.exception.InvalidDetailsException;
+import com.yousefalfoqaha.gjuplans.common.exception.PendingResourceException;
 import com.yousefalfoqaha.gjuplans.program.exception.InvalidDegreeException;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.nio.file.AccessDeniedException;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +52,20 @@ public class GlobalExceptionHandler {
                         new Date()
                 ),
                 HttpStatus.NOT_FOUND
+        );
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorObject> handleException(
+            AccessDeniedException exception
+    ) {
+        return new ResponseEntity<>(
+                new ErrorObject(
+                        HttpStatus.FORBIDDEN.value(),
+                        List.of("You don’t have permission to perform this action."),
+                        new Date()
+                ),
+                HttpStatus.FORBIDDEN
         );
     }
 

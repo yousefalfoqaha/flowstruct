@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.common;
+package com.yousefalfoqaha.gjuplans.common.exception;
 
 public class EmptyListException extends RuntimeException {
     public EmptyListException(String message) {

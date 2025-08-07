@@ -2,11 +2,12 @@ package com.yousefalfoqaha.gjuplans.user.service;
 
 import com.yousefalfoqaha.gjuplans.auth.JwtService;
 import com.yousefalfoqaha.gjuplans.user.domain.User;
-import com.yousefalfoqaha.gjuplans.user.mapper.UserDtoMapper;
-import com.yousefalfoqaha.gjuplans.user.repository.UserRepository;
 import com.yousefalfoqaha.gjuplans.user.dto.*;
 import com.yousefalfoqaha.gjuplans.user.exception.InvalidCredentialsException;
 import com.yousefalfoqaha.gjuplans.user.exception.InvalidPasswordException;
+import com.yousefalfoqaha.gjuplans.user.exception.UserNotFoundException;
+import com.yousefalfoqaha.gjuplans.user.mapper.UserDtoMapper;
+import com.yousefalfoqaha.gjuplans.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,6 +40,13 @@ public class UserService {
         } catch (AuthenticationException e) {
             throw new InvalidCredentialsException("Wrong username or password.");
         }
+    }
+
+    public UserDto getUser(long userId) {
+        var user = userRepository.findById(userId).orElseThrow(() ->
+                new UserNotFoundException("User not found."));
+
+        return userDtoMapper.apply(user);
     }
 
     public UserDto getMe() {
