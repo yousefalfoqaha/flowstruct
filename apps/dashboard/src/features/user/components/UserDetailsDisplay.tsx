@@ -11,7 +11,7 @@ export function UserDetailsDisplay() {
       <Stack>
         <InfoItem label="Username" value={me.username} />
         <InfoItem label="Email" value={me.email} />
-        <InfoItem label="Role" value="Administrator" />
+        <InfoItem label="Role" value={me.role} />
       </Stack>
     </DetailsCard>
   );

@@ -2,7 +2,7 @@ package com.yousefalfoqaha.gjuplans.studyplan.controller;
 
 import com.yousefalfoqaha.gjuplans.studyplan.dto.PlacementDto;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDto;
-import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanProgramMapService;
+import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanCoursePlacementService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/study-plans/{studyPlanId}/course-placements")
 public class StudyPlanProgramMapController {
-    private final StudyPlanProgramMapService studyPlanProgramMapService;
+    private final StudyPlanCoursePlacementService studyPlanCoursePlacementService;
 
     @PostMapping
     public ResponseEntity<StudyPlanDto> placeCoursesInSemester(
@@ -24,7 +24,7 @@ public class StudyPlanProgramMapController {
             @Valid @RequestBody PlacementDto targetPlacement
     ) {
         return new ResponseEntity<>(
-                studyPlanProgramMapService.placeCoursesInSemester(studyPlanId, courseIds, targetPlacement),
+                studyPlanCoursePlacementService.placeCoursesInSemester(studyPlanId, courseIds, targetPlacement),
                 HttpStatus.OK
         );
     }
@@ -36,7 +36,7 @@ public class StudyPlanProgramMapController {
             @Valid @RequestBody PlacementDto targetPlacement
     ) {
         return new ResponseEntity<>(
-                studyPlanProgramMapService.moveCourseToSemester(studyPlanId, courseId, targetPlacement),
+                studyPlanCoursePlacementService.moveCourseToSemester(studyPlanId, courseId, targetPlacement),
                 HttpStatus.OK
         );
     }
@@ -48,7 +48,7 @@ public class StudyPlanProgramMapController {
             @RequestParam(value = "span", defaultValue = "1") int span
     ) {
         return new ResponseEntity<>(
-                studyPlanProgramMapService.resizeCoursePlacement(studyPlanId, courseId, span),
+                studyPlanCoursePlacementService.resizeCoursePlacement(studyPlanId, courseId, span),
                 HttpStatus.OK
         );
     }
@@ -59,7 +59,7 @@ public class StudyPlanProgramMapController {
             @PathVariable long courseId
     ) {
         return new ResponseEntity<>(
-                studyPlanProgramMapService.removeCourseFromSemester(studyPlanId, courseId),
+                studyPlanCoursePlacementService.removeCourseFromSemester(studyPlanId, courseId),
                 HttpStatus.OK
         );
     }

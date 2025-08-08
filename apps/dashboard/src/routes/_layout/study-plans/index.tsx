@@ -4,8 +4,12 @@ import { getTableSearchSchema } from '@/shared/schemas.ts';
 import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { Button, Group, Stack, Text, Title } from '@mantine/core';
 import { Plus } from 'lucide-react';
+import { StudyPlanListQuery } from '@/features/study-plan/queries.ts';
 
 export const Route = createFileRoute('/_layout/study-plans/')({
+  loader: ({context: {queryClient}}) => {
+    queryClient.ensureQueryData(StudyPlanListQuery);
+  },
   component: RouteComponent,
   validateSearch: getTableSearchSchema(DefaultSearchValues()),
   search: {

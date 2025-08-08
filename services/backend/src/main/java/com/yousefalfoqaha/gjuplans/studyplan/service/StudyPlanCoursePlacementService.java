@@ -14,7 +14,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
-public class StudyPlanProgramMapService {
+public class StudyPlanCoursePlacementService {
     private final StudyPlanService studyPlanService;
     private final ProgramMapUtils programMapUtils;
 

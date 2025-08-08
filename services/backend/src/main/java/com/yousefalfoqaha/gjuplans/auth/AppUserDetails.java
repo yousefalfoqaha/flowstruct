@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.common;
+package com.yousefalfoqaha.gjuplans.auth;
 
 import com.yousefalfoqaha.gjuplans.user.domain.User;
 import org.springframework.security.core.CredentialsContainer;
