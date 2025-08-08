@@ -1,5 +1,6 @@
-INSERT INTO "user" (username, email, password)
-VALUES ('Yousef Mustafa', 'y.mustafa1@gju.edu.jo' , '$2a$10$G53D6YBcp8ZLhr8yuxGGOuTVRe3FrjzG.WwtDd40d7XYBN0o01W2y');
+INSERT INTO "user" (username, email, role, password)
+VALUES ('Yousef Mustafa', 'y.mustafa1@gju.edu.jo' , 'EDITOR', '$2a$10$G53D6YBcp8ZLhr8yuxGGOuTVRe3FrjzG.WwtDd40d7XYBN0o01W2y'),
+       ('Yousef Alfoqaha', 'yousefmustafaadam@gmail.com', 'APPROVER', '$2a$10$G53D6YBcp8ZLhr8yuxGGOuTVRe3FrjzG.WwtDd40d7XYBN0o01W2y');
 
 INSERT INTO course (code, name, credit_hours, ects, lecture_hours, practical_hours, type, is_remedial)
 VALUES ('BE302', 'Business Entrepreneurship', 3, 3, 3, 0, 'OL', false),

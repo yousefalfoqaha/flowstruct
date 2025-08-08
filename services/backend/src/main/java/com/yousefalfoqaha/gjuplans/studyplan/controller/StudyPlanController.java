@@ -1,12 +1,10 @@
 package com.yousefalfoqaha.gjuplans.studyplan.controller;
 
-import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
-import com.yousefalfoqaha.gjuplans.course.dto.CourseSummaryDto;
-import com.yousefalfoqaha.gjuplans.studyplan.domain.MoveDirection;
-import com.yousefalfoqaha.gjuplans.studyplan.domain.Relation;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.*;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.ApprovalRequestDto;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDetailsDto;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDto;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanSummaryDto;
 import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanApprovalService;
-import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanCourseService;
 import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanManagerService;
 import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanService;
 import jakarta.validation.Valid;
@@ -16,14 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/study-plans")
 public class StudyPlanController {
     private final StudyPlanService studyPlanService;
-    private final StudyPlanCourseService studyPlanCourseService;
     private final StudyPlanApprovalService studyPlanApprovalService;
     private final StudyPlanManagerService studyPlanManagerService;
 
@@ -41,6 +37,15 @@ public class StudyPlanController {
                 studyPlanService.getStudyPlan(studyPlanId),
                 HttpStatus.OK
         );
+    }
+
+    @PostMapping("/request-approval")
+    public ResponseEntity<Void> requestStudyPlansApproval(
+            @Valid @RequestBody ApprovalRequestDto approvalRequest,
+            @RequestParam(value = "studyPlans") List<Long> studyPlanIds
+    ) {
+        studyPlanApprovalService.requestApproval(approvalRequest, studyPlanIds);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{studyPlanId}/approve-changes")

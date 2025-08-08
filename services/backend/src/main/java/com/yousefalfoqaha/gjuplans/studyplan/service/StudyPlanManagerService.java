@@ -1,7 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan.service;
 
-import com.yousefalfoqaha.gjuplans.common.AlreadyApprovedException;
-import com.yousefalfoqaha.gjuplans.common.InvalidDetailsException;
+import com.yousefalfoqaha.gjuplans.common.exception.AlreadyApprovedException;
+import com.yousefalfoqaha.gjuplans.common.exception.InvalidDetailsException;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.Section;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlan;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlanDraft;
@@ -133,4 +133,6 @@ public class StudyPlanManagerService {
     public void deleteStudyPlan(long id) {
         studyPlanRepository.deleteById(id);
     }
+
+
 }

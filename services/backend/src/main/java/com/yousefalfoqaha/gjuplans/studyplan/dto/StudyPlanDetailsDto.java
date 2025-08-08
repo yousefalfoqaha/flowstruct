@@ -1,6 +1,5 @@
 package com.yousefalfoqaha.gjuplans.studyplan.dto;
 
-import com.yousefalfoqaha.gjuplans.common.PublishStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
@@ -13,8 +12,6 @@ public record StudyPlanDetailsDto(
 
         @NotNull(message = "Track cannot be undefined.")
         String track,
-
-        PublishStatus status,
 
         @NotNull(message = "Study plan must belong to a program.")
         long program

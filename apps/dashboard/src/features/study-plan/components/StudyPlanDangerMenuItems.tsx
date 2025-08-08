@@ -1,12 +1,14 @@
 import { Menu, Text } from '@mantine/core';
-import { CircleCheck, ClipboardX, CopyPlus, Trash } from 'lucide-react';
+import { CircleCheck, ClipboardX, CopyPlus, Mail, Trash } from 'lucide-react';
 import { useDeleteStudyPlan } from '@/features/study-plan/hooks/useDeleteStudyPlan.ts';
 import { useApproveStudyPlanChanges } from '@/features/study-plan/hooks/useApproveStudyPlanChanges.ts';
-import { modals } from '@mantine/modals';
+import { ContextModalProps, modals } from '@mantine/modals';
 import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 import { CloneStudyPlanDetailsFormFields } from '@/features/study-plan/components/CloneStudyPlanDetailsFormFields.tsx';
 import { StudyPlanSummary } from '@/features/study-plan/types.ts';
 import { useDiscardStudyPlanChanges } from '@/features/study-plan/hooks/useDiscardStudyPlanChanges.ts';
+import { useMe } from '@/features/user/hooks/useMe.ts';
+import { ModalProvider } from '@mantine/core/lib/components/Modal/Modal.context';
 
 type Props = {
   studyPlan: StudyPlanSummary;
@@ -16,6 +18,7 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
   const deleteStudyPlan = useDeleteStudyPlan();
   const approveStudyPlan = useApproveStudyPlanChanges();
   const discardStudyPlan = useDiscardStudyPlanChanges();
+  const { data: me } = useMe();
 
   const handleApproveStudyPlan = () =>
     modals.openConfirmModal({
@@ -70,12 +73,29 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
       onConfirm: () => discardStudyPlan.mutate(studyPlan.id),
     });
 
+  const isNewOrDraft = studyPlan.status === 'DRAFT' || studyPlan.status === 'NEW';
+
+  const requestApprovalModal = ({
+    context,
+    id,
+    innerProps,
+  }: ContextModalProps<{ modalBody: string; loading: boolean }>) =>
+    <>
+    yes
+    </>;
+
   return (
     <>
-      {(studyPlan.status === 'DRAFT' || studyPlan.status === 'NEW') && (
+      {isNewOrDraft && me.role === 'APPROVER' && (
         <Menu.Item onClick={handleApproveStudyPlan} leftSection={<CircleCheck size={14} />}>
           Approve changes
         </Menu.Item>
+      )}
+
+      {studyPlan.status === 'DRAFT' && me.role === 'EDITOR' && (
+        <ModalProvider modals={{}}>
+          <Menu.Item leftSection={<Mail size={14} />}>Request approval</Menu.Item>
+        </ModalProvider>
       )}
 
       {studyPlan.status === 'DRAFT' && (
@@ -84,7 +104,7 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
         </Menu.Item>
       )}
 
-      {(studyPlan.status === 'DRAFT' || studyPlan.status === 'NEW') && <Menu.Divider />}
+      {isNewOrDraft && (me.role === 'APPROVER' || me.role === 'EDITOR') && <Menu.Divider />}
 
       <Menu.Item leftSection={<CopyPlus size={14} />} onClick={handleCloneStudyPlan}>
         Clone

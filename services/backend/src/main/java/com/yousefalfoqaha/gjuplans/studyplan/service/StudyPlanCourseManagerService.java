@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan.service;
 
-import com.yousefalfoqaha.gjuplans.common.EmptyListException;
+import com.yousefalfoqaha.gjuplans.common.exception.EmptyListException;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.*;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDto;
