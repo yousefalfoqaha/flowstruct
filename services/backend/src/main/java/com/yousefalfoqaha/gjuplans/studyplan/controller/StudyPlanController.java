@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan.controller;
 
-import com.yousefalfoqaha.gjuplans.studyplan.dto.ApprovalRequestDto;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.ApprovalRequestDetailsDto;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDetailsDto;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDto;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanSummaryDto;
@@ -41,7 +41,7 @@ public class StudyPlanController {
 
     @PostMapping("{studyPlanId}/request-approval")
     public ResponseEntity<Void> requestStudyPlansApproval(
-            @Valid @RequestBody ApprovalRequestDto approvalRequest,
+            @Valid @RequestBody ApprovalRequestDetailsDto approvalRequest,
             @PathVariable long studyPlanId
     ) {
         studyPlanApprovalService.requestApproval(approvalRequest, studyPlanId);

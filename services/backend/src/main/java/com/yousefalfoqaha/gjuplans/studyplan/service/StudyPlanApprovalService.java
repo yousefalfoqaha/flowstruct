@@ -1,23 +1,28 @@
 package com.yousefalfoqaha.gjuplans.studyplan.service;
 
 import com.yousefalfoqaha.gjuplans.common.exception.AlreadyApprovedException;
+import com.yousefalfoqaha.gjuplans.program.dto.ProgramDto;
+import com.yousefalfoqaha.gjuplans.program.service.ProgramService;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlanDraft;
-import com.yousefalfoqaha.gjuplans.studyplan.dto.ApprovalRequestDto;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.ApprovalRequestDetailsDto;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDto;
+import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanSummaryDto;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.ApprovalRequestException;
 import com.yousefalfoqaha.gjuplans.user.dto.UserDto;
 import com.yousefalfoqaha.gjuplans.user.service.UserService;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -25,26 +30,95 @@ public class StudyPlanApprovalService {
     private final StudyPlanService studyPlanService;
     private final JavaMailSender mailMessage;
     private final UserService userService;
+    private final ProgramService programService;
 
     @PreAuthorize("hasRole('ROLE_EDITOR')")
-    public void requestApproval(ApprovalRequestDto approvalRequest, long studyPlanId) {
-        UserDto approver = userService.getUser(approvalRequest.approver());
+    public void requestApproval(ApprovalRequestDetailsDto approvalRequestDetails, long studyPlanId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        UserDto requester = userService.getUserByUsername(authentication.getName());
+        UserDto approver = userService.getUser(approvalRequestDetails.approver());
 
         if (!approver.role().equalsIgnoreCase("APPROVER")) {
             throw new ApprovalRequestException("Request cannot be sent to a user without approval privileges.");
         }
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(approver.email());
-        message.setSubject("Approve StudyPlan Request");
-        message.setText(studyPlanId + "/n" + approvalRequest.message());
+        var studyPlanSummary = studyPlanService.getStudyPlanSummary(studyPlanId);
+        var program = programService.getProgram(studyPlanSummary.program());
+
+        String htmlContent = buildSimpleEmailHtml(requester, studyPlanSummary, program, approvalRequestDetails.message());
 
         try {
-            mailMessage.send(message);
-        } catch (MailException e) {
-            e.printStackTrace();
+            MimeMessage mimeMessage = mailMessage.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            helper.setTo(approver.email());
+            helper.setSubject("Study Plan Approval Request");
+            helper.setText(htmlContent, true);
+            helper.setFrom("noreply@studyplan.com");
+
+            mailMessage.send(mimeMessage);
+
+        } catch (MessagingException | MailException e) {
             throw new ApprovalRequestException("Could not request approval, try again.");
         }
+    }
+
+    private String buildSimpleEmailHtml(
+            UserDto requester,
+            StudyPlanSummaryDto studyPlanSummary,
+            ProgramDto program,
+            String message
+    ) {
+        StringBuilder html = new StringBuilder();
+
+        html.append("""
+                 <!DOCTYPE html>
+                 <html>
+                 <head>
+                     <style>
+                         body { font-family: Arial, sans-serif; padding: 20px; }
+                         .container { max-width: 600px; margin: 0 auto; }
+                         .button { background-color: #007bff; color: white; padding: 12px 24px;\s
+                                  text-decoration: none; border-radius: 4px; display: inline-block; }
+                         .message-box { background-color: #f8f9fa; padding: 15px; border-left: 4px solid #007bff; margin: 20px 0; }
+                     </style>
+                 </head>
+                 <body>
+                     <div class="container">
+                         <h2>Study Plan Approval Request</h2>
+                \s
+                         <p><strong>Requested By:</strong> %s (%s)</p>
+                         <p><strong>Program:</strong> %s
+                         <p><strong>Study Plan:</strong> %s</p>
+                \s"""
+                .formatted(
+                        requester.username(),
+                        requester.email(),
+                        program.degree() + " " + program.name() + " (" + program.code() + ")",
+                        (studyPlanSummary.year() + " / " + (studyPlanSummary.year() + 1) + " " + studyPlanSummary.track())
+                )
+        );
+
+        if (message != null && !message.trim().isEmpty()) {
+            html.append("""
+                        <div class="message-box">
+                            <strong>Message from requester:</strong><br>
+                            "%s"
+                        </div>
+                    """.formatted(message.trim()));
+        }
+
+        html.append("""
+                        <p>
+                            <a href="https://admin.gjuplans.com/study-plans/%d" class="button">View Study Plan</a>
+                        </p>
+                    </div>
+                </body>
+                </html>
+                """.formatted(studyPlanSummary.id()));
+
+        return html.toString();
     }
 
     @PreAuthorize("hasRole('ROLE_APPROVER')")

@@ -42,6 +42,13 @@ public class UserService {
         }
     }
 
+    public UserDto getUserByUsername(String username) {
+        var user = userRepository.findByUsername(username).orElseThrow(() ->
+                new UserNotFoundException("User not found."));
+
+        return userDtoMapper.apply(user);
+    }
+
     public UserDto getUser(long userId) {
         var user = userRepository.findById(userId).orElseThrow(() ->
                 new UserNotFoundException("User not found."));

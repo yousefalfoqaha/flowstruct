@@ -2,7 +2,7 @@ package com.yousefalfoqaha.gjuplans.studyplan.dto;
 
 import jakarta.validation.constraints.NotNull;
 
-public record ApprovalRequestDto(
+public record ApprovalRequestDetailsDto(
         String message,
 
         @NotNull(message = "Must pick an approver to send the request to.")

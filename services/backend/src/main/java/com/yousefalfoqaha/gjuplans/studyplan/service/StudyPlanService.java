@@ -25,6 +25,13 @@ public class StudyPlanService {
         return studyPlanDtoMapper.apply(studyPlan);
     }
 
+    public StudyPlanSummaryDto getStudyPlanSummary(long studyPlanId) {
+        var studyPlanSummary = studyPlanRepository.findStudyPlanSummary(studyPlanId).orElseThrow(() ->
+                new StudyPlanNotFoundException("Study plan not found.")
+        );
+        return studyPlanSummaryDtoMapper.apply(studyPlanSummary);
+    }
+
     public List<StudyPlanSummaryDto> getAllStudyPlans() {
         return studyPlanRepository.findAllStudyPlanSummaries()
                 .stream()
@@ -34,7 +41,7 @@ public class StudyPlanService {
 
     public StudyPlan findOrThrow(long studyPlanId) {
         return studyPlanRepository.findById(studyPlanId)
-                .orElseThrow(() -> new StudyPlanNotFoundException("Study plan with id " + studyPlanId + " was not found."));
+                .orElseThrow(() -> new StudyPlanNotFoundException("Study plan was not found."));
     }
 
     public StudyPlanDto saveAndMap(StudyPlan studyPlan) {
