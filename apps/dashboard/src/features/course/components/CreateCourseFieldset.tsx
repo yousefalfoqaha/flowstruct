@@ -1,5 +1,5 @@
 import { AppCard } from '@/shared/components/AppCard.tsx';
-import { CourseDetailsFormFields } from '@/features/course/components/CourseDetailsFormFields.tsx';
+import { CourseFields } from '@/features/course/components/CourseFields.tsx';
 import { courseDetailsSchema } from '@/features/course/schemas.ts';
 import { getCoursePresetSettings } from '@/utils/getCoursePresetSettings.ts';
 import { useCreateCourse } from '@/features/course/hooks/useCreateCourse.ts';
@@ -66,7 +66,7 @@ export function CreateCourseFieldset() {
         subtitle="Enter the details for the new course"
         footer={footer}
       >
-        <CourseDetailsFormFields form={form} preset={preset} changePreset={changePreset} />
+        <CourseFields form={form} preset={preset} changePreset={changePreset} />
       </AppCard>
     </form>
   );

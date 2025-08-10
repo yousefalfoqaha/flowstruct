@@ -12,7 +12,7 @@ type Props = {
   disableProgramSelect?: boolean;
 };
 
-export function StudyPlanDetailsFormFields({ form, disableProgramSelect = false }: Props) {
+export function StudyPlanDetailsFields({ form, disableProgramSelect = false }: Props) {
   const {
     control,
     formState: { errors },

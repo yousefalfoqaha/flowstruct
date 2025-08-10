@@ -1,6 +1,6 @@
 import { Button, Fieldset, Stack } from '@mantine/core';
 import { courseDetailsSchema } from '@/features/course/schemas.ts';
-import { CourseDetailsFormFields } from '@/features/course/components/CourseDetailsFormFields.tsx';
+import { CourseFields } from '@/features/course/components/CourseFields.tsx';
 import { Plus } from 'lucide-react';
 import { useCoursePreset } from '@/features/course/hooks/useCoursePreset.ts';
 import { useForm } from 'react-hook-form';
@@ -14,7 +14,7 @@ interface Props {
   courseId: number;
 }
 
-export function EditCourseModal({ courseId }: Props) {
+export function EditCourseForm({ courseId }: Props) {
   const { data: course, isPending } = useCourse(courseId);
 
   if (isPending) return 'Loading...';
@@ -40,8 +40,8 @@ export function EditCourseModal({ courseId }: Props) {
   return (
     <form onSubmit={onSubmit}>
       <Stack>
-        <Fieldset>
-          <CourseDetailsFormFields form={form} preset={preset} changePreset={changePreset} />
+        <Fieldset legend="Course Details">
+          <CourseFields form={form} preset={preset} changePreset={changePreset} />
         </Fieldset>
 
         <Button

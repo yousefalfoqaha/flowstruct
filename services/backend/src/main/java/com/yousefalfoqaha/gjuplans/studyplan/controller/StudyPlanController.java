@@ -39,12 +39,12 @@ public class StudyPlanController {
         );
     }
 
-    @PostMapping("/request-approval")
+    @PostMapping("{studyPlanId}/request-approval")
     public ResponseEntity<Void> requestStudyPlansApproval(
             @Valid @RequestBody ApprovalRequestDto approvalRequest,
-            @RequestParam(value = "studyPlans") List<Long> studyPlanIds
+            @PathVariable long studyPlanId
     ) {
-        studyPlanApprovalService.requestApproval(approvalRequest, studyPlanIds);
+        studyPlanApprovalService.requestApproval(approvalRequest, studyPlanId);
         return ResponseEntity.noContent().build();
     }
 

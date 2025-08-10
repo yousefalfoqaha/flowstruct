@@ -1,5 +1,5 @@
 import { AppCard } from '@/shared/components/AppCard.tsx';
-import { StudyPlanDetailsFormFields } from '@/features/study-plan/components/StudyPlanDetailsFormFields.tsx';
+import { StudyPlanDetailsFields } from '@/features/study-plan/components/StudyPlanDetailsFields.tsx';
 import { studyPlanDetailsSchema } from '@/features/study-plan/schemas.ts';
 import { useCreateStudyPlan } from '@/features/study-plan/hooks/useCreateStudyPlan.ts';
 import { Link, useNavigate } from '@tanstack/react-router';
@@ -67,7 +67,7 @@ export function CreateStudyPlanFieldset() {
         subtitle="Enter the details for the new study plan here"
         footer={footer}
       >
-        <StudyPlanDetailsFormFields form={form} />
+        <StudyPlanDetailsFields form={form} />
       </AppCard>
     </form>
   );

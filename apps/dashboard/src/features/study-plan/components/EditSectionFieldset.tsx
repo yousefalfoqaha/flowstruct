@@ -1,5 +1,5 @@
 import { AppCard } from '@/shared/components/AppCard.tsx';
-import { SectionDetailsFormFields } from '@/features/study-plan/components/SectionDetailsFormFields.tsx';
+import { SectionDetailsFields } from '@/features/study-plan/components/SectionDetailsFields.tsx';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
 import { sectionDetailsSchema } from '@/features/study-plan/schemas.ts';
@@ -85,7 +85,7 @@ export function EditSectionFieldset({ section }: Props) {
   return (
     <form onSubmit={onSubmit}>
       <AppCard title="Section Details" subtitle="Edit section details here" footer={footer}>
-        <SectionDetailsFormFields form={form} />
+        <SectionDetailsFields form={form} />
       </AppCard>
     </form>
   );

@@ -8,8 +8,8 @@ import { ChevronDown, Lock, LogOut, Pencil, ScrollText, X } from 'lucide-react';
 import { modals } from '@mantine/modals';
 import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 import { UserDetailsDisplay } from '@/features/user/components/UserDetailsDisplay.tsx';
-import { EditUserFieldset } from '@/features/user/components/EditUserFieldset.tsx';
-import { ChangePasswordFieldset } from '@/features/course/components/ChangePasswordFieldset.tsx';
+import { EditUserForm } from '@/features/user/components/EditUserForm.tsx';
+import { ChangePasswordForm } from '@/features/user/components/ChangePasswordForm.tsx';
 
 export function User() {
   const { data: me } = useMe();
@@ -19,7 +19,7 @@ export function User() {
   const openEditUserDetails = () =>
     modals.open({
       title: <ModalHeader subtitle="Edit your account's details" title="Edit User Details" />,
-      children: <EditUserFieldset user={me} />,
+      children: <EditUserForm user={me} />,
       centered: true,
     });
 
@@ -112,7 +112,7 @@ export function User() {
                     title="Change Password"
                   />
                 ),
-                children: <ChangePasswordFieldset />,
+                children: <ChangePasswordForm />,
                 centered: true,
                 size: 'lg',
               })

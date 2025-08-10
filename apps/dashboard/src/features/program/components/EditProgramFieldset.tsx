@@ -1,5 +1,5 @@
 import { Button, Text } from '@mantine/core';
-import { ProgramDetailsFormFields } from '@/features/program/components/ProgramDetailsFormFields.tsx';
+import { ProgramFields } from '@/features/program/components/ProgramFields.tsx';
 import { programDetailsSchema } from '@/features/program/schemas.ts';
 import { useNavigate } from '@tanstack/react-router';
 import { Pencil, Trash } from 'lucide-react';
@@ -90,7 +90,7 @@ export function EditProgramFieldset({ program }: EditProgramFieldsetProps) {
           </>
         }
       >
-        <ProgramDetailsFormFields form={form} />
+        <ProgramFields form={form} />
       </AppCard>
     </form>
   );

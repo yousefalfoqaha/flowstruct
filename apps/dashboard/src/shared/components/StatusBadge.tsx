@@ -7,7 +7,6 @@ export function StatusBadge(status: string) {
     case 'APPROVED':
       return (
         <Badge
-          fullWidth
           variant="light"
           classNames={{ root: classes.root }}
           leftSection={<Check size={14} />}
@@ -18,7 +17,6 @@ export function StatusBadge(status: string) {
     case 'DRAFT':
       return (
         <Badge
-          fullWidth
           variant="outline"
           classNames={{ root: classes.root }}
           leftSection={<Pencil size={14} />}
@@ -29,7 +27,6 @@ export function StatusBadge(status: string) {
     case 'NEW':
       return (
         <Badge
-          fullWidth
           variant="outline"
           classNames={{ root: classes.root }}
           leftSection={<Plus size={14} />}

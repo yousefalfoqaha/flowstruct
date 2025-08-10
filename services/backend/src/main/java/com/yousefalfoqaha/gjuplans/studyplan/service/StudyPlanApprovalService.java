@@ -27,7 +27,7 @@ public class StudyPlanApprovalService {
     private final UserService userService;
 
     @PreAuthorize("hasRole('ROLE_EDITOR')")
-    public void requestApproval(ApprovalRequestDto approvalRequest, List<Long> studyPlanIds) {
+    public void requestApproval(ApprovalRequestDto approvalRequest, long studyPlanId) {
         UserDto approver = userService.getUser(approvalRequest.approver());
 
         if (!approver.role().equalsIgnoreCase("APPROVER")) {
@@ -37,7 +37,7 @@ public class StudyPlanApprovalService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(approver.email());
         message.setSubject("Approve StudyPlan Request");
-        message.setText(studyPlanIds.stream().map(Object::toString).collect(Collectors.joining(",")) + "/n" + approvalRequest.message());
+        message.setText(studyPlanId + "/n" + approvalRequest.message());
 
         try {
             mailMessage.send(message);

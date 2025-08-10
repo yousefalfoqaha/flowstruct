@@ -1,13 +1,13 @@
 import { ActionIcon, Button, Group, Menu, Stack, Text } from '@mantine/core';
 import { ArrowLeftRight, Ellipsis, Pencil, ScrollText, X } from 'lucide-react';
 import { modals } from '@mantine/modals';
-import { CourseDetailsDisplay } from '@/features/course/components/CourseDetailsDisplay.tsx';
+import { CourseDisplay } from '@/features/course/components/CourseDisplay.tsx';
 import { SectionsMenuItems } from '@/features/study-plan/components/SectionsMenuItems.tsx';
 import { FrameworkCourse } from '@/features/study-plan/types.ts';
 import { useRemoveCoursesFromStudyPlan } from '@/features/study-plan/hooks/useRemoveCourseFromSection.ts';
 import { useParams } from '@tanstack/react-router';
 import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
-import { EditCourseModal } from '@/features/course/components/EditCourseModal.tsx';
+import { EditCourseForm } from '@/features/course/components/EditCourseForm.tsx';
 
 type Props = {
   course: FrameworkCourse;
@@ -61,7 +61,7 @@ export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
               ),
               children: (
                 <Stack>
-                  <CourseDetailsDisplay courseId={course.id} />
+                  <CourseDisplay courseId={course.id} />
                   <Group justify="space-between">
                     <Button
                       color="red"
@@ -80,7 +80,7 @@ export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
                               subtitle="Update the details for this course"
                             />
                           ),
-                          children: <EditCourseModal courseId={course.id} />,
+                          children: <EditCourseForm courseId={course.id} />,
                           size: 'xl',
                           centered: true,
                         })

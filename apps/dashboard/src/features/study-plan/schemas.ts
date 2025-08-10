@@ -14,3 +14,8 @@ export const sectionDetailsSchema = z.object({
   requiredCreditHours: z.number().nonnegative({ error: 'Must be positive' }),
   name: z.string().trim(),
 });
+
+export const requestApprovalSchema = z.object({
+  approver: z.string().trim().nonempty(),
+  message: z.string().trim().optional()
+});

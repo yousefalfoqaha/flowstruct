@@ -1,7 +1,7 @@
 import { Button, Fieldset, Modal, Stack } from '@mantine/core';
 import { useCreateCourse } from '@/features/course/hooks/useCreateCourse.ts';
 import { courseDetailsSchema } from '@/features/course/schemas.ts';
-import { CourseDetailsFormFields } from '@/features/course/components/CourseDetailsFormFields.tsx';
+import { CourseFields } from '@/features/course/components/CourseFields.tsx';
 import { Plus } from 'lucide-react';
 import { Course } from '@/features/course/types.ts';
 import { getCoursePresetSettings } from '@/utils/getCoursePresetSettings.ts';
@@ -68,8 +68,8 @@ export function CreateCourseModal({
     >
       <form onSubmit={onSubmit}>
         <Stack>
-          <Fieldset>
-            <CourseDetailsFormFields form={form} preset={preset} changePreset={changePreset} />
+          <Fieldset legend="Course Details">
+            <CourseFields form={form} preset={preset} changePreset={changePreset} />
           </Fieldset>
 
           <Button

@@ -1,7 +1,7 @@
 import { StudyPlan } from '@/features/study-plan/types.ts';
 import { studyPlanDetailsSchema } from '@/features/study-plan/schemas.ts';
 import { AppCard } from '@/shared/components/AppCard.tsx';
-import { StudyPlanDetailsFormFields } from '@/features/study-plan/components/StudyPlanDetailsFormFields.tsx';
+import { StudyPlanDetailsFields } from '@/features/study-plan/components/StudyPlanDetailsFields.tsx';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { Button, Text } from '@mantine/core';
 import { ChevronLeft, Pencil, Trash } from 'lucide-react';
@@ -114,7 +114,7 @@ export function EditStudyPlanDetailsFieldset({ studyPlan }: Props) {
           </Link>
         }
       >
-        <StudyPlanDetailsFormFields disableProgramSelect={true} form={form} />
+        <StudyPlanDetailsFields disableProgramSelect={true} form={form} />
       </AppCard>
     </form>
   );

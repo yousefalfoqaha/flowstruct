@@ -9,7 +9,7 @@ type Props = {
   form: UseFormReturn<z.infer<typeof sectionDetailsSchema>>;
 };
 
-export function SectionDetailsFormFields({ form }: Props) {
+export function SectionDetailsFields({ form }: Props) {
   const {
     control,
     formState: { errors },

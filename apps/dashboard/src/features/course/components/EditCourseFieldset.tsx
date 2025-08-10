@@ -2,7 +2,7 @@ import { Course } from '@/features/course/types.ts';
 import { courseDetailsSchema } from '@/features/course/schemas.ts';
 import { useEditCourseDetails } from '@/features/course/hooks/useEditCourseDetails.ts';
 import { useNavigate } from '@tanstack/react-router';
-import { CourseDetailsFormFields } from '@/features/course/components/CourseDetailsFormFields.tsx';
+import { CourseFields } from '@/features/course/components/CourseFields.tsx';
 import { Box, Button } from '@mantine/core';
 import { Pencil } from 'lucide-react';
 import { AppCard } from '@/shared/components/AppCard.tsx';
@@ -61,7 +61,7 @@ export function EditCourseFieldset({ course }: Props) {
         subtitle="Update the details for this course"
         footer={footer}
       >
-        <CourseDetailsFormFields form={form} preset={preset} changePreset={changePreset} />
+        <CourseFields form={form} preset={preset} changePreset={changePreset} />
       </AppCard>
     </form>
   );

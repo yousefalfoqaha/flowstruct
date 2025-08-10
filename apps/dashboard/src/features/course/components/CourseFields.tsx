@@ -30,7 +30,7 @@ type Props = {
   changePreset: (value: PresetType) => void;
 };
 
-export function CourseDetailsFormFields({ form, preset, changePreset }: Props) {
+export function CourseFields({ form, preset, changePreset }: Props) {
   const {
     control,
     formState: { errors },

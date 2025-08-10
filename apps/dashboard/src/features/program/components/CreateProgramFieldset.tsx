@@ -1,5 +1,5 @@
 import { Button } from '@mantine/core';
-import { ProgramDetailsFormFields } from '@/features/program/components/ProgramDetailsFormFields.tsx';
+import { ProgramFields } from '@/features/program/components/ProgramFields.tsx';
 import { programDetailsSchema } from '@/features/program/schemas.ts';
 import { useCreateProgram } from '@/features/program/hooks/useCreateProgram.ts';
 import { Link, useNavigate } from '@tanstack/react-router';
@@ -60,7 +60,7 @@ export function CreateProgramFieldset() {
         subtitle="Enter the details for the new program"
         footer={footer}
       >
-        <ProgramDetailsFormFields form={form} />
+        <ProgramFields form={form} />
       </AppCard>
     </form>
   );

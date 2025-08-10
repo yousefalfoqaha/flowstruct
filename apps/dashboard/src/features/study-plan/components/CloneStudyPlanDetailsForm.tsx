@@ -1,4 +1,4 @@
-import { StudyPlanDetailsFormFields } from '@/features/study-plan/components/StudyPlanDetailsFormFields.tsx';
+import { StudyPlanDetailsFields } from '@/features/study-plan/components/StudyPlanDetailsFields.tsx';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
 import { studyPlanDetailsSchema } from '@/features/study-plan/schemas.ts';
@@ -13,7 +13,7 @@ type Props = {
   studyPlanToClone: StudyPlanSummary;
 };
 
-export function CloneStudyPlanDetailsFormFields({ studyPlanToClone }: Props) {
+export function CloneStudyPlanDetailsForm({ studyPlanToClone }: Props) {
   const form = useForm<z.infer<typeof studyPlanDetailsSchema>>({
     resolver: customResolver(studyPlanDetailsSchema),
     defaultValues: {
@@ -47,8 +47,8 @@ export function CloneStudyPlanDetailsFormFields({ studyPlanToClone }: Props) {
   return (
     <form onSubmit={onSubmit}>
       <Stack>
-        <Fieldset>
-          <StudyPlanDetailsFormFields form={form} disableProgramSelect={true} />
+        <Fieldset legend="Clone Details">
+          <StudyPlanDetailsFields form={form} disableProgramSelect={true} />
         </Fieldset>
 
         <Group justify="space-between">

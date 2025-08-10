@@ -8,7 +8,7 @@ type Props = {
   courseId: number;
 };
 
-export function CourseDetailsDisplay({ courseId }: Props) {
+export function CourseDisplay({ courseId }: Props) {
   const { data: course, isLoading } = useCourse(courseId);
 
   if (isLoading)

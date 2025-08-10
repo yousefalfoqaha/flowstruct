@@ -2,13 +2,13 @@ import { Menu, Text } from '@mantine/core';
 import { CircleCheck, ClipboardX, CopyPlus, Mail, Trash } from 'lucide-react';
 import { useDeleteStudyPlan } from '@/features/study-plan/hooks/useDeleteStudyPlan.ts';
 import { useApproveStudyPlanChanges } from '@/features/study-plan/hooks/useApproveStudyPlanChanges.ts';
-import { ContextModalProps, modals } from '@mantine/modals';
+import { modals } from '@mantine/modals';
 import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
-import { CloneStudyPlanDetailsFormFields } from '@/features/study-plan/components/CloneStudyPlanDetailsFormFields.tsx';
+import { CloneStudyPlanDetailsForm } from '@/features/study-plan/components/CloneStudyPlanDetailsForm.tsx';
 import { StudyPlanSummary } from '@/features/study-plan/types.ts';
 import { useDiscardStudyPlanChanges } from '@/features/study-plan/hooks/useDiscardStudyPlanChanges.ts';
 import { useMe } from '@/features/user/hooks/useMe.ts';
-import { ModalProvider } from '@mantine/core/lib/components/Modal/Modal.context';
+import { RequestApprovalForm } from '@/features/study-plan/components/RequestApprovalForm.tsx';
 
 type Props = {
   studyPlan: StudyPlanSummary;
@@ -57,7 +57,7 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
       ),
       centered: true,
       size: 'lg',
-      children: <CloneStudyPlanDetailsFormFields studyPlanToClone={studyPlan} />,
+      children: <CloneStudyPlanDetailsForm studyPlanToClone={studyPlan} />,
     });
 
   const discardStudyPlanChanges = () =>
@@ -73,16 +73,20 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
       onConfirm: () => discardStudyPlan.mutate(studyPlan.id),
     });
 
-  const isNewOrDraft = studyPlan.status === 'DRAFT' || studyPlan.status === 'NEW';
+  const requestStudyPlanApproval = () =>
+    modals.open({
+      title: (
+        <ModalHeader
+          title="Request Approval"
+          subtitle="Select an approver to send an email to request approval of the study plan's changes"
+        />
+      ),
+      children: <RequestApprovalForm studyPlan={studyPlan} />,
+      centered: true,
+      size: 'lg',
+    });
 
-  const requestApprovalModal = ({
-    context,
-    id,
-    innerProps,
-  }: ContextModalProps<{ modalBody: string; loading: boolean }>) =>
-    <>
-    yes
-    </>;
+  const isNewOrDraft = studyPlan.status === 'DRAFT' || studyPlan.status === 'NEW';
 
   return (
     <>
@@ -92,10 +96,10 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
         </Menu.Item>
       )}
 
-      {studyPlan.status === 'DRAFT' && me.role === 'EDITOR' && (
-        <ModalProvider modals={{}}>
-          <Menu.Item leftSection={<Mail size={14} />}>Request approval</Menu.Item>
-        </ModalProvider>
+      {(studyPlan.status === 'DRAFT' || studyPlan.status === 'NEW') && me.role === 'EDITOR' && (
+        <Menu.Item leftSection={<Mail size={14} />} onClick={requestStudyPlanApproval}>
+          Request approval
+        </Menu.Item>
       )}
 
       {studyPlan.status === 'DRAFT' && (

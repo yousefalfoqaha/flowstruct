@@ -2,7 +2,7 @@ import { sectionDetailsSchema } from '@/features/study-plan/schemas.ts';
 import { useCreateSection } from '@/features/study-plan/hooks/useCreateSection.ts';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { AppCard } from '@/shared/components/AppCard.tsx';
-import { SectionDetailsFormFields } from '@/features/study-plan/components/SectionDetailsFormFields.tsx';
+import { SectionDetailsFields } from '@/features/study-plan/components/SectionDetailsFields.tsx';
 import { Button } from '@mantine/core';
 import { CancelButton } from '@/shared/components/CancelButton.tsx';
 import { Plus } from 'lucide-react';
@@ -66,7 +66,7 @@ export function CreateSectionFieldset() {
   return (
     <form onSubmit={onSubmit}>
       <AppCard title="Section Details" subtitle="Enter new section details here" footer={footer()}>
-        <SectionDetailsFormFields form={form} />
+        <SectionDetailsFields form={form} />
       </AppCard>
     </form>
   );

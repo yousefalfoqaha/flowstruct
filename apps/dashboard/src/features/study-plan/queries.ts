@@ -11,6 +11,8 @@ export const studyPlanKeys = {
   detail: (id: number) => [...studyPlanKeys.details(), id] as const,
   courseLists: () => [...studyPlanKeys.all, 'courses'] as const,
   courseList: (studyPlanId: number) => [...studyPlanKeys.courseLists(), studyPlanId] as const,
+  programs: () => [...studyPlanKeys.all, 'programs'] as const,
+  program: (studyPlanId: number) => [...studyPlanKeys.programs(), studyPlanId] as const,
 };
 
 export const StudyPlanListQuery = queryOptions({

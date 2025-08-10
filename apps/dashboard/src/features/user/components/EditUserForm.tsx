@@ -13,7 +13,7 @@ type Props = {
   user: User;
 };
 
-export function EditUserFieldset({ user }: Props) {
+export function EditUserForm({ user }: Props) {
   const form = useForm<z.infer<typeof userDetailsSchema>>({
     resolver: customResolver(userDetailsSchema),
     defaultValues: { ...user },

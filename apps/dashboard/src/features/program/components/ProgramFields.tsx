@@ -9,7 +9,7 @@ type Props = {
   form: UseFormReturn<z.infer<typeof programDetailsSchema>>;
 };
 
-export function ProgramDetailsFormFields({ form }: Props) {
+export function ProgramFields({ form }: Props) {
   const {
     control,
     formState: { errors },

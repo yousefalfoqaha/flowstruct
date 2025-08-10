@@ -1,7 +1,8 @@
 import { Text, Title } from '@mantine/core';
+import { ReactNode } from 'react';
 
 type Props = {
-  title: string;
+  title: string | ReactNode;
   subtitle: string;
 };
 
