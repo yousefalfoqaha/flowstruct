@@ -3,18 +3,24 @@ import { Tabs } from '@mantine/core';
 import { Route as DetailsRoute } from '@/routes/_layout/study-plans/$studyPlanId/details';
 import classes from '@/shared/styles/AppTabs.module.css';
 import { NavbarLinks } from '@/shared/types.ts';
-import { LibraryBig, ScrollText } from 'lucide-react';
+import { LibraryBig, ScrollText, User } from 'lucide-react';
 import { Route as StudyPlansRoute } from '@/routes/_layout/study-plans';
 import { Route as CatalogRoute } from '@/routes/_layout/catalog';
-
-const tabs: NavbarLinks[] = [
-  { label: 'Study Plans', icon: <ScrollText size={18} />, route: StudyPlansRoute.to },
-  { label: 'Catalog', icon: <LibraryBig size={18} />, route: CatalogRoute.to },
-];
+import { Route as UsersRoute } from '@/routes/_layout/users';
+import { useMe } from '@/features/user/hooks/useMe.ts';
 
 export function AppTabs() {
   const navigate = useNavigate();
   const matches = useMatches();
+  const { data: me } = useMe();
+
+  const tabs: NavbarLinks[] = [
+    { label: 'Study Plans', icon: <ScrollText size={18} />, route: StudyPlansRoute.to },
+    { label: 'Catalog', icon: <LibraryBig size={18} />, route: CatalogRoute.to },
+    ...(me.role === 'ADMIN'
+      ? [{ label: 'User Management', icon: <User size={18} />, route: UsersRoute.to }]
+      : []),
+  ];
 
   const items = tabs.map((tab, index) => (
     <Tabs.Tab value={tab.route} leftSection={tab.icon} key={index}>

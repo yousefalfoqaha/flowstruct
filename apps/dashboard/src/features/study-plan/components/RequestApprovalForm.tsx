@@ -181,6 +181,7 @@ export function RequestApprovalForm({ studyPlan }: Props) {
             type="submit"
             leftSection={<Send size={18} />}
             loading={requestApproval.isPending}
+            disabled={!form.formState.isValid}
           >
             Send Email
           </Button>
