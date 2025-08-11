@@ -1,5 +1,4 @@
 import { ErrorObject } from '@/shared/types.ts';
-import { notifications } from '@mantine/notifications';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -41,13 +40,6 @@ export const api = {
         if (window.location.pathname !== '/login') {
           window.location.href = '/login';
         }
-
-        notifications.show({
-          title: 'Session Expired.',
-          message: 'Please log in again.',
-          color: 'blue',
-          withBorder: true,
-        });
       }
 
       const errorData = await response.json();

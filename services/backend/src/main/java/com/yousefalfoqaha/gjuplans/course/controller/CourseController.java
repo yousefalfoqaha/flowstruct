@@ -3,6 +3,7 @@ package com.yousefalfoqaha.gjuplans.course.controller;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDetailsDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CoursesPageDto;
+import com.yousefalfoqaha.gjuplans.course.service.CourseManagerService;
 import com.yousefalfoqaha.gjuplans.course.service.CourseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CourseController {
     private final CourseService courseService;
+    private final CourseManagerService courseManagerService;
 
     @GetMapping
     public ResponseEntity<CoursesPageDto> getPaginatedCourseList(
@@ -22,12 +24,18 @@ public class CourseController {
             @RequestParam(value = "size", defaultValue = "10", required = false) int size,
             @RequestParam(value = "filter", defaultValue = "", required = false) String filter
     ) {
-        return new ResponseEntity<>(courseService.getPaginatedCourseList(page, size, filter), HttpStatus.OK);
+        return new ResponseEntity<>(
+                courseService.getPaginatedCourseList(page, size, filter),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping("/{courseId}")
     public ResponseEntity<CourseDto> getCourse(@PathVariable long courseId) {
-        return new ResponseEntity<>(courseService.getCourse(courseId), HttpStatus.OK);
+        return new ResponseEntity<>(
+                courseService.getCourse(courseId),
+                HttpStatus.OK
+        );
     }
 
     @PutMapping("/{courseId}")
@@ -35,13 +43,26 @@ public class CourseController {
             @PathVariable long courseId,
             @Valid @RequestBody CourseDetailsDto courseDetails
     ) {
-        return new ResponseEntity<>(courseService.editCourseDetails(courseId, courseDetails), HttpStatus.OK);
+        return new ResponseEntity<>(
+                courseManagerService.editCourseDetails(courseId, courseDetails),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping
     public ResponseEntity<CourseDto> createCourse(
             @Valid @RequestBody CourseDetailsDto courseDetails
     ) {
-        return new ResponseEntity<>(courseService.createCourse(courseDetails), HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                courseManagerService.createCourse(courseDetails),
+                HttpStatus.CREATED
+        );
+    }
+
+    @DeleteMapping("/{courseId}")
+    public ResponseEntity<Void> deleteCourse(@PathVariable long courseId) {
+        courseManagerService.deleteCourse(courseId);
+
+        return ResponseEntity.ok().build();
     }
 }

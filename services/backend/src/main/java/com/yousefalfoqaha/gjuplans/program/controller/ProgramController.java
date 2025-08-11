@@ -1,8 +1,9 @@
 package com.yousefalfoqaha.gjuplans.program.controller;
 
-import com.yousefalfoqaha.gjuplans.program.service.ProgramService;
 import com.yousefalfoqaha.gjuplans.program.dto.ProgramDetailsDto;
 import com.yousefalfoqaha.gjuplans.program.dto.ProgramDto;
+import com.yousefalfoqaha.gjuplans.program.service.ProgramManagerService;
+import com.yousefalfoqaha.gjuplans.program.service.ProgramService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequestMapping("/api/v1/programs")
 public class ProgramController {
     private final ProgramService programService;
+    private final ProgramManagerService programManagerService;
 
     @GetMapping
     public ResponseEntity<List<ProgramDto>> getAllPrograms() {
@@ -32,17 +34,18 @@ public class ProgramController {
             @PathVariable long programId,
             @Valid @RequestBody ProgramDetailsDto request
     ) {
-        return new ResponseEntity<>(programService.editProgramDetails(programId, request), HttpStatus.OK);
+        return new ResponseEntity<>(programManagerService.editProgramDetails(programId, request), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<ProgramDto> createProgram(@Valid @RequestBody ProgramDetailsDto programDetails) {
-        return new ResponseEntity<>(programService.createProgram(programDetails), HttpStatus.CREATED);
+        return new ResponseEntity<>(programManagerService.createProgram(programDetails), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{programId}")
     public ResponseEntity<Void> deleteProgram(@PathVariable long programId) {
-        programService.deleteProgram(programId);
+        programManagerService.deleteProgram(programId);
+
         return ResponseEntity.noContent().build();
     }
 }

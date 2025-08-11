@@ -2,19 +2,18 @@ package com.yousefalfoqaha.gjuplans.studyplan.service;
 
 import com.yousefalfoqaha.gjuplans.studyplan.domain.MoveDirection;
 import com.yousefalfoqaha.gjuplans.studyplan.domain.Section;
-import com.yousefalfoqaha.gjuplans.studyplan.domain.SectionType;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.SectionDetailsDto;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDto;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.NotEnoughSectionsException;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.OutOfBoundsPositionException;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.SectionNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
+@PreAuthorize("hasRole('ROLE_EDITOR')")
 @RequiredArgsConstructor
 @Service
 public class StudyPlanSectionService {

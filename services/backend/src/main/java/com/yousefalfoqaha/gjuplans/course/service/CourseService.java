@@ -70,60 +70,12 @@ public class CourseService {
         return courseDtoMapper.apply(course);
     }
 
-    public CourseDto editCourseDetails(long courseId, CourseDetailsDto details) {
-        var course = findOrThrow(courseId);
-
-        String courseCode = codeFormatter.apply(course.getCode());
-        String userEnteredCode = codeFormatter.apply(details.code());
-
-        if (courseRepository.existsByCodeIgnoreCase(userEnteredCode) && !courseCode.equalsIgnoreCase(userEnteredCode)) {
-            throw new CourseExistsException("Course with code " + details.code() + " already exists.");
-        }
-
-        course.setCode(userEnteredCode);
-        course.setName(details.name().trim());
-        course.setCreditHours(details.creditHours());
-        course.setEcts(details.ects());
-        course.setLectureHours(details.lectureHours());
-        course.setPracticalHours(details.practicalHours());
-        course.setType(details.type());
-        course.setRemedial(details.isRemedial());
-
-        return saveAndMap(course);
-    }
-
-    public CourseDto createCourse(CourseDetailsDto details) {
-        String userEnteredCode = codeFormatter.apply(details.code());
-
-        if (courseRepository.existsByCodeIgnoreCase(userEnteredCode)) {
-            throw new CourseExistsException("Course with code " + userEnteredCode + " already exists.");
-        }
-
-        var newCourse = new Course(
-                null,
-                userEnteredCode,
-                details.name().trim(),
-                details.creditHours(),
-                details.ects(),
-                details.lectureHours(),
-                details.practicalHours(),
-                details.type(),
-                details.isRemedial(),
-                null,
-                null,
-                null,
-                null
-        );
-
-        return saveAndMap(newCourse);
-    }
-
-    private Course findOrThrow(long courseId) {
+    public Course findOrThrow(long courseId) {
         return courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException("Course was not found."));
     }
 
-    private CourseDto saveAndMap(Course course) {
+    public CourseDto saveAndMap(Course course) {
         var savedCourse = courseRepository.save(course);
         return courseDtoMapper.apply(savedCourse);
     }

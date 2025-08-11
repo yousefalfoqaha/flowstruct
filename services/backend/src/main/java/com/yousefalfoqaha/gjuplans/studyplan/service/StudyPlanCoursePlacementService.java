@@ -6,12 +6,14 @@ import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDto;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.*;
 import com.yousefalfoqaha.gjuplans.studyplan.utils.ProgramMapUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
+@PreAuthorize("hasRole('ROLE_EDITOR')")
 @RequiredArgsConstructor
 @Service
 public class StudyPlanCoursePlacementService {

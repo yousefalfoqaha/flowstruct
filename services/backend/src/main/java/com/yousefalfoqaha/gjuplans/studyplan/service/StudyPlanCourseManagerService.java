@@ -10,6 +10,7 @@ import com.yousefalfoqaha.gjuplans.studyplan.utils.ProgramMapUtils;
 import com.yousefalfoqaha.gjuplans.studyplan.utils.CourseGraphUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@PreAuthorize("hasRole('ROLE_EDITOR')")
 @RequiredArgsConstructor
 @Service
 public class StudyPlanCourseManagerService {
