@@ -1,5 +1,6 @@
-package com.yousefalfoqaha.gjuplans.auth;
+package com.yousefalfoqaha.gjuplans.auth.service;
 
+import com.yousefalfoqaha.gjuplans.auth.AppUserDetails;
 import com.yousefalfoqaha.gjuplans.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

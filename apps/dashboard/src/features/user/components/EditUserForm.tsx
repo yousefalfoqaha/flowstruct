@@ -37,7 +37,7 @@ export function EditUserForm({ user }: Props) {
   return (
     <form onSubmit={onSubmit}>
       <Stack>
-        <Fieldset>
+        <Fieldset legend="Your Details">
           <UserDetailsFields form={form} />
         </Fieldset>
 

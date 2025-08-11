@@ -33,6 +33,7 @@ export function StudyPlansTable() {
           data={programs.map((p) => getProgramDisplayName(p))}
           leftSection={<GraduationCap size={16} />}
           placeholder="Filter by program..."
+          searchable
         />
 
         <StudyPlanYearFilter table={table} />

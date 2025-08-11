@@ -1,6 +1,6 @@
 package com.yousefalfoqaha.gjuplans.user.service;
 
-import com.yousefalfoqaha.gjuplans.auth.JwtService;
+import com.yousefalfoqaha.gjuplans.auth.service.JwtService;
 import com.yousefalfoqaha.gjuplans.user.domain.User;
 import com.yousefalfoqaha.gjuplans.user.dto.*;
 import com.yousefalfoqaha.gjuplans.user.exception.InvalidCredentialsException;

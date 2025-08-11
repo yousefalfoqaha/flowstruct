@@ -33,6 +33,7 @@ export function StudyPlanYearFilter({ table }: Props) {
       leftSection={<Calendar size={18} />}
       allowDeselect
       clearable
+
     />
   );
 }

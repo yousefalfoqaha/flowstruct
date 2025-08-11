@@ -1,4 +1,4 @@
-package com.yousefalfoqaha.gjuplans.auth;
+package com.yousefalfoqaha.gjuplans.auth.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

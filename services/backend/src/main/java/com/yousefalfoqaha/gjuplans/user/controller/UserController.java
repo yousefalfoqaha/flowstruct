@@ -1,18 +1,15 @@
 package com.yousefalfoqaha.gjuplans.user.controller;
 
+import com.yousefalfoqaha.gjuplans.auth.service.CookieService;
 import com.yousefalfoqaha.gjuplans.user.dto.*;
 import com.yousefalfoqaha.gjuplans.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Duration;
 import java.util.Map;
 
 @RestController
@@ -20,12 +17,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
-
-    @Value("${jwt.cookie.expiry}")
-    private int cookieExpiry;
-
-    @Value("${jwt.cookie.secure}")
-    private boolean cookieSecure;
+    private final CookieService cookieService;
 
     @PostMapping("/login")
     public ResponseEntity<Void> loginUser(
@@ -33,29 +25,14 @@ public class UserController {
             HttpServletResponse response
     ) {
         String jwtToken = userService.verify(loginDetails);
-
-        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", jwtToken)
-                .httpOnly(true)
-                .secure(cookieSecure)
-                .path("/")
-                .maxAge(Duration.ofSeconds(cookieExpiry))
-                .build();
-
-        response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+        cookieService.createAuthCookie(response, jwtToken);
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logoutUser(HttpServletResponse response) {
-        ResponseCookie emptyCookie = ResponseCookie.from("accessToken")
-                .httpOnly(true)
-                .secure(cookieSecure)
-                .path("/")
-                .maxAge(0)
-                .build();
-
-        response.addHeader(HttpHeaders.SET_COOKIE, emptyCookie.toString());
+        cookieService.clearAuthCookie(response);
 
         return ResponseEntity.noContent().build();
     }
@@ -76,15 +53,7 @@ public class UserController {
             HttpServletResponse response
     ) {
         UserWithTokenDto userWithToken = userService.editMyDetails(details);
-
-        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", userWithToken.token())
-                .httpOnly(true)
-                .secure(cookieSecure)
-                .path("/")
-                .maxAge(Duration.ofSeconds(cookieExpiry))
-                .build();
-
-        response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+        cookieService.createAuthCookie(response, userWithToken.token());
 
         return new ResponseEntity<>(
                 userWithToken.user(),

@@ -1,7 +1,7 @@
 package com.yousefalfoqaha.gjuplans.studyplan.mapper;
 
-import com.yousefalfoqaha.gjuplans.studyplan.projection.StudyPlanSummaryProjection;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanSummaryDto;
+import com.yousefalfoqaha.gjuplans.studyplan.projection.StudyPlanSummaryProjection;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -12,7 +12,6 @@ public class StudyPlanSummaryDtoMapper implements Function<StudyPlanSummaryProje
 
     @Override
     public StudyPlanSummaryDto apply(StudyPlanSummaryProjection studyPlan) {
-        System.out.println(studyPlan.approvedVersion());
         String status = studyPlan.approvedVersion() == null
                 ? "NEW"
                 : !Objects.equals(studyPlan.approvedVersion(), studyPlan.version())

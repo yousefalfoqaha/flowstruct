@@ -1,10 +1,11 @@
-package com.yousefalfoqaha.gjuplans.auth;
+package com.yousefalfoqaha.gjuplans.auth.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +22,6 @@ public class SiteGeneratorFilter extends OncePerRequestFilter {
 
     @Value("${backend.api.key}")
     private String apiKey;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String headerApiKey = request.getHeader("X-Backend-Api-Key");

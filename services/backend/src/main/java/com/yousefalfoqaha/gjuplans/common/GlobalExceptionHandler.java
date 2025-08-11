@@ -20,7 +20,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.nio.file.AccessDeniedException;
 import java.util.Date;
 import java.util.List;
 
@@ -52,20 +51,6 @@ public class GlobalExceptionHandler {
                         new Date()
                 ),
                 HttpStatus.NOT_FOUND
-        );
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorObject> handleException(
-            AccessDeniedException exception
-    ) {
-        return new ResponseEntity<>(
-                new ErrorObject(
-                        HttpStatus.FORBIDDEN.value(),
-                        List.of("You don’t have permission to perform this action."),
-                        new Date()
-                ),
-                HttpStatus.FORBIDDEN
         );
     }
 
@@ -221,11 +206,11 @@ public class GlobalExceptionHandler {
     ) {
         return new ResponseEntity<>(
                 new ErrorObject(
-                        HttpStatus.UNAUTHORIZED.value(),
+                        HttpStatus.BAD_REQUEST.value(),
                         List.of(exception.getMessage()),
                         new Date()
                 ),
-                HttpStatus.UNAUTHORIZED
+                HttpStatus.BAD_REQUEST
         );
     }
 

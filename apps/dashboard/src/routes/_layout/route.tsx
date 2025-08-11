@@ -1,8 +1,15 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router';
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { AppLayout } from '@/shared/components/AppLayout.tsx';
-import { UserListQuery } from '@/features/user/queries.ts';
+import { MeQuery, UserListQuery } from '@/features/user/queries.ts';
 
 export const Route = createFileRoute('/_layout')({
+  beforeLoad: async ({ context: { queryClient } }) => {
+    try {
+      await queryClient.ensureQueryData(MeQuery);
+    } catch {
+      throw redirect({ to: '/login' });
+    }
+  },
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(UserListQuery);
   },
