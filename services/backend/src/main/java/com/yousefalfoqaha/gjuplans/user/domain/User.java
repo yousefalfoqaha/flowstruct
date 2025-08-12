@@ -20,7 +20,7 @@ import java.time.Instant;
 public class User {
 
     @Id
-    private long id;
+    private Long id;
 
     private String username;
 

@@ -1,6 +1,6 @@
 import { Button } from '@mantine/core';
 import { ProgramFields } from '@/features/program/components/ProgramFields.tsx';
-import { programDetailsSchema } from '@/features/program/schemas.ts';
+import { programSchema } from '@/features/program/schemas.ts';
 import { useCreateProgram } from '@/features/program/hooks/useCreateProgram.ts';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { Plus, X } from 'lucide-react';
@@ -11,8 +11,8 @@ import { customResolver } from '@/utils/customResolver.ts';
 import { z } from 'zod/v4';
 
 export function CreateProgramFieldset() {
-  const form = useForm<z.infer<typeof programDetailsSchema>>({
-    resolver: customResolver(programDetailsSchema),
+  const form = useForm<z.infer<typeof programSchema>>({
+    resolver: customResolver(programSchema),
     defaultValues: {
       code: '',
       name: '',

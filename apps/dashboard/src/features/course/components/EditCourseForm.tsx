@@ -1,5 +1,5 @@
 import { Button, Fieldset, Stack } from '@mantine/core';
-import { courseDetailsSchema } from '@/features/course/schemas.ts';
+import { courseSchema } from '@/features/course/schemas.ts';
 import { CourseFields } from '@/features/course/components/CourseFields.tsx';
 import { Plus } from 'lucide-react';
 import { useCoursePreset } from '@/features/course/hooks/useCoursePreset.ts';
@@ -19,8 +19,8 @@ export function EditCourseForm({ courseId }: Props) {
 
   if (isPending) return 'Loading...';
 
-  const form = useForm<z.infer<typeof courseDetailsSchema>>({
-    resolver: customResolver(courseDetailsSchema),
+  const form = useForm<z.infer<typeof courseSchema>>({
+    resolver: customResolver(courseSchema),
     defaultValues: { ...course },
   });
   const { preset, changePreset } = useCoursePreset(form);

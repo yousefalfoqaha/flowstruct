@@ -22,10 +22,10 @@ import {
 } from 'lucide-react';
 import { PresetType } from '@/features/course/hooks/useCoursePreset.ts';
 import { z } from 'zod/v4';
-import { courseDetailsSchema } from '@/features/course/schemas.ts';
+import { courseSchema } from '@/features/course/schemas.ts';
 
 type Props = {
-  form: UseFormReturn<z.infer<typeof courseDetailsSchema>>;
+  form: UseFormReturn<z.infer<typeof courseSchema>>;
   preset: PresetType;
   changePreset: (value: PresetType) => void;
 };

@@ -14,11 +14,11 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as LoginImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout/route'
 import { Route as IndexImport } from './routes/index'
-import { Route as LayoutUsersRouteImport } from './routes/_layout/users/route'
 import { Route as LayoutCatalogRouteImport } from './routes/_layout/catalog/route'
 import { Route as LayoutUsersIndexImport } from './routes/_layout/users/index'
 import { Route as LayoutStudyPlansIndexImport } from './routes/_layout/study-plans/index'
 import { Route as LayoutCatalogIndexImport } from './routes/_layout/catalog/index'
+import { Route as LayoutUsersNewImport } from './routes/_layout/users/new'
 import { Route as LayoutStudyPlansNewImport } from './routes/_layout/study-plans/new'
 import { Route as LayoutStudyPlansStudyPlanIdRouteImport } from './routes/_layout/study-plans/$studyPlanId/route'
 import { Route as LayoutCatalogProgramsIndexImport } from './routes/_layout/catalog/programs/index'
@@ -57,12 +57,6 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const LayoutUsersRouteRoute = LayoutUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => LayoutRouteRoute,
-} as any)
-
 const LayoutCatalogRouteRoute = LayoutCatalogRouteImport.update({
   id: '/catalog',
   path: '/catalog',
@@ -70,9 +64,9 @@ const LayoutCatalogRouteRoute = LayoutCatalogRouteImport.update({
 } as any)
 
 const LayoutUsersIndexRoute = LayoutUsersIndexImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => LayoutUsersRouteRoute,
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => LayoutRouteRoute,
 } as any)
 
 const LayoutStudyPlansIndexRoute = LayoutStudyPlansIndexImport.update({
@@ -85,6 +79,12 @@ const LayoutCatalogIndexRoute = LayoutCatalogIndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => LayoutCatalogRouteRoute,
+} as any)
+
+const LayoutUsersNewRoute = LayoutUsersNewImport.update({
+  id: '/users/new',
+  path: '/users/new',
+  getParentRoute: () => LayoutRouteRoute,
 } as any)
 
 const LayoutStudyPlansNewRoute = LayoutStudyPlansNewImport.update({
@@ -242,13 +242,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutCatalogRouteImport
       parentRoute: typeof LayoutRouteImport
     }
-    '/_layout/users': {
-      id: '/_layout/users'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof LayoutUsersRouteImport
-      parentRoute: typeof LayoutRouteImport
-    }
     '/_layout/study-plans/$studyPlanId': {
       id: '/_layout/study-plans/$studyPlanId'
       path: '/study-plans/$studyPlanId'
@@ -261,6 +254,13 @@ declare module '@tanstack/react-router' {
       path: '/study-plans/new'
       fullPath: '/study-plans/new'
       preLoaderRoute: typeof LayoutStudyPlansNewImport
+      parentRoute: typeof LayoutRouteImport
+    }
+    '/_layout/users/new': {
+      id: '/_layout/users/new'
+      path: '/users/new'
+      fullPath: '/users/new'
+      preLoaderRoute: typeof LayoutUsersNewImport
       parentRoute: typeof LayoutRouteImport
     }
     '/_layout/catalog/': {
@@ -279,10 +279,10 @@ declare module '@tanstack/react-router' {
     }
     '/_layout/users/': {
       id: '/_layout/users/'
-      path: '/'
-      fullPath: '/users/'
+      path: '/users'
+      fullPath: '/users'
       preLoaderRoute: typeof LayoutUsersIndexImport
-      parentRoute: typeof LayoutUsersRouteImport
+      parentRoute: typeof LayoutRouteImport
     }
     '/_layout/catalog/courses/new': {
       id: '/_layout/catalog/courses/new'
@@ -431,17 +431,6 @@ const LayoutCatalogRouteRouteChildren: LayoutCatalogRouteRouteChildren = {
 const LayoutCatalogRouteRouteWithChildren =
   LayoutCatalogRouteRoute._addFileChildren(LayoutCatalogRouteRouteChildren)
 
-interface LayoutUsersRouteRouteChildren {
-  LayoutUsersIndexRoute: typeof LayoutUsersIndexRoute
-}
-
-const LayoutUsersRouteRouteChildren: LayoutUsersRouteRouteChildren = {
-  LayoutUsersIndexRoute: LayoutUsersIndexRoute,
-}
-
-const LayoutUsersRouteRouteWithChildren =
-  LayoutUsersRouteRoute._addFileChildren(LayoutUsersRouteRouteChildren)
-
 interface LayoutStudyPlansStudyPlanIdRouteRouteChildren {
   LayoutStudyPlansStudyPlanIdCoursesRoute: typeof LayoutStudyPlansStudyPlanIdCoursesRoute
   LayoutStudyPlansStudyPlanIdProgramMapRoute: typeof LayoutStudyPlansStudyPlanIdProgramMapRoute
@@ -480,19 +469,21 @@ const LayoutStudyPlansStudyPlanIdRouteRouteWithChildren =
 
 interface LayoutRouteRouteChildren {
   LayoutCatalogRouteRoute: typeof LayoutCatalogRouteRouteWithChildren
-  LayoutUsersRouteRoute: typeof LayoutUsersRouteRouteWithChildren
   LayoutStudyPlansStudyPlanIdRouteRoute: typeof LayoutStudyPlansStudyPlanIdRouteRouteWithChildren
   LayoutStudyPlansNewRoute: typeof LayoutStudyPlansNewRoute
+  LayoutUsersNewRoute: typeof LayoutUsersNewRoute
   LayoutStudyPlansIndexRoute: typeof LayoutStudyPlansIndexRoute
+  LayoutUsersIndexRoute: typeof LayoutUsersIndexRoute
 }
 
 const LayoutRouteRouteChildren: LayoutRouteRouteChildren = {
   LayoutCatalogRouteRoute: LayoutCatalogRouteRouteWithChildren,
-  LayoutUsersRouteRoute: LayoutUsersRouteRouteWithChildren,
   LayoutStudyPlansStudyPlanIdRouteRoute:
     LayoutStudyPlansStudyPlanIdRouteRouteWithChildren,
   LayoutStudyPlansNewRoute: LayoutStudyPlansNewRoute,
+  LayoutUsersNewRoute: LayoutUsersNewRoute,
   LayoutStudyPlansIndexRoute: LayoutStudyPlansIndexRoute,
+  LayoutUsersIndexRoute: LayoutUsersIndexRoute,
 }
 
 const LayoutRouteRouteWithChildren = LayoutRouteRoute._addFileChildren(
@@ -504,12 +495,12 @@ export interface FileRoutesByFullPath {
   '': typeof LayoutRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/catalog': typeof LayoutCatalogRouteRouteWithChildren
-  '/users': typeof LayoutUsersRouteRouteWithChildren
   '/study-plans/$studyPlanId': typeof LayoutStudyPlansStudyPlanIdRouteRouteWithChildren
   '/study-plans/new': typeof LayoutStudyPlansNewRoute
+  '/users/new': typeof LayoutUsersNewRoute
   '/catalog/': typeof LayoutCatalogIndexRoute
   '/study-plans': typeof LayoutStudyPlansIndexRoute
-  '/users/': typeof LayoutUsersIndexRoute
+  '/users': typeof LayoutUsersIndexRoute
   '/catalog/courses/new': typeof LayoutCatalogCoursesNewRoute
   '/catalog/programs/new': typeof LayoutCatalogProgramsNewRoute
   '/study-plans/$studyPlanId/courses': typeof LayoutStudyPlansStudyPlanIdCoursesRoute
@@ -534,6 +525,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/study-plans/$studyPlanId': typeof LayoutStudyPlansStudyPlanIdRouteRouteWithChildren
   '/study-plans/new': typeof LayoutStudyPlansNewRoute
+  '/users/new': typeof LayoutUsersNewRoute
   '/catalog': typeof LayoutCatalogIndexRoute
   '/study-plans': typeof LayoutStudyPlansIndexRoute
   '/users': typeof LayoutUsersIndexRoute
@@ -561,9 +553,9 @@ export interface FileRoutesById {
   '/_layout': typeof LayoutRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/_layout/catalog': typeof LayoutCatalogRouteRouteWithChildren
-  '/_layout/users': typeof LayoutUsersRouteRouteWithChildren
   '/_layout/study-plans/$studyPlanId': typeof LayoutStudyPlansStudyPlanIdRouteRouteWithChildren
   '/_layout/study-plans/new': typeof LayoutStudyPlansNewRoute
+  '/_layout/users/new': typeof LayoutUsersNewRoute
   '/_layout/catalog/': typeof LayoutCatalogIndexRoute
   '/_layout/study-plans/': typeof LayoutStudyPlansIndexRoute
   '/_layout/users/': typeof LayoutUsersIndexRoute
@@ -592,12 +584,12 @@ export interface FileRouteTypes {
     | ''
     | '/login'
     | '/catalog'
-    | '/users'
     | '/study-plans/$studyPlanId'
     | '/study-plans/new'
+    | '/users/new'
     | '/catalog/'
     | '/study-plans'
-    | '/users/'
+    | '/users'
     | '/catalog/courses/new'
     | '/catalog/programs/new'
     | '/study-plans/$studyPlanId/courses'
@@ -621,6 +613,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/study-plans/$studyPlanId'
     | '/study-plans/new'
+    | '/users/new'
     | '/catalog'
     | '/study-plans'
     | '/users'
@@ -646,9 +639,9 @@ export interface FileRouteTypes {
     | '/_layout'
     | '/login'
     | '/_layout/catalog'
-    | '/_layout/users'
     | '/_layout/study-plans/$studyPlanId'
     | '/_layout/study-plans/new'
+    | '/_layout/users/new'
     | '/_layout/catalog/'
     | '/_layout/study-plans/'
     | '/_layout/users/'
@@ -705,10 +698,11 @@ export const routeTree = rootRoute
       "filePath": "_layout/route.tsx",
       "children": [
         "/_layout/catalog",
-        "/_layout/users",
         "/_layout/study-plans/$studyPlanId",
         "/_layout/study-plans/new",
-        "/_layout/study-plans/"
+        "/_layout/users/new",
+        "/_layout/study-plans/",
+        "/_layout/users/"
       ]
     },
     "/login": {
@@ -729,13 +723,6 @@ export const routeTree = rootRoute
         "/_layout/catalog/programs/$programId/"
       ]
     },
-    "/_layout/users": {
-      "filePath": "_layout/users/route.tsx",
-      "parent": "/_layout",
-      "children": [
-        "/_layout/users/"
-      ]
-    },
     "/_layout/study-plans/$studyPlanId": {
       "filePath": "_layout/study-plans/$studyPlanId/route.tsx",
       "parent": "/_layout",
@@ -754,6 +741,10 @@ export const routeTree = rootRoute
       "filePath": "_layout/study-plans/new.tsx",
       "parent": "/_layout"
     },
+    "/_layout/users/new": {
+      "filePath": "_layout/users/new.tsx",
+      "parent": "/_layout"
+    },
     "/_layout/catalog/": {
       "filePath": "_layout/catalog/index.tsx",
       "parent": "/_layout/catalog"
@@ -764,7 +755,7 @@ export const routeTree = rootRoute
     },
     "/_layout/users/": {
       "filePath": "_layout/users/index.tsx",
-      "parent": "/_layout/users"
+      "parent": "/_layout"
     },
     "/_layout/catalog/courses/new": {
       "filePath": "_layout/catalog/courses/new.tsx",

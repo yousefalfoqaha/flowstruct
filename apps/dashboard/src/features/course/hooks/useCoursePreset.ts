@@ -2,18 +2,18 @@ import { getCoursePresetSettings } from '@/utils/getCoursePresetSettings.ts';
 import React from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod/v4';
-import { courseDetailsSchema } from '@/features/course/schemas.ts';
+import { courseSchema } from '@/features/course/schemas.ts';
 
 export type PresetType = 'lecture' | 'lab' | 'custom';
 
-const presetSchema = courseDetailsSchema.pick({
+const presetSchema = courseSchema.pick({
   creditHours: true,
   lectureHours: true,
   practicalHours: true,
   type: true,
 });
 
-export const useCoursePreset = (form: UseFormReturn<z.infer<typeof courseDetailsSchema>>) => {
+export const useCoursePreset = (form: UseFormReturn<z.infer<typeof courseSchema>>) => {
   const [preset, setPreset] = React.useState<PresetType>('lecture');
 
   const changePreset = (preset: PresetType) => {

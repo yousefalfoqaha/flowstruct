@@ -1,6 +1,6 @@
 import { AppCard } from '@/shared/components/AppCard.tsx';
 import { CourseFields } from '@/features/course/components/CourseFields.tsx';
-import { courseDetailsSchema } from '@/features/course/schemas.ts';
+import { courseSchema } from '@/features/course/schemas.ts';
 import { getCoursePresetSettings } from '@/utils/getCoursePresetSettings.ts';
 import { useCreateCourse } from '@/features/course/hooks/useCreateCourse.ts';
 import { Link, useNavigate } from '@tanstack/react-router';
@@ -13,8 +13,8 @@ import { z } from 'zod/v4';
 import { customResolver } from '@/utils/customResolver.ts';
 
 export function CreateCourseFieldset() {
-  const form = useForm<z.infer<typeof courseDetailsSchema>>({
-    resolver: customResolver(courseDetailsSchema),
+  const form = useForm<z.infer<typeof courseSchema>>({
+    resolver: customResolver(courseSchema),
     defaultValues: {
       code: '',
       name: '',

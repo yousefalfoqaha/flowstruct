@@ -1,15 +1,16 @@
-import { Alert, Button, Fieldset, Group, List, PasswordInput, Stack } from '@mantine/core';
-import { Info, Lock, Pencil, X } from 'lucide-react';
-import { useChangePassword } from '@/features/user/hooks/useChangePassword.ts';
+import { Button, Fieldset, Group, PasswordInput, Stack } from '@mantine/core';
+import { Lock, Pencil, X } from 'lucide-react';
+import { useChangeMyPassword } from '@/features/user/hooks/useChangeMyPassword.ts';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
-import { changePasswordSchema } from '@/features/user/schemas.ts';
+import { changeMyPasswordSchema } from '@/features/user/schemas.ts';
 import { customResolver } from '@/utils/customResolver.ts';
 import { modals } from '@mantine/modals';
+import { PasswordRequirements } from '@/features/user/components/PasswordRequirements.tsx';
 
 export function ChangePasswordForm() {
-  const form = useForm<z.infer<typeof changePasswordSchema>>({
-    resolver: customResolver(changePasswordSchema),
+  const form = useForm<z.infer<typeof changeMyPasswordSchema>>({
+    resolver: customResolver(changeMyPasswordSchema),
     defaultValues: {
       currentPassword: '',
       newPassword: '',
@@ -17,7 +18,7 @@ export function ChangePasswordForm() {
     },
   });
 
-  const changePassword = useChangePassword();
+  const changePassword = useChangeMyPassword();
 
   const onSubmit = form.handleSubmit((data) => {
     changePassword.mutate(data, {
@@ -30,15 +31,7 @@ export function ChangePasswordForm() {
   return (
     <form onSubmit={onSubmit}>
       <Stack>
-        <Alert color="blue" icon={<Info size={18} />} title="Password Requirements">
-          <List>
-            <List.Item>Be at least 8 characters long</List.Item>
-            <List.Item>Contains at least one uppercase letter</List.Item>
-            <List.Item>Contains at least one lowercase letter</List.Item>
-            <List.Item>Contains at least one number</List.Item>
-            <List.Item>Contains at least one special character (@ $ ! % * ? &)</List.Item>
-          </List>
-        </Alert>
+        <PasswordRequirements />
 
         <Fieldset legend="Change Password Details">
           <Stack>
@@ -66,7 +59,7 @@ export function ChangePasswordForm() {
                   label="New Password"
                   {...field}
                   error={form.formState.errors.newPassword?.message}
-                  autoComplete="off"
+                  autoComplete="new-password"
                   withAsterisk
                   leftSection={<Lock size={18} />}
                 />

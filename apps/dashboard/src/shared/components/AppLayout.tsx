@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { Container, Group, Image, Title } from '@mantine/core';
 import classes from '../styles/AppLayout.module.css';
-import { User } from '@/features/user/components/User.tsx';
+import { Me } from '@/features/user/components/Me.tsx';
 import { AppTabs } from '@/shared/components/AppTabs.tsx';
 
 type Props = {
@@ -22,7 +22,7 @@ export function AppLayout({ children }: Props) {
               </Title>
             </Group>
 
-            <User />
+            <Me />
           </Group>
 
           <Container size="lg">

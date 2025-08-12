@@ -1,20 +1,20 @@
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
+import { api } from '@/shared/api.ts';
+import { User } from '@/features/user/types.ts';
 import { USER_ENDPOINT } from '@/features/user/constants.ts';
 import { userKeys } from '@/features/user/queries.ts';
-import { User } from '@/features/user/types.ts';
-import { api } from '@/shared/api.ts';
 
-const editUserDetails = ({ details }: { details: Partial<User> }) =>
-  api.put<User>([USER_ENDPOINT, 'me'], {
-    body: details,
+const editUserDetails = ({ userId, userDetails }: { userId: number; userDetails: Partial<User> }) =>
+  api.put<User>([USER_ENDPOINT, userId], {
+    body: userDetails,
   });
 
 export const useEditUserDetails = () =>
   useAppMutation({
     mutationFn: editUserDetails,
     meta: {
-      setData: () => userKeys.me(),
-      invalidates: [userKeys.list()],
+      setData: (data) => userKeys.detail(data.id),
+      invalidates: [userKeys.all],
       successMessage: 'User details updated.',
     },
   });

@@ -2,7 +2,6 @@ package com.yousefalfoqaha.gjuplans.course.service;
 
 import com.yousefalfoqaha.gjuplans.common.CodeFormatter;
 import com.yousefalfoqaha.gjuplans.course.domain.Course;
-import com.yousefalfoqaha.gjuplans.course.dto.CourseDetailsDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseSummaryDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CoursesPageDto;
@@ -11,7 +10,6 @@ import com.yousefalfoqaha.gjuplans.course.mapper.CourseDtoMapper;
 import com.yousefalfoqaha.gjuplans.course.mapper.CourseSummaryResponseMapper;
 import com.yousefalfoqaha.gjuplans.course.mapper.CoursesPageResponseMapper;
 import com.yousefalfoqaha.gjuplans.course.repository.CourseRepository;
-import com.yousefalfoqaha.gjuplans.studyplan.exception.CourseExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

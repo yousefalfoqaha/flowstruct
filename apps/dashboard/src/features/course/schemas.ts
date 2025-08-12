@@ -1,7 +1,7 @@
 import { z } from 'zod/v4';
 import { CourseType } from '@/features/course/types.ts';
 
-export const courseDetailsSchema = z.object({
+export const courseSchema = z.object({
   code: z
     .string()
     .trim()

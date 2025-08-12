@@ -2,11 +2,11 @@ import { Controller, UseFormReturn } from 'react-hook-form';
 import { Flex, Select, TextInput } from '@mantine/core';
 import { Degree } from '@/features/program/types.ts';
 import { GraduationCap, Hash } from 'lucide-react';
-import { programDetailsSchema } from '@/features/program/schemas.ts';
+import { programSchema } from '@/features/program/schemas.ts';
 import { z } from 'zod/v4';
 
 type Props = {
-  form: UseFormReturn<z.infer<typeof programDetailsSchema>>;
+  form: UseFormReturn<z.infer<typeof programSchema>>;
 };
 
 export function ProgramFields({ form }: Props) {

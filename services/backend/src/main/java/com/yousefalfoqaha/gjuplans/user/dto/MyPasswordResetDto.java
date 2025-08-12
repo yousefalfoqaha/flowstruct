@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record PasswordDetailsDto(
+public record MyPasswordResetDto(
 
         @NotBlank(message = "Please provide the current password.")
         String currentPassword,

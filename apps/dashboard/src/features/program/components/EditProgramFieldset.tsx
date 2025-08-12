@@ -1,6 +1,6 @@
 import { Button, Text } from '@mantine/core';
 import { ProgramFields } from '@/features/program/components/ProgramFields.tsx';
-import { programDetailsSchema } from '@/features/program/schemas.ts';
+import { programSchema } from '@/features/program/schemas.ts';
 import { useNavigate } from '@tanstack/react-router';
 import { Pencil, Trash } from 'lucide-react';
 import { useEditProgramDetails } from '@/features/program/hooks/useEditProgramDetails.ts';
@@ -18,8 +18,8 @@ type EditProgramFieldsetProps = {
 };
 
 export function EditProgramFieldset({ program }: EditProgramFieldsetProps) {
-  const form = useForm<z.infer<typeof programDetailsSchema>>({
-    resolver: customResolver(programDetailsSchema),
+  const form = useForm<z.infer<typeof programSchema>>({
+    resolver: customResolver(programSchema),
     defaultValues: { ...program },
   });
 

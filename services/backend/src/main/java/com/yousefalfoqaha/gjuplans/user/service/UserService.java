@@ -2,9 +2,9 @@ package com.yousefalfoqaha.gjuplans.user.service;
 
 import com.yousefalfoqaha.gjuplans.auth.service.JwtService;
 import com.yousefalfoqaha.gjuplans.user.domain.User;
-import com.yousefalfoqaha.gjuplans.user.dto.*;
+import com.yousefalfoqaha.gjuplans.user.dto.LoginDetailsDto;
+import com.yousefalfoqaha.gjuplans.user.dto.UserDto;
 import com.yousefalfoqaha.gjuplans.user.exception.InvalidCredentialsException;
-import com.yousefalfoqaha.gjuplans.user.exception.InvalidPasswordException;
 import com.yousefalfoqaha.gjuplans.user.exception.UserNotFoundException;
 import com.yousefalfoqaha.gjuplans.user.mapper.UserDtoMapper;
 import com.yousefalfoqaha.gjuplans.user.repository.UserRepository;
@@ -13,9 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -27,7 +24,6 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final UserDtoMapper userDtoMapper;
 
     public String verify(LoginDetailsDto details) {
@@ -50,14 +46,9 @@ public class UserService {
     }
 
     public UserDto getUser(long userId) {
-        var user = userRepository.findById(userId).orElseThrow(() ->
-                new UserNotFoundException("User not found."));
+        var user = findOrThrow(userId);
 
         return userDtoMapper.apply(user);
-    }
-
-    public UserDto getMe() {
-        return userDtoMapper.apply(getCurrentUser());
     }
 
     public Map<Long, UserDto> getAllUsers() {
@@ -70,41 +61,13 @@ public class UserService {
                 ));
     }
 
-    public UserWithTokenDto editMyDetails(UserDetailsDto details) {
-        User me = getCurrentUser();
-
-        me.setUsername(details.username().trim());
-        me.setEmail(details.email().trim());
-
-        userRepository.save(me);
-
-        String token = jwtService.generateToken(me.getUsername());
-
-        return new UserWithTokenDto(userDtoMapper.apply(me), token);
+    public User findOrThrow(long userId) {
+        return userRepository.findById(userId).orElseThrow(() ->
+                new UserNotFoundException("User not found."));
     }
 
-    public void changeMyPassword(PasswordDetailsDto passwordDetails) {
-        String newPassword = passwordDetails.newPassword().trim();
-        String confirmPassword = passwordDetails.confirmPassword().trim();
-
-        if (!confirmPassword.equals(newPassword)) {
-            throw new InvalidPasswordException("New and confirmed passwords must be the same.");
-        }
-
-        User me = getCurrentUser();
-
-        if (!passwordEncoder.matches(passwordDetails.currentPassword().trim(), me.getPassword())) {
-            throw new InvalidPasswordException("Enter the correct current password.");
-        }
-
-        me.setPassword(passwordEncoder.encode(newPassword));
-
-        userRepository.save(me);
-    }
-
-    public User getCurrentUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("No user was found."));
+    public UserDto saveAndMap(User user) {
+        var savedUser = userRepository.save(user);
+        return userDtoMapper.apply(savedUser);
     }
 }

@@ -1,5 +1,5 @@
 import { Course } from '@/features/course/types.ts';
-import { courseDetailsSchema } from '@/features/course/schemas.ts';
+import { courseSchema } from '@/features/course/schemas.ts';
 import { useEditCourseDetails } from '@/features/course/hooks/useEditCourseDetails.ts';
 import { useNavigate } from '@tanstack/react-router';
 import { CourseFields } from '@/features/course/components/CourseFields.tsx';
@@ -16,8 +16,8 @@ type Props = {
 };
 
 export function EditCourseFieldset({ course }: Props) {
-  const form = useForm<z.infer<typeof courseDetailsSchema>>({
-    resolver: customResolver(courseDetailsSchema),
+  const form = useForm<z.infer<typeof courseSchema>>({
+    resolver: customResolver(courseSchema),
     defaultValues: { ...course },
   });
  1

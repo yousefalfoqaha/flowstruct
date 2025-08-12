@@ -7,3 +7,10 @@ export type User = {
   updatedAt: Date;
   updatedBy: number;
 };
+
+export const Role = {
+  ADMIN: 'Admin',
+  APPROVER: 'Approver',
+  EDITOR: 'Editor',
+  GUEST: 'Guest',
+} as const;

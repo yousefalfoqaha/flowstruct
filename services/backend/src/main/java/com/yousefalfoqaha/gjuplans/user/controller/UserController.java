@@ -1,7 +1,9 @@
 package com.yousefalfoqaha.gjuplans.user.controller;
 
 import com.yousefalfoqaha.gjuplans.auth.service.CookieService;
+import com.yousefalfoqaha.gjuplans.user.domain.Role;
 import com.yousefalfoqaha.gjuplans.user.dto.*;
+import com.yousefalfoqaha.gjuplans.user.service.UserManagementService;
 import com.yousefalfoqaha.gjuplans.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -18,6 +20,7 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final CookieService cookieService;
+    private final UserManagementService userManagementService;
 
     @PostMapping("/login")
     public ResponseEntity<Void> loginUser(
@@ -42,28 +45,44 @@ public class UserController {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<UserDto> getMe() {
-        return new ResponseEntity<>(userService.getMe(), HttpStatus.OK);
-    }
-
-    @PutMapping("/me")
-    public ResponseEntity<UserDto> editMyDetails(
-            @Valid @RequestBody UserDetailsDto details,
-            HttpServletResponse response
+    @PostMapping
+    public ResponseEntity<UserDto> createUser(
+            @Valid @RequestBody NewUserDetailsDto details
     ) {
-        UserWithTokenDto userWithToken = userService.editMyDetails(details);
-        cookieService.createAuthCookie(response, userWithToken.token());
-
         return new ResponseEntity<>(
-                userWithToken.user(),
+                userManagementService.createUser(details),
                 HttpStatus.OK
         );
     }
 
-    @PutMapping("/me/password")
-    public ResponseEntity<Void> changeMyPassword(@Valid @RequestBody PasswordDetailsDto passwordDetails) {
-        userService.changeMyPassword(passwordDetails);
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserDto> editUserDetails(
+            @PathVariable long userId,
+            @Valid @RequestBody UserDetailsDto details
+    ) {
+        return new ResponseEntity<>(
+                userManagementService.editUserDetails(userId, details),
+                HttpStatus.OK
+        );
+    }
+
+    @PutMapping("/{userId}/password")
+    public ResponseEntity<Void> changeUserPassword(
+            @PathVariable long userId,
+            @Valid @RequestBody AdminPasswordResetDto passwordReset
+    ) {
+        userManagementService.changeUserPassword(userId, passwordReset);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{userId}/role")
+    public ResponseEntity<UserDto> changeUserRole(
+            @PathVariable long userId,
+            @RequestParam(value = "role", defaultValue = "GUEST") Role newRole
+    ) {
+        return new ResponseEntity<>(
+                userManagementService.changeUserRole(userId, newRole),
+                HttpStatus.OK
+        );
     }
 }

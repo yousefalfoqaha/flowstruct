@@ -1,7 +1,7 @@
 import { z } from 'zod/v4';
 import { Degree } from '@/features/program/types.ts';
 
-export const programDetailsSchema = z.object({
+export const programSchema = z.object({
   code: z
     .string()
     .trim()

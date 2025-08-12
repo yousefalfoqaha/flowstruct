@@ -1,6 +1,6 @@
 import { Button, Fieldset, Modal, Stack } from '@mantine/core';
 import { useCreateCourse } from '@/features/course/hooks/useCreateCourse.ts';
-import { courseDetailsSchema } from '@/features/course/schemas.ts';
+import { courseSchema } from '@/features/course/schemas.ts';
 import { CourseFields } from '@/features/course/components/CourseFields.tsx';
 import { Plus } from 'lucide-react';
 import { Course } from '@/features/course/types.ts';
@@ -33,8 +33,8 @@ export function CreateCourseModal({
     ...getCoursePresetSettings(INITIAL_PRESET),
   };
 
-  const form = useForm<z.infer<typeof courseDetailsSchema>>({
-    resolver: customResolver(courseDetailsSchema),
+  const form = useForm<z.infer<typeof courseSchema>>({
+    resolver: customResolver(courseSchema),
     defaultValues,
   });
   const { preset, changePreset } = useCoursePreset(form);

@@ -1,7 +1,6 @@
 package com.yousefalfoqaha.gjuplans.studyplan.domain;
 
 import com.yousefalfoqaha.gjuplans.course.domain.Course;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

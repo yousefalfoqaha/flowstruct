@@ -11,14 +11,14 @@ import { UserDetailsDisplay } from '@/features/user/components/UserDetailsDispla
 import { EditUserForm } from '@/features/user/components/EditUserForm.tsx';
 import { ChangePasswordForm } from '@/features/user/components/ChangePasswordForm.tsx';
 
-export function User() {
+export function Me() {
   const { data: me } = useMe();
   const logout = useLogout();
   const [userMenuOpened, setUserMenuOpened] = React.useState(false);
 
   const openEditUserDetails = () =>
     modals.open({
-      title: <ModalHeader subtitle="Edit your account's details" title="Edit User Details" />,
+      title: <ModalHeader subtitle="Edit your account's details" title="Edit Your Details" />,
       children: <EditUserForm user={me} />,
       centered: true,
     });
@@ -65,7 +65,7 @@ export function User() {
           <Menu.Item
             onClick={() =>
               modals.open({
-                title: <ModalHeader subtitle="Details about your account" title="User Details" />,
+                title: <ModalHeader subtitle="Details about your account" title="Your Details" />,
                 children: (
                   <Stack>
                     <UserDetailsDisplay />
