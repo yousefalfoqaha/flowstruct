@@ -19,7 +19,7 @@ public interface StudyPlanRepository extends CrudRepository<StudyPlan, Long> {
     @Query(studyPlanSummariesQuery + " WHERE deleted_at IS NOT NULL")
     List<StudyPlanSummaryProjection> findAllArchivedStudyPlanSummaries();
 
-    @Query(studyPlanSummariesQuery)
+    @Query(studyPlanSummariesQuery + " WHERE deleted_at IS NULL")
     List<StudyPlanSummaryProjection> findAllStudyPlanSummaries();
 
     @Query("SELECT id FROM study_plan WHERE program = :programId")

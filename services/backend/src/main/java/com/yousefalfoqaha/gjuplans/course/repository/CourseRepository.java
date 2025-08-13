@@ -18,7 +18,8 @@ public interface CourseRepository extends ListCrudRepository<Course, Long> {
                     "OR code " +
                     "ILIKE :filter) " +
                     "LIMIT :limit " +
-                    "OFFSET :offset"
+                    "OFFSET :offset " +
+                    "AND deleted_at IS NULL"
     )
     List<Long> findAllByFilter(int limit, long offset, String filter);
 
@@ -41,7 +42,8 @@ public interface CourseRepository extends ListCrudRepository<Course, Long> {
                     "WHERE (name " +
                     "ILIKE :filter " +
                     "OR code " +
-                    "ILIKE :filter)"
+                    "ILIKE :filter) " +
+                    "AND deleted_at IS NULL"
     )
     long countByFilter(String filter);
 

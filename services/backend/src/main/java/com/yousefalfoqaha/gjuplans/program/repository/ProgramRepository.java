@@ -12,6 +12,9 @@ import java.util.List;
 public interface ProgramRepository extends ListCrudRepository<Program, Long> {
 
     @Query("SELECT * FROM program WHERE deleted_at IS NULL")
+    List<Program> findAll();
+
+    @Query("SELECT * FROM program WHERE deleted_at IS NULL")
     List<Program> findAllArchived();
 
     @Query("SELECT COUNT(*) > 0 FROM program WHERE LOWER(code) = LOWER(:code) AND degree = :degree::degree AND deleted_at IS NULL")
