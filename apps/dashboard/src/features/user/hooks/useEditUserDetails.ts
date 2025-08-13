@@ -4,9 +4,15 @@ import { User } from '@/features/user/types.ts';
 import { USER_ENDPOINT } from '@/features/user/constants.ts';
 import { userKeys } from '@/features/user/queries.ts';
 
-const editUserDetails = ({ userId, userDetails }: { userId: number; userDetails: Partial<User> }) =>
+const editUserDetails = ({
+  userId,
+  details,
+}: {
+  userId: number;
+  details: { username: string; email: string };
+}) =>
   api.put<User>([USER_ENDPOINT, userId], {
-    body: userDetails,
+    body: details,
   });
 
 export const useEditUserDetails = () =>

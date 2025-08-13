@@ -1,20 +1,16 @@
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
 import { api } from '@/shared/api.ts';
-import { User } from '@/features/user/types';
 import { USER_ENDPOINT } from '@/features/user/constants.ts';
 import { userKeys } from '@/features/user/queries.ts';
 
-const createUser = (details: Partial<User>) =>
-  api.post<User>([USER_ENDPOINT], {
-    body: details,
-  });
+const deleteUser = (userId: number) => api.delete<void>([USER_ENDPOINT, userId]);
 
-export const useCreateUser = () =>
+export const useDeleteUser = () =>
   useAppMutation({
-    mutationFn: createUser,
+    mutationFn: deleteUser,
     meta: {
-      setData: (data) => userKeys.detail(data.id),
+      removes: (_, userId) => [userKeys.detail(userId)],
       invalidates: [userKeys.list()],
-      successMessage: 'User created.',
+      successMessage: 'User deleted.',
     },
   });

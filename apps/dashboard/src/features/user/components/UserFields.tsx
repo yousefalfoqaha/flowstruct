@@ -8,7 +8,7 @@ type Props = {
   form: UseFormReturn<z.infer<typeof userSchema>>;
 };
 
-export function MyDetailsFields({ form }: Props) {
+export function UserFields({ form }: Props) {
   const {
     control,
     formState: { errors },

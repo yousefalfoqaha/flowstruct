@@ -10,7 +10,7 @@ type Props = {
   form: UseFormReturn<z.infer<typeof newUserSchema>>;
 };
 
-export function UserDetailsFields({ form }: Props) {
+export function NewUserFields({ form }: Props) {
   const {
     control,
     formState: { errors },

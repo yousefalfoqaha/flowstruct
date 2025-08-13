@@ -6,24 +6,6 @@ import {
   UseMutationResult,
 } from '@tanstack/react-query';
 
-declare module '@tanstack/react-query' {
-  interface Register {
-    mutationMeta: {
-      invalidates?:
-        | Array<QueryKey>
-        | ((data: unknown, variables: unknown, context: unknown) => Array<QueryKey>);
-      removes?:
-        | Array<QueryKey>
-        | ((data: unknown, variables: unknown, context: unknown) => Array<QueryKey>);
-      setData?: QueryKey | ((data: unknown, variables: unknown, context: unknown) => QueryKey);
-      successMessage?:
-        | string
-        | ((data: unknown, variables: unknown, context: unknown) => string)
-        | undefined;
-    };
-  }
-}
-
 interface AppMutationMeta<TData, TVariables, TContext> {
   invalidates?:
     | Array<QueryKey>
@@ -36,6 +18,7 @@ interface AppMutationMeta<TData, TVariables, TContext> {
     | string
     | ((data: TData, variables: TVariables, context: TContext) => string)
     | undefined;
+  loadingMessage?: string | ((variables: TVariables) => string) | undefined;
 }
 
 interface AppMutationOptions<

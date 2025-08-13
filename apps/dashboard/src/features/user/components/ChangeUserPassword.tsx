@@ -1,32 +1,42 @@
 import { Button, Fieldset, Group, PasswordInput, Stack } from '@mantine/core';
 import { Lock, Pencil, X } from 'lucide-react';
-import { useChangeMyPassword } from '@/features/user/hooks/useChangeMyPassword.ts';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
-import { changeMyPasswordSchema } from '@/features/user/schemas.ts';
+import { changeUserPasswordSchema } from '@/features/user/schemas.ts';
 import { customResolver } from '@/utils/customResolver.ts';
 import { modals } from '@mantine/modals';
 import { PasswordRequirements } from '@/features/user/components/PasswordRequirements.tsx';
 import { canSubmit } from '@/utils/canSubmit.ts';
+import { User } from '@/features/user/types.ts';
+import { useChangeUserPassword } from '@/features/user/hooks/useChangeUserPassword.ts';
 
-export function ChangePasswordForm() {
-  const form = useForm<z.infer<typeof changeMyPasswordSchema>>({
-    resolver: customResolver(changeMyPasswordSchema),
+type Props = {
+  user: User;
+};
+
+export function ChangeUserPasswordForm({ user }: Props) {
+  const form = useForm<z.infer<typeof changeUserPasswordSchema>>({
+    resolver: customResolver(changeUserPasswordSchema),
     defaultValues: {
-      currentPassword: '',
       newPassword: '',
       confirmPassword: '',
     },
   });
 
-  const changePassword = useChangeMyPassword();
+  const changeUserPassword = useChangeUserPassword();
 
   const onSubmit = form.handleSubmit((data) => {
-    changePassword.mutate(data, {
-      onSuccess: () => {
-        modals.closeAll();
+    changeUserPassword.mutate(
+      {
+        userId: user.id,
+        ...data,
       },
-    });
+      {
+        onSuccess: () => {
+          modals.closeAll();
+        },
+      }
+    );
   });
 
   return (
@@ -37,26 +47,11 @@ export function ChangePasswordForm() {
         <Fieldset variant="filled">
           <Stack>
             <Controller
-              name="currentPassword"
-              control={form.control}
-              render={({ field }) => (
-                <PasswordInput
-                  data-autofocus
-                  label="Current Password"
-                  {...field}
-                  error={form.formState.errors.currentPassword?.message}
-                  autoComplete="off"
-                  withAsterisk
-                  leftSection={<Lock size={18} />}
-                />
-              )}
-            />
-
-            <Controller
               name="newPassword"
               control={form.control}
               render={({ field }) => (
                 <PasswordInput
+                  data-autofocus
                   label="New Password"
                   {...field}
                   error={form.formState.errors.newPassword?.message}
@@ -91,11 +86,11 @@ export function ChangePasswordForm() {
 
           <Button
             type="submit"
-            loading={changePassword.isPending}
+            loading={changeUserPassword.isPending}
             leftSection={<Pencil size={18} />}
             disabled={!canSubmit(form)}
           >
-            Save Changes
+            Change Password
           </Button>
         </Group>
       </Stack>

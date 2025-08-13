@@ -6,7 +6,13 @@ import '@mantine/notifications/styles.css';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 import '@mantine/core/styles.css';
-import { matchQuery, MutationCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  matchQuery,
+  MutationCache,
+  QueryClient,
+  QueryClientProvider,
+  QueryKey,
+} from '@tanstack/react-query';
 import { createTheme, LoadingOverlay, MantineColorsTuple, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { notifications, Notifications } from '@mantine/notifications';
@@ -14,11 +20,48 @@ import navigationProgressClasses from '@/shared/styles/NavigationProgress.module
 import { NavigationProgress } from '@mantine/nprogress';
 import { NotFoundPage } from '@/shared/components/NotFoundPage.tsx';
 import themeClasses from './theme.module.css';
-import { Check, X } from 'lucide-react';
+import { Check, Loader, X } from 'lucide-react';
 import { ErrorObject } from '@/shared/types.ts';
+
+declare module '@tanstack/react-query' {
+  interface Register {
+    mutationMeta: {
+      invalidates?:
+        | Array<QueryKey>
+        | ((data: unknown, variables: unknown, context: unknown) => Array<QueryKey>);
+      removes?:
+        | Array<QueryKey>
+        | ((data: unknown, variables: unknown, context: unknown) => Array<QueryKey>);
+      setData?: QueryKey | ((data: unknown, variables: unknown, context: unknown) => QueryKey);
+      successMessage?:
+        | string
+        | ((data: unknown, variables: unknown, context: unknown) => string)
+        | undefined;
+      loadingMessage?: string | ((variables: unknown) => string) | undefined;
+    };
+  }
+}
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
+    onMutate: (variables, mutation) => {
+      const successMessage = mutation.meta?.successMessage;
+      if (successMessage) {
+        const loadingMessage = mutation.meta?.loadingMessage || 'Processing...';
+
+        notifications.show({
+          id: `mutation-${mutation.mutationId}`,
+          title: 'Loading',
+          message:
+            typeof loadingMessage === 'function' ? loadingMessage(variables) : loadingMessage,
+          color: 'blue',
+          icon: <Loader size={18} />,
+          loading: true,
+          autoClose: false,
+          withBorder: true,
+        });
+      }
+    },
     onSuccess: (data, variables, context, mutation) => {
       const invalidatesMeta = mutation.meta?.invalidates;
       const removesMeta = mutation.meta?.removes;
@@ -55,7 +98,8 @@ const queryClient = new QueryClient({
 
       const successMessage = mutation.meta?.successMessage;
       if (successMessage) {
-        notifications.show({
+        notifications.update({
+          id: `mutation-${mutation.mutationId}`,
           title: 'Success!',
           message:
             typeof successMessage === 'function'
@@ -63,24 +107,50 @@ const queryClient = new QueryClient({
               : successMessage,
           color: 'green',
           icon: <Check size={18} />,
+          loading: false,
+          autoClose: 4000,
           withBorder: true,
         });
       }
     },
-    onError: (error) => {
+    onError: (error, _variables, _context, mutation) => {
       queryClient.invalidateQueries();
 
       const errorObject = error as unknown as ErrorObject;
+      const successMessage = mutation.meta?.successMessage;
 
-      errorObject.messages.forEach((message) => {
-        notifications.show({
-          title: 'Error...',
-          message: message || 'An unknown error occurred',
+      if (successMessage) {
+        notifications.update({
+          id: `mutation-${mutation.mutationId}`,
+          title: 'Error',
+          message: errorObject.messages[0] || 'An unknown error occurred',
           color: 'red',
           icon: <X size={18} />,
+          loading: false,
+          autoClose: 4000,
           withBorder: true,
         });
-      });
+
+        errorObject.messages.slice(1).forEach((message) => {
+          notifications.show({
+            title: 'Error',
+            message: message,
+            color: 'red',
+            icon: <X size={18} />,
+            withBorder: true,
+          });
+        });
+      } else {
+        errorObject.messages.forEach((message) => {
+          notifications.show({
+            title: 'Error...',
+            message: message || 'An unknown error occurred',
+            color: 'red',
+            icon: <X size={18} />,
+            withBorder: true,
+          });
+        });
+      }
     },
   }),
   defaultOptions: {

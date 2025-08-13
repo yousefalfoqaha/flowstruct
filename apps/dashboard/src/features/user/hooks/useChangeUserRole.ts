@@ -5,7 +5,7 @@ import { User } from '@/features/user/types.ts';
 import { userKeys } from '@/features/user/queries.ts';
 
 const changeUserRole = ({ userId, newRole }: { userId: number; newRole: string }) =>
-  api.put<User>([USER_ENDPOINT, userId], {
+  api.put<User>([USER_ENDPOINT, userId, 'role'], {
     params: {
       role: newRole,
     },

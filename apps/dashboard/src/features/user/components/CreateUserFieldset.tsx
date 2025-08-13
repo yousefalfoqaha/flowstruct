@@ -6,7 +6,7 @@ import { useCreateUser } from '@/features/user/hooks/useCreateUser.ts';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { AppCard } from '@/shared/components/AppCard.tsx';
-import { UserDetailsFields } from '@/features/user/components/UserDetailsFields.tsx';
+import { NewUserFields } from '@/features/user/components/NewUserFields.tsx';
 import { Button } from '@mantine/core';
 import { Plus, X } from 'lucide-react';
 
@@ -59,7 +59,7 @@ export function CreateUserFieldset() {
         subtitle="Enter the details for the new user here"
         footer={footer}
       >
-        <UserDetailsFields form={form} />
+        <NewUserFields form={form} />
       </AppCard>
     </form>
   );

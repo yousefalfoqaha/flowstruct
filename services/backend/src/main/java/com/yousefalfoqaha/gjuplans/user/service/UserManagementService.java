@@ -73,4 +73,8 @@ public class UserManagementService {
 
         return userService.saveAndMap(user);
     }
+
+    public void deleteUser(long userId) {
+        userRepository.deleteById(userId);
+    }
 }

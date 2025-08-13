@@ -47,7 +47,7 @@ export function CloneStudyPlanDetailsForm({ studyPlanToClone }: Props) {
   return (
     <form onSubmit={onSubmit}>
       <Stack>
-        <Fieldset legend="Clone Details">
+        <Fieldset variant="filled">
           <StudyPlanDetailsFields form={form} disableProgramSelect={true} />
         </Fieldset>
 
