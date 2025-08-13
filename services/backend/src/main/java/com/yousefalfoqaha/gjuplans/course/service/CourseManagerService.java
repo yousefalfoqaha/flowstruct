@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 @PreAuthorize("hasRole('ROLE_EDITOR')")
 @RequiredArgsConstructor
 @Service
@@ -60,6 +62,7 @@ public class CourseManagerService {
                 null,
                 null,
                 null,
+                null,
                 null
         );
 
@@ -69,5 +72,17 @@ public class CourseManagerService {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteCourse(long courseId) {
         courseRepository.deleteById(courseId);
+    }
+
+    public CourseDto archiveCourse(long courseId) {
+        var course = courseService.findOrThrow(courseId);
+        course.setDeletedAt(Instant.now());
+        return courseService.saveAndMap(course);
+    }
+
+    public CourseDto unarchiveCourse(long courseId) {
+        var course = courseService.findOrThrow(courseId);
+        course.setDeletedAt(null);
+        return courseService.saveAndMap(course);
     }
 }

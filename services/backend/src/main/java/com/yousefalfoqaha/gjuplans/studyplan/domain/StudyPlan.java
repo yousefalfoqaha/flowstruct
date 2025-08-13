@@ -46,6 +46,8 @@ public class StudyPlan {
     @LastModifiedBy
     private Long updatedBy;
 
+    private Instant deletedAt;
+
     @MappedCollection(idColumn = "study_plan")
     private Set<Section> sections = new HashSet<>();
 

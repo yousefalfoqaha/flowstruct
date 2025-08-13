@@ -37,6 +37,7 @@ public class StudyPlanDtoMapper implements Function<StudyPlan, StudyPlanDto> {
                 studyPlan.getCreatedAt(),
                 studyPlan.getUpdatedAt(),
                 studyPlan.getUpdatedBy(),
+                studyPlan.getDeletedAt(),
                 studyPlan.getSections()
                         .stream()
                         .sorted(Comparator.comparing(this::getSectionCode))

@@ -24,9 +24,9 @@ public class StudyPlanController {
     private final StudyPlanManagerService studyPlanManagerService;
 
     @GetMapping
-    public ResponseEntity<List<StudyPlanSummaryDto>> getAllStudyPlans() {
+    public ResponseEntity<List<StudyPlanSummaryDto>> getAllStudyPlans(@RequestParam(value = "archived", defaultValue = "false") boolean archived) {
         return new ResponseEntity<>(
-                studyPlanService.getAllStudyPlans(),
+                studyPlanService.getAllStudyPlans(archived),
                 HttpStatus.OK
         );
     }
@@ -88,6 +88,22 @@ public class StudyPlanController {
         studyPlanManagerService.deleteStudyPlan(studyPlanId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{studyPlanId}/archive")
+    public ResponseEntity<StudyPlanDto> archiveStudyPlan(@PathVariable long studyPlanId) {
+        return new ResponseEntity<>(
+                studyPlanManagerService.archiveStudyPlan(studyPlanId),
+                HttpStatus.OK
+        );
+    }
+
+    @PutMapping("/{studyPlanId}/unarchive")
+    public ResponseEntity<StudyPlanDto> unarchiveStudyPlan(@PathVariable long studyPlanId) {
+        return new ResponseEntity<>(
+                studyPlanManagerService.unarchiveStudyPlan(studyPlanId),
+                HttpStatus.OK
+        );
     }
 
     @PostMapping("/{studyPlanId}/clone")

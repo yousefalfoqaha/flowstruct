@@ -1,6 +1,5 @@
 package com.yousefalfoqaha.gjuplans.course.service;
 
-import com.yousefalfoqaha.gjuplans.common.CodeFormatter;
 import com.yousefalfoqaha.gjuplans.course.domain.Course;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseSummaryDto;
@@ -29,20 +28,27 @@ public class CourseService {
     private final CourseDtoMapper courseDtoMapper;
     private final CourseSummaryResponseMapper courseSummaryResponseMapper;
     private final CoursesPageResponseMapper coursesPageResponseMapper;
-    private final CodeFormatter codeFormatter;
 
-    public CoursesPageDto getPaginatedCourseList(int page, int size, String filter) {
+    public CoursesPageDto getPaginatedCourseList(int page, int size, String filter, boolean archived) {
         Pageable pageable = PageRequest.of(page, size);
         var filterParam = '%' + filter + '%';
 
-        var courseIds = courseRepository.findAllByFilter(
-                pageable.getPageSize(),
-                pageable.getOffset(),
-                filterParam
-        );
+        var courseIds = archived ?
+                courseRepository.findAllArchivedByFilter(
+                        pageable.getPageSize(),
+                        pageable.getOffset(),
+                        filterParam
+                ) :
+                courseRepository.findAllByFilter(
+                        pageable.getPageSize(),
+                        pageable.getOffset(),
+                        filterParam
+                );
 
         var courses = courseRepository.findAllById(courseIds);
-        var total = courseRepository.countByFilter(filterParam);
+        var total = archived
+                ? courseRepository.countArchivedByFilter(filterParam)
+                : courseRepository.countByFilter(filterParam);
 
         Page<Course> coursesPage = new PageImpl<>(courses, pageable, total);
 

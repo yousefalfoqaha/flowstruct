@@ -27,7 +27,8 @@ public class StudyPlanSummaryDtoMapper implements Function<StudyPlanSummaryProje
                 studyPlan.program(),
                 studyPlan.createdAt(),
                 studyPlan.updatedAt(),
-                studyPlan.updatedBy()
+                studyPlan.updatedBy(),
+                studyPlan.deletedAt()
         );
     }
 }

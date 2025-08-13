@@ -13,4 +13,5 @@ export type Program = {
   createdAt: Date;
   updatedAt: Date;
   updatedBy: number;
+  deletedAt: Date;
 };

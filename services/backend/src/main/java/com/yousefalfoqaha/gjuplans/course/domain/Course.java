@@ -46,4 +46,6 @@ public class Course {
 
     @LastModifiedBy
     private Long updatedBy;
+
+    private Instant deletedAt;
 }

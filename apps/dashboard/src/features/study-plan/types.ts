@@ -54,6 +54,7 @@ export type StudyPlan = {
   createdAt: Date;
   updatedAt: Date;
   updatedBy: number;
+  deletedAt: Date;
 };
 
 export type FrameworkCourse = CourseSummary & {
@@ -79,4 +80,5 @@ export type StudyPlanSummary = Pick<
   | 'createdAt'
   | 'updatedAt'
   | 'updatedBy'
+  | 'deletedAt'
 >;

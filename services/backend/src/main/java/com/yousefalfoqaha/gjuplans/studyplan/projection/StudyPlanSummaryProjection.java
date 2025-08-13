@@ -12,6 +12,7 @@ public record StudyPlanSummaryProjection(
         int program,
         Instant createdAt,
         Instant updatedAt,
-        Long updatedBy
+        Long updatedBy,
+        Instant deletedAt
 ) {
 }

@@ -36,4 +36,6 @@ public class Program {
 
     @LastModifiedBy
     private Long updatedBy;
+
+    private Instant deletedAt;
 }

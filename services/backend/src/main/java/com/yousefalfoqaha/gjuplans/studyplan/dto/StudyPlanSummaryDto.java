@@ -11,6 +11,7 @@ public record StudyPlanSummaryDto(
         long program,
         Instant createdAt,
         Instant updatedAt,
-        Long updatedBy
+        Long updatedBy,
+        Instant deletedAt
 ) {
 }

@@ -22,10 +22,11 @@ public class CourseController {
     public ResponseEntity<CoursesPageDto> getPaginatedCourseList(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-            @RequestParam(value = "filter", defaultValue = "", required = false) String filter
+            @RequestParam(value = "filter", defaultValue = "", required = false) String filter,
+            @RequestParam(value = "archived", defaultValue = "false", required = false) boolean archived
     ) {
         return new ResponseEntity<>(
-                courseService.getPaginatedCourseList(page, size, filter),
+                courseService.getPaginatedCourseList(page, size, filter, archived),
                 HttpStatus.OK
         );
     }
@@ -64,5 +65,21 @@ public class CourseController {
         courseManagerService.deleteCourse(courseId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{courseId}/archive")
+    public ResponseEntity<CourseDto> archiveCourse(@PathVariable long courseId) {
+        return new ResponseEntity<>(
+                courseManagerService.archiveCourse(courseId),
+                HttpStatus.OK
+        );
+    }
+
+    @PutMapping("/{courseId}/unarchive")
+    public ResponseEntity<CourseDto> unarchiveCourse(@PathVariable long courseId) {
+        return new ResponseEntity<>(
+                courseManagerService.unarchiveCourse(courseId),
+                HttpStatus.OK
+        );
     }
 }

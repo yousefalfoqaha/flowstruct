@@ -1,6 +1,7 @@
 package com.yousefalfoqaha.gjuplans.program.service;
 
 import com.yousefalfoqaha.gjuplans.common.CodeFormatter;
+import java.time.Instant;
 import com.yousefalfoqaha.gjuplans.program.domain.Program;
 import com.yousefalfoqaha.gjuplans.program.dto.ProgramDetailsDto;
 import com.yousefalfoqaha.gjuplans.program.dto.ProgramDto;
@@ -56,6 +57,7 @@ public class ProgramManagerService {
                 null,
                 null,
                 null,
+                null,
                 null
         );
 
@@ -68,5 +70,19 @@ public class ProgramManagerService {
         studyPlanManagerService.deleteStudyPlansByProgram(programId);
 
         programRepository.deleteById(programId);
+    }
+
+    @Transactional
+    public ProgramDto archiveProgram(long programId) {
+        Program program = programService.findOrThrow(programId);
+        program.setDeletedAt(Instant.now());
+        return programService.saveAndMap(program);
+    }
+
+    @Transactional
+    public ProgramDto unarchiveProgram(long programId) {
+        Program program = programService.findOrThrow(programId);
+        program.setDeletedAt(null);
+        return programService.saveAndMap(program);
     }
 }

@@ -23,7 +23,8 @@ public class CourseDtoMapper implements Function<Course, CourseDto> {
                 course.isRemedial(),
                 course.getCreatedAt(),
                 course.getUpdatedAt(),
-                course.getUpdatedBy()
+                course.getUpdatedBy(),
+                course.getDeletedAt()
         );
     }
 }

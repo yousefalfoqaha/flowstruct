@@ -1,6 +1,16 @@
 import { Menu, Text } from '@mantine/core';
-import { CircleCheck, ClipboardX, CopyPlus, Mail, Trash } from 'lucide-react';
+import {
+  Archive,
+  ArchiveRestore,
+  CircleCheck,
+  ClipboardX,
+  CopyPlus,
+  Mail,
+  Trash,
+} from 'lucide-react';
 import { useDeleteStudyPlan } from '@/features/study-plan/hooks/useDeleteStudyPlan.ts';
+import { useArchiveStudyPlan } from '@/features/study-plan/hooks/useArchiveStudyPlan.ts';
+import { useUnarchiveStudyPlan } from '@/features/study-plan/hooks/useUnarchiveStudyPlan.ts';
 import { useApproveStudyPlanChanges } from '@/features/study-plan/hooks/useApproveStudyPlanChanges.ts';
 import { modals } from '@mantine/modals';
 import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
@@ -16,6 +26,8 @@ type Props = {
 
 export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
   const deleteStudyPlan = useDeleteStudyPlan();
+  const archiveStudyPlan = useArchiveStudyPlan();
+  const unarchiveStudyPlan = useUnarchiveStudyPlan();
   const approveStudyPlan = useApproveStudyPlanChanges();
   const discardStudyPlan = useDiscardStudyPlanChanges();
   const { data: me } = useMe();
@@ -32,6 +44,32 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
       ),
       labels: { confirm: 'Approve Changes', cancel: 'Cancel' },
       onConfirm: () => approveStudyPlan.mutate(studyPlan.id),
+    });
+
+  const handleArchiveStudyPlan = () =>
+    modals.openConfirmModal({
+      title: 'Archive Study Plan',
+      children: (
+        <Text size="sm">
+          Archiving this study plan will make it unavailable to students. Are you sure you want to
+          proceed?
+        </Text>
+      ),
+      labels: { confirm: 'Archive', cancel: 'Cancel' },
+      onConfirm: () => archiveStudyPlan.mutate(studyPlan.id),
+    });
+
+  const handleUnarchiveStudyPlan = () =>
+    modals.openConfirmModal({
+      title: 'Unarchive Study Plan',
+      children: (
+        <Text size="sm">
+          Unarchiving this study plan will make it available again to students. Are you sure you
+          want to proceed?
+        </Text>
+      ),
+      labels: { confirm: 'Unarchive', cancel: 'Cancel' },
+      onConfirm: () => unarchiveStudyPlan.mutate(studyPlan.id),
     });
 
   const handleDeleteStudyPlan = () =>
@@ -113,6 +151,24 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
       <Menu.Item leftSection={<CopyPlus size={14} />} onClick={handleCloneStudyPlan}>
         Clone
       </Menu.Item>
+
+      {studyPlan.deletedAt === null ? (
+        <Menu.Item
+          color="orange"
+          onClick={handleArchiveStudyPlan}
+          leftSection={<Archive size={14} />}
+        >
+          Archive
+        </Menu.Item>
+      ) : (
+        <Menu.Item
+          color="green"
+          onClick={handleUnarchiveStudyPlan}
+          leftSection={<ArchiveRestore size={14} />}
+        >
+          Unarchive
+        </Menu.Item>
+      )}
 
       <Menu.Item color="red" onClick={handleDeleteStudyPlan} leftSection={<Trash size={14} />}>
         Delete

@@ -20,8 +20,8 @@ public class ProgramController {
     private final ProgramManagerService programManagerService;
 
     @GetMapping
-    public ResponseEntity<List<ProgramDto>> getAllPrograms() {
-        return new ResponseEntity<>(programService.getAllPrograms(), HttpStatus.OK);
+    public ResponseEntity<List<ProgramDto>> getAllPrograms(@RequestParam(value = "archived", defaultValue = "false") boolean archived) {
+        return new ResponseEntity<>(programService.getAllPrograms(archived), HttpStatus.OK);
     }
 
     @GetMapping("/{programId}")
@@ -47,5 +47,15 @@ public class ProgramController {
         programManagerService.deleteProgram(programId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{programId}/archive")
+    public ResponseEntity<ProgramDto> archiveProgram(@PathVariable long programId) {
+        return new ResponseEntity<>(programManagerService.archiveProgram(programId), HttpStatus.OK);
+    }
+
+    @PutMapping("/{programId}/unarchive")
+    public ResponseEntity<ProgramDto> unarchiveProgram(@PathVariable long programId) {
+        return new ResponseEntity<>(programManagerService.unarchiveProgram(programId), HttpStatus.OK);
     }
 }

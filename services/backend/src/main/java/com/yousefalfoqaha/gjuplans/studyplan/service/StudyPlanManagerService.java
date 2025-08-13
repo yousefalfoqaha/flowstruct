@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
@@ -85,6 +86,7 @@ public class StudyPlanManagerService {
                 null,
                 null,
                 null,
+                null,
                 sectionClones,
                 studyPlanToClone.getCoursePlacements(),
                 studyPlanToClone.getCoursePrerequisites(),
@@ -122,6 +124,7 @@ public class StudyPlanManagerService {
                 null,
                 null,
                 null,
+                null,
                 new HashSet<>(),
                 new HashMap<>(),
                 new HashSet<>(),
@@ -135,6 +138,20 @@ public class StudyPlanManagerService {
     @Transactional
     public void deleteStudyPlan(long id) {
         studyPlanRepository.deleteById(id);
+    }
+
+    @Transactional
+    public StudyPlanDto archiveStudyPlan(long id) {
+        var studyPlan = studyPlanService.findOrThrow(id);
+        studyPlan.setDeletedAt(Instant.now());
+        return studyPlanService.saveAndMap(studyPlan);
+    }
+
+    @Transactional
+    public StudyPlanDto unarchiveStudyPlan(long id) {
+        var studyPlan = studyPlanService.findOrThrow(id);
+        studyPlan.setDeletedAt(null);
+        return studyPlanService.saveAndMap(studyPlan);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

@@ -17,6 +17,7 @@ export type Course = {
   createdAt: Date;
   updatedAt: Date;
   updatedBy: number;
+  deletedAt: Date;
 };
 
 export type CoursesPage = {
@@ -39,4 +40,5 @@ export type CourseSummary = Pick<
   | 'createdAt'
   | 'updatedAt'
   | 'updatedBy'
+  | 'deletedAt'
 >;

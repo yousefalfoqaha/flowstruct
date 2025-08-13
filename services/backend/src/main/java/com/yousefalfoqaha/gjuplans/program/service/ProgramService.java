@@ -1,6 +1,5 @@
 package com.yousefalfoqaha.gjuplans.program.service;
 
-import com.yousefalfoqaha.gjuplans.common.CodeFormatter;
 import com.yousefalfoqaha.gjuplans.program.domain.Program;
 import com.yousefalfoqaha.gjuplans.program.dto.ProgramDto;
 import com.yousefalfoqaha.gjuplans.program.exception.ProgramNotFoundException;
@@ -16,11 +15,13 @@ import java.util.List;
 public class ProgramService {
     private final ProgramRepository programRepository;
     private final ProgramDtoMapper programDtoMapper;
-    private final CodeFormatter codeFormatter;
 
-    public List<ProgramDto> getAllPrograms() {
-        return programRepository.findAll()
-                .stream()
+    public List<ProgramDto> getAllPrograms(boolean archived) {
+        var programs = archived
+                ? programRepository.findAllArchived()
+                : programRepository.findAll();
+
+        return programs.stream()
                 .map(programDtoMapper)
                 .toList();
     }

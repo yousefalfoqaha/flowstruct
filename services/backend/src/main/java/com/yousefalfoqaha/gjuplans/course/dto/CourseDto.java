@@ -16,6 +16,7 @@ public record CourseDto(
         boolean isRemedial,
         Instant createdAt,
         Instant updatedAt,
-        Long updatedBy
+        Long updatedBy,
+        Instant deletedAt
 ) {
 }
