@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface ProgramRepository extends ListCrudRepository<Program, Long> {
 
-    @Query("SELECT COUNT(*) > 0 FROM program WHERE LOWER(code) = LOWER(:code) AND degree = :degree::degree AND deleted_at IS NULL")
+    @Query("SELECT COUNT(*) > 0 FROM program WHERE LOWER(code) = LOWER(:code) AND degree = :degree::degree")
     boolean existsByCodeAndDegree(String code, Degree degree);
 }
