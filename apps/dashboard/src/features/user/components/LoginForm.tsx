@@ -1,4 +1,14 @@
-import { Button, Container, Paper, PasswordInput, Stack, TextInput, Title } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Container,
+  Paper,
+  PasswordInput,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+} from '@mantine/core';
 import classes from '../styles/LoginForm.module.css';
 import { LoginSchema } from '@/features/user/schemas.ts';
 import { useLogin } from '@/features/user/hooks/useLogin.ts';
@@ -30,10 +40,15 @@ export function LoginForm() {
   });
 
   return (
-    <Container size={420} my={40}>
-      <Title ta="center" className={classes.title}>
-        GJUPlans Admin
-      </Title>
+    <Container size={420} my={40} className={classes.wrapper}>
+      <Box className={classes.logoContainer}>
+        <Title ta="center" className={classes.title}>
+          GJUPlans Admin
+        </Title>
+        <Text c="dimmed" size="sm" ta="center" mt={5}>
+          Academic Program Management System
+        </Text>
+      </Box>
 
       <Paper withBorder shadow="md" p={30} mt={30}>
         <form onSubmit={onSubmit}>
@@ -44,7 +59,7 @@ export function LoginForm() {
               render={({ field }) => (
                 <TextInput
                   label="Username"
-                  placeholder="Your username"
+                  placeholder="Enter your username"
                   {...field}
                   error={form.formState.errors.username?.message}
                   autoComplete="off"
@@ -59,7 +74,7 @@ export function LoginForm() {
               render={({ field }) => (
                 <PasswordInput
                   label="Password"
-                  placeholder="Your password"
+                  placeholder="Enter your password"
                   {...field}
                   error={form.formState.errors.password?.message}
                   autoComplete="off"
@@ -76,9 +91,13 @@ export function LoginForm() {
             fullWidth
             mt="xl"
           >
-            Log In
+            Sign In
           </Button>
         </form>
+
+        <Text size="xs" ta="center" mt="lg" c="dimmed">
+          © {new Date().getFullYear()} GJUPlans. All rights reserved.
+        </Text>
       </Paper>
     </Container>
   );
