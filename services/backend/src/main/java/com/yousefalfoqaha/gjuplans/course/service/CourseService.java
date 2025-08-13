@@ -6,7 +6,7 @@ import com.yousefalfoqaha.gjuplans.course.dto.CourseSummaryDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CoursesPageDto;
 import com.yousefalfoqaha.gjuplans.course.exception.CourseNotFoundException;
 import com.yousefalfoqaha.gjuplans.course.mapper.CourseDtoMapper;
-import com.yousefalfoqaha.gjuplans.course.mapper.CourseSummaryResponseMapper;
+import com.yousefalfoqaha.gjuplans.course.mapper.CourseSummaryDtoMapper;
 import com.yousefalfoqaha.gjuplans.course.mapper.CoursesPageResponseMapper;
 import com.yousefalfoqaha.gjuplans.course.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,29 +26,21 @@ import java.util.stream.Collectors;
 public class CourseService {
     private final CourseRepository courseRepository;
     private final CourseDtoMapper courseDtoMapper;
-    private final CourseSummaryResponseMapper courseSummaryResponseMapper;
+    private final CourseSummaryDtoMapper courseSummaryDtoMapper;
     private final CoursesPageResponseMapper coursesPageResponseMapper;
 
-    public CoursesPageDto getPaginatedCourseList(int page, int size, String filter, boolean archived) {
+    public CoursesPageDto getPaginatedCourseList(int page, int size, String filter) {
         Pageable pageable = PageRequest.of(page, size);
         var filterParam = '%' + filter + '%';
 
-        var courseIds = archived ?
-                courseRepository.findAllArchivedByFilter(
-                        pageable.getPageSize(),
-                        pageable.getOffset(),
-                        filterParam
-                ) :
-                courseRepository.findAllByFilter(
-                        pageable.getPageSize(),
-                        pageable.getOffset(),
-                        filterParam
-                );
+        var courseIds = courseRepository.findAllByFilter(
+                pageable.getPageSize(),
+                pageable.getOffset(),
+                filterParam
+        );
 
         var courses = courseRepository.findAllById(courseIds);
-        var total = archived
-                ? courseRepository.countArchivedByFilter(filterParam)
-                : courseRepository.countByFilter(filterParam);
+        var total = courseRepository.countByFilter(filterParam);
 
         Page<Course> coursesPage = new PageImpl<>(courses, pageable, total);
 
@@ -58,7 +50,7 @@ public class CourseService {
     public Map<Long, CourseSummaryDto> getCourseList(List<Long> courseIds) {
         return courseRepository.findAllById(courseIds)
                 .stream()
-                .map(courseSummaryResponseMapper)
+                .map(courseSummaryDtoMapper)
                 .collect(Collectors.toMap(CourseSummaryDto::id, Function.identity()));
     }
 

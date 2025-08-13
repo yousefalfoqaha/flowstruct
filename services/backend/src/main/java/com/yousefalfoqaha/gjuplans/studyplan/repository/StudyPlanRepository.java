@@ -15,11 +15,7 @@ public interface StudyPlanRepository extends CrudRepository<StudyPlan, Long> {
             "SELECT id, year, duration, track, (approved_study_plan ->> 'version')::BIGINT AS approved_version, version, program, created_at, updated_at, updated_by, deleted_at " +
                     "FROM study_plan";
 
-
-    @Query(studyPlanSummariesQuery + " WHERE deleted_at IS NOT NULL")
-    List<StudyPlanSummaryProjection> findAllArchivedStudyPlanSummaries();
-
-    @Query(studyPlanSummariesQuery + " WHERE deleted_at IS NULL")
+    @Query(studyPlanSummariesQuery)
     List<StudyPlanSummaryProjection> findAllStudyPlanSummaries();
 
     @Query("SELECT id FROM study_plan WHERE program = :programId")

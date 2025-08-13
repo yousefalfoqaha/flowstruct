@@ -24,9 +24,9 @@ public class StudyPlanController {
     private final StudyPlanManagerService studyPlanManagerService;
 
     @GetMapping
-    public ResponseEntity<List<StudyPlanSummaryDto>> getAllStudyPlans(@RequestParam(value = "archived", defaultValue = "false") boolean archived) {
+    public ResponseEntity<List<StudyPlanSummaryDto>> getAllStudyPlans() {
         return new ResponseEntity<>(
-                studyPlanService.getAllStudyPlans(archived),
+                studyPlanService.getAllStudyPlans(),
                 HttpStatus.OK
         );
     }

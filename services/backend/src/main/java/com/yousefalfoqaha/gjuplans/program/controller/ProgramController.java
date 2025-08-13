@@ -20,8 +20,8 @@ public class ProgramController {
     private final ProgramManagerService programManagerService;
 
     @GetMapping
-    public ResponseEntity<List<ProgramDto>> getAllPrograms(@RequestParam(value = "archived", defaultValue = "false") boolean archived) {
-        return new ResponseEntity<>(programService.getAllPrograms(archived), HttpStatus.OK);
+    public ResponseEntity<List<ProgramDto>> getAllPrograms() {
+        return new ResponseEntity<>(programService.getAllPrograms(), HttpStatus.OK);
     }
 
     @GetMapping("/{programId}")

@@ -16,6 +16,7 @@ import { getStudyPlanRows } from '@/utils/getStudyPlanRows.ts';
 
 export function StudyPlansTable() {
   const { data: studyPlans } = useStudyPlanList();
+
   const { data: programs } = useProgramList();
 
   const columns = React.useMemo(() => getStudyPlansTableColumns(), []);

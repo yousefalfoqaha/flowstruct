@@ -16,12 +16,9 @@ public class ProgramService {
     private final ProgramRepository programRepository;
     private final ProgramDtoMapper programDtoMapper;
 
-    public List<ProgramDto> getAllPrograms(boolean archived) {
-        var programs = archived
-                ? programRepository.findAllArchived()
-                : programRepository.findAll();
-
-        return programs.stream()
+    public List<ProgramDto> getAllPrograms() {
+        return programRepository.findAll()
+                .stream()
                 .map(programDtoMapper)
                 .toList();
     }

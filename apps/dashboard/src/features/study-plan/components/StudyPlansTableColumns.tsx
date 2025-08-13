@@ -3,11 +3,23 @@ import { StudyPlanRow } from '@/features/study-plan/types.ts';
 import { StudyPlanTableOptionsMenu } from '@/features/study-plan/components/StudyPlanTableOptionsMenu.tsx';
 import { StatusBadge } from '@/shared/components/StatusBadge.tsx';
 import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
+import { Badge } from '@mantine/core';
 
 export function getStudyPlansTableColumns() {
   const { accessor, display } = createColumnHelper<StudyPlanRow>();
 
   return [
+    accessor('deletedAt', {
+      header: '',
+      cell: ({ row }) => (
+        <Badge
+          variant={row.original.deletedAt === null ? 'light' : 'outline'}
+          color={row.original.deletedAt === null ? 'green' : 'gray'}
+        >
+          {row.original.deletedAt === null ? 'Active' : 'Archived'}
+        </Badge>
+      ),
+    }),
     accessor('programName', {
       header: 'Program',
       enableColumnFilter: true,
@@ -22,10 +34,6 @@ export function getStudyPlansTableColumns() {
       ),
       enableColumnFilter: true,
       filterFn: 'equals',
-    }),
-    accessor('duration', {
-      header: () => <p className="text-nowrap">Duration</p>,
-      cell: ({ row }) => <p>{row.original.duration ?? 0} Years</p>,
     }),
     accessor('track', {
       header: 'Track',

@@ -22,11 +22,10 @@ public class CourseController {
     public ResponseEntity<CoursesPageDto> getPaginatedCourseList(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-            @RequestParam(value = "filter", defaultValue = "", required = false) String filter,
-            @RequestParam(value = "archived", defaultValue = "false", required = false) boolean archived
+            @RequestParam(value = "filter", defaultValue = "", required = false) String filter
     ) {
         return new ResponseEntity<>(
-                courseService.getPaginatedCourseList(page, size, filter, archived),
+                courseService.getPaginatedCourseList(page, size, filter),
                 HttpStatus.OK
         );
     }

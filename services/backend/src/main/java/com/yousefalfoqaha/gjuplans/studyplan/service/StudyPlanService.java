@@ -32,12 +32,9 @@ public class StudyPlanService {
         return studyPlanSummaryDtoMapper.apply(studyPlanSummary);
     }
 
-    public List<StudyPlanSummaryDto> getAllStudyPlans(boolean archived) {
-        var studyPlans = archived
-                ? studyPlanRepository.findAllArchivedStudyPlanSummaries()
-                : studyPlanRepository.findAllStudyPlanSummaries();
-
-        return studyPlans.stream()
+    public List<StudyPlanSummaryDto> getAllStudyPlans() {
+        return studyPlanRepository.findAllStudyPlanSummaries()
+                .stream()
                 .map(studyPlanSummaryDtoMapper)
                 .toList();
     }

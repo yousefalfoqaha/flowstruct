@@ -20,6 +20,7 @@ export function ProgramsTable() {
     <Stack gap="md">
       <Group>
         <DataTableSearch width={800} table={table} placeholder="Search any program..." />
+
         <ColumnFilterSelect
           table={table}
           columnId="degree"

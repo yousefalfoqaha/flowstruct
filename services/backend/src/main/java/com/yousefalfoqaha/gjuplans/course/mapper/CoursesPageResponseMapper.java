@@ -11,14 +11,14 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 @Service
 public class CoursesPageResponseMapper implements Function<Page<Course>, CoursesPageDto> {
-    private final CourseSummaryResponseMapper courseSummaryResponseMapper;
+    private final CourseSummaryDtoMapper courseSummaryDtoMapper;
 
     @Override
     public CoursesPageDto apply(Page<Course> coursesPage) {
         return new CoursesPageDto(
                 coursesPage.getContent()
                         .stream()
-                        .map(courseSummaryResponseMapper)
+                        .map(courseSummaryDtoMapper)
                         .toList(),
                 coursesPage.getNumber(),
                 coursesPage.getSize(),

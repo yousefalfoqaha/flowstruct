@@ -5,4 +5,5 @@ export const DefaultFrameworkCoursesSearchValues = (): TableSearchOptions => ({
   page: 0,
   size: 7,
   columnFilters: [],
-})
+  archived: false,
+});

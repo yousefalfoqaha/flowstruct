@@ -8,6 +8,17 @@ export function getProgramsTableColumns() {
   const { display, accessor } = createColumnHelper<Program>();
 
   return [
+    accessor('deletedAt', {
+      header: '',
+      cell: ({ row }) => (
+        <Badge
+          variant={row.original.deletedAt === null ? 'light' : 'outline'}
+          color={row.original.deletedAt === null ? 'green' : 'gray'}
+        >
+          {row.original.deletedAt === null ? 'Active' : 'Archived'}
+        </Badge>
+      ),
+    }),
     accessor('code', {
       header: 'Code',
       cell: ({ cell }) => <Badge variant="default">{cell.getValue()}</Badge>,

@@ -14,5 +14,6 @@ export const getTableSearchSchema = (defaultSearchValues: TableSearchOptions) =>
         })
       )
       .catch(defaultSearchValues.columnFilters),
+    archived: z.boolean().catch(defaultSearchValues.archived),
   });
-}
+};

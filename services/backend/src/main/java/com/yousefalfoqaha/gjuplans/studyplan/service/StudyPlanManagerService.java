@@ -143,14 +143,26 @@ public class StudyPlanManagerService {
     @Transactional
     public StudyPlanDto archiveStudyPlan(long id) {
         var studyPlan = studyPlanService.findOrThrow(id);
+
         studyPlan.setDeletedAt(Instant.now());
+
+        if (studyPlan.getApprovedStudyPlan() != null) {
+            studyPlan.getApprovedStudyPlan().setVersion(studyPlan.getVersion() + 1);
+        }
+
         return studyPlanService.saveAndMap(studyPlan);
     }
 
     @Transactional
     public StudyPlanDto unarchiveStudyPlan(long id) {
         var studyPlan = studyPlanService.findOrThrow(id);
+
         studyPlan.setDeletedAt(null);
+
+        if (studyPlan.getApprovedStudyPlan() != null) {
+            studyPlan.getApprovedStudyPlan().setVersion(studyPlan.getVersion() + 1);
+        }
+
         return studyPlanService.saveAndMap(studyPlan);
     }
 

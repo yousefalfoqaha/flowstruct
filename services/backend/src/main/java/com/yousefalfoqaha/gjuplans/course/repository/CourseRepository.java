@@ -18,45 +18,19 @@ public interface CourseRepository extends ListCrudRepository<Course, Long> {
                     "OR code " +
                     "ILIKE :filter) " +
                     "LIMIT :limit " +
-                    "OFFSET :offset " +
-                    "AND deleted_at IS NULL"
+                    "OFFSET :offset"
     )
     List<Long> findAllByFilter(int limit, long offset, String filter);
 
     @Query(
-            "SELECT id " +
-                    "FROM course " +
-                    "WHERE (name " +
-                    "ILIKE :filter " +
-                    "OR code " +
-                    "ILIKE :filter) " +
-                    "LIMIT :limit " +
-                    "OFFSET :offset " +
-                    "AND deleted_at IS NOT NULL"
-    )
-    List<Long> findAllArchivedByFilter(int limit, long offset, String filter);
-
-    @Query(
             "SELECT COUNT(*) " +
                     "FROM Course " +
                     "WHERE (name " +
                     "ILIKE :filter " +
                     "OR code " +
-                    "ILIKE :filter) " +
-                    "AND deleted_at IS NULL"
+                    "ILIKE :filter)"
     )
     long countByFilter(String filter);
-
-    @Query(
-            "SELECT COUNT(*) " +
-                    "FROM Course " +
-                    "WHERE (name " +
-                    "ILIKE :filter " +
-                    "OR code " +
-                    "ILIKE :filter) " +
-                    "AND deleted_at IS NOT NULL"
-    )
-    long countArchivedByFilter(String filter);
 
     boolean existsByCodeIgnoreCase(String code);
 }
