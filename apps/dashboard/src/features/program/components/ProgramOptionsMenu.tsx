@@ -6,6 +6,7 @@ import { useDeleteProgram } from '@/features/program/hooks/useDeleteProgram.ts';
 import { useArchiveProgram } from '@/features/program/hooks/useArchiveProgram.ts';
 import { useUnarchiveProgram } from '@/features/program/hooks/useUnarchiveProgram.ts';
 import { Link } from '@tanstack/react-router';
+import { useAuth } from '@/contexts/AuthContext.tsx';
 
 type ProgramOptionsMenuProps = {
   program: Program;
@@ -15,6 +16,8 @@ export function ProgramOptionsMenu({ program }: ProgramOptionsMenuProps) {
   const deleteProgram = useDeleteProgram();
   const archiveProgram = useArchiveProgram();
   const unarchiveProgram = useUnarchiveProgram();
+
+  const { hasPermission } = useAuth();
 
   return (
     <Menu shadow="md">
@@ -85,24 +88,27 @@ export function ProgramOptionsMenu({ program }: ProgramOptionsMenuProps) {
           </Menu.Item>
         )}
 
-        <Menu.Item
-          color="red"
-          leftSection={<Trash size={14} />}
-          onClick={() =>
-            modals.openConfirmModal({
-              title: 'Please confirm your action',
-              children: (
-                <Text size="sm">
-                  Deleting this program will delete all of its study plans. Are you absolutely sure?
-                </Text>
-              ),
-              labels: { confirm: 'Confirm', cancel: 'Cancel' },
-              onConfirm: () => deleteProgram.mutate(program.id),
-            })
-          }
-        >
-          Delete
-        </Menu.Item>
+        {hasPermission('programs:delete') && (
+          <Menu.Item
+            color="red"
+            leftSection={<Trash size={14} />}
+            onClick={() =>
+              modals.openConfirmModal({
+                title: 'Please confirm your action',
+                children: (
+                  <Text size="sm">
+                    Deleting this program will delete all of its study plans. Are you absolutely
+                    sure?
+                  </Text>
+                ),
+                labels: { confirm: 'Confirm', cancel: 'Cancel' },
+                onConfirm: () => deleteProgram.mutate(program.id),
+              })
+            }
+          >
+            Delete
+          </Menu.Item>
+        )}
       </Menu.Dropdown>
     </Menu>
   );

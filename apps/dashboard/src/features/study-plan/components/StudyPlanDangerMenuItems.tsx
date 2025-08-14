@@ -17,8 +17,8 @@ import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 import { CloneStudyPlanDetailsForm } from '@/features/study-plan/components/CloneStudyPlanDetailsForm.tsx';
 import { StudyPlanSummary } from '@/features/study-plan/types.ts';
 import { useDiscardStudyPlanChanges } from '@/features/study-plan/hooks/useDiscardStudyPlanChanges.ts';
-import { useMe } from '@/features/user/hooks/useMe.ts';
 import { RequestApprovalForm } from '@/features/study-plan/components/RequestApprovalForm.tsx';
+import { useAuth } from '@/contexts/AuthContext.tsx';
 
 type Props = {
   studyPlan: StudyPlanSummary;
@@ -30,7 +30,8 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
   const unarchiveStudyPlan = useUnarchiveStudyPlan();
   const approveStudyPlan = useApproveStudyPlanChanges();
   const discardStudyPlan = useDiscardStudyPlanChanges();
-  const { data: me } = useMe();
+
+  const { hasPermission } = useAuth();
 
   const handleApproveStudyPlan = () =>
     modals.openConfirmModal({
@@ -128,13 +129,13 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
 
   return (
     <>
-      {isNewOrDraft && me.role === 'APPROVER' && (
+      {isNewOrDraft && hasPermission('study-plans:approve') && (
         <Menu.Item onClick={handleApproveStudyPlan} leftSection={<CircleCheck size={14} />}>
           Approve changes
         </Menu.Item>
       )}
 
-      {(studyPlan.status === 'DRAFT' || studyPlan.status === 'NEW') && me.role === 'EDITOR' && (
+      {isNewOrDraft && hasPermission('study-plans:request-approval') && (
         <Menu.Item leftSection={<Mail size={14} />} onClick={requestStudyPlanApproval}>
           Request approval
         </Menu.Item>
@@ -146,7 +147,10 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
         </Menu.Item>
       )}
 
-      {isNewOrDraft && (me.role === 'APPROVER' || me.role === 'EDITOR') && <Menu.Divider />}
+      {isNewOrDraft &&
+        (hasPermission('study-plans:approve') || hasPermission('study-plans:request-approval')) && (
+          <Menu.Divider />
+        )}
 
       <Menu.Item leftSection={<CopyPlus size={14} />} onClick={handleCloneStudyPlan}>
         Clone
@@ -170,9 +174,11 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
         </Menu.Item>
       )}
 
-      <Menu.Item color="red" onClick={handleDeleteStudyPlan} leftSection={<Trash size={14} />}>
-        Delete
-      </Menu.Item>
+      {hasPermission('study-plans:delete') && (
+        <Menu.Item color="red" onClick={handleDeleteStudyPlan} leftSection={<Trash size={14} />}>
+          Delete
+        </Menu.Item>
+      )}
     </>
   );
 }

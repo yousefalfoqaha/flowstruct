@@ -2,7 +2,7 @@ export type User = {
   id: number;
   username: string;
   email: string;
-  role: string;
+  role: keyof typeof Role;
   createdAt: Date;
   updatedAt: Date;
   updatedBy: number;
@@ -14,3 +14,11 @@ export const Role = {
   EDITOR: 'Editor',
   GUEST: 'Guest',
 } as const;
+
+export type UserAction =
+  | 'study-plans:request-approval'
+  | 'study-plans:approve'
+  | 'users:read'
+  | 'study-plans:delete'
+  | 'courses:delete'
+  | 'programs:delete';

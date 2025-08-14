@@ -7,17 +7,17 @@ import { LibraryBig, ScrollText, User } from 'lucide-react';
 import { Route as StudyPlansRoute } from '@/routes/_layout/study-plans';
 import { Route as CatalogRoute } from '@/routes/_layout/catalog';
 import { Route as UsersRoute } from '@/routes/_layout/users';
-import { useMe } from '@/features/user/hooks/useMe.ts';
+import { useAuth } from '@/contexts/AuthContext.tsx';
 
 export function AppTabs() {
   const navigate = useNavigate();
   const matches = useMatches();
-  const { data: me } = useMe();
+  const { hasPermission } = useAuth();
 
   const tabs: NavbarLinks[] = [
     { label: 'Study Plans', icon: <ScrollText size={18} />, route: StudyPlansRoute.to },
     { label: 'Catalog', icon: <LibraryBig size={18} />, route: CatalogRoute.to },
-    ...(me.role === 'ADMIN'
+    ...(hasPermission('users:read')
       ? [{ label: 'User Management', icon: <User size={18} />, route: UsersRoute.to }]
       : []),
   ];

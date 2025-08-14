@@ -12,7 +12,6 @@ import {
 import classes from '../styles/LoginForm.module.css';
 import { LoginSchema } from '@/features/user/schemas.ts';
 import { useLogin } from '@/features/user/hooks/useLogin.ts';
-import { useNavigate } from '@tanstack/react-router';
 import { Controller, useForm } from 'react-hook-form';
 import { LogIn } from 'lucide-react';
 import { z } from 'zod/v4';
@@ -28,15 +27,9 @@ export function LoginForm() {
   });
 
   const login = useLogin();
-  const navigate = useNavigate();
 
   const onSubmit = form.handleSubmit((data) => {
-    login.mutate(data, {
-      onSuccess: () =>
-        navigate({
-          to: '/',
-        }),
-    });
+    login.mutate(data);
   });
 
   return (
