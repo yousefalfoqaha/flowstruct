@@ -14,10 +14,10 @@ export type Course = {
   practicalHours: number;
   type: string;
   isRemedial: boolean;
+  isArchived: boolean;
   createdAt: Date;
   updatedAt: Date;
   updatedBy: number;
-  deletedAt: Date;
 };
 
 export type CoursesPage = {
@@ -37,8 +37,8 @@ export type CourseSummary = Pick<
   | 'creditHours'
   | 'type'
   | 'isRemedial'
+  | 'isArchived'
   | 'createdAt'
   | 'updatedAt'
   | 'updatedBy'
-  | 'deletedAt'
 >;

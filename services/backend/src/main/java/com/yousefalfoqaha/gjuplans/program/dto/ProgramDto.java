@@ -7,9 +7,9 @@ public record ProgramDto(
         String code,
         String name,
         String degree,
+        boolean isArchived,
         Instant createdAt,
         Instant updatedAt,
-        Long updatedBy,
-        Instant deletedAt
+        Long updatedBy
 ) {
 }

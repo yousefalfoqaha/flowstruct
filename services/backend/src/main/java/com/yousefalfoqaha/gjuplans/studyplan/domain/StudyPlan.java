@@ -34,6 +34,8 @@ public class StudyPlan {
 
     private StudyPlanDraft approvedStudyPlan;
 
+    private boolean isArchived;
+
     @Version
     private Long version;
 
@@ -46,7 +48,6 @@ public class StudyPlan {
     @LastModifiedBy
     private Long updatedBy;
 
-    private Instant deletedAt;
 
     @MappedCollection(idColumn = "study_plan")
     private Set<Section> sections = new HashSet<>();

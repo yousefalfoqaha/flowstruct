@@ -1,5 +1,5 @@
 import { ActionIcon, Menu, Text } from '@mantine/core';
-import { Ellipsis, Pencil, ScrollText, Trash, Archive, ArchiveRestore } from 'lucide-react';
+import { Archive, ArchiveRestore, Ellipsis, Pencil, ScrollText, Trash } from 'lucide-react';
 import { Program } from '@/features/program/types.ts';
 import { modals } from '@mantine/modals';
 import { useDeleteProgram } from '@/features/program/hooks/useDeleteProgram.ts';
@@ -43,26 +43,7 @@ export function ProgramOptionsMenu({ program }: ProgramOptionsMenuProps) {
 
         <Menu.Divider />
 
-        {program.deletedAt === null ? (
-          <Menu.Item
-            color="orange"
-            leftSection={<Archive size={14} />}
-            onClick={() =>
-              modals.openConfirmModal({
-                title: 'Archive program',
-                children: (
-                  <Text size="sm">
-                    Archiving this program will make it unavailable to students. Are you sure you want to proceed?
-                  </Text>
-                ),
-                labels: { confirm: 'Archive', cancel: 'Cancel' },
-                onConfirm: () => archiveProgram.mutate(program.id),
-              })
-            }
-          >
-            Archive
-          </Menu.Item>
-        ) : (
+        {program.isArchived ? (
           <Menu.Item
             color="green"
             leftSection={<ArchiveRestore size={14} />}
@@ -71,7 +52,8 @@ export function ProgramOptionsMenu({ program }: ProgramOptionsMenuProps) {
                 title: 'Unarchive program',
                 children: (
                   <Text size="sm">
-                    Unarchiving this program will make it available again to students. Are you sure you want to proceed?
+                    Unarchiving this program will make it available again to students. Are you sure
+                    you want to proceed?
                   </Text>
                 ),
                 labels: { confirm: 'Unarchive', cancel: 'Cancel' },
@@ -80,6 +62,26 @@ export function ProgramOptionsMenu({ program }: ProgramOptionsMenuProps) {
             }
           >
             Unarchive
+          </Menu.Item>
+        ) : (
+          <Menu.Item
+            color="orange"
+            leftSection={<Archive size={14} />}
+            onClick={() =>
+              modals.openConfirmModal({
+                title: 'Archive program',
+                children: (
+                  <Text size="sm">
+                    Archiving this program will make it unavailable to students. Are you sure you
+                    want to proceed?
+                  </Text>
+                ),
+                labels: { confirm: 'Archive', cancel: 'Cancel' },
+                onConfirm: () => archiveProgram.mutate(program.id),
+              })
+            }
+          >
+            Archive
           </Menu.Item>
         )}
 

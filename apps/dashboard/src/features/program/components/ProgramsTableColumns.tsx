@@ -3,21 +3,15 @@ import { Program } from '@/features/program/types.ts';
 import { ProgramOptionsMenu } from '@/features/program/components/ProgramOptionsMenu.tsx';
 import { Badge } from '@mantine/core';
 import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
+import { ActiveStatusBadge } from '@/shared/components/ActiveStatusBadge.tsx';
 
 export function getProgramsTableColumns() {
   const { display, accessor } = createColumnHelper<Program>();
 
   return [
-    accessor('deletedAt', {
+    accessor('isArchived', {
       header: '',
-      cell: ({ row }) => (
-        <Badge
-          variant={row.original.deletedAt === null ? 'light' : 'outline'}
-          color={row.original.deletedAt === null ? 'green' : 'gray'}
-        >
-          {row.original.deletedAt === null ? 'Active' : 'Archived'}
-        </Badge>
-      ),
+      cell: ({ row }) => <ActiveStatusBadge isArchived={row.original.isArchived} />,
     }),
     accessor('code', {
       header: 'Code',

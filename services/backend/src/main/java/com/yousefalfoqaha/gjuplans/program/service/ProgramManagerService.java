@@ -1,7 +1,6 @@
 package com.yousefalfoqaha.gjuplans.program.service;
 
 import com.yousefalfoqaha.gjuplans.common.CodeFormatter;
-import java.time.Instant;
 import com.yousefalfoqaha.gjuplans.program.domain.Program;
 import com.yousefalfoqaha.gjuplans.program.dto.ProgramDetailsDto;
 import com.yousefalfoqaha.gjuplans.program.dto.ProgramDto;
@@ -54,7 +53,7 @@ public class ProgramManagerService {
                 userEnteredCode,
                 details.name().trim(),
                 details.degree(),
-                null,
+                false,
                 null,
                 null,
                 null,
@@ -75,14 +74,14 @@ public class ProgramManagerService {
     @Transactional
     public ProgramDto archiveProgram(long programId) {
         Program program = programService.findOrThrow(programId);
-        program.setDeletedAt(Instant.now());
+        program.setArchived(true);
         return programService.saveAndMap(program);
     }
 
     @Transactional
     public ProgramDto unarchiveProgram(long programId) {
         Program program = programService.findOrThrow(programId);
-        program.setDeletedAt(null);
+        program.setArchived(false);
         return programService.saveAndMap(program);
     }
 }

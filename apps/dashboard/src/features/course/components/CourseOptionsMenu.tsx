@@ -1,6 +1,6 @@
 import { ActionIcon, Menu, Text } from '@mantine/core';
 import { CourseSummary } from '@/features/course/types.ts';
-import { Ellipsis, Pencil, ScrollText, Archive, ArchiveRestore } from 'lucide-react';
+import { Archive, ArchiveRestore, Ellipsis, Pencil, ScrollText } from 'lucide-react';
 import { useArchiveCourse } from '@/features/course/hooks/useArchiveCourse.ts';
 import { useUnarchiveCourse } from '@/features/course/hooks/useUnarchiveCourse.ts';
 import { modals } from '@mantine/modals';
@@ -19,7 +19,8 @@ export function CourseOptionsMenu({ course }: Props) {
       title: 'Archive Course',
       children: (
         <Text size="sm">
-          Archiving this course will make it unavailable to students. Are you sure you want to proceed?
+          Archiving this course will make it unavailable to students. Are you sure you want to
+          proceed?
         </Text>
       ),
       labels: { confirm: 'Archive', cancel: 'Cancel' },
@@ -32,7 +33,8 @@ export function CourseOptionsMenu({ course }: Props) {
       title: 'Unarchive Course',
       children: (
         <Text size="sm">
-          Unarchiving this course will make it available again to students. Are you sure you want to proceed?
+          Unarchiving this course will make it available again to students. Are you sure you want to
+          proceed?
         </Text>
       ),
       labels: { confirm: 'Unarchive', cancel: 'Cancel' },
@@ -69,21 +71,17 @@ export function CourseOptionsMenu({ course }: Props) {
 
         <Menu.Divider />
 
-        {course.deletedAt === null ? (
-          <Menu.Item 
-            color="orange" 
-            leftSection={<Archive size={14} />}
-            onClick={handleArchive}
-          >
-            Archive
-          </Menu.Item>
-        ) : (
-          <Menu.Item 
-            color="green" 
+        {course.isArchived ? (
+          <Menu.Item
+            color="green"
             leftSection={<ArchiveRestore size={14} />}
             onClick={handleUnarchive}
           >
             Unarchive
+          </Menu.Item>
+        ) : (
+          <Menu.Item color="orange" leftSection={<Archive size={14} />} onClick={handleArchive}>
+            Archive
           </Menu.Item>
         )}
       </Menu.Dropdown>

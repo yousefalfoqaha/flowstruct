@@ -45,16 +45,15 @@ export type StudyPlan = {
   duration: number;
   track: string;
   status: string;
-  isPending: boolean;
   program: number;
   sections: Section[];
   coursePlacements: Record<number, CoursePlacement>;
   coursePrerequisites: Record<number, Record<number, CourseRelation>>;
   courseCorequisites: Record<number, number[]>;
+  isArchived: boolean;
   createdAt: Date;
   updatedAt: Date;
   updatedBy: number;
-  deletedAt: Date;
 };
 
 export type FrameworkCourse = CourseSummary & {
@@ -75,10 +74,9 @@ export type StudyPlanSummary = Pick<
   | 'duration'
   | 'track'
   | 'status'
-  | 'isPending'
   | 'program'
+  | 'isArchived'
   | 'createdAt'
   | 'updatedAt'
   | 'updatedBy'
-  | 'deletedAt'
 >;

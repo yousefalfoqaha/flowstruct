@@ -7,11 +7,11 @@ public record StudyPlanSummaryDto(
         int year,
         int duration,
         String track,
-        String status,
         long program,
+        String status,
+        boolean isArchived,
         Instant createdAt,
         Instant updatedAt,
-        Long updatedBy,
-        Instant deletedAt
+        Long updatedBy
 ) {
 }

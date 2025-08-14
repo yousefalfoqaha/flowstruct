@@ -10,8 +10,8 @@ export type Program = {
   code: string;
   name: string;
   degree: string;
+  isArchived: boolean;
   createdAt: Date;
   updatedAt: Date;
   updatedBy: number;
-  deletedAt: Date;
 };

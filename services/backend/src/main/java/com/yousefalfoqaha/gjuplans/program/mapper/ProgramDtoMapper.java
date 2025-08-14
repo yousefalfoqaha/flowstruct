@@ -16,10 +16,10 @@ public class ProgramDtoMapper implements Function<Program, ProgramDto> {
                 program.getCode(),
                 program.getName(),
                 program.getDegree().name(),
+                program.isArchived(),
                 program.getCreatedAt(),
                 program.getUpdatedAt(),
-                program.getUpdatedBy(),
-                program.getDeletedAt()
+                program.getUpdatedBy()
         );
     }
 }

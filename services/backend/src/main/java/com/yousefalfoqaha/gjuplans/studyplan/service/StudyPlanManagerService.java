@@ -15,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
@@ -82,7 +81,7 @@ public class StudyPlanManagerService {
                 cloneDetails.track(),
                 studyPlanToClone.getProgram(),
                 null,
-                null,
+                false,
                 null,
                 null,
                 null,
@@ -120,7 +119,7 @@ public class StudyPlanManagerService {
                 details.track().trim(),
                 AggregateReference.to(details.program()),
                 null,
-                null,
+                false,
                 null,
                 null,
                 null,
@@ -144,7 +143,7 @@ public class StudyPlanManagerService {
     public StudyPlanDto archiveStudyPlan(long id) {
         var studyPlan = studyPlanService.findOrThrow(id);
 
-        studyPlan.setDeletedAt(Instant.now());
+        studyPlan.setArchived(true);
 
         if (studyPlan.getApprovedStudyPlan() != null) {
             studyPlan.getApprovedStudyPlan().setVersion(studyPlan.getVersion() + 1);
@@ -157,7 +156,7 @@ public class StudyPlanManagerService {
     public StudyPlanDto unarchiveStudyPlan(long id) {
         var studyPlan = studyPlanService.findOrThrow(id);
 
-        studyPlan.setDeletedAt(null);
+        studyPlan.setArchived(false);
 
         if (studyPlan.getApprovedStudyPlan() != null) {
             studyPlan.getApprovedStudyPlan().setVersion(studyPlan.getVersion() + 1);

@@ -35,6 +35,8 @@ public class Course {
 
     private boolean isRemedial;
 
+    private boolean isArchived;
+
     @Version
     private Long version;
 
@@ -46,6 +48,4 @@ public class Course {
 
     @LastModifiedBy
     private Long updatedBy;
-
-    private Instant deletedAt;
 }

@@ -152,21 +152,21 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
         Clone
       </Menu.Item>
 
-      {studyPlan.deletedAt === null ? (
-        <Menu.Item
-          color="orange"
-          onClick={handleArchiveStudyPlan}
-          leftSection={<Archive size={14} />}
-        >
-          Archive
-        </Menu.Item>
-      ) : (
+      {studyPlan.isArchived ? (
         <Menu.Item
           color="green"
           onClick={handleUnarchiveStudyPlan}
           leftSection={<ArchiveRestore size={14} />}
         >
           Unarchive
+        </Menu.Item>
+      ) : (
+        <Menu.Item
+          color="orange"
+          onClick={handleArchiveStudyPlan}
+          leftSection={<Archive size={14} />}
+        >
+          Archive
         </Menu.Item>
       )}
 

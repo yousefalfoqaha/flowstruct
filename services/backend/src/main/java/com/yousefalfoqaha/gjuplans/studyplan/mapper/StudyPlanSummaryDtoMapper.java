@@ -23,12 +23,12 @@ public class StudyPlanSummaryDtoMapper implements Function<StudyPlanSummaryProje
                 studyPlan.year(),
                 studyPlan.duration(),
                 studyPlan.track(),
-                status,
                 studyPlan.program(),
+                status,
+                studyPlan.isArchived(),
                 studyPlan.createdAt(),
                 studyPlan.updatedAt(),
-                studyPlan.updatedBy(),
-                studyPlan.deletedAt()
+                studyPlan.updatedBy()
         );
     }
 }

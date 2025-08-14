@@ -3,21 +3,15 @@ import { CourseSummary } from '@/features/course/types.ts';
 import { Badge } from '@mantine/core';
 import { CourseOptionsMenu } from '@/features/course/components/CourseOptionsMenu.tsx';
 import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
+import { ActiveStatusBadge } from '@/shared/components/ActiveStatusBadge';
 
 export function getCoursesTableColumns() {
   const { accessor, display } = createColumnHelper<CourseSummary>();
 
   return [
-    accessor('deletedAt', {
+    accessor('isArchived', {
       header: '',
-      cell: ({ row }) => (
-        <Badge
-          variant={row.original.deletedAt === null ? 'light' : 'outline'}
-          color={row.original.deletedAt === null ? 'green' : 'gray'}
-        >
-          {row.original.deletedAt === null ? 'Active' : 'Archived'}
-        </Badge>
-      ),
+      cell: ({ row }) => <ActiveStatusBadge isArchived={row.original.isArchived} />,
     }),
     accessor('code', {
       header: 'Code',

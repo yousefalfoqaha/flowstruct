@@ -7,12 +7,12 @@ public record StudyPlanSummaryProjection(
         int year,
         int duration,
         String track,
+        boolean isArchived,
         Long version,
         Long approvedVersion,
         int program,
         Instant createdAt,
         Instant updatedAt,
-        Long updatedBy,
-        Instant deletedAt
+        Long updatedBy
 ) {
 }

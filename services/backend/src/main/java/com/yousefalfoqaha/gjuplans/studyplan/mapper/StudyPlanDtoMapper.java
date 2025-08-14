@@ -32,12 +32,12 @@ public class StudyPlanDtoMapper implements Function<StudyPlan, StudyPlanDto> {
                 studyPlan.getYear(),
                 studyPlan.getDuration(),
                 studyPlan.getTrack(),
-                status,
                 studyPlan.getProgram().getId(),
+                status,
+                studyPlan.isArchived(),
                 studyPlan.getCreatedAt(),
                 studyPlan.getUpdatedAt(),
                 studyPlan.getUpdatedBy(),
-                studyPlan.getDeletedAt(),
                 studyPlan.getSections()
                         .stream()
                         .sorted(Comparator.comparing(this::getSectionCode))

@@ -21,10 +21,10 @@ public class CourseDtoMapper implements Function<Course, CourseDto> {
                 course.getPracticalHours(),
                 course.getType(),
                 course.isRemedial(),
+                course.isArchived(),
                 course.getCreatedAt(),
                 course.getUpdatedAt(),
-                course.getUpdatedBy(),
-                course.getDeletedAt()
+                course.getUpdatedBy()
         );
     }
 }

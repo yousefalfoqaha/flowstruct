@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface StudyPlanRepository extends CrudRepository<StudyPlan, Long> {
     String studyPlanSummariesQuery =
-            "SELECT id, year, duration, track, (approved_study_plan ->> 'version')::BIGINT AS approved_version, version, program, created_at, updated_at, updated_by, deleted_at " +
+            "SELECT id, year, duration, track, (approved_study_plan ->> 'version')::BIGINT AS approved_version, version, program, created_at, updated_at, updated_by, is_archived " +
                     "FROM study_plan";
 
     @Query(studyPlanSummariesQuery)

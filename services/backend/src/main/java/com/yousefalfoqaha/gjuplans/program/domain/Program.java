@@ -25,6 +25,8 @@ public class Program {
 
     private Degree degree;
 
+    private boolean isArchived;
+
     @Version
     private Long version;
 
@@ -36,6 +38,4 @@ public class Program {
 
     @LastModifiedBy
     private Long updatedBy;
-
-    private Instant deletedAt;
 }

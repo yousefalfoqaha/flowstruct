@@ -18,10 +18,10 @@ public class CourseSummaryDtoMapper implements Function<Course, CourseSummaryDto
                 course.getCreditHours(),
                 course.getType().toString(),
                 course.isRemedial(),
+                course.isArchived(),
                 course.getCreatedAt(),
                 course.getUpdatedAt(),
-                course.getUpdatedBy(),
-                course.getDeletedAt()
+                course.getUpdatedBy()
         );
     }
 }
