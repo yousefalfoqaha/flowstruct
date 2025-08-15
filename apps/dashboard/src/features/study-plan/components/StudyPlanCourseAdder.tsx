@@ -6,7 +6,6 @@ import {
   Checkbox,
   Divider,
   Group,
-  LoadingOverlay,
   Modal,
   Pill,
   Select,
@@ -234,7 +233,12 @@ export function StudyPlanCourseAdder() {
       >
         <Stack>
           <Group>
-            <DataTableSearch table={table} placeholder="Filter courses..." debounce={DEBOUNCE_MS} />
+            <DataTableSearch
+              table={table}
+              placeholder="Filter courses..."
+              debounce={DEBOUNCE_MS}
+              loading={isFetching}
+            />
 
             <Button
               variant="white"
@@ -248,10 +252,7 @@ export function StudyPlanCourseAdder() {
             </Button>
           </Group>
 
-          <Box pos="relative">
-            <LoadingOverlay visible={isFetching} zIndex={1000} loaderProps={{ type: 'bars' }} />
-            <DataTable table={table} />
-          </Box>
+          <DataTable table={table} />
 
           <DataTablePagination table={table} />
 

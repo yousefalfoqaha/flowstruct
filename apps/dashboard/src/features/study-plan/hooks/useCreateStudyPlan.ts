@@ -15,5 +15,6 @@ export const useCreateStudyPlan = () =>
     meta: {
       setData: (data) => studyPlanKeys.detail(data.id),
       invalidates: [studyPlanKeys.list()],
+      successMessage: 'Created study plan.',
     },
   });
