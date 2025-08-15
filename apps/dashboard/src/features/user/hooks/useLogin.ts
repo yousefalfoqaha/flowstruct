@@ -3,7 +3,7 @@ import { USER_ENDPOINT } from '@/features/user/constants.ts';
 import { z } from 'zod/v4';
 import { LoginSchema } from '@/features/user/schemas.ts';
 import { api } from '@/shared/api.ts';
-import { userKeys } from '@/features/user/queries.ts';
+import { MeQuery } from '@/features/user/queries.ts';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 
@@ -19,8 +19,8 @@ export const useLogin = () => {
   return useAppMutation({
     mutationFn: loginUser,
     onSuccess: async () => {
-      await queryClient.ensureQueryData({ queryKey: userKeys.me() });
-      navigate({ to: '/' });
+      await queryClient.ensureQueryData(MeQuery);
+      navigate({ to: '/' }).then(() => {});
     },
     meta: {
       successMessage: 'You are logged in. Redirecting...',

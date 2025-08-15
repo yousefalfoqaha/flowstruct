@@ -27,8 +27,8 @@
 }
 
 .dropIndicator {
-    top: -0.7rem;
-    height: 0.4rem;
+    top: -0.6rem;
+    height: 0.2rem;
     border-radius: var(--mantine-radius-default);
     width: 10rem;
     background-color: var(--mantine-primary-color-3);

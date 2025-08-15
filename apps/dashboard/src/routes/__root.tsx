@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 import { createRootRouteWithContext, Outlet, useRouterState } from '@tanstack/react-router';
 import { QueryClient } from '@tanstack/react-query';
 import { nprogress } from '@mantine/nprogress';
-import { AuthContextType } from '@/contexts/AuthContext.tsx';
+import { AuthInterface } from '@/shared/hooks/useAuth.ts';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
-  auth: AuthContextType;
+  auth: AuthInterface;
 }>()({
   component: RootComponent,
 });

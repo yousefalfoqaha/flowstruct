@@ -7,7 +7,7 @@ import { LibraryBig, ScrollText, User } from 'lucide-react';
 import { Route as StudyPlansRoute } from '@/routes/_layout/study-plans';
 import { Route as CatalogRoute } from '@/routes/_layout/catalog';
 import { Route as UsersRoute } from '@/routes/_layout/users';
-import { useAuth } from '@/contexts/AuthContext.tsx';
+import { useAuth } from '@/shared/hooks/useAuth.ts';
 
 export function AppTabs() {
   const navigate = useNavigate();

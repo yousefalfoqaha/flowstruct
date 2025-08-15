@@ -6,7 +6,7 @@ import { useDeleteProgram } from '@/features/program/hooks/useDeleteProgram.ts';
 import { useArchiveProgram } from '@/features/program/hooks/useArchiveProgram.ts';
 import { useUnarchiveProgram } from '@/features/program/hooks/useUnarchiveProgram.ts';
 import { Link } from '@tanstack/react-router';
-import { useAuth } from '@/contexts/AuthContext.tsx';
+import { useAuth } from '@/shared/hooks/useAuth.ts';
 
 type ProgramOptionsMenuProps = {
   program: Program;

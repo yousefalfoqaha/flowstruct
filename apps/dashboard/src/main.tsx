@@ -22,7 +22,7 @@ import { NotFoundPage } from '@/shared/components/NotFoundPage.tsx';
 import themeClasses from './theme.module.css';
 import { Check, Loader, X } from 'lucide-react';
 import { ErrorObject } from '@/shared/types.ts';
-import { AuthProvider, useAuth } from '@/contexts/AuthContext.tsx';
+import { useAuth } from '@/shared/hooks/useAuth.ts';
 
 declare module '@tanstack/react-query' {
   interface Register {
@@ -199,10 +199,10 @@ const theme = createTheme({
     gju: gjuColors,
   },
   activeClassName: themeClasses.active,
-  defaultRadius: 'md',
+  defaultRadius: 'sm',
 });
 
-export function App() {
+function App() {
   const auth = useAuth();
   return <RouterProvider router={router} context={{ queryClient, auth }} />;
 }
@@ -213,9 +213,7 @@ createRoot(document.getElementById('root')!).render(
       <MantineProvider theme={theme}>
         <NavigationProgress className={navigationProgressClasses.progress} />
         <ModalsProvider>
-          <AuthProvider>
-            <App />
-          </AuthProvider>
+          <App />
         </ModalsProvider>
         <Notifications />
       </MantineProvider>

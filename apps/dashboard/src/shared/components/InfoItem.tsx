@@ -11,9 +11,7 @@ export function InfoItem({ label, value, suffix }: InfoItemProps) {
   return (
     <div className={classes.container}>
       <p className={classes.label}>{label}</p>
-      <p>
-        {value} {suffix}
-      </p>
+      {value} {suffix}
     </div>
   );
 }

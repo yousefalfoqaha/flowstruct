@@ -145,7 +145,7 @@ public class StudyPlanManagerService {
 
         studyPlan.setArchived(true);
 
-        if (studyPlan.getApprovedStudyPlan() != null) {
+        if (studyPlan.getApprovedStudyPlan() != null && Objects.equals(studyPlan.getApprovedStudyPlan().getVersion(), studyPlan.getVersion())) {
             studyPlan.getApprovedStudyPlan().setVersion(studyPlan.getVersion() + 1);
         }
 
@@ -158,7 +158,7 @@ public class StudyPlanManagerService {
 
         studyPlan.setArchived(false);
 
-        if (studyPlan.getApprovedStudyPlan() != null) {
+        if (studyPlan.getApprovedStudyPlan() != null && Objects.equals(studyPlan.getApprovedStudyPlan().getVersion(), studyPlan.getVersion())) {
             studyPlan.getApprovedStudyPlan().setVersion(studyPlan.getVersion() + 1);
         }
 

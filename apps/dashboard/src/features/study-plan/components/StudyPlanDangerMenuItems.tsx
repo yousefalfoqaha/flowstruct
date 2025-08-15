@@ -18,7 +18,7 @@ import { CloneStudyPlanDetailsForm } from '@/features/study-plan/components/Clon
 import { StudyPlanSummary } from '@/features/study-plan/types.ts';
 import { useDiscardStudyPlanChanges } from '@/features/study-plan/hooks/useDiscardStudyPlanChanges.ts';
 import { RequestApprovalForm } from '@/features/study-plan/components/RequestApprovalForm.tsx';
-import { useAuth } from '@/contexts/AuthContext.tsx';
+import { useAuth } from '@/shared/hooks/useAuth.ts';
 
 type Props = {
   studyPlan: StudyPlanSummary;
