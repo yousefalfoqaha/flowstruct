@@ -6,9 +6,10 @@ import { StudyPlanDangerMenuItems } from '@/features/study-plan/components/Study
 
 type Props = {
   studyPlan: StudyPlanSummary;
+  onDeleteSuccess?: () => void;
 };
 
-export function StudyPlanTableOptionsMenu({ studyPlan }: Props) {
+export function StudyPlanTableOptionsMenu({ studyPlan, onDeleteSuccess }: Props) {
   return (
     <Menu>
       <Menu.Target>
@@ -38,7 +39,10 @@ export function StudyPlanTableOptionsMenu({ studyPlan }: Props) {
 
         <Menu.Divider />
 
-        <StudyPlanDangerMenuItems studyPlan={studyPlan} />
+        <StudyPlanDangerMenuItems 
+          studyPlan={studyPlan} 
+          onDeleteSuccess={onDeleteSuccess} 
+        />
       </Menu.Dropdown>
     </Menu>
   );

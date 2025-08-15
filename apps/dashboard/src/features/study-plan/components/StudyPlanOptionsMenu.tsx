@@ -5,9 +5,10 @@ import { EllipsisVertical } from 'lucide-react';
 
 type Props = {
   studyPlan: StudyPlanSummary;
+  onDeleteSuccess?: () => void;
 };
 
-export function StudyPlanOptionsMenu({ studyPlan }: Props) {
+export function StudyPlanOptionsMenu({ studyPlan, onDeleteSuccess }: Props) {
   return (
     <Menu
       width={200}
@@ -24,7 +25,10 @@ export function StudyPlanOptionsMenu({ studyPlan }: Props) {
       <Menu.Dropdown>
         <Menu.Label>Actions</Menu.Label>
 
-        <StudyPlanDangerMenuItems studyPlan={studyPlan} />
+        <StudyPlanDangerMenuItems 
+          studyPlan={studyPlan} 
+          onDeleteSuccess={onDeleteSuccess} 
+        />
       </Menu.Dropdown>
     </Menu>
   );

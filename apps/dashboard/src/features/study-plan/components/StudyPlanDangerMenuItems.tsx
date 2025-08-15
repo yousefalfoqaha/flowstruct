@@ -22,9 +22,10 @@ import { useAuth } from '@/shared/hooks/useAuth.ts';
 
 type Props = {
   studyPlan: StudyPlanSummary;
+  onDeleteSuccess?: () => void;
 };
 
-export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
+export function StudyPlanDangerMenuItems({ studyPlan, onDeleteSuccess }: Props) {
   const deleteStudyPlan = useDeleteStudyPlan();
   const archiveStudyPlan = useArchiveStudyPlan();
   const unarchiveStudyPlan = useUnarchiveStudyPlan();
@@ -83,7 +84,14 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
         </Text>
       ),
       labels: { confirm: 'Confirm', cancel: 'Cancel' },
-      onConfirm: () => deleteStudyPlan.mutate(studyPlan.id),
+      onConfirm: () =>
+        deleteStudyPlan.mutate(studyPlan.id, {
+          onSuccess: () => {
+            if (onDeleteSuccess) {
+              onDeleteSuccess();
+            }
+          },
+        }),
     });
 
   const handleCloneStudyPlan = () =>

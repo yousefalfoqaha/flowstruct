@@ -6,8 +6,6 @@ import { Course, CoursesPage } from '@/features/course/types.ts';
 
 export const courseKeys = {
   all: ['courses'] as const,
-  infinites: () => [...courseKeys.all, 'infinite'] as const,
-  infinite: (filter: string) => [...courseKeys.infinites(), filter] as const,
   lists: () => [...courseKeys.all, 'list'] as const,
   list: (options: Omit<TableSearchOptions, 'columnFilters'>) =>
     [...courseKeys.lists(), options] as const,

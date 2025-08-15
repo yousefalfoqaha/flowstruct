@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router';
+import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router';
 import { StudyPlanCourseListQuery, StudyPlanQuery } from '@/features/study-plan/queries.ts';
 import { ProgramQuery } from '@/features/program/queries.ts';
 import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
@@ -14,10 +14,12 @@ import { StudyPlanTabs } from '@/features/study-plan/components/StudyPlanTabs.ts
 import { CoursesGraphProvider } from '@/contexts/CoursesGraphContext.tsx';
 import { StudyPlanOptionsMenu } from '@/features/study-plan/components/StudyPlanOptionsMenu.tsx';
 import { ArchiveAlert } from '@/features/study-plan/components/ArchiveAlert.tsx';
+import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 
 function RouteComponent() {
   const { data: studyPlan } = useCurrentStudyPlan();
   const { data: program } = useCurrentProgram(studyPlan.program);
+  const navigate = useNavigate();
 
   const title = (
     <Stack gap={5}>
@@ -43,7 +45,12 @@ function RouteComponent() {
         <Group mb="auto" justify="space-between">
           <LastUpdated at={studyPlan.updatedAt} by={studyPlan.updatedBy} />
 
-          <StudyPlanOptionsMenu studyPlan={studyPlan} />
+          <StudyPlanOptionsMenu
+            studyPlan={studyPlan}
+            onDeleteSuccess={() => {
+              navigate({ to: '/study-plans', search: DefaultSearchValues() });
+            }}
+          />
         </Group>
       </Group>
     </Stack>

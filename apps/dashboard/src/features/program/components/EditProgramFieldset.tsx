@@ -12,6 +12,8 @@ import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { useForm } from 'react-hook-form';
 import { customResolver } from '@/utils/customResolver.ts';
 import { z } from 'zod/v4';
+import { useAuth } from '@/shared/hooks/useAuth.ts';
+import { canSubmit } from '@/utils/canSubmit.ts';
 
 type EditProgramFieldsetProps = {
   program: Program;
@@ -27,6 +29,8 @@ export function EditProgramFieldset({ program }: EditProgramFieldsetProps) {
   const deleteProgram = useDeleteProgram();
   const navigate = useNavigate();
 
+  const { hasPermission } = useAuth();
+
   const onSubmit = form.handleSubmit((data) => {
     editProgramDetails.mutate(
       {
@@ -35,7 +39,10 @@ export function EditProgramFieldset({ program }: EditProgramFieldsetProps) {
       },
       {
         onSuccess: () => {
-          navigate({ to: '/catalog/programs/$programId', params: { programId: String(program.id) } });
+          navigate({
+            to: '/catalog/programs/$programId',
+            params: { programId: String(program.id) },
+          });
         },
       }
     );
@@ -57,30 +64,33 @@ export function EditProgramFieldset({ program }: EditProgramFieldsetProps) {
         subtitle="Update the details for this program"
         footer={
           <>
-            <Button
-              variant="filled"
-              color="red"
-              leftSection={<Trash size={18} />}
-              onClick={() =>
-                modals.openConfirmModal({
-                  title: 'Please confirm your action',
-                  children: (
-                    <Text size="sm">
-                      Deleting this program will delete all of its study plans. Are you absolutely
-                      sure?
-                    </Text>
-                  ),
-                  labels: { confirm: 'Confirm', cancel: 'Cancel' },
-                  onConfirm: handleDelete,
-                })
-              }
-              loading={deleteProgram.isPending}
-            >
-              Delete Program
-            </Button>
+            {hasPermission('programs:delete') && (
+              <Button
+                variant="filled"
+                color="red"
+                leftSection={<Trash size={18} />}
+                onClick={() =>
+                  modals.openConfirmModal({
+                    title: 'Please confirm your action',
+                    children: (
+                      <Text size="sm">
+                        Deleting this program will delete all of its study plans. Are you absolutely
+                        sure?
+                      </Text>
+                    ),
+                    labels: { confirm: 'Confirm', cancel: 'Cancel' },
+                    onConfirm: handleDelete,
+                  })
+                }
+                loading={deleteProgram.isPending}
+              >
+                Delete Program
+              </Button>
+            )}
 
             <Button
-              disabled={!form.formState.isValid || !form.formState.isDirty}
+              ml="auto"
+              disabled={!canSubmit(form)}
               type="submit"
               leftSection={<Pencil size={18} />}
               loading={editProgramDetails.isPending}

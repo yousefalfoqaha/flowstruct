@@ -5,9 +5,10 @@ import { CourseDangerousOptionsMenuItems } from '@/features/course/components/Co
 
 type Props = {
   course: CourseSummary;
+  onDeleteSuccess?: () => void;
 };
 
-export function CourseOptionsMenu({ course }: Props) {
+export function CourseOptionsMenu({ course, onDeleteSuccess }: Props) {
   return (
     <Menu
       width={200}
@@ -24,7 +25,10 @@ export function CourseOptionsMenu({ course }: Props) {
       <Menu.Dropdown>
         <Menu.Label>Actions</Menu.Label>
 
-        <CourseDangerousOptionsMenuItems course={course} />
+        <CourseDangerousOptionsMenuItems 
+          course={course} 
+          onDeleteSuccess={onDeleteSuccess} 
+        />
       </Menu.Dropdown>
     </Menu>
   );

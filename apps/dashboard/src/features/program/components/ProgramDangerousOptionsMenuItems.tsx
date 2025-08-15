@@ -9,9 +9,10 @@ import { useAuth } from '@/shared/hooks/useAuth.ts';
 
 type Props = {
   program: Program;
+  onDeleteSuccess?: () => void;
 };
 
-export function ProgramDangerousOptionsMenuItems({ program }: Props) {
+export function ProgramDangerousOptionsMenuItems({ program, onDeleteSuccess }: Props) {
   const deleteProgram = useDeleteProgram();
   const markProgramOutdated = useMarkProgramOutdated();
   const markProgramActive = useMarkProgramActive();
@@ -36,8 +37,8 @@ export function ProgramDangerousOptionsMenuItems({ program }: Props) {
       title: 'Mark Program as Active',
       children: (
         <Text size="sm">
-          Marking this program as active will indicate it's currently in use. Are you sure
-          you want to proceed?
+          Marking this program as active will indicate it's currently in use. Are you sure you want
+          to proceed?
         </Text>
       ),
       labels: { confirm: 'Mark Active', cancel: 'Cancel' },
@@ -49,40 +50,34 @@ export function ProgramDangerousOptionsMenuItems({ program }: Props) {
       title: 'Please confirm your action',
       children: (
         <Text size="sm">
-          Deleting this program will delete all of its study plans. Are you absolutely
-          sure?
+          Deleting this program will delete all of its study plans. Are you absolutely sure?
         </Text>
       ),
       labels: { confirm: 'Confirm', cancel: 'Cancel' },
-      onConfirm: () => deleteProgram.mutate(program.id),
+      onConfirm: () =>
+        deleteProgram.mutate(program.id, {
+          onSuccess: () => {
+            if (onDeleteSuccess) {
+              onDeleteSuccess();
+            }
+          },
+        }),
     });
 
   return (
     <>
       {program.outdatedAt ? (
-        <Menu.Item
-          color="green"
-          leftSection={<RotateCcw size={14} />}
-          onClick={handleMarkActive}
-        >
+        <Menu.Item color="green" leftSection={<RotateCcw size={14} />} onClick={handleMarkActive}>
           Mark as Active
         </Menu.Item>
       ) : (
-        <Menu.Item
-          color="orange"
-          leftSection={<History size={14} />}
-          onClick={handleMarkOutdated}
-        >
+        <Menu.Item color="orange" leftSection={<History size={14} />} onClick={handleMarkOutdated}>
           Mark as Outdated
         </Menu.Item>
       )}
 
       {hasPermission('programs:delete') && (
-        <Menu.Item
-          color="red"
-          leftSection={<Trash size={14} />}
-          onClick={handleDeleteProgram}
-        >
+        <Menu.Item color="red" leftSection={<Trash size={14} />} onClick={handleDeleteProgram}>
           Delete
         </Menu.Item>
       )}
