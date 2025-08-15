@@ -66,18 +66,18 @@ public class CourseController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{courseId}/archive")
-    public ResponseEntity<CourseDto> archiveCourse(@PathVariable long courseId) {
+    @PutMapping("/{courseId}/mark-outdated")
+    public ResponseEntity<CourseDto> markCourseOutdated(@PathVariable long courseId) {
         return new ResponseEntity<>(
-                courseManagerService.archiveCourse(courseId),
+                courseManagerService.markCourseOutdated(courseId),
                 HttpStatus.OK
         );
     }
 
-    @PutMapping("/{courseId}/unarchive")
-    public ResponseEntity<CourseDto> unarchiveCourse(@PathVariable long courseId) {
+    @PutMapping("/{courseId}/mark-active")
+    public ResponseEntity<CourseDto> markCourseActive(@PathVariable long courseId) {
         return new ResponseEntity<>(
-                courseManagerService.unarchiveCourse(courseId),
+                courseManagerService.markCourseActive(courseId),
                 HttpStatus.OK
         );
     }

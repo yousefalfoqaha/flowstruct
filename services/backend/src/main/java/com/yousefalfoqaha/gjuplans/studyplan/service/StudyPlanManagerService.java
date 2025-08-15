@@ -9,12 +9,14 @@ import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDetailsDto;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDto;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
 import com.yousefalfoqaha.gjuplans.studyplan.repository.StudyPlanRepository;
+import com.yousefalfoqaha.gjuplans.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 public class StudyPlanManagerService {
     private final StudyPlanService studyPlanService;
     private final StudyPlanRepository studyPlanRepository;
+    private final UserService userService;
 
     @Transactional
     public StudyPlanDto discardStudyPlanChanges(long studyPlanId) {
@@ -81,7 +84,8 @@ public class StudyPlanManagerService {
                 cloneDetails.track(),
                 studyPlanToClone.getProgram(),
                 null,
-                false,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -119,7 +123,8 @@ public class StudyPlanManagerService {
                 details.track().trim(),
                 AggregateReference.to(details.program()),
                 null,
-                false,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -142,8 +147,10 @@ public class StudyPlanManagerService {
     @Transactional
     public StudyPlanDto archiveStudyPlan(long id) {
         var studyPlan = studyPlanService.findOrThrow(id);
+        var currentUser = userService.getCurrentUser();
 
-        studyPlan.setArchived(true);
+        studyPlan.setArchivedAt(Instant.now());
+        studyPlan.setArchivedBy(currentUser.getId());
 
         if (studyPlan.getApprovedStudyPlan() != null && Objects.equals(studyPlan.getApprovedStudyPlan().getVersion(), studyPlan.getVersion())) {
             studyPlan.getApprovedStudyPlan().setVersion(studyPlan.getVersion() + 1);
@@ -156,7 +163,8 @@ public class StudyPlanManagerService {
     public StudyPlanDto unarchiveStudyPlan(long id) {
         var studyPlan = studyPlanService.findOrThrow(id);
 
-        studyPlan.setArchived(false);
+        studyPlan.setArchivedAt(null);
+        studyPlan.setArchivedBy(null);
 
         if (studyPlan.getApprovedStudyPlan() != null && Objects.equals(studyPlan.getApprovedStudyPlan().getVersion(), studyPlan.getVersion())) {
             studyPlan.getApprovedStudyPlan().setVersion(studyPlan.getVersion() + 1);

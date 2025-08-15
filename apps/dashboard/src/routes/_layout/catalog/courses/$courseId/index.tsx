@@ -4,17 +4,18 @@ import { getCourseDisplayName } from '@/utils/getCourseDisplayName.ts';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 import { AppCard } from '@/shared/components/AppCard.tsx';
 import { EditDetailsButton } from '@/shared/components/EditDetailsButton.tsx';
-import { Group } from '@mantine/core';
+import { Group, Stack } from '@mantine/core';
 import { InfoItem } from '@/shared/components/InfoItem.tsx';
 import { CourseType } from '@/features/course/types.ts';
 import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
 import { CourseQuery } from '@/features/course/queries.ts';
 import { useCurrentCourse } from '@/features/course/hooks/useCurrentCourse.ts';
+import { OutdatedAlert } from '@/shared/components/OutdatedAlert.tsx';
 
 export const Route = createFileRoute('/_layout/catalog/courses/$courseId/')({
   loader: async ({ context: { queryClient }, params }) => {
     const courseId = Number(params.courseId);
-    queryClient.ensureQueryData(CourseQuery(courseId));
+    await queryClient.ensureQueryData(CourseQuery(courseId));
   },
   component: RouteComponent,
 });
@@ -25,10 +26,17 @@ function RouteComponent() {
   return (
     <PageLayout
       header={
-        <Group gap="lg" justify="space-between">
-          <PageHeaderWithBack title={getCourseDisplayName(course)} linkProps={{ to: '/catalog/courses' }} />
-          <LastUpdated at={course.updatedAt} by={course.updatedBy} />
-        </Group>
+        <Stack>
+          <OutdatedAlert 
+            outdatedAt={course.outdatedAt} 
+            outdatedBy={course.outdatedBy} 
+            entityType="course" 
+          />
+          <Group gap="lg" justify="space-between">
+            <PageHeaderWithBack title={getCourseDisplayName(course)} linkProps={{ to: '/catalog/courses' }} />
+            <LastUpdated at={course.updatedAt} by={course.updatedBy} />
+          </Group>
+        </Stack>
       }
     >
       <AppCard

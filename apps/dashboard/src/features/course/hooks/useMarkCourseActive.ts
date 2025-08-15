@@ -3,14 +3,14 @@ import { courseKeys } from '@/features/course/queries.ts';
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
 import { api } from '@/shared/api.ts';
 
-const unarchiveCourse = (courseId: number) =>
-  api.put<void>([COURSE_ENDPOINT, courseId, 'unarchive']);
+const markCourseActive = (courseId: number) => 
+  api.put<void>([COURSE_ENDPOINT, courseId, 'mark-active']);
 
-export const useUnarchiveCourse = () =>
+export const useMarkCourseActive = () =>
   useAppMutation({
-    mutationFn: unarchiveCourse,
+    mutationFn: markCourseActive,
     meta: {
       invalidates: (_, courseId) => [courseKeys.lists(), courseKeys.detail(courseId)],
-      successMessage: 'Course unarchived.',
+      successMessage: 'Course marked as active.',
     },
   });

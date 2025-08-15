@@ -1,8 +1,8 @@
 import { ActionIcon, Menu, Text } from '@mantine/core';
 import { CourseSummary } from '@/features/course/types.ts';
-import { Archive, ArchiveRestore, Ellipsis, Pencil, ScrollText } from 'lucide-react';
-import { useArchiveCourse } from '@/features/course/hooks/useArchiveCourse.ts';
-import { useUnarchiveCourse } from '@/features/course/hooks/useUnarchiveCourse.ts';
+import { Ellipsis, History, Pencil, RotateCcw, ScrollText } from 'lucide-react';
+import { useMarkCourseOutdated } from '@/features/course/hooks/useMarkCourseOutdated.ts';
+import { useMarkCourseActive } from '@/features/course/hooks/useMarkCourseActive.ts';
 import { modals } from '@mantine/modals';
 import { Link } from '@tanstack/react-router';
 
@@ -11,34 +11,34 @@ type Props = {
 };
 
 export function CourseOptionsMenu({ course }: Props) {
-  const { mutate: archiveCourse } = useArchiveCourse();
-  const { mutate: unarchiveCourse } = useUnarchiveCourse();
+  const { mutate: markOutdated } = useMarkCourseOutdated();
+  const { mutate: markActive } = useMarkCourseActive();
 
-  const handleArchive = () => {
+  const handleMarkOutdated = () => {
     modals.openConfirmModal({
-      title: 'Archive Course',
+      title: 'Mark Course as Outdated',
       children: (
         <Text size="sm">
-          Archiving this course will make it unavailable to students. Are you sure you want to
+          Marking this course as outdated will indicate it's no longer in use. Are you sure you want to
           proceed?
         </Text>
       ),
-      labels: { confirm: 'Archive', cancel: 'Cancel' },
-      onConfirm: () => archiveCourse(course.id),
+      labels: { confirm: 'Mark Outdated', cancel: 'Cancel' },
+      onConfirm: () => markOutdated(course.id),
     });
   };
 
-  const handleUnarchive = () => {
+  const handleMarkActive = () => {
     modals.openConfirmModal({
-      title: 'Unarchive Course',
+      title: 'Mark Course as Active',
       children: (
         <Text size="sm">
-          Unarchiving this course will make it available again to students. Are you sure you want to
+          Marking this course as active will indicate it's currently in use. Are you sure you want to
           proceed?
         </Text>
       ),
-      labels: { confirm: 'Unarchive', cancel: 'Cancel' },
-      onConfirm: () => unarchiveCourse(course.id),
+      labels: { confirm: 'Mark Active', cancel: 'Cancel' },
+      onConfirm: () => markActive(course.id),
     });
   };
 
@@ -71,17 +71,17 @@ export function CourseOptionsMenu({ course }: Props) {
 
         <Menu.Divider />
 
-        {course.isArchived ? (
+        {course.outdatedAt ? (
           <Menu.Item
             color="green"
-            leftSection={<ArchiveRestore size={14} />}
-            onClick={handleUnarchive}
+            leftSection={<RotateCcw size={14} />}
+            onClick={handleMarkActive}
           >
-            Unarchive
+            Mark active
           </Menu.Item>
         ) : (
-          <Menu.Item color="orange" leftSection={<Archive size={14} />} onClick={handleArchive}>
-            Archive
+          <Menu.Item color="orange" leftSection={<History size={14} />} onClick={handleMarkOutdated}>
+            Mark outdated
           </Menu.Item>
         )}
       </Menu.Dropdown>

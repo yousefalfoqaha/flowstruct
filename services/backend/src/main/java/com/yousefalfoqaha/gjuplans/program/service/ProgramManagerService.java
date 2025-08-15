@@ -7,10 +7,13 @@ import com.yousefalfoqaha.gjuplans.program.dto.ProgramDto;
 import com.yousefalfoqaha.gjuplans.program.exception.UniqueProgramException;
 import com.yousefalfoqaha.gjuplans.program.repository.ProgramRepository;
 import com.yousefalfoqaha.gjuplans.studyplan.service.StudyPlanManagerService;
+import com.yousefalfoqaha.gjuplans.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
 
 @PreAuthorize("hasRole('ROLE_EDITOR')")
 @RequiredArgsConstructor
@@ -20,6 +23,7 @@ public class ProgramManagerService {
     private final ProgramService programService;
     private final ProgramRepository programRepository;
     private final CodeFormatter codeFormatter;
+    private final UserService userService;
 
     @Transactional
     public ProgramDto editProgramDetails(long programId, ProgramDetailsDto details) {
@@ -53,7 +57,8 @@ public class ProgramManagerService {
                 userEnteredCode,
                 details.name().trim(),
                 details.degree(),
-                false,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -72,16 +77,23 @@ public class ProgramManagerService {
     }
 
     @Transactional
-    public ProgramDto archiveProgram(long programId) {
+    public ProgramDto markProgramOutdated(long programId) {
         Program program = programService.findOrThrow(programId);
-        program.setArchived(true);
+        var currentUser = userService.getCurrentUser();
+
+        program.setOutdatedAt(Instant.now());
+        program.setOutdatedBy(currentUser.getId());
+
         return programService.saveAndMap(program);
     }
 
     @Transactional
-    public ProgramDto unarchiveProgram(long programId) {
+    public ProgramDto markProgramActive(long programId) {
         Program program = programService.findOrThrow(programId);
-        program.setArchived(false);
+
+        program.setOutdatedAt(null);
+        program.setOutdatedBy(null);
+
         return programService.saveAndMap(program);
     }
 }

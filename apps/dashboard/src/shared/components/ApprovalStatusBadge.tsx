@@ -2,7 +2,7 @@ import { Badge } from '@mantine/core';
 import classes from '@/features/program/styles/StatusBadge.module.css';
 import { Check, Pencil, Plus } from 'lucide-react';
 
-export function StatusBadge(status: string) {
+export function ApprovalStatusBadge(status: string) {
   switch (status) {
     case 'APPROVED':
       return (

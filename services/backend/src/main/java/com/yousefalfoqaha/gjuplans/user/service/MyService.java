@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -22,7 +23,9 @@ public class MyService {
     private final PasswordEncoder passwordEncoder;
     private final UserDtoMapper userDtoMapper;
     private final JwtService jwtService;
+    private final UserService userService;
 
+    @Transactional
     public void changeMyPassword(MyPasswordResetDto passwordReset) {
         String newPassword = passwordReset.newPassword().trim();
         String confirmPassword = passwordReset.confirmPassword().trim();
@@ -31,7 +34,7 @@ public class MyService {
             throw new InvalidPasswordException("New and confirmed passwords must be the same.");
         }
 
-        User me = getCurrentUser();
+        User me = userService.getCurrentUser();
 
         if (!passwordEncoder.matches(passwordReset.currentPassword().trim(), me.getPassword())) {
             throw new InvalidPasswordException("Enter the correct current password.");
@@ -42,8 +45,9 @@ public class MyService {
         userRepository.save(me);
     }
 
+    @Transactional
     public UserWithTokenDto editMyDetails(UserDetailsDto details) {
-        User me = getCurrentUser();
+        User me = userService.getCurrentUser();
 
         me.setUsername(details.username().trim());
         me.setEmail(details.email().trim());
@@ -56,12 +60,6 @@ public class MyService {
     }
 
     public UserDto getMe() {
-        return userDtoMapper.apply(getCurrentUser());
-    }
-
-    public User getCurrentUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("No user was found."));
+        return userDtoMapper.apply(userService.getCurrentUser());
     }
 }

@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useCurrentProgram } from '@/features/program/hooks/useCurrentProgram.ts';
-import { Group } from '@mantine/core';
+import { Group, Stack } from '@mantine/core';
 import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
 import { AppCard } from '@/shared/components/AppCard.tsx';
 import { InfoItem } from '@/shared/components/InfoItem.tsx';
@@ -11,11 +11,12 @@ import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
 import { EditDetailsButton } from '@/shared/components/EditDetailsButton.tsx';
 import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
 import { ProgramQuery } from '@/features/program/queries.ts';
+import { OutdatedAlert } from '@/shared/components/OutdatedAlert.tsx';
 
 export const Route = createFileRoute('/_layout/catalog/programs/$programId/')({
   loader: async ({ context: { queryClient }, params }) => {
     const programId = parseInt(params.programId);
-    queryClient.ensureQueryData(ProgramQuery(programId));
+    await queryClient.ensureQueryData(ProgramQuery(programId));
   },
   component: RouteComponent,
 });
@@ -26,16 +27,23 @@ function RouteComponent() {
   return (
     <PageLayout
       header={
-        <Group gap="lg" justify="space-between">
-          <PageHeaderWithBack
-            title={getProgramDisplayName(program)}
-            linkProps={{
-              to: '/catalog/programs',
-              search: DefaultSearchValues(),
-            }}
+        <Stack>
+          <OutdatedAlert 
+            outdatedAt={program.outdatedAt} 
+            outdatedBy={program.outdatedBy} 
+            entityType="program" 
           />
-          <LastUpdated at={program.updatedAt} by={program.updatedBy} />
-        </Group>
+          <Group gap="lg" justify="space-between">
+            <PageHeaderWithBack
+              title={getProgramDisplayName(program)}
+              linkProps={{
+                to: '/catalog/programs',
+                search: DefaultSearchValues(),
+              }}
+            />
+            <LastUpdated at={program.updatedAt} by={program.updatedBy} />
+          </Group>
+        </Stack>
       }
     >
       <AppCard

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class UserManagementService {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public UserDto createUser(NewUserDetailsDto details) {
         String password = details.password().trim();
         String confirmPassword = details.confirmPassword().trim();
@@ -43,6 +45,7 @@ public class UserManagementService {
         return userService.saveAndMap(user);
     }
 
+    @Transactional
     public UserDto editUserDetails(long userId, UserDetailsDto details) {
         var user = userService.findOrThrow(userId);
 
@@ -52,6 +55,7 @@ public class UserManagementService {
         return userService.saveAndMap(user);
     }
 
+    @Transactional
     public void changeUserPassword(long userId, AdminPasswordResetDto passwordReset) {
         String newPassword = passwordReset.newPassword().trim();
         String confirmPassword = passwordReset.confirmPassword().trim();
@@ -66,6 +70,7 @@ public class UserManagementService {
         userRepository.save(user);
     }
 
+    @Transactional
     public UserDto changeUserRole(long userId, Role newRole) {
         var user = userService.findOrThrow(userId);
 
@@ -74,6 +79,7 @@ public class UserManagementService {
         return userService.saveAndMap(user);
     }
 
+    @Transactional
     public void deleteUser(long userId) {
         userRepository.deleteById(userId);
     }

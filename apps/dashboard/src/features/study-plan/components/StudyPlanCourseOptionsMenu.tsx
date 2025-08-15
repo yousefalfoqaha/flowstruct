@@ -18,6 +18,19 @@ export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
   const { studyPlanId } = useParams({ from: '/_layout/study-plans/$studyPlanId' });
   const removeCourse = useRemoveCoursesFromStudyPlan();
 
+  const openEditCourseModal = () =>
+    modals.open({
+      title: (
+        <ModalHeader
+          title={`${course.code}: ${course.name}`}
+          subtitle="Update the details for this course"
+        />
+      ),
+      children: <EditCourseForm courseId={course.id} />,
+      size: 'xl',
+      centered: true,
+    });
+
   const removeCourseConfirmModal = () =>
     modals.openConfirmModal({
       title: 'Please confirm your action',
@@ -72,19 +85,7 @@ export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
                     </Button>
 
                     <Button
-                      onClick={() =>
-                        modals.open({
-                          title: (
-                            <ModalHeader
-                              title={`${course.code}: ${course.name}`}
-                              subtitle="Update the details for this course"
-                            />
-                          ),
-                          children: <EditCourseForm courseId={course.id} />,
-                          size: 'xl',
-                          centered: true,
-                        })
-                      }
+                      onClick={openEditCourseModal}
                       variant="outline"
                       leftSection={<Pencil size={16} />}
                     >
@@ -99,6 +100,10 @@ export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
           }
         >
           View
+        </Menu.Item>
+
+        <Menu.Item leftSection={<Pencil size={14} />} onClick={openEditCourseModal}>
+          Edit details
         </Menu.Item>
 
         <Menu.Sub>

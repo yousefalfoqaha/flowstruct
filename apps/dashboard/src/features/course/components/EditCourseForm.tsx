@@ -1,4 +1,4 @@
-import { Button, Fieldset, Stack } from '@mantine/core';
+import { Button, Fieldset, LoadingOverlay, Stack } from '@mantine/core';
 import { courseSchema } from '@/features/course/schemas.ts';
 import { CourseFields } from '@/features/course/components/CourseFields.tsx';
 import { Plus } from 'lucide-react';
@@ -9,6 +9,7 @@ import { customResolver } from '@/utils/customResolver.ts';
 import { useCourse } from '@/features/course/hooks/useCourse.ts';
 import { modals } from '@mantine/modals';
 import { useEditCourseDetails } from '@/features/course/hooks/useEditCourseDetails.ts';
+import { canSubmit } from '@/utils/canSubmit';
 
 interface Props {
   courseId: number;
@@ -17,11 +18,9 @@ interface Props {
 export function EditCourseForm({ courseId }: Props) {
   const { data: course, isPending } = useCourse(courseId);
 
-  if (isPending) return 'Loading...';
-
   const form = useForm<z.infer<typeof courseSchema>>({
     resolver: customResolver(courseSchema),
-    defaultValues: { ...course },
+    defaultValues: course ?? {},
   });
   const { preset, changePreset } = useCoursePreset(form);
   const editCourseDetails = useEditCourseDetails();
@@ -37,6 +36,8 @@ export function EditCourseForm({ courseId }: Props) {
     );
   });
 
+  if (isPending) return <LoadingOverlay visible zIndex={1000} loaderProps={{ type: 'bars' }} />;
+
   return (
     <form onSubmit={onSubmit}>
       <Stack>
@@ -45,7 +46,7 @@ export function EditCourseForm({ courseId }: Props) {
         </Fieldset>
 
         <Button
-          disabled={!form.formState.isValid}
+          disabled={!canSubmit(form)}
           leftSection={<Plus size={18} />}
           type="submit"
           loading={editCourseDetails.isPending}

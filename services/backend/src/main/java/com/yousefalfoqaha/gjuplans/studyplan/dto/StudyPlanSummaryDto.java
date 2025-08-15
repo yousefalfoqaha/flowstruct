@@ -9,7 +9,8 @@ public record StudyPlanSummaryDto(
         String track,
         long program,
         String status,
-        boolean isArchived,
+        Instant archivedAt,
+        Long archivedBy,
         Instant createdAt,
         Instant updatedAt,
         Long updatedBy

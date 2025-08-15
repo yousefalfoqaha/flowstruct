@@ -3,15 +3,15 @@ import { Program } from '@/features/program/types.ts';
 import { ProgramOptionsMenu } from '@/features/program/components/ProgramOptionsMenu.tsx';
 import { Badge } from '@mantine/core';
 import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
-import { ActiveStatusBadge } from '@/shared/components/ActiveStatusBadge.tsx';
+import { OutdatedStatusBadge } from '@/shared/components/OutdatedStatusBadge.tsx';
 
 export function getProgramsTableColumns() {
   const { display, accessor } = createColumnHelper<Program>();
 
   return [
-    accessor('isArchived', {
+    accessor('outdatedAt', {
       header: '',
-      cell: ({ row }) => <ActiveStatusBadge isArchived={row.original.isArchived} />,
+      cell: ({ row }) => <OutdatedStatusBadge outdatedAt={row.original.outdatedAt} />,
     }),
     accessor('code', {
       header: 'Code',

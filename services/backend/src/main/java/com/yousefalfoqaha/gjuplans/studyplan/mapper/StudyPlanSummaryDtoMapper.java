@@ -25,7 +25,8 @@ public class StudyPlanSummaryDtoMapper implements Function<StudyPlanSummaryProje
                 studyPlan.track(),
                 studyPlan.program(),
                 status,
-                studyPlan.isArchived(),
+                studyPlan.archivedAt(),
+                studyPlan.archivedBy(),
                 studyPlan.createdAt(),
                 studyPlan.updatedAt(),
                 studyPlan.updatedBy()

@@ -3,15 +3,15 @@ import { CourseSummary } from '@/features/course/types.ts';
 import { Badge } from '@mantine/core';
 import { CourseOptionsMenu } from '@/features/course/components/CourseOptionsMenu.tsx';
 import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
-import { ActiveStatusBadge } from '@/shared/components/ActiveStatusBadge';
+import { OutdatedStatusBadge } from '@/shared/components/OutdatedStatusBadge.tsx';
 
 export function getCoursesTableColumns() {
   const { accessor, display } = createColumnHelper<CourseSummary>();
 
   return [
-    accessor('isArchived', {
+    accessor('outdatedAt', {
       header: '',
-      cell: ({ row }) => <ActiveStatusBadge isArchived={row.original.isArchived} />,
+      cell: ({ row }) => <OutdatedStatusBadge outdatedAt={row.original.outdatedAt} />,
     }),
     accessor('code', {
       header: 'Code',

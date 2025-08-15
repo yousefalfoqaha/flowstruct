@@ -3,13 +3,14 @@ import { courseKeys } from '@/features/course/queries.ts';
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
 import { api } from '@/shared/api.ts';
 
-const archiveCourse = (courseId: number) => api.put<void>([COURSE_ENDPOINT, courseId, 'archive']);
+const markCourseOutdated = (courseId: number) => 
+  api.put<void>([COURSE_ENDPOINT, courseId, 'mark-outdated']);
 
-export const useArchiveCourse = () =>
+export const useMarkCourseOutdated = () =>
   useAppMutation({
-    mutationFn: archiveCourse,
+    mutationFn: markCourseOutdated,
     meta: {
       invalidates: (_, courseId) => [courseKeys.lists(), courseKeys.detail(courseId)],
-      successMessage: 'Course archived.',
+      successMessage: 'Course marked as outdated.',
     },
   });

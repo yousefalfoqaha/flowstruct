@@ -3,14 +3,14 @@ import { programKeys } from '@/features/program/queries.ts';
 import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
 import { api } from '@/shared/api.ts';
 
-const archiveProgram = (programId: number) =>
-  api.put<void>([PROGRAM_ENDPOINT, programId, 'archive']);
+const markProgramOutdated = (programId: number) =>
+  api.put<void>([PROGRAM_ENDPOINT, programId, 'mark-outdated']);
 
-export const useArchiveProgram = () =>
+export const useMarkProgramOutdated = () =>
   useAppMutation({
-    mutationFn: archiveProgram,
+    mutationFn: markProgramOutdated,
     meta: {
       invalidates: (_, programId) => [programKeys.list(), programKeys.detail(programId)],
-      successMessage: 'Program archived.',
+      successMessage: 'Program marked as outdated.',
     },
   });

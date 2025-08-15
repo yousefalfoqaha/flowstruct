@@ -50,7 +50,8 @@ export type StudyPlan = {
   coursePlacements: Record<number, CoursePlacement>;
   coursePrerequisites: Record<number, Record<number, CourseRelation>>;
   courseCorequisites: Record<number, number[]>;
-  isArchived: boolean;
+  archivedAt: Date;
+  archivedBy: number | null;
   createdAt: Date;
   updatedAt: Date;
   updatedBy: number;
@@ -75,7 +76,8 @@ export type StudyPlanSummary = Pick<
   | 'track'
   | 'status'
   | 'program'
-  | 'isArchived'
+  | 'archivedAt'
+  | 'archivedBy'
   | 'createdAt'
   | 'updatedAt'
   | 'updatedBy'

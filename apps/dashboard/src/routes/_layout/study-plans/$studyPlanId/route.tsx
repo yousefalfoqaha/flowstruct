@@ -5,15 +5,15 @@ import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
 import { getStudyPlanDisplayName } from '@/utils/getStudyPlanDisplayName.ts';
 import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
 import { useCurrentProgram } from '@/features/program/hooks/useCurrentProgram.ts';
-import { Alert, Divider, Group, Stack, Text, Title } from '@mantine/core';
+import { Divider, Group, Stack, Text, Title } from '@mantine/core';
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
-import { StatusBadge } from '@/shared/components/StatusBadge.tsx';
+import { ApprovalStatusBadge } from '@/shared/components/ApprovalStatusBadge.tsx';
 import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
 import { StudyPlanTabs } from '@/features/study-plan/components/StudyPlanTabs.tsx';
 import { CoursesGraphProvider } from '@/contexts/CoursesGraphContext.tsx';
 import { StudyPlanOptionsMenu } from '@/features/study-plan/components/StudyPlanOptionsMenu.tsx';
-import { Archive } from 'lucide-react';
+import { ArchiveAlert } from '@/features/study-plan/components/ArchiveAlert.tsx';
 
 function RouteComponent() {
   const { data: studyPlan } = useCurrentStudyPlan();
@@ -32,15 +32,12 @@ function RouteComponent() {
 
   const header = (
     <Stack>
-      <Alert color="orange" icon={<Archive />} autoContrast>
-        This study plan was archived by Mohammad Almajeed on Jun 23, 2024. It is no longer visible
-        to students.
-      </Alert>
+      <ArchiveAlert studyPlan={studyPlan} />
       <Group justify="space-between">
         <Group gap="lg" wrap="nowrap">
           <PageHeaderWithBack title={title} linkProps={{ to: '/study-plans' }} />
 
-          {StatusBadge(studyPlan.status)}
+          {ApprovalStatusBadge(studyPlan.status)}
         </Group>
 
         <Group mb="auto" justify="space-between">
@@ -70,6 +67,7 @@ export const Route = createFileRoute('/_layout/study-plans/$studyPlanId')({
     const studyPlanId = Number(params.studyPlanId);
 
     queryClient.ensureQueryData(StudyPlanCourseListQuery(studyPlanId));
+
     const studyPlan = await queryClient.ensureQueryData(StudyPlanQuery(studyPlanId));
     queryClient.ensureQueryData(ProgramQuery(studyPlan.program));
   },

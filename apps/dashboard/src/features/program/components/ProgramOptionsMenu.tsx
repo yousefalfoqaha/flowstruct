@@ -1,10 +1,10 @@
 import { ActionIcon, Menu, Text } from '@mantine/core';
-import { Archive, ArchiveRestore, Ellipsis, Pencil, ScrollText, Trash } from 'lucide-react';
+import { Ellipsis, History, Pencil, RotateCcw, ScrollText, Trash } from 'lucide-react';
 import { Program } from '@/features/program/types.ts';
 import { modals } from '@mantine/modals';
 import { useDeleteProgram } from '@/features/program/hooks/useDeleteProgram.ts';
-import { useArchiveProgram } from '@/features/program/hooks/useArchiveProgram.ts';
-import { useUnarchiveProgram } from '@/features/program/hooks/useUnarchiveProgram.ts';
+import { useMarkProgramOutdated } from '@/features/program/hooks/useMarkProgramOutdated.ts';
+import { useMarkProgramActive } from '@/features/program/hooks/useMarkProgramActive.ts';
 import { Link } from '@tanstack/react-router';
 import { useAuth } from '@/shared/hooks/useAuth.ts';
 
@@ -14,8 +14,8 @@ type ProgramOptionsMenuProps = {
 
 export function ProgramOptionsMenu({ program }: ProgramOptionsMenuProps) {
   const deleteProgram = useDeleteProgram();
-  const archiveProgram = useArchiveProgram();
-  const unarchiveProgram = useUnarchiveProgram();
+  const markProgramOutdated = useMarkProgramOutdated();
+  const markProgramActive = useMarkProgramActive();
 
   const { hasPermission } = useAuth();
 
@@ -46,45 +46,45 @@ export function ProgramOptionsMenu({ program }: ProgramOptionsMenuProps) {
 
         <Menu.Divider />
 
-        {program.isArchived ? (
+        {program.outdatedAt ? (
           <Menu.Item
             color="green"
-            leftSection={<ArchiveRestore size={14} />}
+            leftSection={<RotateCcw size={14} />}
             onClick={() =>
               modals.openConfirmModal({
-                title: 'Unarchive program',
+                title: 'Mark Program as Active',
                 children: (
                   <Text size="sm">
-                    Unarchiving this program will make it available again to students. Are you sure
+                    Marking this program as active will indicate it's currently in use. Are you sure
                     you want to proceed?
                   </Text>
                 ),
-                labels: { confirm: 'Unarchive', cancel: 'Cancel' },
-                onConfirm: () => unarchiveProgram.mutate(program.id),
+                labels: { confirm: 'Mark Active', cancel: 'Cancel' },
+                onConfirm: () => markProgramActive.mutate(program.id),
               })
             }
           >
-            Unarchive
+            Mark active
           </Menu.Item>
         ) : (
           <Menu.Item
             color="orange"
-            leftSection={<Archive size={14} />}
+            leftSection={<History size={14} />}
             onClick={() =>
               modals.openConfirmModal({
-                title: 'Archive program',
+                title: 'Mark Program as Outdated',
                 children: (
                   <Text size="sm">
-                    Archiving this program will make it unavailable to students. Are you sure you
+                    Marking this program as outdated will indicate it's no longer in use. Are you sure you
                     want to proceed?
                   </Text>
                 ),
-                labels: { confirm: 'Archive', cancel: 'Cancel' },
-                onConfirm: () => archiveProgram.mutate(program.id),
+                labels: { confirm: 'Mark Outdated', cancel: 'Cancel' },
+                onConfirm: () => markProgramOutdated.mutate(program.id),
               })
             }
           >
-            Archive
+            Mark outdated
           </Menu.Item>
         )}
 

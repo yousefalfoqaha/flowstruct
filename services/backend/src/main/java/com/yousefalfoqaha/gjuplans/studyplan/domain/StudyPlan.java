@@ -34,8 +34,10 @@ public class StudyPlan {
 
     private StudyPlanDraft approvedStudyPlan;
 
-    private boolean isArchived;
+    private Instant archivedAt;
 
+    private Long archivedBy;
+ 
     @Version
     private Long version;
 

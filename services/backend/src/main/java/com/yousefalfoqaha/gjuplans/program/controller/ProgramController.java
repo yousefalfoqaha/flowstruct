@@ -49,13 +49,13 @@ public class ProgramController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{programId}/archive")
-    public ResponseEntity<ProgramDto> archiveProgram(@PathVariable long programId) {
-        return new ResponseEntity<>(programManagerService.archiveProgram(programId), HttpStatus.OK);
+    @PutMapping("/{programId}/mark-outdated")
+    public ResponseEntity<ProgramDto> markProgramOutdated(@PathVariable long programId) {
+        return new ResponseEntity<>(programManagerService.markProgramOutdated(programId), HttpStatus.OK);
     }
 
-    @PutMapping("/{programId}/unarchive")
+    @PutMapping("/{programId}/mark-active")
     public ResponseEntity<ProgramDto> unarchiveProgram(@PathVariable long programId) {
-        return new ResponseEntity<>(programManagerService.unarchiveProgram(programId), HttpStatus.OK);
+        return new ResponseEntity<>(programManagerService.markProgramActive(programId), HttpStatus.OK);
     }
 }

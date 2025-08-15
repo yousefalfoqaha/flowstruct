@@ -22,7 +22,7 @@ import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
 import { getStudyPlanDisplayName } from '@/utils/getStudyPlanDisplayName.ts';
 import { Check, FileText, Send, UserCheck, X } from 'lucide-react';
 import { modals } from '@mantine/modals';
-import { StatusBadge } from '@/shared/components/StatusBadge.tsx';
+import { ApprovalStatusBadge } from '@/shared/components/ApprovalStatusBadge.tsx';
 import classes from '@/features/study-plan/styles/ApprovalStudyPlanCard.module.css';
 import { useUserList } from '@/features/user/hooks/useUserList.ts';
 import { useRequestStudyPlantApproval } from '@/features/study-plan/hooks/useRequestStudyPlantApproval.ts';
@@ -112,7 +112,7 @@ export function RequestApprovalForm({ studyPlan }: Props) {
             </Text>
           </Group>
 
-          {StatusBadge(studyPlan.status)}
+          {ApprovalStatusBadge(studyPlan.status)}
         </Group>
 
         <Stack gap={2}>

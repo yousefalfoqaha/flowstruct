@@ -1,17 +1,17 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import { StudyPlanRow } from '@/features/study-plan/types.ts';
 import { StudyPlanTableOptionsMenu } from '@/features/study-plan/components/StudyPlanTableOptionsMenu.tsx';
-import { StatusBadge } from '@/shared/components/StatusBadge.tsx';
+import { ApprovalStatusBadge } from '@/shared/components/ApprovalStatusBadge.tsx';
 import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
-import { ActiveStatusBadge } from '@/shared/components/ActiveStatusBadge.tsx';
+import { ArchiveStatusBadge } from '@/shared/components/ArchiveStatusBadge.tsx';
 
 export function getStudyPlansTableColumns() {
   const { accessor, display } = createColumnHelper<StudyPlanRow>();
 
   return [
-    accessor('isArchived', {
+    accessor('archivedAt', {
       header: '',
-      cell: ({ row }) => <ActiveStatusBadge isArchived={row.original.isArchived} />,
+      cell: ({ row }) => <ArchiveStatusBadge archivedAt={row.original.archivedAt} />,
     }),
     accessor('programName', {
       header: 'Program',
@@ -34,7 +34,7 @@ export function getStudyPlansTableColumns() {
     }),
     accessor('status', {
       header: 'Status',
-      cell: ({ row }) => StatusBadge(row.getValue('status')),
+      cell: ({ row }) => ApprovalStatusBadge(row.getValue('status')),
     }),
     display({
       id: 'last-updated',

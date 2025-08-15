@@ -9,7 +9,8 @@ public record CourseSummaryDto(
         int creditHours,
         String type,
         boolean isRemedial,
-        boolean isArchived,
+        Instant outdatedAt,
+        Long outdatedBy,
         Instant createdAt,
         Instant updatedAt,
         Long updatedBy

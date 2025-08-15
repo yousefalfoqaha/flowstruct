@@ -156,7 +156,7 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
         Clone
       </Menu.Item>
 
-      {studyPlan.isArchived ? (
+      {studyPlan.archivedAt !== null ? (
         <Menu.Item
           color="green"
           onClick={handleUnarchiveStudyPlan}

@@ -21,7 +21,8 @@ public class CourseDtoMapper implements Function<Course, CourseDto> {
                 course.getPracticalHours(),
                 course.getType(),
                 course.isRemedial(),
-                course.isArchived(),
+                course.getOutdatedAt(),
+                course.getOutdatedBy(),
                 course.getCreatedAt(),
                 course.getUpdatedAt(),
                 course.getUpdatedBy()

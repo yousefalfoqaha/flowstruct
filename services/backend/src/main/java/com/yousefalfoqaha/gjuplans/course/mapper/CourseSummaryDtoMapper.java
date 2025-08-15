@@ -18,7 +18,8 @@ public class CourseSummaryDtoMapper implements Function<Course, CourseSummaryDto
                 course.getCreditHours(),
                 course.getType().toString(),
                 course.isRemedial(),
-                course.isArchived(),
+                course.getOutdatedAt(),
+                course.getOutdatedBy(),
                 course.getCreatedAt(),
                 course.getUpdatedAt(),
                 course.getUpdatedBy()

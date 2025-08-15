@@ -14,7 +14,7 @@ export function CoursesTable() {
   const columns = React.useMemo(() => getCoursesTableColumns(), []);
 
   const search = useSearch({ from: '/_layout/catalog/courses/' });
-  const { data: coursesPage, isPending } = usePaginatedCourseList(search);
+  const { data: coursesPage, isPending, isFetching } = usePaginatedCourseList(search);
 
   const data: CourseSummary[] = React.useMemo(
     () => coursesPage?.content ?? [],
@@ -33,7 +33,13 @@ export function CoursesTable() {
   return (
     <Stack>
       <Group>
-        <DataTableSearch width="" placeholder="Search any course..." table={table} debounce={750} />
+        <DataTableSearch
+          width=""
+          placeholder="Search any course..."
+          table={table}
+          debounce={750}
+          loading={isFetching}
+        />
 
         <Link to="/catalog/courses/new">
           <Button leftSection={<Plus size={18} />}>Create New Course</Button>

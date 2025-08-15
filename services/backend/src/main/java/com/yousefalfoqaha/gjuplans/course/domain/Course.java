@@ -35,7 +35,9 @@ public class Course {
 
     private boolean isRemedial;
 
-    private boolean isArchived;
+    private Instant outdatedAt;
+
+    private Long outdatedBy;
 
     @Version
     private Long version;

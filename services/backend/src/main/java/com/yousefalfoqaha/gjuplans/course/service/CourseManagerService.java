@@ -6,9 +6,12 @@ import com.yousefalfoqaha.gjuplans.course.dto.CourseDetailsDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
 import com.yousefalfoqaha.gjuplans.course.repository.CourseRepository;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.CourseExistsException;
+import com.yousefalfoqaha.gjuplans.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 
 @PreAuthorize("hasRole('ROLE_EDITOR')")
 @RequiredArgsConstructor
@@ -17,6 +20,7 @@ public class CourseManagerService {
     private final CourseService courseService;
     private final CourseRepository courseRepository;
     private final CodeFormatter codeFormatter;
+    private final UserService userService;
 
     public CourseDto editCourseDetails(long courseId, CourseDetailsDto details) {
         var course = courseService.findOrThrow(courseId);
@@ -57,7 +61,8 @@ public class CourseManagerService {
                 details.practicalHours(),
                 details.type(),
                 details.isRemedial(),
-                false,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -72,15 +77,18 @@ public class CourseManagerService {
         courseRepository.deleteById(courseId);
     }
 
-    public CourseDto archiveCourse(long courseId) {
+    public CourseDto markCourseOutdated(long courseId) {
         var course = courseService.findOrThrow(courseId);
-        course.setArchived(true);
+        var currentUser = userService.getCurrentUser();
+        course.setOutdatedAt(Instant.now());
+        course.setOutdatedBy(currentUser.getId());
         return courseService.saveAndMap(course);
     }
 
-    public CourseDto unarchiveCourse(long courseId) {
+    public CourseDto markCourseActive(long courseId) {
         var course = courseService.findOrThrow(courseId);
-        course.setArchived(false);
+        course.setOutdatedAt(null);
+        course.setOutdatedBy(null);
         return courseService.saveAndMap(course);
     }
 }

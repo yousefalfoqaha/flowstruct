@@ -39,7 +39,7 @@ export const useAuth = () => {
     const me: User | undefined = queryClient.getQueryData(userKeys.me());
     if (!me) return false;
 
-    const myPermissions = RolePermissions[me.role];
+    const myPermissions = RolePermissions[me.role as keyof typeof Role];
 
     return myPermissions().includes(action);
   };

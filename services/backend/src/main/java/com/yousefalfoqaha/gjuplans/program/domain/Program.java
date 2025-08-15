@@ -25,7 +25,9 @@ public class Program {
 
     private Degree degree;
 
-    private boolean isArchived;
+    private Instant outdatedAt;
+
+    private Long outdatedBy;
 
     @Version
     private Long version;

@@ -98,45 +98,47 @@ export function ProgramMap() {
         </Button>
       </div>
 
-      <ScrollArea offsetScrollbars scrollbarSize={5} viewportRef={scrollableRef} className={classes.gridContainer}>
+      <ScrollArea scrollbarSize={5} viewportRef={scrollableRef} className={classes.gridContainer}>
         <div className={classes.wrapper}>
-          <div
-            className={classes.headerGrid}
-            style={{
-              gridTemplateColumns: `repeat(${gridWidth}, 1fr)`,
-            }}
-          >
-            {Array.from({ length: studyPlan.duration }, (_, yearIndex) => {
-              const year = studyPlan.year + yearIndex;
+          <div className={classes.headerGridContainer}>
+            <div
+              className={classes.headerGrid}
+              style={{
+                gridTemplateColumns: `repeat(${gridWidth}, 1fr)`,
+              }}
+            >
+              {Array.from({ length: studyPlan.duration }, (_, yearIndex) => {
+                const year = studyPlan.year + yearIndex;
 
-              return (
-                <div
-                  key={`year-${yearIndex + 1}`}
-                  className={`${classes.headerCell} ${classes.yearHeader}`}
-                  style={{
-                    gridColumn: `span ${SEMESTERS_PER_YEAR}`,
-                  }}
-                >
-                  {year} / {year + 1}
-                </div>
-              );
-            })}
+                return (
+                  <div
+                    key={`year-${yearIndex + 1}`}
+                    className={`${classes.headerCell} ${classes.yearHeader}`}
+                    style={{
+                      gridColumn: `span ${SEMESTERS_PER_YEAR}`,
+                    }}
+                  >
+                    {year} / {year + 1}
+                  </div>
+                );
+              })}
 
-            {Array.from(coursesByTermIndex.keys()).map((termIndex) => {
-              const semester = semesterTypes[getPlacementFromTermIndex(termIndex).semester - 1];
+              {Array.from(coursesByTermIndex.keys()).map((termIndex) => {
+                const semester = semesterTypes[getPlacementFromTermIndex(termIndex).semester - 1];
 
-              return (
-                <div
-                  key={`semester-${termIndex}`}
-                  className={`${classes.headerCell} ${classes.semesterHeader}`}
-                  style={{
-                    gridColumn: termIndex + 1,
-                  }}
-                >
-                  {semester} - {totalCredits.get(termIndex)} Cr.
-                </div>
-              );
-            })}
+                return (
+                  <div
+                    key={`semester-${termIndex}`}
+                    className={`${classes.headerCell} ${classes.semesterHeader}`}
+                    style={{
+                      gridColumn: termIndex + 1,
+                    }}
+                  >
+                    {semester} - {totalCredits.get(termIndex)} Cr.
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           <div

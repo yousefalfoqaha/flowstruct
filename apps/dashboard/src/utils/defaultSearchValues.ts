@@ -5,5 +5,4 @@ export const DefaultSearchValues = (): TableSearchOptions => ({
   page: 0,
   size: 10,
   columnFilters: [],
-  archived: false,
 });

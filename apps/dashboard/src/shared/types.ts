@@ -18,5 +18,4 @@ export type TableSearchOptions = {
   page: number;
   size: number;
   columnFilters: ColumnFilter[];
-  archived: boolean;
 };
