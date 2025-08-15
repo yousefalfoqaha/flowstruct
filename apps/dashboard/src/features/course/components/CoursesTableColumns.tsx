@@ -1,7 +1,7 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import { CourseSummary } from '@/features/course/types.ts';
 import { Badge } from '@mantine/core';
-import { CourseOptionsMenu } from '@/features/course/components/CourseOptionsMenu.tsx';
+import { CourseTableOptionsMenu } from '@/features/course/components/CourseTableOptionsMenu.tsx';
 import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
 import { OutdatedStatusBadge } from '@/shared/components/OutdatedStatusBadge.tsx';
 
@@ -37,7 +37,7 @@ export function getCoursesTableColumns() {
     display({
       id: 'actions',
       header: 'Actions',
-      cell: ({ row }) => <CourseOptionsMenu course={row.original} />,
+      cell: ({ row }) => <CourseTableOptionsMenu course={row.original} />,
     }),
   ];
 }

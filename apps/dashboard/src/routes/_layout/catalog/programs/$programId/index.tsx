@@ -1,23 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useCurrentProgram } from '@/features/program/hooks/useCurrentProgram.ts';
-import { Group, Stack } from '@mantine/core';
-import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
+import { Group } from '@mantine/core';
 import { AppCard } from '@/shared/components/AppCard.tsx';
 import { InfoItem } from '@/shared/components/InfoItem.tsx';
 import { Degree } from '@/features/program/types.ts';
-import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
-import { PageLayout } from '@/shared/components/PageLayout.tsx';
-import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
 import { EditDetailsButton } from '@/shared/components/EditDetailsButton.tsx';
-import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
-import { ProgramQuery } from '@/features/program/queries.ts';
-import { OutdatedAlert } from '@/shared/components/OutdatedAlert.tsx';
 
 export const Route = createFileRoute('/_layout/catalog/programs/$programId/')({
-  loader: async ({ context: { queryClient }, params }) => {
-    const programId = parseInt(params.programId);
-    await queryClient.ensureQueryData(ProgramQuery(programId));
-  },
   component: RouteComponent,
 });
 
@@ -25,49 +14,27 @@ function RouteComponent() {
   const { data: program } = useCurrentProgram();
 
   return (
-    <PageLayout
-      header={
-        <Stack>
-          <OutdatedAlert 
-            outdatedAt={program.outdatedAt} 
-            outdatedBy={program.outdatedBy} 
-            entityType="program" 
-          />
-          <Group gap="lg" justify="space-between">
-            <PageHeaderWithBack
-              title={getProgramDisplayName(program)}
-              linkProps={{
-                to: '/catalog/programs',
-                search: DefaultSearchValues(),
-              }}
-            />
-            <LastUpdated at={program.updatedAt} by={program.updatedBy} />
-          </Group>
-        </Stack>
+    <AppCard
+      title="Program Information"
+      subtitle="Details about this program"
+      headerAction={
+        <EditDetailsButton
+          to="/catalog/programs/$programId/edit"
+          params={{ programId: String(program.id) }}
+        />
       }
     >
-      <AppCard
-        title="Program Information"
-        subtitle="Details about this program"
-        headerAction={
-          <EditDetailsButton
-            to="/catalog/programs/$programId/edit"
-            params={{ programId: String(program.id) }}
-          />
-        }
-      >
-        <Group grow>
-          <InfoItem label="Code" value={program.code} />
-          <InfoItem label="Name" value={program.name} />
-        </Group>
+      <Group grow>
+        <InfoItem label="Code" value={program.code} />
+        <InfoItem label="Name" value={program.name} />
+      </Group>
 
-        <Group grow>
-          <InfoItem
-            label="Degree"
-            value={`${Degree[program.degree as keyof typeof Degree]} (${program.degree})`}
-          />
-        </Group>
-      </AppCard>
-    </PageLayout>
+      <Group grow>
+        <InfoItem
+          label="Degree"
+          value={`${Degree[program.degree as keyof typeof Degree]} (${program.degree})`}
+        />
+      </Group>
+    </AppCard>
   );
 }

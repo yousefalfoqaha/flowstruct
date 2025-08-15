@@ -1,6 +1,6 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import { Program } from '@/features/program/types.ts';
-import { ProgramOptionsMenu } from '@/features/program/components/ProgramOptionsMenu.tsx';
+import { ProgramTableOptionsMenu } from '@/features/program/components/ProgramTableOptionsMenu.tsx';
 import { Badge } from '@mantine/core';
 import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
 import { OutdatedStatusBadge } from '@/shared/components/OutdatedStatusBadge.tsx';
@@ -34,7 +34,7 @@ export function getProgramsTableColumns() {
     display({
       id: 'actions',
       header: 'Actions',
-      cell: ({ row }) => <ProgramOptionsMenu program={row.original} />,
+      cell: ({ row }) => <ProgramTableOptionsMenu program={row.original} />,
     }),
   ];
 }
