@@ -5,7 +5,7 @@ import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
 import { getStudyPlanDisplayName } from '@/utils/getStudyPlanDisplayName.ts';
 import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
 import { useCurrentProgram } from '@/features/program/hooks/useCurrentProgram.ts';
-import { Divider, Group, Stack, Text, Title } from '@mantine/core';
+import { Alert, Divider, Group, Stack, Text, Title } from '@mantine/core';
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
 import { StatusBadge } from '@/shared/components/StatusBadge.tsx';
 import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
@@ -13,17 +13,7 @@ import { PageLayout } from '@/shared/components/PageLayout.tsx';
 import { StudyPlanTabs } from '@/features/study-plan/components/StudyPlanTabs.tsx';
 import { CoursesGraphProvider } from '@/contexts/CoursesGraphContext.tsx';
 import { StudyPlanOptionsMenu } from '@/features/study-plan/components/StudyPlanOptionsMenu.tsx';
-
-export const Route = createFileRoute('/_layout/study-plans/$studyPlanId')({
-  loader: async ({ context: { queryClient }, params }) => {
-    const studyPlanId = Number(params.studyPlanId);
-
-    queryClient.ensureQueryData(StudyPlanCourseListQuery(studyPlanId));
-    const studyPlan = await queryClient.ensureQueryData(StudyPlanQuery(studyPlanId));
-    queryClient.ensureQueryData(ProgramQuery(studyPlan.program));
-  },
-  component: RouteComponent,
-});
+import { Archive } from 'lucide-react';
 
 function RouteComponent() {
   const { data: studyPlan } = useCurrentStudyPlan();
@@ -41,19 +31,25 @@ function RouteComponent() {
   );
 
   const header = (
-    <Group justify="space-between">
-      <Group gap="lg" wrap="nowrap">
-        <PageHeaderWithBack title={title} linkProps={{ to: '/study-plans' }} />
+    <Stack>
+      <Alert color="orange" icon={<Archive />} autoContrast>
+        This study plan was archived by Mohammad Almajeed on Jun 23, 2024. It is no longer visible
+        to students.
+      </Alert>
+      <Group justify="space-between">
+        <Group gap="lg" wrap="nowrap">
+          <PageHeaderWithBack title={title} linkProps={{ to: '/study-plans' }} />
 
-        {StatusBadge(studyPlan.status)}
+          {StatusBadge(studyPlan.status)}
+        </Group>
+
+        <Group mb="auto" justify="space-between">
+          <LastUpdated at={studyPlan.updatedAt} by={studyPlan.updatedBy} />
+
+          <StudyPlanOptionsMenu studyPlan={studyPlan} />
+        </Group>
       </Group>
-
-      <Group mb="auto" justify="space-between">
-        <LastUpdated at={studyPlan.updatedAt} by={studyPlan.updatedBy} />
-
-        <StudyPlanOptionsMenu studyPlan={studyPlan} />
-      </Group>
-    </Group>
+    </Stack>
   );
 
   return (
@@ -68,3 +64,14 @@ function RouteComponent() {
     </PageLayout>
   );
 }
+
+export const Route = createFileRoute('/_layout/study-plans/$studyPlanId')({
+  loader: async ({ context: { queryClient }, params }) => {
+    const studyPlanId = Number(params.studyPlanId);
+
+    queryClient.ensureQueryData(StudyPlanCourseListQuery(studyPlanId));
+    const studyPlan = await queryClient.ensureQueryData(StudyPlanQuery(studyPlanId));
+    queryClient.ensureQueryData(ProgramQuery(studyPlan.program));
+  },
+  component: RouteComponent,
+});

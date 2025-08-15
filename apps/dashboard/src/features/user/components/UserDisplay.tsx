@@ -3,7 +3,7 @@ import { Stack } from '@mantine/core';
 import { DetailsCard } from '@/shared/components/DetailsCard.tsx';
 import { InfoItem } from '@/shared/components/InfoItem.tsx';
 
-export function UserDetailsDisplay() {
+export function UserDisplay() {
   const { data: me } = useMe();
 
   return (

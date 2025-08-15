@@ -7,9 +7,9 @@ import cx from 'clsx';
 import { ChevronDown, Lock, LogOut, Pencil, ScrollText, X } from 'lucide-react';
 import { modals } from '@mantine/modals';
 import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
-import { UserDetailsDisplay } from '@/features/user/components/UserDetailsDisplay.tsx';
+import { UserDisplay } from '@/features/user/components/UserDisplay.tsx';
 import { EditUserForm } from '@/features/user/components/EditUserForm.tsx';
-import { ChangePasswordForm } from '@/features/user/components/ChangePasswordForm.tsx';
+import { ChangeMyPasswordForm } from '@/features/user/components/ChangeMyPasswordForm.tsx';
 
 export function Me() {
   const { data: me } = useMe();
@@ -68,7 +68,7 @@ export function Me() {
                 title: <ModalHeader subtitle="Details about your account" title="Your Details" />,
                 children: (
                   <Stack>
-                    <UserDetailsDisplay />
+                    <UserDisplay />
                     <Group justify="space-between">
                       <Button
                         variant="default"
@@ -112,7 +112,7 @@ export function Me() {
                     title="Change Password"
                   />
                 ),
-                children: <ChangePasswordForm />,
+                children: <ChangeMyPasswordForm />,
                 centered: true,
                 size: 'lg',
               })

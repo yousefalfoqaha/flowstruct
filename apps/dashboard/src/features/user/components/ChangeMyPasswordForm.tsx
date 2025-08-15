@@ -9,7 +9,7 @@ import { modals } from '@mantine/modals';
 import { PasswordRequirements } from '@/features/user/components/PasswordRequirements.tsx';
 import { canSubmit } from '@/utils/canSubmit.ts';
 
-export function ChangePasswordForm() {
+export function ChangeMyPasswordForm() {
   const form = useForm<z.infer<typeof changeMyPasswordSchema>>({
     resolver: customResolver(changeMyPasswordSchema),
     defaultValues: {
