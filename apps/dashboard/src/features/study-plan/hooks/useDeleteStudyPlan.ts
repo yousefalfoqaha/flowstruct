@@ -4,7 +4,7 @@ import { useAppMutation } from '@/shared/hooks/useAppMutation.ts';
 import { api } from '@/shared/api.ts';
 
 const deleteStudyPlan = (studyPlanId: number) =>
-  api.delete<void>([STUDY_PLAN_ENDPOINT, studyPlanId]);
+  api.delete([STUDY_PLAN_ENDPOINT, studyPlanId]);
 
 export const useDeleteStudyPlan = () =>
   useAppMutation({

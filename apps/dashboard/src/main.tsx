@@ -47,9 +47,9 @@ const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onMutate: (variables, mutation) => {
       const successMessage = mutation.meta?.successMessage;
-      if (successMessage) {
-        const loadingMessage = mutation.meta?.loadingMessage || 'Processing...';
+      const loadingMessage = mutation.meta?.loadingMessage || 'Processing...';
 
+      if (successMessage) {
         notifications.show({
           id: `mutation-${mutation.mutationId}`,
           title: 'Loading',
@@ -66,13 +66,14 @@ const queryClient = new QueryClient({
     onSuccess: (data, variables, context, mutation) => {
       const invalidatesMeta = mutation.meta?.invalidates;
       const removesMeta = mutation.meta?.removes;
+      const setDataMeta = mutation.meta?.setData;
+      const successMessage = mutation.meta?.successMessage;
 
       if (invalidatesMeta) {
         const resolvedInvalidatesMeta =
           typeof invalidatesMeta === 'function'
             ? invalidatesMeta(data, variables, context)
             : invalidatesMeta;
-
         queryClient.invalidateQueries({
           predicate: (query) =>
             resolvedInvalidatesMeta.some((queryKey) => matchQuery({ queryKey }, query)) ?? false,
@@ -82,14 +83,12 @@ const queryClient = new QueryClient({
       if (removesMeta) {
         const resolvedRemovesMeta =
           typeof removesMeta === 'function' ? removesMeta(data, variables, context) : removesMeta;
-
         queryClient.removeQueries({
           predicate: (query) =>
             resolvedRemovesMeta.some((queryKey) => matchQuery({ queryKey }, query)) ?? false,
         });
       }
 
-      const setDataMeta = mutation.meta?.setData;
       if (setDataMeta) {
         const queryKey =
           typeof setDataMeta === 'function' ? setDataMeta(data, variables, context) : setDataMeta;
@@ -97,7 +96,6 @@ const queryClient = new QueryClient({
         queryClient.setQueryData(queryKey, data);
       }
 
-      const successMessage = mutation.meta?.successMessage;
       if (successMessage) {
         notifications.update({
           id: `mutation-${mutation.mutationId}`,
@@ -203,8 +201,7 @@ const theme = createTheme({
 });
 
 function App() {
-  const auth = useAuth();
-  return <RouterProvider router={router} context={{ queryClient, auth }} />;
+  return <RouterProvider router={router} context={{ queryClient, auth: useAuth() }} />;
 }
 
 createRoot(document.getElementById('root')!).render(

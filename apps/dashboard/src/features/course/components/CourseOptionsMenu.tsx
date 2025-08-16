@@ -15,6 +15,7 @@ export function CourseOptionsMenu({ course, onDeleteSuccess }: Props) {
       shadow="sm"
       position="bottom-end"
       transitionProps={{ transition: 'pop-top-right' }}
+      keepMounted
     >
       <Menu.Target>
         <ActionIcon variant="transparent" color="gray">

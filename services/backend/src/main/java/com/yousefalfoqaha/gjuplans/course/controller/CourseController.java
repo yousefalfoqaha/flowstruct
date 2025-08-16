@@ -63,7 +63,7 @@ public class CourseController {
     public ResponseEntity<Void> deleteCourse(@PathVariable long courseId) {
         courseManagerService.deleteCourse(courseId);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{courseId}/mark-outdated")

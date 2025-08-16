@@ -8,7 +8,6 @@ import {
   Mail,
   Trash,
 } from 'lucide-react';
-import { useDeleteStudyPlan } from '@/features/study-plan/hooks/useDeleteStudyPlan.ts';
 import { useArchiveStudyPlan } from '@/features/study-plan/hooks/useArchiveStudyPlan.ts';
 import { useUnarchiveStudyPlan } from '@/features/study-plan/hooks/useUnarchiveStudyPlan.ts';
 import { useApproveStudyPlanChanges } from '@/features/study-plan/hooks/useApproveStudyPlanChanges.ts';
@@ -19,6 +18,7 @@ import { StudyPlanSummary } from '@/features/study-plan/types.ts';
 import { useDiscardStudyPlanChanges } from '@/features/study-plan/hooks/useDiscardStudyPlanChanges.ts';
 import { RequestApprovalForm } from '@/features/study-plan/components/RequestApprovalForm.tsx';
 import { useAuth } from '@/shared/hooks/useAuth.ts';
+import { useDeleteStudyPlan } from '@/features/study-plan/hooks/useDeleteStudyPlan.ts';
 
 type Props = {
   studyPlan: StudyPlanSummary;
