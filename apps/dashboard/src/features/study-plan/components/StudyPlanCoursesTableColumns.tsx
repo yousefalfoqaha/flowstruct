@@ -1,9 +1,11 @@
-import { ActionIcon, Badge, Checkbox, Group } from '@mantine/core';
+import { ActionIcon, Badge, Checkbox, Group, Text } from '@mantine/core';
 import { ArrowDownUp } from 'lucide-react';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { FrameworkCourse } from '@/features/study-plan/types.ts';
 import { PrerequisitePillGroup } from '@/features/study-plan/components/PrerequisitePillGroup.tsx';
 import { StudyPlanCourseOptionsMenu } from '@/features/study-plan/components/StudyPlanCourseOptionsMenu.tsx';
+import { OutdatedStatusBadge } from '@/shared/components/OutdatedStatusBadge.tsx';
+import { EntityNameWithStatus } from '@/shared/components/EntityNameWithStatus.tsx';
 
 export function getStudyPlanCoursesTableColumns(): ColumnDef<FrameworkCourse>[] {
   const columnHelper = createColumnHelper<FrameworkCourse>();
@@ -49,7 +51,12 @@ export function getStudyPlanCoursesTableColumns(): ColumnDef<FrameworkCourse>[] 
           Name
         </Group>
       ),
-      cell: ({ row }) => <p>{row.original.name}</p>,
+      cell: ({ row }) => (
+        <EntityNameWithStatus
+          entity={row.original}
+          entityType="course"
+        />
+      ),
       sortingFn: 'alphanumeric',
     }) as ColumnDef<FrameworkCourse>,
 
@@ -66,7 +73,14 @@ export function getStudyPlanCoursesTableColumns(): ColumnDef<FrameworkCourse>[] 
     }),
 
     columnHelper.accessor('section', {
-      header: 'Section',
+      header: ({ column }) => (
+        <Group wrap="nowrap">
+          <ActionIcon variant="transparent" onClick={() => column.toggleSorting()} size="xs">
+            <ArrowDownUp size={14} />
+          </ActionIcon>
+          Section
+        </Group>
+      ),
       cell: ({ row }) => row.original.sectionCode,
       sortingFn: 'alphanumeric',
       enableColumnFilter: true,

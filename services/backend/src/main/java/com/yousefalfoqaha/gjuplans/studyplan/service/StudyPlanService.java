@@ -12,6 +12,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -31,6 +32,36 @@ public class StudyPlanService {
         );
         return studyPlanSummaryDtoMapper.apply(studyPlanSummary);
     }
+
+    public Optional<StudyPlanDto> getApprovedStudyPlan(long studyPlanId) {
+        var studyPlan = findOrThrow(studyPlanId);
+
+        if (studyPlan.getApprovedStudyPlan() == null || studyPlan.getArchivedAt() != null) {
+            return Optional.empty();
+        }
+
+        var approvedStudyPlan = new StudyPlan(
+                studyPlan.getId(),
+                studyPlan.getApprovedStudyPlan().getYear(),
+                studyPlan.getApprovedStudyPlan().getDuration(),
+                studyPlan.getApprovedStudyPlan().getTrack(),
+                studyPlan.getApprovedStudyPlan().getProgram(),
+                studyPlan.getApprovedStudyPlan(),
+                null,
+                null,
+                studyPlan.getApprovedStudyPlan().getVersion(),
+                studyPlan.getCreatedAt(),
+                studyPlan.getUpdatedAt(),
+                studyPlan.getUpdatedBy(),
+                studyPlan.getApprovedStudyPlan().getSections(),
+                studyPlan.getApprovedStudyPlan().getCoursePlacements(),
+                studyPlan.getApprovedStudyPlan().getCoursePrerequisites(),
+                studyPlan.getApprovedStudyPlan().getCourseCorequisites()
+        );
+
+        return Optional.of(studyPlanDtoMapper.apply(approvedStudyPlan));
+    }
+
 
     public List<StudyPlanSummaryDto> getAllStudyPlans() {
         return studyPlanRepository.findAllStudyPlanSummaries()

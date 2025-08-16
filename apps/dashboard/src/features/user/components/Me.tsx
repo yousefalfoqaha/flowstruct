@@ -97,7 +97,7 @@ export function Me() {
           </Menu.Item>
 
           <Menu.Item onClick={openEditUserDetails} leftSection={<Pencil size={14} />}>
-            Edit details
+            Edit Details
           </Menu.Item>
 
           <Menu.Divider />
@@ -118,14 +118,14 @@ export function Me() {
               })
             }
           >
-            Change password
+            Change Password
           </Menu.Item>
 
           <Menu.Item
             onClick={() => logout.mutate()}
             leftSection={<LogOut style={{ color: 'var(--mantine-primary-color-8)' }} size={14} />}
           >
-            Log out
+            Log Out
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>

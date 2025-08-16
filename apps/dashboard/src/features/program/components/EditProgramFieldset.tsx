@@ -14,6 +14,7 @@ import { customResolver } from '@/utils/customResolver.ts';
 import { z } from 'zod/v4';
 import { useAuth } from '@/shared/hooks/useAuth.ts';
 import { canSubmit } from '@/utils/canSubmit.ts';
+import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 
 type EditProgramFieldsetProps = {
   program: Program;
@@ -71,7 +72,7 @@ export function EditProgramFieldset({ program }: EditProgramFieldsetProps) {
                 leftSection={<Trash size={18} />}
                 onClick={() =>
                   modals.openConfirmModal({
-                    title: 'Please confirm your action',
+                    title: <ModalHeader title="Please Confirm Your Action" />,
                     children: (
                       <Text size="sm">
                         Deleting this program will delete all of its study plans. Are you absolutely

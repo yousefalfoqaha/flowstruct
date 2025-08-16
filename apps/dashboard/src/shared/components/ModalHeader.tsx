@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 
 type Props = {
   title: string | ReactNode;
-  subtitle: string;
+  subtitle?: string;
 };
 
 export function ModalHeader({ title, subtitle }: Props) {
@@ -12,9 +12,11 @@ export function ModalHeader({ title, subtitle }: Props) {
       <Title order={4} fw={600} lh="md">
         {title}
       </Title>
-      <Text size="xs" c="dimmed">
-        {subtitle}
-      </Text>
+      {subtitle && (
+        <Text size="xs" c="dimmed">
+          {subtitle}
+        </Text>
+      )}
     </div>
   );
 }

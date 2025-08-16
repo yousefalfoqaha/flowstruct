@@ -21,7 +21,18 @@ export function StudyPlansTable() {
 
   const columns = React.useMemo(() => getStudyPlansTableColumns(), []);
   const data: StudyPlanRow[] = getStudyPlanRows(studyPlans, programs);
-  const table = useDataTable<StudyPlanRow>({ data, columns });
+  const table = useDataTable<StudyPlanRow>({
+    data,
+    columns,
+    initialState: {
+      sorting: [
+        {
+          id: 'updatedAt',
+          desc: true
+        }
+      ]
+    }
+  });
 
   return (
     <Stack>

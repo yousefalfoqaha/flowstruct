@@ -6,6 +6,7 @@ import { useMarkCourseActive } from '@/features/course/hooks/useMarkCourseActive
 import { useDeleteCourse } from '@/features/course/hooks/useDeleteCourse.ts';
 import { modals } from '@mantine/modals';
 import { useAuth } from '@/shared/hooks/useAuth.ts';
+import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 
 type Props = {
   course: CourseSummary;
@@ -21,7 +22,7 @@ export function CourseDangerousOptionsMenuItems({ course, onDeleteSuccess }: Pro
 
   const handleMarkOutdated = () => {
     modals.openConfirmModal({
-      title: 'Mark Course as Outdated',
+      title: <ModalHeader title="Please Confirm Your Action" />,
       children: (
         <Text size="sm">
           Marking this course as outdated will indicate it's no longer in use. Are you sure you want
@@ -35,7 +36,7 @@ export function CourseDangerousOptionsMenuItems({ course, onDeleteSuccess }: Pro
 
   const handleMarkActive = () => {
     modals.openConfirmModal({
-      title: 'Mark Course as Active',
+      title: <ModalHeader title="Please Confirm Your Action" />,
       children: (
         <Text size="sm">
           Marking this course as active will indicate it's currently in use. Are you sure you want
@@ -49,7 +50,7 @@ export function CourseDangerousOptionsMenuItems({ course, onDeleteSuccess }: Pro
 
   const handleDeleteCourse = () => {
     modals.openConfirmModal({
-      title: 'Please confirm your action',
+      title: <ModalHeader title="Please Confirm Your Action" /> ,
       children: (
         <Text size="sm">
           Deleting this course will permanently remove it. This action cannot be undone. Are you

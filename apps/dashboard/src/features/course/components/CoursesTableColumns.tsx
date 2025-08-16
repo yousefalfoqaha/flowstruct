@@ -11,7 +11,13 @@ export function getCoursesTableColumns() {
   return [
     accessor('outdatedAt', {
       header: '',
-      cell: ({ row }) => <OutdatedStatusBadge outdatedAt={row.original.outdatedAt} />,
+      cell: ({ row }) => (
+        <OutdatedStatusBadge
+          outdatedAt={row.original.outdatedAt}
+          outdatedBy={row.original.outdatedBy}
+          entityType="course"
+        />
+      ),
     }),
     accessor('code', {
       header: 'Code',

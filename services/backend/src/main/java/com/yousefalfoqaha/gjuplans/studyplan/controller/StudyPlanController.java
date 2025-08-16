@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -29,6 +30,13 @@ public class StudyPlanController {
                 studyPlanService.getAllStudyPlans(),
                 HttpStatus.OK
         );
+    }
+
+    @GetMapping("/{studyPlanId}/approved")
+    public ResponseEntity<StudyPlanDto> getApprovedStudyPlan(@PathVariable long studyPlanId) {
+        return studyPlanService.getApprovedStudyPlan(studyPlanId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{studyPlanId}")

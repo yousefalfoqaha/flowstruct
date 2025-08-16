@@ -4,6 +4,8 @@ import { StudyPlanTableOptionsMenu } from '@/features/study-plan/components/Stud
 import { ApprovalStatusBadge } from '@/shared/components/ApprovalStatusBadge.tsx';
 import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
 import { ArchiveStatusBadge } from '@/shared/components/ArchiveStatusBadge.tsx';
+import { ActionIcon, Group } from '@mantine/core';
+import { ArrowDownUp } from 'lucide-react';
 
 export function getStudyPlansTableColumns() {
   const { accessor, display } = createColumnHelper<StudyPlanRow>();
@@ -19,7 +21,14 @@ export function getStudyPlansTableColumns() {
       filterFn: 'equalsString',
     }),
     accessor('year', {
-      header: 'Year',
+      header: ({ column }) => (
+        <Group wrap="nowrap">
+          <ActionIcon variant="transparent" onClick={() => column.toggleSorting()} size="xs">
+            <ArrowDownUp size={14} />
+          </ActionIcon>
+          Year
+        </Group>
+      ),
       cell: ({ row }) => (
         <p style={{ textWrap: 'nowrap' }}>
           {row.original.year} - {row.original.year + 1}
@@ -27,6 +36,7 @@ export function getStudyPlansTableColumns() {
       ),
       enableColumnFilter: true,
       filterFn: 'equals',
+      sortingFn: 'basic',
     }),
     accessor('track', {
       header: 'Track',
@@ -36,12 +46,19 @@ export function getStudyPlansTableColumns() {
       header: 'Status',
       cell: ({ row }) => ApprovalStatusBadge(row.getValue('status')),
     }),
-    display({
-      id: 'last-updated',
-      header: 'Last Updated',
+    accessor('updatedAt', {
+      header: ({ column }) => (
+        <Group wrap="nowrap">
+          <ActionIcon variant="transparent" onClick={() => column.toggleSorting()} size="xs">
+            <ArrowDownUp size={14} />
+          </ActionIcon>
+          Last Updated
+        </Group>
+      ),
       cell: ({ row }) => (
         <LastUpdatedStats at={row.original.updatedAt} by={row.original.updatedBy} />
       ),
+      sortingFn: 'datetime',
     }),
     display({
       id: 'actions',

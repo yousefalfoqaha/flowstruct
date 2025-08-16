@@ -14,7 +14,18 @@ import { Link } from '@tanstack/react-router';
 export function ProgramsTable() {
   const { data } = useProgramList();
   const columns = React.useMemo(() => getProgramsTableColumns(), []);
-  const table = useDataTable<Program>({ data, columns });
+  const table = useDataTable<Program>({
+    data,
+    columns,
+    initialState: {
+      sorting: [
+        {
+          id: 'updatedAt',
+          desc: true
+        }
+      ]
+    }
+  });
 
   return (
     <Stack gap="md">

@@ -6,11 +6,11 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { DataTable } from '@/shared/components/DataTable.tsx';
 import { formatTimeAgo } from '@/utils/formatTimeAgo.ts';
 import { UsersOptionMenu } from '@/features/user/components/UsersOptionMenu.tsx';
-import { Group, Stack } from '@mantine/core';
+import { ActionIcon, Group, Stack } from '@mantine/core';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
 import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
-import { Shield } from 'lucide-react';
+import { ArrowDownUp, Shield } from 'lucide-react';
 
 export function UsersTable() {
   const { data: users } = useUserList();
@@ -19,18 +19,42 @@ export function UsersTable() {
   const columns = React.useMemo(
     () => [
       accessor('username', {
-        header: 'Username',
+        header: ({ column }) => (
+          <Group wrap="nowrap">
+            <ActionIcon variant="transparent" onClick={() => column.toggleSorting()} size="xs">
+              <ArrowDownUp size={14} />
+            </ActionIcon>
+            Username
+          </Group>
+        ),
+        sortingFn: 'alphanumeric',
       }),
       accessor('email', {
-        header: 'Email',
+        header: ({ column }) => (
+          <Group wrap="nowrap">
+            <ActionIcon variant="transparent" onClick={() => column.toggleSorting()} size="xs">
+              <ArrowDownUp size={14} />
+            </ActionIcon>
+            Email
+          </Group>
+        ),
+        sortingFn: 'alphanumeric',
       }),
       accessor('role', {
         header: 'Role',
         filterFn: 'equalsString',
       }),
       accessor('createdAt', {
-        header: 'Created At',
+        header: ({ column }) => (
+          <Group wrap="nowrap">
+            <ActionIcon variant="transparent" onClick={() => column.toggleSorting()} size="xs">
+              <ArrowDownUp size={14} />
+            </ActionIcon>
+            Created At
+          </Group>
+        ),
         cell: ({ row }) => formatTimeAgo(new Date(row.original.createdAt)),
+        sortingFn: 'datetime',
       }),
       display({
         id: 'action',
@@ -44,6 +68,14 @@ export function UsersTable() {
   const table = useDataTable<User>({
     data: Object.values(users),
     columns,
+    initialState: {
+      sorting: [
+        {
+          id: 'createdAt',
+          desc: true
+        }
+      ]
+    }
   });
 
   return (

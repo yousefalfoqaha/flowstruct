@@ -1,8 +1,11 @@
 import { ActionIcon, Menu } from '@mantine/core';
-import { Ellipsis, Pencil, ScrollText } from 'lucide-react';
+import { Ellipsis, ExternalLink, Pencil, ScrollText } from 'lucide-react';
 import { StudyPlanSummary } from '@/features/study-plan/types.ts';
 import { Link } from '@tanstack/react-router';
 import { StudyPlanDangerMenuItems } from '@/features/study-plan/components/StudyPlanDangerMenuItems.tsx';
+import { modals } from '@mantine/modals';
+import { StudyPlanLinkModalContent } from './StudyPlanLinkModalContent';
+import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 
 type Props = {
   studyPlan: StudyPlanSummary;
@@ -34,15 +37,30 @@ export function StudyPlanTableOptionsMenu({ studyPlan, onDeleteSuccess }: Props)
           to="/study-plans/$studyPlanId/details/edit"
           params={{ studyPlanId: String(studyPlan.id) }}
         >
-          <Menu.Item leftSection={<Pencil size={14} />}>Edit details</Menu.Item>
+          <Menu.Item leftSection={<Pencil size={14} />}>Edit Details</Menu.Item>
         </Link>
+
+        <Menu.Item
+          leftSection={<ExternalLink size={14} />}
+          onClick={() => {
+            modals.open({
+              size: 'lg',
+              title: (
+                <ModalHeader
+                  title="Student View Link"
+                  subtitle="Click the link below to open the student view in a new tab, or use the copy button to share the URL"
+                />
+              ),
+              children: <StudyPlanLinkModalContent studyPlanId={studyPlan.id} />,
+            });
+          }}
+        >
+          Student View Link
+        </Menu.Item>
 
         <Menu.Divider />
 
-        <StudyPlanDangerMenuItems 
-          studyPlan={studyPlan} 
-          onDeleteSuccess={onDeleteSuccess} 
-        />
+        <StudyPlanDangerMenuItems studyPlan={studyPlan} onDeleteSuccess={onDeleteSuccess} />
       </Menu.Dropdown>
     </Menu>
   );

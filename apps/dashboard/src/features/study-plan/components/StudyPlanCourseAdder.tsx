@@ -34,17 +34,11 @@ import { usePaginatedCourseList } from '@/features/course/hooks/usePaginatedCour
 import classes from '@/shared/styles/PillGroupBox.module.css';
 import { useCoursesGraph } from '@/contexts/CoursesGraphContext.tsx';
 import { CreateCourseModal } from '@/features/course/components/CreateCourseModal';
-import { Course } from '@/features/course/types.ts';
+import { Course, CourseSummary } from '@/features/course/types.ts';
 import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
+import { EntityNameWithStatus } from '@/shared/components/EntityNameWithStatus.tsx';
 
-interface CourseRow {
-  id: number;
-  code: string;
-  name: string;
-  creditHours: number;
-}
-
-type CourseMeta = Pick<CourseRow, 'code' | 'name'>;
+type CourseMeta = Pick<CourseSummary, 'code' | 'name'>;
 
 export function StudyPlanCourseAdder() {
   const { data: studyPlan } = useCurrentStudyPlan();
@@ -69,8 +63,8 @@ export function StudyPlanCourseAdder() {
     size: pagination.pageSize,
   });
 
-  const columnHelper = createColumnHelper<CourseRow>();
-  const columns = React.useMemo<ColumnDef<CourseRow>[]>(
+  const columnHelper = createColumnHelper<CourseSummary>();
+  const columns = React.useMemo<ColumnDef<CourseSummary>[]>(
     () => [
       columnHelper.display({
         id: 'selection',
@@ -89,20 +83,27 @@ export function StudyPlanCourseAdder() {
           />
         ),
       }),
+
       columnHelper.accessor('code', {
         header: 'Code',
         cell: ({ row }) => <Badge variant="default">{row.original.code}</Badge>,
-      }) as ColumnDef<CourseRow>,
-      columnHelper.accessor('name', { header: 'Name' }) as ColumnDef<CourseRow>,
+      }) as ColumnDef<CourseSummary>,
+
+      columnHelper.accessor('name', {
+        header: 'Name',
+        cell: ({ row }) => (
+          <EntityNameWithStatus entity={row.original} entityType="course" size="sm" />
+        ),
+      }) as ColumnDef<CourseSummary>,
       columnHelper.accessor('creditHours', {
         header: 'Cr.',
         cell: ({ row }) => <p style={{ textWrap: 'nowrap' }}>{row.original.creditHours} Cr.</p>,
-      }) as ColumnDef<CourseRow>,
+      }) as ColumnDef<CourseSummary>,
     ],
     []
   );
 
-  const table = useReactTable<CourseRow>({
+  const table = useReactTable<CourseSummary>({
     data: data?.content ?? [],
     columns,
     state: {

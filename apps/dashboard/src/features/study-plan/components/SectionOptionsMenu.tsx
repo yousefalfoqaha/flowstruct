@@ -4,6 +4,7 @@ import { Section } from '@/features/study-plan/types.ts';
 import { modals } from '@mantine/modals';
 import { useDeleteSection } from '@/features/study-plan/hooks/useDeleteSection.ts';
 import { useNavigate, useParams } from '@tanstack/react-router';
+import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 
 type Props = {
   section: Section;
@@ -42,7 +43,7 @@ export function SectionOptionsMenu({ section }: Props) {
           }
           leftSection={<Pencil size={14} />}
         >
-          Edit details
+          Edit Details
         </Menu.Item>
 
         <Menu.Item
@@ -51,7 +52,7 @@ export function SectionOptionsMenu({ section }: Props) {
           onClick={(e) => {
             e.stopPropagation();
             modals.openConfirmModal({
-              title: 'Please confirm your action',
+              title: <ModalHeader title="Please Confirm Your Action" />,
               children: (
                 <Text size="sm">
                   Deleting this section will remove all of its courses from the program map as well,

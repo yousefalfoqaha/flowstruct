@@ -5,7 +5,7 @@ import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { ProgramListQuery } from '@/features/program/queries.ts';
 
 export const Route = createFileRoute('/_layout/catalog/programs/')({
-  loader: ({ context: { queryClient } }) => {
+  loader: async ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(ProgramListQuery);
   },
   validateSearch: getTableSearchSchema(DefaultSearchValues()),

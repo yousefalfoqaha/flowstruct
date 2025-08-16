@@ -1,4 +1,4 @@
-import { Button, Fieldset, LoadingOverlay, Stack } from '@mantine/core';
+import { Button, Fieldset, Stack } from '@mantine/core';
 import { courseSchema } from '@/features/course/schemas.ts';
 import { CourseFields } from '@/features/course/components/CourseFields.tsx';
 import { Plus } from 'lucide-react';
@@ -6,17 +6,18 @@ import { useCoursePreset } from '@/features/course/hooks/useCoursePreset.ts';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
 import { customResolver } from '@/utils/customResolver.ts';
-import { useCourse } from '@/features/course/hooks/useCourse.ts';
 import { modals } from '@mantine/modals';
 import { useEditCourseDetails } from '@/features/course/hooks/useEditCourseDetails.ts';
 import { canSubmit } from '@/utils/canSubmit';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { CourseQuery } from '@/features/course/queries.ts';
 
 interface Props {
   courseId: number;
 }
 
 export function EditCourseForm({ courseId }: Props) {
-  const { data: course, isPending } = useCourse(courseId);
+  const { data: course } = useSuspenseQuery(CourseQuery(courseId));
 
   const form = useForm<z.infer<typeof courseSchema>>({
     resolver: customResolver(courseSchema),
@@ -36,12 +37,10 @@ export function EditCourseForm({ courseId }: Props) {
     );
   });
 
-  if (isPending) return <LoadingOverlay visible zIndex={1000} loaderProps={{ type: 'bars' }} />;
-
   return (
     <form onSubmit={onSubmit}>
       <Stack>
-        <Fieldset legend="Course Details">
+        <Fieldset variant="filled">
           <CourseFields form={form} preset={preset} changePreset={changePreset} />
         </Fieldset>
 

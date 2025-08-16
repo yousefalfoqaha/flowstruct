@@ -40,6 +40,11 @@ export type Course = {
   practicalHours: number;
   type: string;
   isRemedial: boolean;
+  outdatedAt: Date;
+  outdatedBy: number | null;
+  createdAt: Date;
+  updatedAt: Date;
+  updatedBy: number;
 };
 
 export type Section = {
@@ -53,9 +58,8 @@ export type Section = {
 };
 
 export type CourseSequences = {
-  prerequisiteSequence: number[];
-  postrequisiteSequence: number[];
-  level: number;
+  prerequisiteSequence: Set<number>;
+  postrequisiteSequence: Set<number>;
 };
 
 export type CoursePlacement = {
@@ -69,19 +73,38 @@ export type StudyPlan = {
   id: number;
   year: number;
   duration: number;
-  track: string | null;
-  isPrivate: boolean;
+  track: string;
+  status: string;
   program: number;
   sections: Section[];
+  coursePlacements: Record<number, CoursePlacement>;
+  coursePrerequisites: Record<number, Record<number, CourseRelation>>;
+  courseCorequisites: Record<number, number[]>;
+  archivedAt: Date;
+  archivedBy: number | null;
+  createdAt: Date;
+  updatedAt: Date;
+  updatedBy: number;
+};
+
+export type StudyPlanSequences = {
   coursePlacements: Record<number, CoursePlacement>;
   coursePrerequisites: Record<number, Record<number, CourseRelation>>;
   courseCorequisites: Record<number, number[]>;
   courseSequences: Record<number, CourseSequences>;
 };
 
-export type StudyPlanSummary = {
-  id: number;
-  year: number;
-  track: string;
-  program: number;
-};
+export type StudyPlanSummary = Pick<
+  StudyPlan,
+  | 'id'
+  | 'year'
+  | 'duration'
+  | 'track'
+  | 'status'
+  | 'program'
+  | 'archivedAt'
+  | 'archivedBy'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'updatedBy'
+>;

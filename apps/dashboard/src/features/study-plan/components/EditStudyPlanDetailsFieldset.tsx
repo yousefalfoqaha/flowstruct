@@ -12,6 +12,7 @@ import { modals } from '@mantine/modals';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
 import { customResolver } from '@/utils/customResolver.ts';
+import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 
 type Props = {
   studyPlan: StudyPlan;
@@ -70,7 +71,7 @@ export function EditStudyPlanDetailsFieldset({ studyPlan }: Props) {
         leftSection={<Trash size={18} />}
         onClick={() =>
           modals.openConfirmModal({
-            title: 'Please confirm your action',
+            title: <ModalHeader title="Please Confirm Your Action" />,
             children: (
               <Text size="sm">
                 Deleting this study plan will delete all of its sections, program map, and overview,

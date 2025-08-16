@@ -6,6 +6,7 @@ import { useDeleteProgram } from '@/features/program/hooks/useDeleteProgram.ts';
 import { useMarkProgramOutdated } from '@/features/program/hooks/useMarkProgramOutdated.ts';
 import { useMarkProgramActive } from '@/features/program/hooks/useMarkProgramActive.ts';
 import { useAuth } from '@/shared/hooks/useAuth.ts';
+import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 
 type Props = {
   program: Program;
@@ -21,7 +22,7 @@ export function ProgramDangerousOptionsMenuItems({ program, onDeleteSuccess }: P
 
   const handleMarkOutdated = () =>
     modals.openConfirmModal({
-      title: 'Mark Program as Outdated',
+      title: <ModalHeader title="Please Confirm Your Action" />,
       children: (
         <Text size="sm">
           Marking this program as outdated will indicate it's no longer in use. Are you sure you
@@ -34,7 +35,7 @@ export function ProgramDangerousOptionsMenuItems({ program, onDeleteSuccess }: P
 
   const handleMarkActive = () =>
     modals.openConfirmModal({
-      title: 'Mark Program as Active',
+      title: <ModalHeader title="Please Confirm Your Action" />,
       children: (
         <Text size="sm">
           Marking this program as active will indicate it's currently in use. Are you sure you want
@@ -47,7 +48,7 @@ export function ProgramDangerousOptionsMenuItems({ program, onDeleteSuccess }: P
 
   const handleDeleteProgram = () =>
     modals.openConfirmModal({
-      title: 'Please confirm your action',
+      title: <ModalHeader title="Please Confirm Your Action" />,
       children: (
         <Text size="sm">
           Deleting this program will delete all of its study plans. Are you absolutely sure?

@@ -53,7 +53,7 @@ export function UsersOptionMenu({ user }: Props) {
         <Menu.Label>Actions</Menu.Label>
 
         <Menu.Item leftSection={<Pencil size={14} />} onClick={handleEditDetails}>
-          Edit details
+          Edit Details
         </Menu.Item>
 
         <Menu.Sub>
@@ -69,7 +69,7 @@ export function UsersOptionMenu({ user }: Props) {
         <Menu.Divider />
 
         <Menu.Item leftSection={<Lock size={14} />} onClick={handleChangePassword}>
-          Change password
+          Change Password
         </Menu.Item>
 
         <Menu.Item
@@ -77,7 +77,7 @@ export function UsersOptionMenu({ user }: Props) {
           leftSection={<Trash size={14} />}
           onClick={() =>
             modals.openConfirmModal({
-              title: 'Please confirm your action',
+              title: <ModalHeader title="Please Confirm Your Action" />,
               children: (
                 <Text size="sm">
                   Are you sure you want to delete this user? This action cannot be undone.

@@ -31,7 +31,7 @@ export function ProgramTableOptionsMenu({ program }: Props) {
           to="/catalog/programs/$programId/edit"
           params={{ programId: String(program.id) }}
         >
-          <Menu.Item leftSection={<Pencil size={14} />}>Edit details</Menu.Item>
+          <Menu.Item leftSection={<Pencil size={14} />}>Edit Details</Menu.Item>
         </Link>
 
         <Menu.Divider />

@@ -18,6 +18,7 @@ import { useLinkCorequisitesToCourse } from '@/features/study-plan/hooks/useLink
 import classes from '@/features/study-plan/styles/CoursesMultiSelect.module.css';
 import { getSectionCode } from '@/utils/getSectionCode.ts';
 import { CourseSummary } from '@/features/course/types.ts';
+import { EntityNameWithStatus } from '@/shared/components/EntityNameWithStatus.tsx';
 
 type CourseOption = {
   value: string;
@@ -118,9 +119,11 @@ export function PrerequisiteMultiSelect({
 
   const renderOption: MultiSelectProps['renderOption'] = ({ option }) => {
     const courseOption = option as unknown as CourseOption;
+    const course = courses[Number(option.value)];
+
     return (
       <div>
-        <div className={classes.label}>{option.label}</div>
+        <EntityNameWithStatus entity={course} entityType="course" />
 
         {courseOption.createsCycle && (
           <Text className={classes.warning}>

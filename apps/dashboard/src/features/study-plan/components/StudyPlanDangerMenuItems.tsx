@@ -36,7 +36,7 @@ export function StudyPlanDangerMenuItems({ studyPlan, onDeleteSuccess }: Props) 
 
   const handleApproveStudyPlan = () =>
     modals.openConfirmModal({
-      title: 'Please confirm your action',
+      title: <ModalHeader title="Please Confirm Your Action" />,
       children: (
         <Text size="sm">
           Approving these changes will schedule them for publication. Students will see the updated
@@ -50,7 +50,7 @@ export function StudyPlanDangerMenuItems({ studyPlan, onDeleteSuccess }: Props) 
 
   const handleArchiveStudyPlan = () =>
     modals.openConfirmModal({
-      title: 'Archive Study Plan',
+      title: <ModalHeader title="Please Confirm Your Action" />,
       children: (
         <Text size="sm">
           Archiving this study plan will make it unavailable to students. Are you sure you want to
@@ -63,7 +63,7 @@ export function StudyPlanDangerMenuItems({ studyPlan, onDeleteSuccess }: Props) 
 
   const handleUnarchiveStudyPlan = () =>
     modals.openConfirmModal({
-      title: 'Unarchive Study Plan',
+      title: <ModalHeader title="Please Confirm Your Action" />,
       children: (
         <Text size="sm">
           Unarchiving this study plan will make it available again to students. Are you sure you
@@ -76,7 +76,7 @@ export function StudyPlanDangerMenuItems({ studyPlan, onDeleteSuccess }: Props) 
 
   const handleDeleteStudyPlan = () =>
     modals.openConfirmModal({
-      title: 'Please confirm your action',
+      title: <ModalHeader title="Please Confirm Your Action" />,
       children: (
         <Text size="sm">
           Deleting this study plan will permanently remove all related sections, the program map,
@@ -109,7 +109,7 @@ export function StudyPlanDangerMenuItems({ studyPlan, onDeleteSuccess }: Props) 
 
   const discardStudyPlanChanges = () =>
     modals.openConfirmModal({
-      title: 'Please confirm your action',
+      title: <ModalHeader title="Please Confirm Your Action" />,
       children: (
         <Text size="sm">
           This will revert the study plan to its last approved version, permanently discarding all
@@ -139,19 +139,19 @@ export function StudyPlanDangerMenuItems({ studyPlan, onDeleteSuccess }: Props) 
     <>
       {isNewOrDraft && hasPermission('study-plans:approve') && (
         <Menu.Item onClick={handleApproveStudyPlan} leftSection={<CircleCheck size={14} />}>
-          Approve changes
+          Approve Changes
         </Menu.Item>
       )}
 
       {isNewOrDraft && hasPermission('study-plans:request-approval') && (
         <Menu.Item leftSection={<Mail size={14} />} onClick={requestStudyPlanApproval}>
-          Request approval
+          Request Approval
         </Menu.Item>
       )}
 
       {studyPlan.status === 'DRAFT' && (
         <Menu.Item leftSection={<ClipboardX size={14} />} onClick={discardStudyPlanChanges}>
-          Discard changes
+          Discard Changes
         </Menu.Item>
       )}
 

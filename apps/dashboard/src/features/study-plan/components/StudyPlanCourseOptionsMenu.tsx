@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Group, Menu, Stack, Text } from '@mantine/core';
+import { ActionIcon, Button, Group, LoadingOverlay, Menu, Stack, Text } from '@mantine/core';
 import { ArrowLeftRight, Ellipsis, Pencil, ScrollText, X } from 'lucide-react';
 import { modals } from '@mantine/modals';
 import { CourseDisplay } from '@/features/course/components/CourseDisplay.tsx';
@@ -8,6 +8,7 @@ import { useRemoveCoursesFromStudyPlan } from '@/features/study-plan/hooks/useRe
 import { useParams } from '@tanstack/react-router';
 import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 import { EditCourseForm } from '@/features/course/components/EditCourseForm.tsx';
+import { Suspense } from 'react';
 
 type Props = {
   course: FrameworkCourse;
@@ -26,14 +27,20 @@ export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
           subtitle="Update the details for this course"
         />
       ),
-      children: <EditCourseForm courseId={course.id} />,
+      children: (
+        <Suspense
+          fallback={<LoadingOverlay visible zIndex={1000} loaderProps={{ type: 'bars' }} />}
+        >
+          <EditCourseForm courseId={course.id} />
+        </Suspense>
+      ),
       size: 'xl',
       centered: true,
     });
 
   const removeCourseConfirmModal = () =>
     modals.openConfirmModal({
-      title: 'Please confirm your action',
+      title: <ModalHeader title="Please Confirm Your Action" />,
       children: (
         <Text size="sm">
           Removing these courses will remove them from the program map and any prerequisite
@@ -103,7 +110,7 @@ export function StudyPlanCourseOptionsMenu({ course, sectionId }: Props) {
         </Menu.Item>
 
         <Menu.Item leftSection={<Pencil size={14} />} onClick={openEditCourseModal}>
-          Edit details
+          Edit Details
         </Menu.Item>
 
         <Menu.Sub>

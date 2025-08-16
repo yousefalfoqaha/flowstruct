@@ -8,6 +8,7 @@ import { CoursePlacement } from '@/features/study-plan/types.ts';
 import { useCurrentStudyPlan } from '@/features/study-plan/hooks/useCurrentStudyPlan.ts';
 import { useCurrentStudyPlanCourses } from '@/features/study-plan/hooks/useCurrentStudyPlanCourses.ts';
 import { comparePlacement } from '@/utils/comparePlacement.ts';
+import { EntityNameWithStatus } from '@/shared/components/EntityNameWithStatus.tsx';
 
 type CoursePlacementMultiSelectProps = {
   placement: CoursePlacement;
@@ -87,9 +88,11 @@ export function CoursePlacementMultiSelect({ placement }: CoursePlacementMultiSe
 
   const renderOption: MultiSelectProps['renderOption'] = ({ option }) => {
     const courseOption = option as unknown as CourseOption;
+    const course = courses[Number(option.value)];
+
     return (
       <div>
-        <div className={classes.label}>{option.label}</div>
+        <EntityNameWithStatus entity={course} entityType="course" />
 
         {courseOption.disabled && courseOption.unmetPrerequisites.length > 0 && (
           <Text className={classes.warning}>

@@ -1,11 +1,22 @@
 import { Controller, UseFormReturn } from 'react-hook-form';
-import { Flex, NumberInput, Select, Stack, TextInput } from '@mantine/core';
+import {
+  Flex,
+  Group,
+  NumberInput,
+  Select,
+  SelectProps,
+  Stack,
+  Text,
+  TextInput,
+} from '@mantine/core';
 import { Calendar, Timer } from 'lucide-react';
 import { YearPickerInput } from '@mantine/dates';
 import { studyPlanDetailsSchema } from '@/features/study-plan/schemas.ts';
 import { z } from 'zod/v4';
 import { useProgramList } from '@/features/program/hooks/useProgramList.ts';
 import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
+import { OutdatedStatusBadge } from '@/shared/components/OutdatedStatusBadge.tsx';
+import { EntityNameWithStatus } from '@/shared/components/EntityNameWithStatus.tsx';
 
 type Props = {
   form: UseFormReturn<z.infer<typeof studyPlanDetailsSchema>>;
@@ -18,6 +29,20 @@ export function StudyPlanDetailsFields({ form, disableProgramSelect = false }: P
     formState: { errors },
   } = form;
   const { data: programs } = useProgramList();
+
+  const renderProgramOption: SelectProps['renderOption'] = ({ option }) => {
+    const program = programs.find((p) => String(p.id) === option.value);
+    if (!program) return null;
+
+    return (
+      <EntityNameWithStatus
+        entity={program}
+        entityType="program"
+        label={getProgramDisplayName(program)}
+        size="sm"
+      />
+    );
+  };
 
   return (
     <Stack>
@@ -37,6 +62,7 @@ export function StudyPlanDetailsFields({ form, disableProgramSelect = false }: P
             w="100%"
             searchable
             disabled={disableProgramSelect}
+            renderOption={renderProgramOption}
             description={
               disableProgramSelect && "Can't change program, make a new study plan instead"
             }

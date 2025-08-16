@@ -68,7 +68,7 @@ export function CreateCourseModal({
     >
       <form onSubmit={onSubmit}>
         <Stack>
-          <Fieldset legend="Course Details">
+          <Fieldset variant="filled">
             <CourseFields form={form} preset={preset} changePreset={changePreset} />
           </Fieldset>
 

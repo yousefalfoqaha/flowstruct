@@ -18,6 +18,7 @@ import { useRemoveCoursesFromStudyPlan } from '@/features/study-plan/hooks/useRe
 import { openConfirmModal } from '@mantine/modals';
 import { useMoveCoursesToSection } from '@/features/study-plan/hooks/useMoveCoursesToSection.ts';
 import { getSectionDisplayName } from '@/utils/getSectionDisplayName.ts';
+import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 
 type Props = {
   table: Table<FrameworkCourse>;
@@ -108,7 +109,7 @@ export function SelectedCoursesToolbar({ table, studyPlan }: Props) {
                   variant="default"
                   onClick={() =>
                     openConfirmModal({
-                      title: 'Please confirm your action',
+                      title: <ModalHeader title="Please Confirm Your Action" />,
                       children: (
                         <Text size="sm">
                           Removing these courses will remove them from the program map and any
