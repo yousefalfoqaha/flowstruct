@@ -68,6 +68,7 @@ jobs:
             set -e
             cd /opt/gjuplans
           
+            DOCKER_CONFIG=\$(mktemp -d) \
             echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
             sudo docker compose -f $REMOTE_DIR/docker-compose.yaml pull
