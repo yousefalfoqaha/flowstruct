@@ -33,7 +33,7 @@ public class UserService {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(details.username(), details.password())
             );
-
+            
             return jwtService.generateToken(authentication.getName());
         } catch (AuthenticationException e) {
             throw new InvalidCredentialsException("Wrong username or password.");

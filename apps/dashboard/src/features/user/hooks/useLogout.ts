@@ -17,7 +17,7 @@ export const useLogout = () => {
         queryClient.clear();
       });
 
-      navigate({ to: '/login', search: { redirect: '/' } });
+      navigate({ to: '/login', search: { redirect: '/' } }).then(() => {});
     },
     meta: {
       successMessage: 'You are logged out.',

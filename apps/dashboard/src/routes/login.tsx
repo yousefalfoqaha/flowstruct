@@ -1,14 +1,13 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { LoginForm } from '@/features/user/components/LoginForm.tsx';
-import { MeQuery } from '@/features/user/queries.ts';
 
 export const Route = createFileRoute('/login')({
-  beforeLoad: async ({ context }) => {
-    try {
-      await context.queryClient.ensureQueryData(MeQuery);
-      return redirect({ to: '/' });
-    } catch (e) {
-      return;
+  validateSearch: (search) => ({
+    redirect: (search.redirect as string) || '/',
+  }),
+  beforeLoad: async ({ context, search }) => {
+    if (context.isAuthenticated) {
+      throw redirect({ to: search.redirect });
     }
   },
   component: RouteComponent,

@@ -160,7 +160,7 @@ const queryClient = new QueryClient({
 
 export const router = createRouter({
   routeTree,
-  context: { queryClient, auth: undefined! },
+  context: { queryClient, isAuthenticated: undefined! },
   defaultPreload: 'intent',
   defaultPreloadStaleTime: 0,
   scrollRestoration: true,
