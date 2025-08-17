@@ -33,7 +33,6 @@ public class JwtFilter extends OncePerRequestFilter {
         response.setHeader("X-Auth-Expired", "false");
 
         if (request.getCookies() == null) {
-            System.out.println("Request cookies were null");
             filterChain.doFilter(request, response);
             return;
         }
@@ -45,7 +44,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 .orElse(null);
 
         if (token == null) {
-            System.out.println("Access token was null");
             filterChain.doFilter(request, response);
             return;
         }
@@ -55,14 +53,12 @@ public class JwtFilter extends OncePerRequestFilter {
             username = jwtService.extractUserName(token);
         } catch (JwtException e) {
             cookieService.clearAuthCookie(response);
-            System.out.println("Username not found in access token");
 
             filterChain.doFilter(request, response);
             return;
         }
 
         if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {
-            System.out.println("Token username was null, but the authentication instance isnt, continue filter");
             filterChain.doFilter(request, response);
             return;
         }
@@ -70,7 +66,6 @@ public class JwtFilter extends OncePerRequestFilter {
         UserDetails userDetails = appUserDetailsService.loadUserByUsername(username);
 
         if (!jwtService.validateToken(token, userDetails)) {
-            System.out.println("Token is ultimately invalid");
             cookieService.clearAuthCookie(response);
             response.setHeader("X-Auth-Expired", "true");
 
@@ -78,7 +73,6 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        System.out.println("Creating new authentication instance via token");
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 userDetails,
                 null,

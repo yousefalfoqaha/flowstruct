@@ -5,8 +5,8 @@ import { modals } from '@mantine/modals';
 import { useDeleteProgram } from '@/features/program/hooks/useDeleteProgram.ts';
 import { useMarkProgramOutdated } from '@/features/program/hooks/useMarkProgramOutdated.ts';
 import { useMarkProgramActive } from '@/features/program/hooks/useMarkProgramActive.ts';
-import { useAuth } from '@/shared/hooks/useAuth.ts';
 import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
+import { usePermission } from '@/features/user/hooks/usePermission.ts';
 
 type Props = {
   program: Program;
@@ -18,7 +18,7 @@ export function ProgramDangerousOptionsMenuItems({ program, onDeleteSuccess }: P
   const markProgramOutdated = useMarkProgramOutdated();
   const markProgramActive = useMarkProgramActive();
 
-  const { hasPermission } = useAuth();
+  const { hasPermission } = usePermission();
 
   const handleMarkOutdated = () =>
     modals.openConfirmModal({

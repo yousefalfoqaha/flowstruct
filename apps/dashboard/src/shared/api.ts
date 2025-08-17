@@ -37,9 +37,16 @@ export const api = {
 
     if (!response.ok) {
       if (response.status === 401) {
-        if (window.location.pathname !== '/login') {
+        if (!endpoint.includes('/me')) {
           window.location.href = '/login';
+          return new Promise<never>(() => {});
         }
+
+        throw {
+          statusCode: 401,
+          messages: ['Authentication required. Please log in.'],
+          timestamp: new Date().toISOString(),
+        } satisfies ErrorObject;
       }
 
       const errorData = await response.json();

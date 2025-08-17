@@ -1,7 +1,6 @@
-import { MeQuery, userKeys } from '@/features/user/queries';
 import { Role, User, UserAction } from '@/features/user/types.ts';
+import { userKeys } from '@/features/user/queries.ts';
 import { useQueryClient } from '@tanstack/react-query';
-import { redirect } from '@tanstack/react-router';
 
 const RolePermissions: Record<keyof typeof Role, () => UserAction[]> = {
   GUEST: () => [] as const,
@@ -17,23 +16,8 @@ const RolePermissions: Record<keyof typeof Role, () => UserAction[]> = {
     ] as const,
 };
 
-export interface AuthInterface {
-  ensureAuthentication: () => void;
-  hasPermission: (action: UserAction) => boolean;
-}
-
-export const useAuth = () => {
+export const usePermission = () => {
   const queryClient = useQueryClient();
-
-  const ensureAuthentication = () => {
-    try {
-      queryClient.ensureQueryData(MeQuery);
-    } catch {
-      redirect({
-        to: '/login',
-      });
-    }
-  };
 
   const hasPermission = (action: UserAction) => {
     const me: User | undefined = queryClient.getQueryData(userKeys.me());
@@ -44,8 +28,5 @@ export const useAuth = () => {
     return myPermissions().includes(action);
   };
 
-  return {
-    ensureAuthentication,
-    hasPermission,
-  };
+  return { hasPermission };
 };

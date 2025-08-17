@@ -71,17 +71,23 @@ public class SecurityConfig {
         return httpSecurity
                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .csrf(AbstractHttpConfigurer::disable)
+                .anonymous(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
                                 "/api/v1/users/login",
-                                "/api/v1/users/logout"
+                                "/api/v1/users/logout",
+                                "/error"
                         )
                         .permitAll()
                         .anyRequest()
                         .authenticated()
                 )
-                .httpBasic(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exceptions ->
+                        exceptions.accessDeniedHandler(accessDeniedHandler)
+                                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )

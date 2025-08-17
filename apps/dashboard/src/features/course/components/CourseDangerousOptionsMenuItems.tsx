@@ -5,8 +5,8 @@ import { useMarkCourseOutdated } from '@/features/course/hooks/useMarkCourseOutd
 import { useMarkCourseActive } from '@/features/course/hooks/useMarkCourseActive.ts';
 import { useDeleteCourse } from '@/features/course/hooks/useDeleteCourse.ts';
 import { modals } from '@mantine/modals';
-import { useAuth } from '@/shared/hooks/useAuth.ts';
 import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
+import { usePermission } from '@/features/user/hooks/usePermission.ts';
 
 type Props = {
   course: CourseSummary;
@@ -18,7 +18,7 @@ export function CourseDangerousOptionsMenuItems({ course, onDeleteSuccess }: Pro
   const { mutate: markActive } = useMarkCourseActive();
   const { mutate: deleteCourse } = useDeleteCourse();
 
-  const { hasPermission } = useAuth();
+  const { hasPermission } = usePermission();
 
   const handleMarkOutdated = () => {
     modals.openConfirmModal({
@@ -50,7 +50,7 @@ export function CourseDangerousOptionsMenuItems({ course, onDeleteSuccess }: Pro
 
   const handleDeleteCourse = () => {
     modals.openConfirmModal({
-      title: <ModalHeader title="Please Confirm Your Action" /> ,
+      title: <ModalHeader title="Please Confirm Your Action" />,
       children: (
         <Text size="sm">
           Deleting this course will permanently remove it. This action cannot be undone. Are you

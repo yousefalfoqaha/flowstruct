@@ -17,8 +17,8 @@ import { CloneStudyPlanDetailsForm } from '@/features/study-plan/components/Clon
 import { StudyPlanSummary } from '@/features/study-plan/types.ts';
 import { useDiscardStudyPlanChanges } from '@/features/study-plan/hooks/useDiscardStudyPlanChanges.ts';
 import { RequestApprovalForm } from '@/features/study-plan/components/RequestApprovalForm.tsx';
-import { useAuth } from '@/shared/hooks/useAuth.ts';
 import { useDeleteStudyPlan } from '@/features/study-plan/hooks/useDeleteStudyPlan.ts';
+import { usePermission } from '@/features/user/hooks/usePermission.ts';
 
 type Props = {
   studyPlan: StudyPlanSummary;
@@ -32,7 +32,7 @@ export function StudyPlanDangerMenuItems({ studyPlan, onDeleteSuccess }: Props) 
   const approveStudyPlan = useApproveStudyPlanChanges();
   const discardStudyPlan = useDiscardStudyPlanChanges();
 
-  const { hasPermission } = useAuth();
+  const { hasPermission } = usePermission();
 
   const handleApproveStudyPlan = () =>
     modals.openConfirmModal({

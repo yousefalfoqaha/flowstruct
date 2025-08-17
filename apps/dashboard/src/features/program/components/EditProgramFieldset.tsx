@@ -12,9 +12,9 @@ import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { useForm } from 'react-hook-form';
 import { customResolver } from '@/utils/customResolver.ts';
 import { z } from 'zod/v4';
-import { useAuth } from '@/shared/hooks/useAuth.ts';
 import { canSubmit } from '@/utils/canSubmit.ts';
 import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
+import { usePermission } from '@/features/user/hooks/usePermission.ts';
 
 type EditProgramFieldsetProps = {
   program: Program;
@@ -30,7 +30,7 @@ export function EditProgramFieldset({ program }: EditProgramFieldsetProps) {
   const deleteProgram = useDeleteProgram();
   const navigate = useNavigate();
 
-  const { hasPermission } = useAuth();
+  const { hasPermission } = usePermission();
 
   const onSubmit = form.handleSubmit((data) => {
     editProgramDetails.mutate(
