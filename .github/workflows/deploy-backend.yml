@@ -64,7 +64,7 @@ jobs:
           rsync -avz -e "ssh" $COMPOSE_PATH $REMOTE_VPS:$REMOTE_DIR/docker-compose.yaml
           rsync -avz -e "ssh" $CADDYFILE_PATH $REMOTE_VPS:$REMOTE_DIR/Caddyfile
 
-          ssh $REMOTE_VPS << 'EOF'
+          ssh $REMOTE_VPS << EOF
             set -e
             cd /opt/gjuplans
           
