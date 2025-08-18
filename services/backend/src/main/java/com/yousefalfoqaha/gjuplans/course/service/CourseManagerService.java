@@ -80,15 +80,19 @@ public class CourseManagerService {
     public CourseDto markCourseOutdated(long courseId) {
         var course = courseService.findOrThrow(courseId);
         var currentUser = userService.getCurrentUser();
+
         course.setOutdatedAt(Instant.now());
         course.setOutdatedBy(currentUser.getId());
+
         return courseService.saveAndMap(course);
     }
 
     public CourseDto markCourseActive(long courseId) {
         var course = courseService.findOrThrow(courseId);
+
         course.setOutdatedAt(null);
         course.setOutdatedBy(null);
+
         return courseService.saveAndMap(course);
     }
 }
