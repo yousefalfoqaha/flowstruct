@@ -52,24 +52,17 @@ jobs:
           tags: gjuplans/backend:${{ inputs.image_tag }}
 
       - name: Deploy on VPS
-        env:
-          DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
-          DOCKERHUB_TOKEN: ${{ secrets.dockerhub_token }}
         run: |
           COMPOSE_PATH="${{ inputs.path }}/docker-compose.deploy.yaml"
           CADDYFILE_PATH="${{ inputs.path }}/Caddyfile"
           REMOTE_VPS="admin@${{ inputs.vps_ip }}"
           REMOTE_DIR="/opt/gjuplans"
-
+          
           rsync -avz -e "ssh" $COMPOSE_PATH $REMOTE_VPS:$REMOTE_DIR/docker-compose.yaml
           rsync -avz -e "ssh" $CADDYFILE_PATH $REMOTE_VPS:$REMOTE_DIR/Caddyfile
-
-          ssh $REMOTE_VPS << EOF
-            set -e
-            cd /opt/gjuplans
           
-            docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_TOKEN"
-
+          ssh $REMOTE_VPS << EOF
+            cd /opt/gjuplans
             sudo docker compose -f $REMOTE_DIR/docker-compose.yaml pull
             sudo docker compose -f $REMOTE_DIR/docker-compose.yaml up -d
           EOF
