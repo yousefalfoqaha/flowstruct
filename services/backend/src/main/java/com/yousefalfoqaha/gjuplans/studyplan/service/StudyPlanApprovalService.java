@@ -60,6 +60,7 @@ public class StudyPlanApprovalService {
             mailMessage.send(mimeMessage);
 
         } catch (MessagingException | MailException e) {
+            e.printStackTrace();
             throw new ApprovalRequestException("Could not request approval, try again.");
         }
     }
