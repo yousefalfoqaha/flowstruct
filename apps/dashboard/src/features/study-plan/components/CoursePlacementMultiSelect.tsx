@@ -92,9 +92,14 @@ export function CoursePlacementMultiSelect({ placement }: CoursePlacementMultiSe
 
     return (
       <div>
-        <EntityNameWithStatus entity={course} entityType="course" />
+        <EntityNameWithStatus
+          className={classes.label}
+          entity={course}
+          label={courseOption.label}
+          entityType="course"
+        />
 
-        {courseOption.disabled && courseOption.unmetPrerequisites.length > 0 && (
+        {courseOption.unmetPrerequisites.length > 0 && (
           <Text className={classes.warning}>
             <Group gap={6}>
               <CircleAlert size={14} />
@@ -152,7 +157,7 @@ export function CoursePlacementMultiSelect({ placement }: CoursePlacementMultiSe
             onChange={setSelectedCourses}
             selectFirstOptionOnChange
             label={`Add courses to year ${placement.year}, ${SEMESTER_NAMES[placement.semester - 1]} semester`}
-            placeholder="Search framework courses"
+            placeholder="Search study plan courses..."
             searchable
             hidePickedOptions
           />

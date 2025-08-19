@@ -59,13 +59,6 @@ public class CourseController {
         );
     }
 
-    @DeleteMapping("/{courseId}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable long courseId) {
-        courseManagerService.deleteCourse(courseId);
-
-        return ResponseEntity.noContent().build();
-    }
-
     @PutMapping("/{courseId}/mark-outdated")
     public ResponseEntity<CourseDto> markCourseOutdated(@PathVariable long courseId) {
         return new ResponseEntity<>(

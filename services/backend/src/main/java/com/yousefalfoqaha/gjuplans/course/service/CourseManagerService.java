@@ -72,11 +72,6 @@ public class CourseManagerService {
         return courseService.saveAndMap(newCourse);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void deleteCourse(long courseId) {
-        courseRepository.deleteById(courseId);
-    }
-
     public CourseDto markCourseOutdated(long courseId) {
         var course = courseService.findOrThrow(courseId);
         var currentUser = userService.getCurrentUser();

@@ -123,7 +123,12 @@ export function PrerequisiteMultiSelect({
 
     return (
       <div>
-        <EntityNameWithStatus entity={course} entityType="course" />
+        <EntityNameWithStatus
+          className={classes.label}
+          label={courseOption.label}
+          entity={course}
+          entityType="course"
+        />
 
         {courseOption.createsCycle && (
           <Text className={classes.warning}>
