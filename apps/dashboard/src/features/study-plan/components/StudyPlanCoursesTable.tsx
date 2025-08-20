@@ -15,6 +15,7 @@ import { SectionColumnFilter } from '@/features/study-plan/components/SectionCol
 import { Link } from '@tanstack/react-router';
 import { StudyPlanCourseAdder } from '@/features/study-plan/components/StudyPlanCourseAdder.tsx';
 import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
+import { useTableSearch } from '@/shared/hooks/useTableSearch.ts';
 
 export function StudyPlanCoursesTable() {
   const { data: studyPlan } = useCurrentStudyPlan();
@@ -51,6 +52,7 @@ export function StudyPlanCoursesTable() {
   const table = useDataTable<FrameworkCourse>({
     data,
     columns,
+    search: useTableSearch(),
     getRowId: (originalRow) => String(originalRow.id),
     initialState: {
       sorting: [

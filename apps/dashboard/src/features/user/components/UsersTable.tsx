@@ -11,6 +11,7 @@ import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
 import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
 import { ArrowDownUp, Shield } from 'lucide-react';
+import { useTableSearch } from '@/shared/hooks/useTableSearch.ts';
 
 export function UsersTable() {
   const { data: users } = useUserList();
@@ -68,6 +69,7 @@ export function UsersTable() {
   const table = useDataTable<User>({
     data: Object.values(users),
     columns,
+    search: useTableSearch(),
     initialState: {
       sorting: [
         {

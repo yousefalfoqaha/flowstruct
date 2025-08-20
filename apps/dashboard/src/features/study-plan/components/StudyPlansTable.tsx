@@ -14,6 +14,7 @@ import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
 import { GraduationCap } from 'lucide-react';
 import { getStudyPlanRows } from '@/utils/getStudyPlanRows.ts';
 import { StudyPlanArchiveFilter } from '@/features/study-plan/components/StudyPlanArchiveFilter.tsx';
+import { useTableSearch } from '@/shared/hooks/useTableSearch.ts';
 
 export function StudyPlansTable() {
   const { data: studyPlans } = useStudyPlanList();
@@ -24,6 +25,7 @@ export function StudyPlansTable() {
   const table = useDataTable<StudyPlanRow>({
     data,
     columns,
+    search: useTableSearch(),
     initialState: {
       sorting: [
         {

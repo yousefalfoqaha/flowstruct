@@ -13,12 +13,12 @@ import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx
 import { SectionOptionsMenu } from '@/features/study-plan/components/SectionOptionsMenu.tsx';
 import { MoveSectionMenu } from '@/features/study-plan/components/MoveSectionMenu.tsx';
 import { Link } from '@tanstack/react-router';
+import { useTableSearch } from '@/shared/hooks/useTableSearch.ts';
 
 export function SectionsTable() {
   const { data: studyPlan } = useCurrentStudyPlan();
 
   const { accessor, display } = createColumnHelper<Section>();
-
   const columns = React.useMemo(
     () => [
       display({
@@ -68,6 +68,7 @@ export function SectionsTable() {
   const table = useDataTable<Section>({
     data: studyPlan.sections,
     columns,
+    search: useTableSearch(),
   });
 
   return (

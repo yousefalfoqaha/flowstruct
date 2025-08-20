@@ -4,7 +4,6 @@ import { ProgramTableOptionsMenu } from '@/features/program/components/ProgramTa
 import { ActionIcon, Badge, Group } from '@mantine/core';
 import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
 import { ArrowDownUp } from 'lucide-react';
-import { EntityNameWithStatus } from '@/shared/components/EntityNameWithStatus.tsx';
 import { OutdatedStatusBadge } from '@/shared/components/OutdatedStatusBadge.tsx';
 
 export function getProgramsTableColumns() {

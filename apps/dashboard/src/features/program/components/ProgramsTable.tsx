@@ -11,6 +11,7 @@ import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
 import { Album, Plus } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { ProgramArchiveFilter } from '@/features/program/components/ProgramArchiveFilter.tsx';
+import { useTableSearch } from '@/shared/hooks/useTableSearch.ts';
 
 export function ProgramsTable() {
   const { data } = useProgramList();
@@ -18,14 +19,15 @@ export function ProgramsTable() {
   const table = useDataTable<Program>({
     data,
     columns,
+    search: useTableSearch(),
     initialState: {
       sorting: [
         {
           id: 'updatedAt',
-          desc: true
-        }
-      ]
-    }
+          desc: true,
+        },
+      ],
+    },
   });
 
   return (

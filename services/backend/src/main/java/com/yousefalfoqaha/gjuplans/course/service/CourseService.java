@@ -1,6 +1,7 @@
 package com.yousefalfoqaha.gjuplans.course.service;
 
 import com.yousefalfoqaha.gjuplans.course.domain.Course;
+import com.yousefalfoqaha.gjuplans.course.domain.OutdatedFilter;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseSummaryDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CoursesPageDto;
@@ -29,7 +30,7 @@ public class CourseService {
     private final CourseSummaryDtoMapper courseSummaryDtoMapper;
     private final CoursesPageResponseMapper coursesPageResponseMapper;
 
-    public CoursesPageDto getPaginatedCourseList(int page, int size, String filter) {
+    public CoursesPageDto getPaginatedCourseList(int page, int size, String filter, OutdatedFilter status) {
         Pageable pageable = PageRequest.of(page, size);
         var filterParam = '%' + filter + '%';
 

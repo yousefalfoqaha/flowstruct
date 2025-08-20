@@ -61,6 +61,7 @@ export function StudyPlanCourseAdder() {
     filter: debouncedFilter,
     page: pagination.pageIndex,
     size: pagination.pageSize,
+    columnFilters: []
   });
 
   const columnHelper = createColumnHelper<CourseSummary>();

@@ -18,6 +18,18 @@ export function getCoursesTableColumns() {
           entityType="course"
         />
       ),
+      enableColumnFilter: true,
+      filterFn: (row, _columnId, filterValue) => {
+        if (filterValue === 'active') {
+          return row.original.outdatedAt === null;
+        }
+
+        if (filterValue === 'outdated') {
+          return row.original.outdatedAt !== null;
+        }
+
+        return true;
+      },
     }),
     accessor('code', {
       header: 'Code',

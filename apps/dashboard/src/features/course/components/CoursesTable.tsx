@@ -7,13 +7,15 @@ import { DataTable } from '@/shared/components/DataTable.tsx';
 import { Button, Group, LoadingOverlay, Stack } from '@mantine/core';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
-import { Link, useSearch } from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router';
 import { Plus } from 'lucide-react';
+import { CourseArchiveFilter } from '@/features/course/components/CourseArchiveFilter.tsx';
+import { useTableSearch } from '@/shared/hooks/useTableSearch.ts';
 
 export function CoursesTable() {
   const columns = React.useMemo(() => getCoursesTableColumns(), []);
 
-  const search = useSearch({ from: '/_layout/catalog/courses/' });
+  const search = useTableSearch();
   const { data: coursesPage, isPending, isFetching } = usePaginatedCourseList(search);
 
   const data: CourseSummary[] = React.useMemo(
@@ -24,6 +26,7 @@ export function CoursesTable() {
   const table = useDataTable<CourseSummary>({
     data,
     columns,
+    search,
     manualPagination: true,
     manualFiltering: true,
     pageCount: coursesPage?.totalPages,
@@ -33,6 +36,8 @@ export function CoursesTable() {
   return (
     <Stack>
       <Group>
+        <CourseArchiveFilter table={table} />
+
         <DataTableSearch
           width=""
           placeholder="Search any course..."

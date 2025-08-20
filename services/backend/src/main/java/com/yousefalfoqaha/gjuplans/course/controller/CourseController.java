@@ -1,5 +1,6 @@
 package com.yousefalfoqaha.gjuplans.course.controller;
 
+import com.yousefalfoqaha.gjuplans.course.domain.OutdatedFilter;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDetailsDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CourseDto;
 import com.yousefalfoqaha.gjuplans.course.dto.CoursesPageDto;
@@ -22,10 +23,11 @@ public class CourseController {
     public ResponseEntity<CoursesPageDto> getPaginatedCourseList(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10", required = false) int size,
-            @RequestParam(value = "filter", defaultValue = "", required = false) String filter
+            @RequestParam(value = "filter", defaultValue = "", required = false) String filter,
+            @RequestParam(value = "status", defaultValue = "ALL", required = false) OutdatedFilter status
     ) {
         return new ResponseEntity<>(
-                courseService.getPaginatedCourseList(page, size, filter),
+                courseService.getPaginatedCourseList(page, size, filter, status),
                 HttpStatus.OK
         );
     }
