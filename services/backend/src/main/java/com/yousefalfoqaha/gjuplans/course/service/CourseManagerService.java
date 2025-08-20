@@ -10,6 +10,7 @@ import com.yousefalfoqaha.gjuplans.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 
@@ -22,6 +23,7 @@ public class CourseManagerService {
     private final CodeFormatter codeFormatter;
     private final UserService userService;
 
+    @Transactional
     public CourseDto editCourseDetails(long courseId, CourseDetailsDto details) {
         var course = courseService.findOrThrow(courseId);
 
@@ -44,6 +46,7 @@ public class CourseManagerService {
         return courseService.saveAndMap(course);
     }
 
+    @Transactional
     public CourseDto createCourse(CourseDetailsDto details) {
         String userEnteredCode = codeFormatter.apply(details.code());
 
@@ -72,6 +75,8 @@ public class CourseManagerService {
         return courseService.saveAndMap(newCourse);
     }
 
+    @PreAuthorize("hasRole('ROLE_APPROVER')")
+    @Transactional
     public CourseDto markCourseOutdated(long courseId) {
         var course = courseService.findOrThrow(courseId);
         var currentUser = userService.getCurrentUser();
@@ -82,6 +87,8 @@ public class CourseManagerService {
         return courseService.saveAndMap(course);
     }
 
+    @PreAuthorize("hasRole('ROLE_APPROVER')")
+    @Transactional
     public CourseDto markCourseActive(long courseId) {
         var course = courseService.findOrThrow(courseId);
 

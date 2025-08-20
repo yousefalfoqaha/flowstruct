@@ -8,7 +8,7 @@ type Props = {
   onDeleteSuccess?: () => void;
 };
 
-export function CourseOptionsMenu({ course, onDeleteSuccess }: Props) {
+export function CourseOptionsMenu({ course }: Props) {
   return (
     <Menu
       width={200}
@@ -26,10 +26,7 @@ export function CourseOptionsMenu({ course, onDeleteSuccess }: Props) {
       <Menu.Dropdown>
         <Menu.Label>Actions</Menu.Label>
 
-        <CourseDangerousOptionsMenuItems 
-          course={course} 
-          onDeleteSuccess={onDeleteSuccess} 
-        />
+        <CourseDangerousOptionsMenuItems course={course} />
       </Menu.Dropdown>
     </Menu>
   );

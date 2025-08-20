@@ -36,8 +36,6 @@ export function CourseTableOptionsMenu({ course }: Props) {
           <Menu.Item leftSection={<Pencil size={14} />}>Edit details</Menu.Item>
         </Link>
 
-        <Menu.Divider />
-
         <CourseDangerousOptionsMenuItems course={course} />
       </Menu.Dropdown>
     </Menu>

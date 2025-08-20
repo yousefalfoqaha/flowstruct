@@ -14,11 +14,3 @@ export const Role = {
   EDITOR: 'Editor',
   GUEST: 'Guest',
 } as const;
-
-export type UserAction =
-  | 'study-plans:request-approval'
-  | 'study-plans:approve'
-  | 'users:read'
-  | 'study-plans:delete'
-  | 'courses:delete'
-  | 'programs:delete';

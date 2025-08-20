@@ -3,8 +3,9 @@ import { Program } from '@/features/program/types.ts';
 import { ProgramTableOptionsMenu } from '@/features/program/components/ProgramTableOptionsMenu.tsx';
 import { ActionIcon, Badge, Group } from '@mantine/core';
 import { LastUpdatedStats } from '@/shared/components/LastUpdatedStats.tsx';
-import { OutdatedStatusBadge } from '@/shared/components/OutdatedStatusBadge.tsx';
 import { ArrowDownUp } from 'lucide-react';
+import { EntityNameWithStatus } from '@/shared/components/EntityNameWithStatus.tsx';
+import { OutdatedStatusBadge } from '@/shared/components/OutdatedStatusBadge.tsx';
 
 export function getProgramsTableColumns() {
   const { display, accessor } = createColumnHelper<Program>();
@@ -19,6 +20,18 @@ export function getProgramsTableColumns() {
           entityType="program"
         />
       ),
+      enableColumnFilter: true,
+      filterFn: (row, _columnId, filterValue) => {
+        if (filterValue === 'active') {
+          return row.original.outdatedAt === null;
+        }
+
+        if (filterValue === 'outdated') {
+          return row.original.outdatedAt !== null;
+        }
+
+        return true;
+      },
     }),
     accessor('code', {
       header: ({ column }) => (

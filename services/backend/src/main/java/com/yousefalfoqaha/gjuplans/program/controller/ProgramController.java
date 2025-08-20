@@ -42,13 +42,6 @@ public class ProgramController {
         return new ResponseEntity<>(programManagerService.createProgram(programDetails), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{programId}")
-    public ResponseEntity<Void> deleteProgram(@PathVariable long programId) {
-        programManagerService.deleteProgram(programId);
-
-        return ResponseEntity.noContent().build();
-    }
-
     @PutMapping("/{programId}/mark-outdated")
     public ResponseEntity<ProgramDto> markProgramOutdated(@PathVariable long programId) {
         return new ResponseEntity<>(programManagerService.markProgramOutdated(programId), HttpStatus.OK);

@@ -14,6 +14,18 @@ export function getStudyPlansTableColumns() {
     accessor('archivedAt', {
       header: '',
       cell: ({ row }) => <ArchiveStatusBadge archivedAt={row.original.archivedAt} />,
+      enableColumnFilter: true,
+      filterFn: (row, _columnId, filterValue) => {
+        if (filterValue === 'active') {
+          return row.original.archivedAt === null;
+        }
+
+        if (filterValue === 'archived') {
+          return row.original.archivedAt !== null;
+        }
+
+        return true;
+      },
     }),
     accessor('programName', {
       header: 'Program',

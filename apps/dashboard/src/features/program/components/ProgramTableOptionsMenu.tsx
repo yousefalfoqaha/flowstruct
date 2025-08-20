@@ -34,8 +34,6 @@ export function ProgramTableOptionsMenu({ program }: Props) {
           <Menu.Item leftSection={<Pencil size={14} />}>Edit Details</Menu.Item>
         </Link>
 
-        <Menu.Divider />
-
         <ProgramDangerousOptionsMenuItems program={program} />
       </Menu.Dropdown>
     </Menu>

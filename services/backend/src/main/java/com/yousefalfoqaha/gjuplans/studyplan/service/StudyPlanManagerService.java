@@ -8,7 +8,6 @@ import com.yousefalfoqaha.gjuplans.studyplan.domain.StudyPlanDraft;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDetailsDto;
 import com.yousefalfoqaha.gjuplans.studyplan.dto.StudyPlanDto;
 import com.yousefalfoqaha.gjuplans.studyplan.exception.StudyPlanNotFoundException;
-import com.yousefalfoqaha.gjuplans.studyplan.repository.StudyPlanRepository;
 import com.yousefalfoqaha.gjuplans.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 @Service
 public class StudyPlanManagerService {
     private final StudyPlanService studyPlanService;
-    private final StudyPlanRepository studyPlanRepository;
     private final UserService userService;
 
     @Transactional
@@ -138,12 +136,7 @@ public class StudyPlanManagerService {
         return studyPlanService.saveAndMap(studyPlan);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Transactional
-    public void deleteStudyPlan(long id) {
-        studyPlanRepository.deleteById(id);
-    }
-
+    @PreAuthorize("hasRole('ROLE_APPROVER')")
     @Transactional
     public StudyPlanDto archiveStudyPlan(long id) {
         var studyPlan = studyPlanService.findOrThrow(id);
@@ -159,6 +152,7 @@ public class StudyPlanManagerService {
         return studyPlanService.saveAndMap(studyPlan);
     }
 
+    @PreAuthorize("hasRole('ROLE_APPROVER')")
     @Transactional
     public StudyPlanDto unarchiveStudyPlan(long id) {
         var studyPlan = studyPlanService.findOrThrow(id);
@@ -171,12 +165,5 @@ public class StudyPlanManagerService {
         }
 
         return studyPlanService.saveAndMap(studyPlan);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Transactional
-    public void deleteStudyPlansByProgram(long programId) {
-        var studyPlanIds = studyPlanRepository.findAllStudyPlanIdsByProgram(programId);
-        studyPlanRepository.deleteAllById(studyPlanIds);
     }
 }

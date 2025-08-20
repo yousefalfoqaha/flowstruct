@@ -5,10 +5,9 @@ import { ProgramDangerousOptionsMenuItems } from '@/features/program/components/
 
 type Props = {
   program: Program;
-  onDeleteSuccess?: () => void;
 };
 
-export function ProgramOptionsMenu({ program, onDeleteSuccess }: Props) {
+export function ProgramOptionsMenu({ program }: Props) {
   return (
     <Menu
       width={200}
@@ -26,10 +25,7 @@ export function ProgramOptionsMenu({ program, onDeleteSuccess }: Props) {
       <Menu.Dropdown>
         <Menu.Label>Actions</Menu.Label>
 
-        <ProgramDangerousOptionsMenuItems 
-          program={program} 
-          onDeleteSuccess={onDeleteSuccess} 
-        />
+        <ProgramDangerousOptionsMenuItems program={program} />
       </Menu.Dropdown>
     </Menu>
   );

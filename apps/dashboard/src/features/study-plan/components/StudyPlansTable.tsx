@@ -13,10 +13,10 @@ import { StudyPlanYearFilter } from '@/features/study-plan/components/StudyPlanY
 import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
 import { GraduationCap } from 'lucide-react';
 import { getStudyPlanRows } from '@/utils/getStudyPlanRows.ts';
+import { StudyPlanArchiveFilter } from '@/features/study-plan/components/StudyPlanArchiveFilter.tsx';
 
 export function StudyPlansTable() {
   const { data: studyPlans } = useStudyPlanList();
-
   const { data: programs } = useProgramList();
 
   const columns = React.useMemo(() => getStudyPlansTableColumns(), []);
@@ -28,16 +28,18 @@ export function StudyPlansTable() {
       sorting: [
         {
           id: 'updatedAt',
-          desc: true
-        }
-      ]
-    }
+          desc: true,
+        },
+      ],
+    },
   });
 
   return (
     <Stack>
       <Group>
-        <DataTableSearch width={800} table={table} placeholder="Search any study plan..." />
+        <StudyPlanArchiveFilter table={table} />
+
+        <DataTableSearch width={500} table={table} placeholder="Search any study plan..." />
 
         <ColumnFilterSelect
           table={table}

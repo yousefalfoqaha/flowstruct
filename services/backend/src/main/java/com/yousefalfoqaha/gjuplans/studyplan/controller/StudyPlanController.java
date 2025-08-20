@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -89,13 +88,6 @@ public class StudyPlanController {
                 studyPlanManagerService.createStudyPlan(studyPlanDetails),
                 HttpStatus.OK
         );
-    }
-
-    @DeleteMapping("/{studyPlanId}")
-    public ResponseEntity<Void> deleteStudyPlan(@PathVariable long studyPlanId) {
-        studyPlanManagerService.deleteStudyPlan(studyPlanId);
-
-        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{studyPlanId}/archive")

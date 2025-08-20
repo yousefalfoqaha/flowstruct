@@ -1,8 +1,7 @@
 import { Menu, Text } from '@mantine/core';
-import { History, RotateCcw, Trash } from 'lucide-react';
+import { History, RotateCcw } from 'lucide-react';
 import { Program } from '@/features/program/types.ts';
 import { modals } from '@mantine/modals';
-import { useDeleteProgram } from '@/features/program/hooks/useDeleteProgram.ts';
 import { useMarkProgramOutdated } from '@/features/program/hooks/useMarkProgramOutdated.ts';
 import { useMarkProgramActive } from '@/features/program/hooks/useMarkProgramActive.ts';
 import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
@@ -10,11 +9,9 @@ import { usePermission } from '@/features/user/hooks/usePermission.ts';
 
 type Props = {
   program: Program;
-  onDeleteSuccess?: () => void;
 };
 
-export function ProgramDangerousOptionsMenuItems({ program, onDeleteSuccess }: Props) {
-  const deleteProgram = useDeleteProgram();
+export function ProgramDangerousOptionsMenuItems({ program }: Props) {
   const markProgramOutdated = useMarkProgramOutdated();
   const markProgramActive = useMarkProgramActive();
 
@@ -46,41 +43,30 @@ export function ProgramDangerousOptionsMenuItems({ program, onDeleteSuccess }: P
       onConfirm: () => markProgramActive.mutate(program.id),
     });
 
-  const handleDeleteProgram = () =>
-    modals.openConfirmModal({
-      title: <ModalHeader title="Please Confirm Your Action" />,
-      children: (
-        <Text size="sm">
-          Deleting this program will delete all of its study plans. Are you absolutely sure?
-        </Text>
-      ),
-      labels: { confirm: 'Confirm', cancel: 'Cancel' },
-      onConfirm: () =>
-        deleteProgram.mutate(program.id, {
-          onSuccess: () => {
-            if (onDeleteSuccess) {
-              onDeleteSuccess();
-            }
-          },
-        }),
-    });
-
   return (
     <>
-      {program.outdatedAt ? (
-        <Menu.Item color="green" leftSection={<RotateCcw size={14} />} onClick={handleMarkActive}>
-          Mark as Active
-        </Menu.Item>
-      ) : (
-        <Menu.Item color="orange" leftSection={<History size={14} />} onClick={handleMarkOutdated}>
-          Mark as Outdated
-        </Menu.Item>
-      )}
+      {hasPermission('programs:mark-outdated') && (
+        <>
+          <Menu.Divider />
 
-      {hasPermission('programs:delete') && (
-        <Menu.Item color="red" leftSection={<Trash size={14} />} onClick={handleDeleteProgram}>
-          Delete
-        </Menu.Item>
+          {program.outdatedAt ? (
+            <Menu.Item
+              color="green"
+              leftSection={<RotateCcw size={14} />}
+              onClick={handleMarkActive}
+            >
+              Mark as Active
+            </Menu.Item>
+          ) : (
+            <Menu.Item
+              color="orange"
+              leftSection={<History size={14} />}
+              onClick={handleMarkOutdated}
+            >
+              Mark as Outdated
+            </Menu.Item>
+          )}
+        </>
       )}
     </>
   );

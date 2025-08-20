@@ -2,8 +2,6 @@ import { ActionIcon, Menu } from '@mantine/core';
 import { StudyPlanDangerMenuItems } from '@/features/study-plan/components/StudyPlanDangerMenuItems.tsx';
 import { StudyPlanSummary } from '@/features/study-plan/types.ts';
 import { EllipsisVertical, ExternalLink } from 'lucide-react';
-import { useNavigate } from '@tanstack/react-router';
-import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 import { modals } from '@mantine/modals';
 import { StudyPlanLinkModalContent } from './StudyPlanLinkModalContent';
 import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
@@ -13,8 +11,6 @@ type Props = {
 };
 
 export function StudyPlanOptionsMenu({ studyPlan }: Props) {
-  const navigate = useNavigate();
-
   return (
     <Menu
       width={200}
@@ -52,12 +48,7 @@ export function StudyPlanOptionsMenu({ studyPlan }: Props) {
 
         <Menu.Divider />
 
-        <StudyPlanDangerMenuItems
-          studyPlan={studyPlan}
-          onDeleteSuccess={() => {
-            navigate({ to: '/study-plans', search: DefaultSearchValues() });
-          }}
-        />
+        <StudyPlanDangerMenuItems studyPlan={studyPlan} />
       </Menu.Dropdown>
     </Menu>
   );

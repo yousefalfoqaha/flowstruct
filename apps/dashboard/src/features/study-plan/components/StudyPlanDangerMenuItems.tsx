@@ -1,13 +1,5 @@
 import { Menu, Text } from '@mantine/core';
-import {
-  Archive,
-  ArchiveRestore,
-  CircleCheck,
-  ClipboardX,
-  CopyPlus,
-  Mail,
-  Trash,
-} from 'lucide-react';
+import { Archive, ArchiveRestore, CircleCheck, ClipboardX, CopyPlus, Mail } from 'lucide-react';
 import { useArchiveStudyPlan } from '@/features/study-plan/hooks/useArchiveStudyPlan.ts';
 import { useUnarchiveStudyPlan } from '@/features/study-plan/hooks/useUnarchiveStudyPlan.ts';
 import { useApproveStudyPlanChanges } from '@/features/study-plan/hooks/useApproveStudyPlanChanges.ts';
@@ -17,16 +9,13 @@ import { CloneStudyPlanDetailsForm } from '@/features/study-plan/components/Clon
 import { StudyPlanSummary } from '@/features/study-plan/types.ts';
 import { useDiscardStudyPlanChanges } from '@/features/study-plan/hooks/useDiscardStudyPlanChanges.ts';
 import { RequestApprovalForm } from '@/features/study-plan/components/RequestApprovalForm.tsx';
-import { useDeleteStudyPlan } from '@/features/study-plan/hooks/useDeleteStudyPlan.ts';
 import { usePermission } from '@/features/user/hooks/usePermission.ts';
 
 type Props = {
   studyPlan: StudyPlanSummary;
-  onDeleteSuccess?: () => void;
 };
 
-export function StudyPlanDangerMenuItems({ studyPlan, onDeleteSuccess }: Props) {
-  const deleteStudyPlan = useDeleteStudyPlan();
+export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
   const archiveStudyPlan = useArchiveStudyPlan();
   const unarchiveStudyPlan = useUnarchiveStudyPlan();
   const approveStudyPlan = useApproveStudyPlanChanges();
@@ -72,26 +61,6 @@ export function StudyPlanDangerMenuItems({ studyPlan, onDeleteSuccess }: Props) 
       ),
       labels: { confirm: 'Unarchive', cancel: 'Cancel' },
       onConfirm: () => unarchiveStudyPlan.mutate(studyPlan.id),
-    });
-
-  const handleDeleteStudyPlan = () =>
-    modals.openConfirmModal({
-      title: <ModalHeader title="Please Confirm Your Action" />,
-      children: (
-        <Text size="sm">
-          Deleting this study plan will permanently remove all related sections, the program map,
-          and its overview. This action cannot be undone. Are you absolutely sure?
-        </Text>
-      ),
-      labels: { confirm: 'Confirm', cancel: 'Cancel' },
-      onConfirm: () =>
-        deleteStudyPlan.mutate(studyPlan.id, {
-          onSuccess: () => {
-            if (onDeleteSuccess) {
-              onDeleteSuccess();
-            }
-          },
-        }),
     });
 
   const handleCloneStudyPlan = () =>
@@ -164,7 +133,7 @@ export function StudyPlanDangerMenuItems({ studyPlan, onDeleteSuccess }: Props) 
         Clone
       </Menu.Item>
 
-      {studyPlan.archivedAt !== null ? (
+      {hasPermission('study-plans:archive') && studyPlan.archivedAt !== null ? (
         <Menu.Item
           color="green"
           onClick={handleUnarchiveStudyPlan}
@@ -179,12 +148,6 @@ export function StudyPlanDangerMenuItems({ studyPlan, onDeleteSuccess }: Props) 
           leftSection={<Archive size={14} />}
         >
           Archive
-        </Menu.Item>
-      )}
-
-      {hasPermission('study-plans:delete') && (
-        <Menu.Item color="red" onClick={handleDeleteStudyPlan} leftSection={<Trash size={14} />}>
-          Delete
         </Menu.Item>
       )}
     </>

@@ -19,7 +19,6 @@ import java.time.Instant;
 @RequiredArgsConstructor
 @Service
 public class ProgramManagerService {
-    private final StudyPlanManagerService studyPlanManagerService;
     private final ProgramService programService;
     private final ProgramRepository programRepository;
     private final CodeFormatter codeFormatter;
@@ -68,14 +67,7 @@ public class ProgramManagerService {
         return programService.saveAndMap(newProgram);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Transactional
-    public void deleteProgram(long programId) {
-        studyPlanManagerService.deleteStudyPlansByProgram(programId);
-
-        programRepository.deleteById(programId);
-    }
-
+    @PreAuthorize("hasRole('ROLE_APPROVER')")
     @Transactional
     public ProgramDto markProgramOutdated(long programId) {
         Program program = programService.findOrThrow(programId);
@@ -87,6 +79,7 @@ public class ProgramManagerService {
         return programService.saveAndMap(program);
     }
 
+    @PreAuthorize("hasRole('ROLE_APPROVER')")
     @Transactional
     public ProgramDto markProgramActive(long programId) {
         Program program = programService.findOrThrow(programId);

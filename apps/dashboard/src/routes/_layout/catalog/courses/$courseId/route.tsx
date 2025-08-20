@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { PageHeaderWithBack } from '@/shared/components/PageHeaderWithBack.tsx';
 import { getCourseDisplayName } from '@/utils/getCourseDisplayName.ts';
 import { PageLayout } from '@/shared/components/PageLayout.tsx';
@@ -8,7 +8,6 @@ import { LastUpdated } from '@/shared/components/LastUpdated.tsx';
 import { Group, Stack } from '@mantine/core';
 import { OutdatedAlert } from '@/shared/components/OutdatedAlert.tsx';
 import { CourseOptionsMenu } from '@/features/course/components/CourseOptionsMenu.tsx';
-import { DefaultSearchValues } from '@/utils/defaultSearchValues.ts';
 
 export const Route = createFileRoute('/_layout/catalog/courses/$courseId')({
   loader: async ({ context: { queryClient }, params }) => {
@@ -20,7 +19,6 @@ export const Route = createFileRoute('/_layout/catalog/courses/$courseId')({
 
 function RouteComponent() {
   const { data: course } = useCurrentCourse();
-  const navigate = useNavigate();
 
   return (
     <PageLayout
@@ -38,12 +36,7 @@ function RouteComponent() {
             />
             <Group>
               <LastUpdated at={course.updatedAt} by={course.updatedBy} />
-              <CourseOptionsMenu
-                course={course}
-                onDeleteSuccess={() =>
-                  navigate({ to: '/catalog/courses', search: DefaultSearchValues })
-                }
-              />
+              <CourseOptionsMenu course={course} />
             </Group>
           </Group>
         </Stack>

@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { useCurrentProgram } from '@/features/program/hooks/useCurrentProgram.ts';
 import { Group, Stack } from '@mantine/core';
 import { getProgramDisplayName } from '@/utils/getProgramDisplayName.ts';
@@ -20,7 +20,6 @@ export const Route = createFileRoute('/_layout/catalog/programs/$programId')({
 
 function RouteComponent() {
   const { data: program } = useCurrentProgram();
-  const navigate = useNavigate();
 
   return (
     <PageLayout
@@ -41,15 +40,7 @@ function RouteComponent() {
             />
             <Group>
               <LastUpdated at={program.updatedAt} by={program.updatedBy} />
-              <ProgramOptionsMenu
-                program={program}
-                onDeleteSuccess={() =>
-                  navigate({
-                    to: '/catalog/programs',
-                    search: DefaultSearchValues(),
-                  })
-                }
-              />
+              <ProgramOptionsMenu program={program} />
             </Group>
           </Group>
         </Stack>
