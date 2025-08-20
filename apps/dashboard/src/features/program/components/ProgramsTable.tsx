@@ -10,7 +10,7 @@ import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx
 import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
 import { Album, Plus } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
-import { ProgramArchiveFilter } from '@/features/program/components/ProgramArchiveFilter.tsx';
+import { OutdatedFilter } from '@/shared/components/OutdatedFilter.tsx';
 import { useTableSearch } from '@/shared/hooks/useTableSearch.ts';
 
 export function ProgramsTable() {
@@ -33,7 +33,7 @@ export function ProgramsTable() {
   return (
     <Stack gap="md">
       <Group>
-        <ProgramArchiveFilter table={table} />
+        <OutdatedFilter table={table} />
 
         <DataTableSearch width={800} table={table} placeholder="Search any program..." />
 

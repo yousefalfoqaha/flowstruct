@@ -9,6 +9,6 @@ export const transformCourseSearchOptions = (options: TableSearchOptions) => {
     filter,
     page,
     size,
-    status: outdatedFilter ?? 'all',
+    status: outdatedFilter?.value ?? 'all',
   };
 };

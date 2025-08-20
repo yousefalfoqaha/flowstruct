@@ -9,8 +9,8 @@ import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
 import { Link } from '@tanstack/react-router';
 import { Plus } from 'lucide-react';
-import { CourseArchiveFilter } from '@/features/course/components/CourseArchiveFilter.tsx';
 import { useTableSearch } from '@/shared/hooks/useTableSearch.ts';
+import { OutdatedFilter } from '@/shared/components/OutdatedFilter.tsx';
 
 export function CoursesTable() {
   const columns = React.useMemo(() => getCoursesTableColumns(), []);
@@ -36,7 +36,7 @@ export function CoursesTable() {
   return (
     <Stack>
       <Group>
-        <CourseArchiveFilter table={table} />
+        <OutdatedFilter table={table} />
 
         <DataTableSearch
           width=""

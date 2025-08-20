@@ -24,7 +24,7 @@ public class CourseController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10", required = false) int size,
             @RequestParam(value = "filter", defaultValue = "", required = false) String filter,
-            @RequestParam(value = "status", defaultValue = "ALL", required = false) OutdatedFilter status
+            @RequestParam(value = "status", defaultValue = "all", required = false) OutdatedFilter status
     ) {
         return new ResponseEntity<>(
                 courseService.getPaginatedCourseList(page, size, filter, status),

@@ -23,7 +23,7 @@ function RouteComponent() {
       <Group justify="space-between">
         <div>
           <Title lh="md" order={2} fw={600}>
-            Study Plans
+            Study Plan Pages
           </Title>
 
           <Text c="dimmed" size="sm">

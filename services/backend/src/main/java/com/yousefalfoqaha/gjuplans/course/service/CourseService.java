@@ -33,17 +33,47 @@ public class CourseService {
     public CoursesPageDto getPaginatedCourseList(int page, int size, String filter, OutdatedFilter status) {
         Pageable pageable = PageRequest.of(page, size);
         var filterParam = '%' + filter + '%';
+        var statusParam = status.name();
 
-        var courseIds = courseRepository.findAllByFilter(
+        var results = courseRepository.findPagedCourses(
                 pageable.getPageSize(),
                 pageable.getOffset(),
-                filterParam
+                filterParam,
+                statusParam
         );
 
-        var courses = courseRepository.findAllById(courseIds);
-        var total = courseRepository.countByFilter(filterParam);
+        if (results.isEmpty()) {
+            return new CoursesPageDto(List.of(), pageable.getPageNumber(),
+                    pageable.getPageSize(), 0, 0, true);
+        }
 
-        Page<Course> coursesPage = new PageImpl<>(courses, pageable, total);
+        List<Course> courses = results.stream()
+                .map(row -> new Course(
+                        row.id(),
+                        row.code(),
+                        row.name(),
+                        row.creditHours(),
+                        row.ects(),
+                        row.lectureHours(),
+                        row.practicalHours(),
+                        row.type(),
+                        row.isRemedial(),
+                        row.outdatedAt(),
+                        row.outdatedBy(),
+                        row.version(),
+                        row.createdAt(),
+                        row.updatedAt(),
+                        row.updatedBy()
+                ))
+                .toList();
+
+        long totalCount = results.getFirst().totalCourses();
+
+        Page<Course> coursesPage = new PageImpl<>(
+                courses,
+                pageable,
+                totalCount
+        );
 
         return coursesPageResponseMapper.apply(coursesPage);
     }

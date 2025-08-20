@@ -12,7 +12,7 @@ export const ARCHIVE_FILTER = {
   ALL: 'all' as const,
 };
 
-export function CourseArchiveFilter<TData>({ table }: Props<TData>) {
+export function OutdatedFilter<TData>({ table }: Props<TData>) {
   const outdatedAtColumn = table.getColumn('outdatedAt');
   if (!outdatedAtColumn) return;
 

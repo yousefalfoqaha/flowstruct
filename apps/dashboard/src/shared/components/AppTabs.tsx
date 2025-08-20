@@ -15,7 +15,7 @@ export function AppTabs() {
   const { hasPermission } = usePermission();
 
   const tabs: NavbarLinks[] = [
-    { label: 'Study Plans', icon: <ScrollText size={18} />, route: StudyPlansRoute.to },
+    { label: 'Study Plan Pages', icon: <ScrollText size={18} />, route: StudyPlansRoute.to },
     { label: 'Catalog', icon: <LibraryBig size={18} />, route: CatalogRoute.to },
     ...(hasPermission('users:read')
       ? [{ label: 'User Management', icon: <User size={18} />, route: UsersRoute.to }]

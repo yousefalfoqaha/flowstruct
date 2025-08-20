@@ -7,6 +7,7 @@ import { DataTable } from '@/shared/components/DataTable.tsx';
 import { formatTimeAgo } from '@/utils/formatTimeAgo.ts';
 import { UsersOptionMenu } from '@/features/user/components/UsersOptionMenu.tsx';
 import { ActionIcon, Group, Stack } from '@mantine/core';
+import { RoleBadge } from '@/features/user/components/RoleBadge.tsx';
 import { DataTablePagination } from '@/shared/components/DataTablePagination.tsx';
 import { DataTableSearch } from '@/shared/components/DataTableSearch.tsx';
 import { ColumnFilterSelect } from '@/shared/components/ColumnFilterSelect.tsx';
@@ -43,6 +44,7 @@ export function UsersTable() {
       }),
       accessor('role', {
         header: 'Role',
+        cell: ({ row }) => <RoleBadge role={row.original.role} />,
         filterFn: 'equalsString',
       }),
       accessor('createdAt', {

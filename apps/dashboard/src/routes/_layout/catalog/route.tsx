@@ -15,7 +15,7 @@ function RouteComponent() {
         </Title>
 
         <Text c="dimmed" size="sm">
-          Manage catalog of programs and courses
+          Manage resources that are used in study plans
         </Text>
       </div>
 
