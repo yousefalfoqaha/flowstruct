@@ -39,7 +39,7 @@ export function LoginForm() {
           GJUPlans Admin
         </Title>
         <Text c="dimmed" size="sm" ta="center" mt={5}>
-          A Content Management System for Interactive Curriculums
+          A CMS for Interactive Curriculums
         </Text>
       </Box>
 
