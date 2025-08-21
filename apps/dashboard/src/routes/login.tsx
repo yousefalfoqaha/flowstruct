@@ -10,9 +10,5 @@ export const Route = createFileRoute('/login')({
       throw redirect({ to: search.redirect });
     }
   },
-  component: RouteComponent,
+  component: () => <LoginForm />,
 });
-
-export function RouteComponent() {
-  return <LoginForm />;
-}
