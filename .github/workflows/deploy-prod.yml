@@ -1,0 +1,13 @@
+name: Deploy API - Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  call-deploy:
+    uses: deploy-api.yml
+    with:
+      image_tag: prod
+      vps_ip: ${{ vars.PROD_VPS_IP }}

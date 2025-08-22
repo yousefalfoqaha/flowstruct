@@ -1,3 +1,0 @@
-# keep mvnw and all shell scripts LF-only
-services/backend/mvnw    text eol=lf
-*.sh                     text eol=lf

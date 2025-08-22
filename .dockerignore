@@ -1,33 +1,63 @@
-# Ignore node_modules except in the deps stage
-node_modules
-*/node_modules
+# Build outputs
+target/
+*.jar
+*.war
+*.ear
 
-# Ignore build outputs
-dist
-build
-target
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.project
+.classpath
 
-# Ignore dev container files
-.devcontainer
-!.devcontainer/Dockerfile
-
-# Ignore git
-.git
-.gitignore
-
-# Ignore IDE files
-.vscode
-*.swp
-*.swo
-
-# Ignore logs
-*.log
-logs
-
-# Ignore OS files
+# OS files
 .DS_Store
 Thumbs.db
 
-# Ignore environment files (they'll be mounted)
-.env
-*.env
+# Git
+.git/
+.gitignore
+
+# Docker files (don't copy into container)
+Dockerfile
+.dockerignore
+docker-compose.yaml
+docker-compose.deploy.yaml
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Node modules (if you have frontend assets)
+node_modules/
+
+# Maven wrapper jar (optional - you might want to keep this)
+# .mvn/wrapper/maven-wrapper.jar
+
+# Application specific
+*.properties.local
+application-local.yml
+application-local.yaml
+
+# Testing
+coverage/
+*.coverage
+
+# Documentation
+README.md
+*.md
+docs/
+
+# CI/CD files
+.github/
+.gitlab-ci.yml
+Jenkinsfile
