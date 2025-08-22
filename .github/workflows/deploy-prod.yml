@@ -7,7 +7,7 @@ on:
 
 jobs:
   call-deploy:
-    uses: deploy-api.yml
+    uses: ./.github/workflows/deploy-api.yml
     with:
       image_tag: prod
       vps_ip: ${{ vars.PROD_VPS_IP }}

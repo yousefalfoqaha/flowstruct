@@ -7,7 +7,7 @@ on:
 
 jobs:
   call-deploy:
-    uses: deploy-api.yml
+    uses: ./.github/workflows/deploy-api.yml
     with:
       image_tag: staging
       vps_ip: ${{ vars.STAGING_VPS_IP }}
