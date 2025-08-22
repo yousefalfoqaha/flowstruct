@@ -3,7 +3,6 @@ package com.gjuplans.api.user.controller;
 import com.gjuplans.api.auth.service.CookieService;
 import com.gjuplans.api.user.domain.Role;
 import com.gjuplans.api.user.dto.*;
-import com.yousefalfoqaha.gjuplans.user.dto.*;
 import com.gjuplans.api.user.service.UserManagementService;
 import com.gjuplans.api.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;

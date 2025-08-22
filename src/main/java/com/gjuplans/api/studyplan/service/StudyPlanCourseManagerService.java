@@ -3,7 +3,6 @@ package com.gjuplans.api.studyplan.service;
 import com.gjuplans.api.common.exception.EmptyListException;
 import com.gjuplans.api.course.exception.CourseNotFoundException;
 import com.gjuplans.api.studyplan.domain.*;
-import com.yousefalfoqaha.gjuplans.studyplan.domain.*;
 import com.gjuplans.api.studyplan.dto.StudyPlanDto;
 import com.gjuplans.api.studyplan.exception.CourseExistsException;
 import com.gjuplans.api.studyplan.exception.SectionNotFoundException;

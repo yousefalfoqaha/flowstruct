@@ -9,7 +9,6 @@ import com.gjuplans.api.program.exception.InvalidDegreeException;
 import com.gjuplans.api.program.exception.ProgramNotFoundException;
 import com.gjuplans.api.program.exception.UniqueProgramException;
 import com.gjuplans.api.studyplan.exception.*;
-import com.yousefalfoqaha.gjuplans.studyplan.exception.*;
 import com.gjuplans.api.user.exception.InvalidCredentialsException;
 import com.gjuplans.api.user.exception.InvalidPasswordException;
 import com.gjuplans.api.user.exception.UserNotFoundException;

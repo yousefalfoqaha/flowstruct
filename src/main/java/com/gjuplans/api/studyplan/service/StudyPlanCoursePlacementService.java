@@ -4,7 +4,6 @@ import com.gjuplans.api.studyplan.domain.Placement;
 import com.gjuplans.api.studyplan.dto.PlacementDto;
 import com.gjuplans.api.studyplan.dto.StudyPlanDto;
 import com.gjuplans.api.studyplan.exception.*;
-import com.yousefalfoqaha.gjuplans.studyplan.exception.*;
 import com.gjuplans.api.studyplan.utils.ProgramMapUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
