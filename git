@@ -1,0 +1,6 @@
+      PID    PPID    PGID     WINPID   TTY         UID    STIME COMMAND
+      478     477     476      11416  pty0      197609 23:21:13 /usr/bin/xargs
+      477     447     476      12852  pty0      197609 23:21:13 /usr/bin/xargs
+      476     447     476       5432  pty0      197609 23:21:13 /usr/bin/PS
+      447     446     447      14100  pty0      197609 23:21:01 /usr/bin/bash
+      446       1     446      13332  ?         197609 23:21:01 /usr/bin/mintty
