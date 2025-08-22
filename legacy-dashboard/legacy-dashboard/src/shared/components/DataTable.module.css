@@ -1,0 +1,23 @@
+.wrapper {
+    border: 1px solid var(--mantine-color-gray-3);
+    border-radius: var(--mantine-radius-default);
+    overflow: hidden;
+    /* Needed for radius to apply to <table> */
+}
+
+.thead {
+    background-color: transparent;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tbody {
+    background-color: var(--mantine-color-white);
+}
+
+.tfoot {
+    background-color: var(--mantine-color-white);
+}

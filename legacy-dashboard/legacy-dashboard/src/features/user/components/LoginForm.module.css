@@ -1,0 +1,5 @@
+.title {
+    font-family: Greycliff CF,
+    var(--mantine-font-family), serif;
+    font-weight: 900;
+}
