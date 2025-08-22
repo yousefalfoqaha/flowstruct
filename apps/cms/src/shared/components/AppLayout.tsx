@@ -18,7 +18,7 @@ export function AppLayout({ children }: Props) {
               <Image src="/logo.png" h={45} w={45} />
 
               <Title order={3} fw={600}>
-                GJUPlans Admin
+                GJUPlans CMS
               </Title>
             </Group>
 

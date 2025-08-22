@@ -36,7 +36,7 @@ export function LoginForm() {
     <Container size={420} my={40} className={classes.wrapper}>
       <Box className={classes.logoContainer}>
         <Title ta="center" className={classes.title}>
-          GJUPlans Admin
+          GJUPlans CMS
         </Title>
         <Text c="dimmed" size="sm" ta="center" mt={5}>
           A CMS for Interactive Curriculums
