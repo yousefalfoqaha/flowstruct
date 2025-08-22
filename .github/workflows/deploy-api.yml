@@ -44,7 +44,7 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ghcr.io/gjuplans-api:${{ inputs.image_tag }}
+          tags: ghcr.io/${{ github.repository_owner }}/gjuplans-api:${{ inputs.image_tag }}
 
       - name: Deploy on VPS
         run: |
