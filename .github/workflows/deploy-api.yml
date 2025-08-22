@@ -55,7 +55,7 @@ jobs:
           rsync -avz -e "ssh" Caddyfile $REMOTE_VPS:$REMOTE_DIR/Caddyfile
           
           ssh $REMOTE_VPS << EOF
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+            echo "${{ secrets.ghcr_pat }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
           
             cd /opt/gjuplans
             sudo docker compose -f $REMOTE_DIR/docker-compose.yaml pull
