@@ -1,0 +1,29 @@
+{
+  "name": "gjuplans",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.33.1",
+    "@typescript-eslint/parser": "^8.33.1",
+    "eslint": "^9.28.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3"
+  },
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "build:dashboard": "npm run build --workspace=dashboard",
+    "build:pages": "npm run build --workspace=pages",
+    "build:shared-types": "npm run build --workspace=@gjuplans/shared-types",
+    "build:api-client": "npm run build --workspace=@gjuplans/api-client",
+    "dev:dashboard": "npm run dev --workspace=dashboard",
+    "dev:pages": "npm run dev --workspace=pages",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.astro",
+    "format": "prettier --write . --ignore-path .prettierignore",
+    "test": "npm run test --workspaces"
+  }
+}
