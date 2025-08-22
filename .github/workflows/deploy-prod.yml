@@ -11,3 +11,5 @@ jobs:
     with:
       image_tag: prod
       vps_ip: ${{ vars.PROD_VPS_IP }}
+    secrets:
+      vps_ssh_key: ${{ secrets.VPS_SSH_KEY }}
