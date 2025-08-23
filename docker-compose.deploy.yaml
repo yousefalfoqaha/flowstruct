@@ -39,7 +39,6 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
-      - caddy_config:/config
     networks:
       - caddy
     restart: always
@@ -51,4 +50,3 @@ networks:
 volumes:
   pg_data:
   caddy_data:
-  caddy_config:
