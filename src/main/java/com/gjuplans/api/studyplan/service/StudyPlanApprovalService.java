@@ -111,7 +111,7 @@ public class StudyPlanApprovalService {
 
         html.append("""
                         <p>
-                            <a href="https://admin.gjuplans.com/study-plans/%d" class="button">View Study Plan</a>
+                            <a href="https://cms.gjuplans.com/study-plans/%d" class="button">View Study Plan</a>
                         </p>
                     </div>
                 </body>

@@ -23,7 +23,7 @@ public class SiteGeneratorFilter extends OncePerRequestFilter {
     private String apiKey;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String headerApiKey = request.getHeader("X-Backend-Api-Key");
+        String headerApiKey = request.getHeader("X-Api-Key");
 
         if (Objects.equals(headerApiKey, apiKey)) {
             Authentication authentication = new UsernamePasswordAuthenticationToken(apiKey, null, List.of());
