@@ -1,5 +1,5 @@
 {
-  "name": "@gjuplans/api-client",
+  "name": "@flowstruct/api-client",
   "version": "1.0.0",
   "private": true,
   "scripts": {

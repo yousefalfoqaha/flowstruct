@@ -28,7 +28,7 @@ function RouteComponent() {
           </Title>
 
           <Text c="dimmed" size="sm">
-            Manage all GJUPlans CMS users
+            Manage all CMS users
           </Text>
         </div>
 

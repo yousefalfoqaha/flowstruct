@@ -36,7 +36,7 @@ export function LoginForm() {
     <Container size={420} my={40} className={classes.wrapper}>
       <Box className={classes.logoContainer}>
         <Title ta="center" className={classes.title}>
-          GJUPlans CMS
+          Flowstruct CMS
         </Title>
         <Text c="dimmed" size="sm" ta="center" mt={5}>
           A CMS for Interactive Curriculums
@@ -89,7 +89,7 @@ export function LoginForm() {
         </form>
 
         <Text size="xs" ta="center" mt="lg" c="dimmed">
-          © {new Date().getFullYear()} GJUPlans. All rights reserved.
+          © {new Date().getFullYear()} Flowstruct. All rights reserved.
         </Text>
       </Paper>
     </Container>

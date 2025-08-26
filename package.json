@@ -1,5 +1,5 @@
 {
-  "name": "gjuplans-client",
+  "name": "flowstruct-client",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -18,8 +18,8 @@
     "build": "npm run build --workspaces",
     "build:cms": "npm run build --workspace=cms",
     "build:content": "npm run build --workspace=content",
-    "build:shared-types": "npm run build --workspace=@gjuplans/shared-types",
-    "build:api-client": "npm run build --workspace=@gjuplans/api-client",
+    "build:shared-types": "npm run build --workspace=@flowstruct/shared-types",
+    "build:api-client": "npm run build --workspace=@flowstruct/api-client",
     "dev:cms": "npm run dev --workspace=cms",
     "dev:content": "npm run dev --workspace=content",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx,.astro",
