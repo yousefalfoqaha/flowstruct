@@ -1,0 +1,52 @@
+services:
+  api:
+    image: ghcr.io/yousefalfoqaha/gjuplans-api:${API_IMAGE_TAG}
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      API_KEY: ${API_KEY}
+      CMS_BASE_URL: ${CMS_BASE_URL}
+    networks:
+      - caddy
+      - app
+    depends_on:
+      - database
+    restart: always
+
+  database:
+    image: postgres:16.9-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - app
+    restart: always
+
+  reverse_proxy:
+    image: caddy:2.10.0-alpine
+    environment:
+      API_BASE_URL: ${API_BASE_URL}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+    networks:
+      - caddy
+    restart: always
+
+networks:
+  caddy:
+  app:
+
+volumes:
+  pg_data:
+  caddy_data:

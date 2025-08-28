@@ -1,0 +1,16 @@
+name: Deploy API - Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  call-deploy:
+    uses: ./.github/workflows/deploy-api.yml
+    with:
+      image_tag: prod
+      vps_ip: ${{ vars.PROD_VPS_IP }}
+    secrets:
+      vps_ssh_key: ${{ secrets.VPS_SSH_KEY }}
+      ghcr_pat: ${{ secrets.GHCR_PAT }}
