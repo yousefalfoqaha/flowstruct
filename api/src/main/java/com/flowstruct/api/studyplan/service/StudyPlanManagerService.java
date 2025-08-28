@@ -166,4 +166,20 @@ public class StudyPlanManagerService {
 
         return studyPlanService.saveAndMap(studyPlan);
     }
+
+    @PreAuthorize("hasRole('ROLE_APPROVER')")
+    @Transactional
+    public StudyPlanDto approveStudyPlanChanges(long studyPlanId) {
+        var studyPlan = studyPlanService.findOrThrow(studyPlanId);
+        StudyPlanDraft lastApprovedStudyPlan = studyPlan.getApprovedStudyPlan();
+
+        if (lastApprovedStudyPlan != null && Objects.equals(lastApprovedStudyPlan.getVersion(), studyPlan.getVersion())) {
+            throw new AlreadyApprovedException("This version has already been approved.");
+        }
+
+        studyPlan.setApprovedStudyPlan(new StudyPlanDraft(studyPlan));
+        studyPlan.getApprovedStudyPlan().setVersion(studyPlan.getVersion() + 1);
+
+        return studyPlanService.saveAndMap(studyPlan);
+    }
 }

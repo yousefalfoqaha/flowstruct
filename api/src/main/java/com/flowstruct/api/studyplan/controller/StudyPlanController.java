@@ -1,10 +1,8 @@
 package com.flowstruct.api.studyplan.controller;
 
-import com.flowstruct.api.studyplan.dto.ApprovalRequestDetailsDto;
 import com.flowstruct.api.studyplan.dto.StudyPlanDetailsDto;
 import com.flowstruct.api.studyplan.dto.StudyPlanDto;
 import com.flowstruct.api.studyplan.dto.StudyPlanSummaryDto;
-import com.flowstruct.api.studyplan.service.StudyPlanApprovalService;
 import com.flowstruct.api.studyplan.service.StudyPlanManagerService;
 import com.flowstruct.api.studyplan.service.StudyPlanService;
 import jakarta.validation.Valid;
@@ -20,7 +18,6 @@ import java.util.List;
 @RequestMapping("/api/v1/study-plans")
 public class StudyPlanController {
     private final StudyPlanService studyPlanService;
-    private final StudyPlanApprovalService studyPlanApprovalService;
     private final StudyPlanManagerService studyPlanManagerService;
 
     @GetMapping
@@ -46,19 +43,10 @@ public class StudyPlanController {
         );
     }
 
-    @PostMapping("{studyPlanId}/request-approval")
-    public ResponseEntity<Void> requestStudyPlansApproval(
-            @Valid @RequestBody ApprovalRequestDetailsDto approvalRequest,
-            @PathVariable long studyPlanId
-    ) {
-        studyPlanApprovalService.requestApproval(approvalRequest, studyPlanId);
-        return ResponseEntity.noContent().build();
-    }
-
     @PutMapping("/{studyPlanId}/approve-changes")
     public ResponseEntity<StudyPlanDto> approveStudyPlanChanges(@PathVariable long studyPlanId) {
         return new ResponseEntity<>(
-                studyPlanApprovalService.approveStudyPlanChanges(studyPlanId),
+                studyPlanManagerService.approveStudyPlanChanges(studyPlanId),
                 HttpStatus.OK
         );
     }
