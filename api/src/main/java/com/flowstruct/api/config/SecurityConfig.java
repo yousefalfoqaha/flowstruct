@@ -45,8 +45,8 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
-                                "/api/v1/users/login",
-                                "/api/v1/users/logout",
+                                "/users/login",
+                                "/users/logout",
                                 "/error"
                         )
                         .permitAll()
@@ -76,8 +76,8 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(
-                                "/api/v1/users/login",
-                                "/api/v1/users/logout",
+                                "/users/login",
+                                "/users/logout",
                                 "/error"
                         )
                         .permitAll()

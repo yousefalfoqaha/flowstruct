@@ -3,7 +3,6 @@ import { userKeys } from '@/features/user/queries.ts';
 import { useQueryClient } from '@tanstack/react-query';
 
 type UserAction =
-  | 'study-plans:request-approval'
   | 'study-plans:approve'
   | 'users:read'
   | 'study-plans:archive'
@@ -12,7 +11,7 @@ type UserAction =
 
 const RolePermissions: Record<keyof typeof Role, () => UserAction[]> = {
   GUEST: () => [] as const,
-  EDITOR: () => [...RolePermissions.GUEST(), 'study-plans:request-approval'] as const,
+  EDITOR: () => [] as const,
   APPROVER: () =>
     [
       ...RolePermissions.GUEST(),

@@ -1,0 +1,72 @@
+services:
+  cms:
+    build: ./client
+    environment:
+      WORKSPACE_NAME: cms
+      PREVIEW_PORT: 5173
+      STUDENT_BASE_URL: ${STUDENT_BASE_URL}
+      API_BASE_URL: ${API_BASE_URL}
+    depends_on:
+      - api
+    restart: always
+
+  content:
+    build: ./client
+    environment:
+      WORKSPACE_NAME: content
+      PREVIEW_PORT: 4321
+      API_BASE_URL: ${API_BASE_URL}
+      API_KEY: ${API_KEY}
+    depends_on:
+      - api
+    restart: always
+
+  api:
+    build: ./api
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      API_KEY: ${API_KEY}
+      CMS_BASE_URL: ${CMS_BASE_URL}
+    networks:
+      - caddy
+      - api
+    depends_on:
+      - database
+    restart: always
+
+  database:
+    image: postgres:16.9-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - api
+    restart: always
+
+  reverse_proxy:
+    image: caddy:2.10.0-alpine
+    environment:
+      API_BASE_URL: ${API_BASE_URL}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+    networks:
+      - caddy
+    restart: always
+
+networks:
+  caddy:
+  api:
+
+volumes:
+  pg_data:
+  caddy_data:

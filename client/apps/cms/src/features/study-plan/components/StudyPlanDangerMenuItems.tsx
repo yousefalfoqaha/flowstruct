@@ -1,5 +1,5 @@
 import { Menu, Text } from '@mantine/core';
-import { Archive, ArchiveRestore, CircleCheck, ClipboardX, CopyPlus, Mail } from 'lucide-react';
+import { Archive, ArchiveRestore, CircleCheck, ClipboardX, CopyPlus } from 'lucide-react';
 import { useArchiveStudyPlan } from '@/features/study-plan/hooks/useArchiveStudyPlan.ts';
 import { useUnarchiveStudyPlan } from '@/features/study-plan/hooks/useUnarchiveStudyPlan.ts';
 import { useApproveStudyPlanChanges } from '@/features/study-plan/hooks/useApproveStudyPlanChanges.ts';
@@ -8,7 +8,6 @@ import { ModalHeader } from '@/shared/components/ModalHeader.tsx';
 import { CloneStudyPlanDetailsForm } from '@/features/study-plan/components/CloneStudyPlanDetailsForm.tsx';
 import { StudyPlanSummary } from '@/features/study-plan/types.ts';
 import { useDiscardStudyPlanChanges } from '@/features/study-plan/hooks/useDiscardStudyPlanChanges.ts';
-import { RequestApprovalForm } from '@/features/study-plan/components/RequestApprovalForm.tsx';
 import { usePermission } from '@/features/user/hooks/usePermission.ts';
 
 type Props = {
@@ -89,19 +88,6 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
       onConfirm: () => discardStudyPlan.mutate(studyPlan.id),
     });
 
-  const requestStudyPlanApproval = () =>
-    modals.open({
-      title: (
-        <ModalHeader
-          title="Request Approval"
-          subtitle="Select an approver to send an email to request approval of the study plan's changes"
-        />
-      ),
-      children: <RequestApprovalForm studyPlan={studyPlan} />,
-      centered: true,
-      size: 'lg',
-    });
-
   const isNewOrDraft = studyPlan.status === 'DRAFT' || studyPlan.status === 'NEW';
 
   return (
@@ -109,12 +95,6 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
       {isNewOrDraft && hasPermission('study-plans:approve') && (
         <Menu.Item onClick={handleApproveStudyPlan} leftSection={<CircleCheck size={14} />}>
           Approve Changes
-        </Menu.Item>
-      )}
-
-      {isNewOrDraft && hasPermission('study-plans:request-approval') && (
-        <Menu.Item leftSection={<Mail size={14} />} onClick={requestStudyPlanApproval}>
-          Request Approval
         </Menu.Item>
       )}
 
