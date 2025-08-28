@@ -1,0 +1,131 @@
+# ====================================
+# Global .gitignore for the monorepo
+# ====================================
+
+# ──────────────────────────────────────────────────────────
+# 1) Operating System / Editor Files
+# ──────────────────────────────────────────────────────────
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+
+# VS Code
+.vscode/
+# JetBrains (IntelliJ, WebStorm, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse / STS
+.classpath
+.project
+.settings/
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/nbdist/
+/.nb-gradle/
+
+# Miscellaneous temp files
+*.log
+*.sw?
+*.swo
+*.bak
+*.tmp
+
+# ──────────────────────────────────────────────────────────
+# 2) Environment / Secrets
+# ──────────────────────────────────────────────────────────
+.env
+*.local
+
+# ──────────────────────────────────────────────────────────
+# 3) Node.js / JavaScript / TypeScript Projects
+# ──────────────────────────────────────────────────────────
+# Dependencies
+node_modules/
+
+# Build outputs (React, Vite, etc.)
+dist/
+dist-ssr/
+apps/cms/dist/
+apps/content/dist/
+apps/cms/build/
+apps/content/build/
+
+# Generated types / Astro internals
+.astro/
+# TypeScript incremental build files
+**/*.tsbuildinfo
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+yarn-error.log*
+
+# Lockfiles (ignore if you want to use a single lock at root)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# ──────────────────────────────────────────────────────────
+# 4) Shared Package Artifacts
+# ──────────────────────────────────────────────────────────
+packages/shared-types/dist/
+packages/api-client/dist/
+
+# ──────────────────────────────────────────────────────────
+# 5) Java / Spring Boot Projects
+# ──────────────────────────────────────────────────────────
+# Gradle build
+services/backend/build/
+services/backend/.gradle/
+# Maven build
+services/backend/target/
+# JARs, classes, logs
+services/backend/*.jar
+services/backend/*.class
+services/backend/logs/
+
+# Ignore Maven wrapper metadata (but keep the wrapper JAR itself if committed)
+!/services/backend/.mvn/wrapper/maven-wrapper.jar
+
+# If any build directories under src/ should remain tracked, negate here (optional):
+# !services/backend/src/main/**/build/
+# !services/backend/src/test/**/build/
+
+# ──────────────────────────────────────────────────────────
+# 6) Database / Docker / Infrastructure
+# ──────────────────────────────────────────────────────────
+# Local DB files
+*.db
+*.sqlite
+
+# Docker Compose override or local override files
+docker-compose.override.yml
+# Docker volumes (if you create any local volume folders)
+**/docker-volumes/
+
+# ──────────────────────────────────────────────────────────
+# 7) Miscellaneous
+# ──────────────────────────────────────────────────────────
+# HELP files, documentation build outputs (if any)
+HELP.md
+
+# Ignore generated IDE workspace files in other folders (redundant but explicit)
+apps/cms/.idea/
+apps/content/.idea/
+services/backend/.idea/
+
+# Any other local temp or cache folders
+**/.cache/
+
