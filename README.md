@@ -4,3 +4,5 @@ A university curriculum visualizer and CMS that lets you generate interactive st
 ![Study plan content demo](assets/content-demo.gif)
 
 > Try out the page above [here](https://gjuplans.com/study-plans/1)
+
+**Note: the documentation is a  work in progress**
