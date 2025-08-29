@@ -1,6 +1,8 @@
 import { ErrorObject } from '@/shared/types.ts';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_DOMAIN = import.meta.env.VITE_API_DOMAIN;
+const SECURE = import.meta.env.VITE_SECURE === 'true';
+const PROTOCOL = SECURE ? 'https' : 'http';
 
 type RequestOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -20,7 +22,7 @@ export const api = {
     const searchParams = new URLSearchParams();
     Object.entries(params)?.forEach(([param, value]) => searchParams.append(param, String(value)));
 
-    const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}${searchParams.size ? `?${searchParams}` : ''}`;
+    const url = `${PROTOCOL}://${API_DOMAIN}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}${searchParams.size ? `?${searchParams}` : ''}`;
 
     if (body && !headers['Content-Type']) {
       headers['Content-Type'] = 'application/json';
