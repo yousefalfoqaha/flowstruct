@@ -4,8 +4,9 @@ services:
     environment:
       NPM_WORKSPACE: cms
       PREVIEW_PORT: 5173
-      STUDENT_BASE_URL: ${STUDENT_BASE_URL}
-      API_BASE_URL: ${API_BASE_URL}
+      VITE_SECURE: true
+      VITE_CONTENT_DOMAIN: ${DOMAIN}
+      VITE_API_DOMAIN: api.${DOMAIN}
     depends_on:
       - api
     restart: always
@@ -15,7 +16,8 @@ services:
     environment:
       NPM_WORKSPACE: content
       PREVIEW_PORT: 4321
-      API_BASE_URL: ${API_BASE_URL}
+      VITE_SECURE: true
+      VITE_API_DOMAIN: api.${DOMAIN}
       API_KEY: ${API_KEY}
     depends_on:
       - api
@@ -29,7 +31,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       API_KEY: ${API_KEY}
-      CMS_BASE_URL: ${CMS_BASE_URL}
+      SECURE: true
+      CMS_DOMAIN: cms.${DOMAIN}
     networks:
       - caddy
       - api
@@ -49,19 +52,8 @@ services:
       - api
     restart: always
 
-  reverse_proxy:
-    image: caddy:2.10.0-alpine
-    environment:
-      API_BASE_URL: ${API_BASE_URL}
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-    networks:
-      - caddy
-    restart: always
+  reverse-proxy:
+    imag
 
 networks:
   caddy:
@@ -69,4 +61,3 @@ networks:
 
 volumes:
   pg_data:
-  caddy_data:
