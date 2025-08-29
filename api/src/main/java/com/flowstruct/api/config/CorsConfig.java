@@ -16,12 +16,17 @@ public class CorsConfig {
     @Value("${cors.allowed-origins}")
     private String allowedOrigins;
 
+    @Value("${secure}")
+    private boolean secure;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        String PROTOCOL = secure ? "https" : "http";
+
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(
                 Arrays.stream(allowedOrigins.split(","))
-                        .map(String::trim)
+                        .map(origin -> PROTOCOL + "://" + origin.trim())
                         .toList()
         );
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

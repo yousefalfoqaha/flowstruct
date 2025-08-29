@@ -11,7 +11,7 @@ import java.time.Duration;
 @Service
 public class CookieService {
 
-    @Value("${jwt.cookie.secure}")
+    @Value("${secure}")
     private boolean cookieSecure;
 
     @Value("${jwt.cookie.expiry}")
