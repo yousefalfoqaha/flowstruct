@@ -2,7 +2,7 @@ services:
   cms:
     build: ./client
     environment:
-      WORKSPACE_NAME: cms
+      NPM_WORKSPACE: cms
       PREVIEW_PORT: 5173
       STUDENT_BASE_URL: ${STUDENT_BASE_URL}
       API_BASE_URL: ${API_BASE_URL}
@@ -13,7 +13,7 @@ services:
   content:
     build: ./client
     environment:
-      WORKSPACE_NAME: content
+      NPM_WORKSPACE: content
       PREVIEW_PORT: 4321
       API_BASE_URL: ${API_BASE_URL}
       API_KEY: ${API_KEY}

@@ -10,6 +10,6 @@ RUN npm ci
 
 COPY . .
 
-RUN npm run build --workspace=${WORKSPACE_NAME}
+RUN npm run build --workspace=${NPM_WORKSPACE}
 
-CMD ["npm", "run", "--workspace=${WORKSPACE_NAME}", "preview", "--", "--host", "--port", "${PREVIEW_PORT}"]
+CMD ["npm", "run", "--workspace=${NPM_WORKSPACE}", "preview", "--", "--host", "--port", "${PREVIEW_PORT}"]
