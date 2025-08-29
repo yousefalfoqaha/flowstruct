@@ -2,8 +2,8 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
-COPY apps/*/package.json ./apps/*/
+COPY package.json ./
+COPY apps/${NPM_WORKSPACE}/package.json ./apps/${NPM_WORKSPACE}/
 COPY packages/*/package.json ./packages/*/
 
 RUN npm ci
