@@ -104,10 +104,7 @@ export function StudyPlanDangerMenuItems({ studyPlan }: Props) {
         </Menu.Item>
       )}
 
-      {isNewOrDraft &&
-        (hasPermission('study-plans:approve') || hasPermission('study-plans:request-approval')) && (
-          <Menu.Divider />
-        )}
+      {isNewOrDraft && hasPermission('study-plans:approve') && <Menu.Divider />}
 
       <Menu.Item leftSection={<CopyPlus size={14} />} onClick={handleCloneStudyPlan}>
         Clone
