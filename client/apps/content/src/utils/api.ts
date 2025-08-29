@@ -1,9 +1,16 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_DOMAIN = import.meta.env.VITE_API_DOMAIN
+  ? import.meta.env.VITE_API_DOMAIN
+  : 'localhost:8080';
+
+const SECURE = import.meta.env.VITE_SECURE ? import.meta.env.VITE_SECURE : false;
+const PROTOCOL = SECURE ? 'https' : 'http';
 
 export const api = async <T>(endpoint: string) => {
-  const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+  const url = `${PROTOCOL}://${API_DOMAIN}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
-  const API_KEY = import.meta.env.VITE_API_KEY;
+  const API_KEY = import.meta.env.VITE_API_KEY
+    ? import.meta.env.VITE_API_KEY
+    : 'super-secret-api-key';
 
   const response = await fetch(url, {
     headers: {

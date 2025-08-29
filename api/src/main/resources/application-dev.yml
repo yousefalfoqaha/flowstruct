@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/${POSTGRES_DB}
+    url: jdbc:postgresql://localhost:5433/${DB_NAME:flowstruct}
   config:
     activate:
       on-profile: dev

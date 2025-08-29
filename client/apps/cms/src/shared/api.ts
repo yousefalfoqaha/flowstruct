@@ -1,7 +1,10 @@
 import { ErrorObject } from '@/shared/types.ts';
 
-const API_DOMAIN = import.meta.env.VITE_API_DOMAIN;
-const SECURE = import.meta.env.VITE_SECURE === 'true';
+const API_DOMAIN = import.meta.env.VITE_API_DOMAIN
+  ? import.meta.env.VITE_API_DOMAIN
+  : 'localhost:8080';
+
+const SECURE = import.meta.env.VITE_SECURE ? import.meta.env.VITE_SECURE : false;
 const PROTOCOL = SECURE ? 'https' : 'http';
 
 type RequestOptions = {
