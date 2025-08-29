@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 //
 @SpringBootApplication
-public class GjuPlansApplication {
+public class FlowstructApiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GjuPlansApplication.class, args);
+        SpringApplication.run(FlowstructApiApplication.class, args);
     }
     
 }
