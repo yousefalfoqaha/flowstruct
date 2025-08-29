@@ -3,13 +3,6 @@ spring:
     activate:
       on-profile: prod
 
-jwt:
-  cookie:
-    secure: true
-
-cors:
-  allowed-origins: https://${CMS_BASE_URL}
-
 logging:
   level:
     root: WARN

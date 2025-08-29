@@ -1,19 +1,12 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
+    url: jdbc:postgresql://localhost:5433/${POSTGRES_DB}
   config:
     activate:
       on-profile: dev
     import: file:.env[.properties]
   flyway:
     locations: "classpath:db/migration,classpath:dev/db/migration"
-
-jwt:
-  cookie:
-    secure: false
-
-cors:
-  allowed-origins: http://localhost:5173, http://localhost:4321
 
 logging:
   level:
