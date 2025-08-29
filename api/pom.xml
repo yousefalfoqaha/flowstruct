@@ -8,11 +8,11 @@
         <version>3.3.4</version>
         <relativePath/>
     </parent>
-    <groupId>com.gjuplans</groupId>
-    <artifactId>gjuplans-api</artifactId>
+    <groupId>com.flowstruct</groupId>
+    <artifactId>flowstruct-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>api</name>
-    <description>API for GJUPlans</description>
+    <description>API for Flowstruct</description>
     <url/>
     <licenses>
         <license/>
