@@ -1,0 +1,51 @@
+name: Build & Push Docker Images
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push API
+        uses: docker/build-push-action@v6
+        with:
+          context: ./api
+          push: true
+          tags: ghcr.io/${{ github.repository }}/api:latest
+
+      - name: Build & Push CMS
+        uses: docker/build-push-action@v6
+        with:
+          context: ./client
+          push: true
+          build-args: |
+            NPM_WORKSPACE=cms
+            VITE_SECURE=true
+          tags: ghcr.io/${{ github.repository }}/cms:latest
+
+      - name: Build & Push Content
+        uses: docker/build-push-action@v6
+        with:
+          context: ./client
+          push: true
+          build-args: |
+            NPM_WORKSPACE=content
+            VITE_SECURE=true
+          tags: ghcr.io/${{ github.repository }}/content:latest
