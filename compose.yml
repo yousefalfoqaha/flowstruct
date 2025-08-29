@@ -1,40 +1,68 @@
 services:
   cms:
-    build: ./client
+    image: ${GHCR_NAMESPACE:ghcr.io/yousefalfoqaha/flowstruct}/cms:latest
     environment:
-      NPM_WORKSPACE: cms
-      PREVIEW_PORT: 5173
-      VITE_SECURE: true
       VITE_CONTENT_DOMAIN: ${DOMAIN}
       VITE_API_DOMAIN: api.${DOMAIN}
-    depends_on:
-      - api
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cms.rule=Host(`cms.${DOMAIN}`)"
+      - "traefik.http.routers.cms.entrypoints=websecure"
+      - "traefik.http.routers.cms.tls.certresolver=myresolver"
+      - "traefik.http.services.cms.loadbalancer.server.port=80"
+      - "com.centurylinklabs.watchtower.enable=true"
     restart: always
 
   content:
-    build: ./client
+    image: caddy:2.7-alpine
+    depends_on:
+      - api
+    volumes:
+      - content_dist:/srv
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.content.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.content.entrypoints=websecure"
+      - "traefik.http.routers.content.tls.certresolver=myresolver"
+      - "traefik.http.services.content.loadbalancer.server.port=80"
+    restart: always
+
+  content-regenerator:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./client:/app
+      - content_dist:/app/dist
     environment:
       NPM_WORKSPACE: content
-      PREVIEW_PORT: 4321
-      VITE_SECURE: true
-      VITE_API_DOMAIN: api.${DOMAIN}
       API_KEY: ${API_KEY}
+      VITE_API_DOMAIN: api.${DOMAIN}
+    command: >
+      sh -c "while true; do
+        npm ci && npm run build --workspace=content;
+        sleep 86400;
+      done"
     depends_on:
       - api
     restart: always
 
   api:
-    build: ./api
+    image: ${GHCR_NAMESPACE:ghcr.io/yousefalfoqaha/flowstruct}/api:latest
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
       API_KEY: ${API_KEY}
       SECURE: true
       CMS_DOMAIN: cms.${DOMAIN}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`api.${DOMAIN}`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls.certresolver=myresolver"
+      - "traefik.http.services.api.loadbalancer.server.port=8080"
     networks:
-      - caddy
       - api
     depends_on:
       - database
@@ -43,9 +71,9 @@ services:
   database:
     image: postgres:16.9-alpine
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - pg_data:/var/lib/postgresql/data
     networks:
@@ -53,11 +81,38 @@ services:
     restart: always
 
   reverse-proxy:
-    imag
+    image: traefik:v3.5
+    command:
+      - "--providers.docker"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=gjuplans@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  watchtower:
+    image: containrrr/watchtower
+    command:
+      - "--label-enable"
+      - "--interval"
+      - "30"
+      - "--rolling-restart"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 networks:
-  caddy:
   api:
 
 volumes:
+  cms_dist:
+  content_dist:
   pg_data:
