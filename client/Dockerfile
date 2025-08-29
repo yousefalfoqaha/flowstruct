@@ -1,8 +1,8 @@
-FROM node:20-alpine
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json ./
+COPY package.json package-lock.json ./
 COPY apps/${NPM_WORKSPACE}/package.json ./apps/${NPM_WORKSPACE}/
 COPY packages/*/package.json ./packages/*/
 
@@ -12,4 +12,9 @@ COPY . .
 
 RUN npm run build --workspace=${NPM_WORKSPACE}
 
-CMD ["npm", "run", "--workspace=${NPM_WORKSPACE}", "preview", "--", "--host", "--port", "${PREVIEW_PORT}"]
+FROM caddy:2.7-alpine
+
+COPY --from=builder /app/apps/${NPM_WORKSPACE}/dist /srv
+COPY client/Caddyfile /etc/caddy/Caddyfile
+
+EXPOSE 80
