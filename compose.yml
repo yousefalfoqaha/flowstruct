@@ -17,10 +17,9 @@ services:
   content:
     image: ${GHCR_NAMESPACE:-ghcr.io/flowstruct}/content:latest
     environment:
-      RUNTIME_ENV_VAR_PREFIX: RUNTIME_
-      RUNTIME_DOMAIN: ${DOMAIN}
-      RUNTIME_API_KEY: ${API_KEY}
-      VITE_SECURE: true
+      DOMAIN: ${DOMAIN}
+      API_KEY: ${API_KEY}
+      SECURE: true
     depends_on:
       - api
     labels:
