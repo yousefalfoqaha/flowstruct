@@ -19,12 +19,6 @@ FROM deps AS runtime
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=build /app/apps/content/dist ./dist
 
-COPY client/env.sh /docker-entrypoint.d/env.sh
-RUN chmod +x /docker-entrypoint.d/env.sh
-
-ENV ASSET_DIR=/dist/server/entry.mjs
-ENTRYPOINT ["/docker-entrypoint.sh"]
-
 ENV HOST=0.0.0.0
 ENV PORT=4321
 EXPOSE 4321
