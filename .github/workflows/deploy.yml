@@ -3,7 +3,7 @@ name: Build & Push Docker Images
 on:
   push:
     branches:
-      - main
+      - docker-compose-deploy
 
 jobs:
   build:
@@ -21,31 +21,42 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_PAT }}
 
       - name: Build & Push API
         uses: docker/build-push-action@v6
         with:
-          context: ./api
+          context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}/api:latest
+          build-args: |
+            SPRING_PROFILES_ACTIVE=prod
+            DB_NAME=flowstruct
+            DB_USER=flowstruct
+            DB_PASSWORD=flowstruct
+            API_KEY=flowstruct-api-key
+            SECURE=true
+            DOMAIN=flowstruct.com
+          tags: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/api:latest
 
       - name: Build & Push CMS
         uses: docker/build-push-action@v6
         with:
-          context: ./client
+          context: .
           push: true
           build-args: |
-            NPM_WORKSPACE=cms
+            RUNTIME_ENV_VAR_PREFIX=_RUNTIME
+            RUNTIME_DOMAIN=flowstruct.com
             VITE_SECURE=true
-          tags: ghcr.io/${{ github.repository }}/cms:latest
+          tags: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/cms:latest
 
       - name: Build & Push Content
         uses: docker/build-push-action@v6
         with:
-          context: ./client
+          context: .
           push: true
           build-args: |
-            NPM_WORKSPACE=content
+            RUNTIME_ENV_VAR_PREFIX=_RUNTIME
+            RUNTIME_DOMAIN=flowstruct.com
+            RUNTIME_API_KEY=flowstruct-api-key
             VITE_SECURE=true
-          tags: ghcr.io/${{ github.repository }}/content:latest
+          tags: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}/content:latest
