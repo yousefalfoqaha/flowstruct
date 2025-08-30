@@ -1,87 +1,88 @@
-import { ErrorObject } from '@/shared/types.ts';
+import {ErrorObject} from '@/shared/types.ts';
 
-const API_DOMAIN = import.meta.env.VITE_API_DOMAIN
-  ? import.meta.env.VITE_API_DOMAIN
-  : 'localhost:8080';
+const API_DOMAIN = import.meta.env.VITE_DOMAIN
+    ? 'api.' + import.meta.env.VITE_DOMAIN
+    : 'localhost:8080';
 
 const SECURE = import.meta.env.VITE_SECURE ? import.meta.env.VITE_SECURE : false;
 const PROTOCOL = SECURE ? 'https' : 'http';
 
 type RequestOptions = {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  body?: unknown;
-  params?: Record<string, unknown>;
-  headers?: Record<string, string>;
+    method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+    body?: unknown;
+    params?: Record<string, unknown>;
+    headers?: Record<string, string>;
 };
 
 export const api = {
-  async request<T>(endpointSegments: unknown[] | string, options: RequestOptions = {}): Promise<T> {
-    const endpoint = Array.isArray(endpointSegments)
-      ? endpointSegments.map((segment) => String(segment)).join('/')
-      : endpointSegments;
+    async request<T>(endpointSegments: unknown[] | string, options: RequestOptions = {}): Promise<T> {
+        const endpoint = Array.isArray(endpointSegments)
+            ? endpointSegments.map((segment) => String(segment)).join('/')
+            : endpointSegments;
 
-    const { method = 'GET', params = {}, body, headers = {} } = options;
+        const {method = 'GET', params = {}, body, headers = {}} = options;
 
-    const searchParams = new URLSearchParams();
-    Object.entries(params)?.forEach(([param, value]) => searchParams.append(param, String(value)));
+        const searchParams = new URLSearchParams();
+        Object.entries(params)?.forEach(([param, value]) => searchParams.append(param, String(value)));
 
-    const url = `${PROTOCOL}://${API_DOMAIN}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}${searchParams.size ? `?${searchParams}` : ''}`;
+        const url = `${PROTOCOL}://${API_DOMAIN}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}${searchParams.size ? `?${searchParams}` : ''}`;
 
-    if (body && !headers['Content-Type']) {
-      headers['Content-Type'] = 'application/json';
-    }
-
-    const config: RequestInit = {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : undefined,
-      credentials: 'include',
-    };
-
-    const response = await fetch(url, config);
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        if (!endpoint.includes('/me')) {
-          window.location.href = '/login';
-          return new Promise<never>(() => {});
+        if (body && !headers['Content-Type']) {
+            headers['Content-Type'] = 'application/json';
         }
 
-        throw {
-          statusCode: 401,
-          messages: ['Authentication required. Please log in.'],
-          timestamp: new Date().toISOString(),
-        } satisfies ErrorObject;
-      }
+        const config: RequestInit = {
+            method,
+            headers,
+            body: body ? JSON.stringify(body) : undefined,
+            credentials: 'include',
+        };
 
-      const errorData = await response.json();
-      throw {
-        statusCode: response.status,
-        messages: errorData.messages || [errorData.message || 'Unknown error'],
-        timestamp: errorData.timestamp || new Date().toISOString(),
-      } satisfies ErrorObject;
-    }
+        const response = await fetch(url, config);
 
-    if (response.status === 204) {
-      return {} as T;
-    }
+        if (!response.ok) {
+            if (response.status === 401) {
+                if (!endpoint.includes('/me')) {
+                    window.location.href = '/login';
+                    return new Promise<never>(() => {
+                    });
+                }
 
-    return (await response.json()) as T;
-  },
+                throw {
+                    statusCode: 401,
+                    messages: ['Authentication required. Please log in.'],
+                    timestamp: new Date().toISOString(),
+                } satisfies ErrorObject;
+            }
 
-  get<T>(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, 'method' | 'body'>) {
-    return this.request<T>(endpointSegments, { ...options, method: 'GET' });
-  },
+            const errorData = await response.json();
+            throw {
+                statusCode: response.status,
+                messages: errorData.messages || [errorData.message || 'Unknown error'],
+                timestamp: errorData.timestamp || new Date().toISOString(),
+            } satisfies ErrorObject;
+        }
 
-  post<T>(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, 'method'>) {
-    return this.request<T>(endpointSegments, { ...options, method: 'POST' });
-  },
+        if (response.status === 204) {
+            return {} as T;
+        }
 
-  put<T>(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, 'method'>) {
-    return this.request<T>(endpointSegments, { ...options, method: 'PUT' });
-  },
+        return (await response.json()) as T;
+    },
 
-  delete<T>(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, 'method'>) {
-    return this.request<T>(endpointSegments, { ...options, method: 'DELETE' });
-  },
+    get<T>(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, 'method' | 'body'>) {
+        return this.request<T>(endpointSegments, {...options, method: 'GET'});
+    },
+
+    post<T>(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, 'method'>) {
+        return this.request<T>(endpointSegments, {...options, method: 'POST'});
+    },
+
+    put<T>(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, 'method'>) {
+        return this.request<T>(endpointSegments, {...options, method: 'PUT'});
+    },
+
+    delete<T>(endpointSegments: unknown[] | string, options?: Omit<RequestOptions, 'method'>) {
+        return this.request<T>(endpointSegments, {...options, method: 'DELETE'});
+    },
 };
