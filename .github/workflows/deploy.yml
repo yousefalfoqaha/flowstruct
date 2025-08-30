@@ -27,6 +27,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: ./api/Dockerfile
           push: true
           build-args: |
             SPRING_PROFILES_ACTIVE=prod
@@ -42,6 +43,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: ./client/apps/cms/Dockerfile
           push: true
           build-args: |
             RUNTIME_ENV_VAR_PREFIX=_RUNTIME
@@ -53,6 +55,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: ./client/apps/content/Dockerfile
           push: true
           build-args: |
             RUNTIME_ENV_VAR_PREFIX=_RUNTIME
