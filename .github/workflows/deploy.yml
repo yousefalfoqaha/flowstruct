@@ -37,7 +37,7 @@ jobs:
             API_KEY=flowstruct-api-key
             SECURE=true
             DOMAIN=flowstruct.com
-          tags: ghcr.io/api:latest
+          tags: ghcr.io/${{ github.event.repository.name }}/api:latest
 
       - name: Build & Push CMS
         uses: docker/build-push-action@v6
@@ -49,7 +49,7 @@ jobs:
             RUNTIME_ENV_VAR_PREFIX=_RUNTIME
             RUNTIME_DOMAIN=flowstruct.com
             VITE_SECURE=true
-          tags: ghcr.io/cms:latest
+          tags: ghcr.io/${{ github.event.repository.name }}/cms:latest
 
       - name: Build & Push Content
         uses: docker/build-push-action@v6
@@ -62,4 +62,4 @@ jobs:
             RUNTIME_DOMAIN=flowstruct.com
             RUNTIME_API_KEY=flowstruct-api-key
             VITE_SECURE=true
-          tags: ghcr.io/content:latest
+          tags: ghcr.io/${{ github.event.repository.name }}/content:latest
