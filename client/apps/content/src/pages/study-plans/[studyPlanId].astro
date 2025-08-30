@@ -1,34 +1,21 @@
 ---
 import CourseDialog from '../../components/CourseDialog.astro';
 import StudyPlanGrid from '../../components/StudyPlanGrid.astro';
-import type { Program, StudyPlan, StudyPlanSummary } from '../../types';
+import type { Program, StudyPlan } from '../../types';
 import Layout from '../../layouts/Layout.astro';
 import AboutDialog from '../../components/AboutDialog.astro';
 import { api } from '../../utils/api';
 
-export async function getStaticPaths() {
-  const studyPlanSummaries = (await api<StudyPlanSummary[]>('/study-plans'))
-    .filter(studyPlan => studyPlan.status !== 'NEW' || studyPlan.archivedAt === null);
+const { studyPlanId } = Astro.params;
 
-  const paths = await Promise.all(
-    studyPlanSummaries.map(async (studyPlanSummary) => {
-      try {
-        const studyPlan = await api<StudyPlan>(`study-plans/${studyPlanSummary.id}/approved`);
+let studyPlan: StudyPlan | undefined;
 
-        return {
-          params: { studyPlanId: String(studyPlan.id) },
-          props: { studyPlan },
-        };
-      } catch {
-        return null;
-      }
-    }),
-  );
-
-  return paths.filter(Boolean);
+try {
+  studyPlan = await api<StudyPlan>(`study-plans/${studyPlanId}/approved`);
+} catch {
+  return Astro.redirect('/404');
 }
 
-const { studyPlan } = Astro.props;
 const program = await api<Program>(`/programs/${studyPlan.program}`);
 
 const { track, year } = studyPlan;
