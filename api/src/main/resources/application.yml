@@ -21,7 +21,7 @@ server:
   forward-headers-strategy: native
 
 cors:
-  allowed-origins: ${CMS_DOMAIN}
+  allowed-origins: cms.${DOMAIN}
 
 secure: ${SECURE}
 
