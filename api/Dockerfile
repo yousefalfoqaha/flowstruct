@@ -1,13 +1,13 @@
 FROM eclipse-temurin:21-jdk AS base
 WORKDIR /app
 
-COPY --chmod=755 mvnw ./
-COPY .mvn .mvn
+COPY --chmod=755 api/mvnw ./
+COPY api/.mvn .mvn
 
-COPY pom.xml ./
+COPY api/pom.xml ./
 RUN ./mvnw dependency:go-offline
 
-COPY src src
+COPY api/src src
 
 FROM base AS build
 RUN ./mvnw clean package -DskipTests
