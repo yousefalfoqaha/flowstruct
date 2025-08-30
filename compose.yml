@@ -2,9 +2,9 @@ services:
   cms:
     image: ${GHCR_NAMESPACE:ghcr.io/yousefalfoqaha/flowstruct}/cms:latest
     environment:
-      RUNTIME_ENV_VAR_PREFIX: PREFIX_
-      PREFIX_CONTENT_DOMAIN: ${DOMAIN}
-      PREFIX_API_DOMAIN: api.${DOMAIN}
+      RUNTIME_ENV_VAR_PREFIX: RUNTIME_
+      RUNTIME_DOMAIN: ${DOMAIN}
+      VITE_SECURE: true
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.cms.rule=Host(\"cms.${DOMAIN}\")"
@@ -17,9 +17,10 @@ services:
   content:
     image: ${GHCR_NAMESPACE:ghcr.io/yousefalfoqaha/flowstruct}/content:latest
     environment:
-      RUNTIME_ENV_VAR_PREFIX: PREFIX_
-      PREFIX_API_DOMAIN: api.${DOMAIN}
-      PREFIX_API_KEY: ${API_KEY}
+      RUNTIME_ENV_VAR_PREFIX: RUNTIME_
+      RUNTIME_DOMAIN: ${DOMAIN}
+      RUNTIME_API_KEY: ${API_KEY}
+      VITE_SECURE: true
     depends_on:
       - api
     labels:
@@ -39,7 +40,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       API_KEY: ${API_KEY}
       SECURE: true
-      CMS_DOMAIN: cms.${DOMAIN}
+      DOMAIN: ${DOMAIN}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.api.rule=Host(\"api.${DOMAIN}\")"
