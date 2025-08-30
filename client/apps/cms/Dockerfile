@@ -3,13 +3,15 @@ WORKDIR /app
 
 COPY client/package.json client/package-lock.json ./
 COPY client/apps/cms/package.json ./apps/cms/
-COPY client/packages/*/package.json ./packages/*/
+COPY client/packages/ ./packages/
 
 RUN npm ci
 
 FROM deps AS build
 
-COPY client .
+COPY client/apps/cms/ ./apps/cms/
+COPY client/tsconfig.base.json ./
+
 RUN npm run build:cms
 
 FROM caddy:2.7-alpine AS runtime

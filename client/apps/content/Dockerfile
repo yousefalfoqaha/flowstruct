@@ -3,13 +3,15 @@ WORKDIR /app
 
 COPY client/package.json client/package-lock.json ./
 COPY client/apps/content/package.json ./apps/content/
-COPY client/packages/*/package.json ./packages/*/
+COPY client/packages/ ./packages/
 
 RUN npm ci
 
 FROM deps AS build
 
-COPY client .
+COPY client/apps/content ./apps/content
+COPY client/tsconfig.base.json ./
+
 RUN npm run build:content
 
 FROM deps AS runtime
