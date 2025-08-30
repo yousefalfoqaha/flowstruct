@@ -26,13 +26,6 @@ public class StudyPlanService {
         return studyPlanDtoMapper.apply(studyPlan);
     }
 
-    public StudyPlanSummaryDto getStudyPlanSummary(long studyPlanId) {
-        var studyPlanSummary = studyPlanRepository.findStudyPlanSummary(studyPlanId).orElseThrow(() ->
-                new StudyPlanNotFoundException("Study plan not found.")
-        );
-        return studyPlanSummaryDtoMapper.apply(studyPlanSummary);
-    }
-
     public Optional<StudyPlanDto> getApprovedStudyPlan(long studyPlanId) {
         var studyPlan = findOrThrow(studyPlanId);
 
