@@ -1,0 +1,28 @@
+FROM node:20-alpine AS deps
+WORKDIR /app
+
+COPY client/package.json client/package-lock.json ./
+COPY client/apps/content/package.json ./apps/content/
+COPY client/packages/*/package.json ./packages/*/
+
+RUN npm ci
+
+FROM deps AS build
+
+COPY client .
+RUN npm run build:content
+
+FROM deps AS runtime
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=build /app/apps/content/dist ./dist
+
+COPY client/env.sh /docker-entrypoint.d/env.sh
+RUN chmod +x /docker-entrypoint.d/env.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+ENV HOST=0.0.0.0
+ENV PORT=4321
+EXPOSE 4321
+CMD node ./dist/server/entry.mjs
