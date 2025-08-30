@@ -58,8 +58,7 @@ jobs:
           file: ./client/apps/content/Dockerfile
           push: true
           build-args: |
-            RUNTIME_ENV_VAR_PREFIX=_RUNTIME
-            RUNTIME_DOMAIN=flowstruct.com
-            RUNTIME_API_KEY=flowstruct-api-key
-            VITE_SECURE=true
+            DOMAIN=flowstruct.com
+            API_KEY=flowstruct-api-key
+            SECURE=true
           tags: ghcr.io/${{ github.event.repository.name }}/content:latest
