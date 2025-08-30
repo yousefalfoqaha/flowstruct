@@ -16,13 +16,13 @@ RUN npm run build:cms
 
 FROM caddy:2.7-alpine AS runtime
 
+ENV ASSET_DIR=/srv
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
 COPY --from=build /app/apps/cms/dist /srv
 COPY client/apps/cms/Caddyfile /etc/caddy/Caddyfile
 
 COPY client/env.sh /docker-entrypoint.d/env.sh
 RUN chmod +x /docker-entrypoint.d/env.sh
-
-ENV ASSET_DIR=/srv
-ENTRYPOINT ["/docker-entrypoint.sh"]
 
 EXPOSE 80
