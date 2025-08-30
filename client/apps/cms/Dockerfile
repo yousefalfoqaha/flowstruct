@@ -22,6 +22,7 @@ COPY client/apps/cms/Caddyfile /etc/caddy/Caddyfile
 COPY client/env.sh /docker-entrypoint.d/env.sh
 RUN chmod +x /docker-entrypoint.d/env.sh
 
+ENV ASSET_DIR=/srv
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 EXPOSE 80

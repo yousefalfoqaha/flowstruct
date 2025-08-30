@@ -22,6 +22,7 @@ COPY --from=build /app/apps/content/dist ./dist
 COPY client/env.sh /docker-entrypoint.d/env.sh
 RUN chmod +x /docker-entrypoint.d/env.sh
 
+ENV ASSET_DIR=/dist/server/entry.mjs
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 ENV HOST=0.0.0.0
