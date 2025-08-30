@@ -87,21 +87,21 @@ packages/api-client/dist/
 # 5) Java / Spring Boot Projects
 # ──────────────────────────────────────────────────────────
 # Gradle build
-services/backend/build/
-services/backend/.gradle/
+api/build/
+api/.gradle/
 # Maven build
-services/backend/target/
+api/target/
 # JARs, classes, logs
-services/backend/*.jar
-services/backend/*.class
-services/backend/logs/
+api/*.jar
+api/*.class
+api/logs/
 
 # Ignore Maven wrapper metadata (but keep the wrapper JAR itself if committed)
-!/services/backend/.mvn/wrapper/maven-wrapper.jar
+!/api/.mvn/wrapper/maven-wrapper.jar
 
 # If any build directories under src/ should remain tracked, negate here (optional):
-# !services/backend/src/main/**/build/
-# !services/backend/src/test/**/build/
+# !api/src/main/**/build/
+# !api/src/test/**/build/
 
 # ──────────────────────────────────────────────────────────
 # 6) Database / Docker / Infrastructure
@@ -120,11 +120,6 @@ docker-compose.override.yml
 # ──────────────────────────────────────────────────────────
 # HELP files, documentation build outputs (if any)
 HELP.md
-
-# Ignore generated IDE workspace files in other folders (redundant but explicit)
-apps/dashboard/.idea/
-apps/pages/.idea/
-services/backend/.idea/
 
 # Any other local temp or cache folders
 **/.cache/
