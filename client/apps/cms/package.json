@@ -12,8 +12,6 @@
     "test": "echo \"cms: no tests defined\" && exit 0"
   },
   "dependencies": {
-    "@flowstruct/api-client": "*",
-    "@flowstruct/shared-types": "*",
     "@hookform/resolvers": "^5.1.0",
     "@mantine/core": "^8.0.0",
     "@mantine/dates": "^8.0.0",

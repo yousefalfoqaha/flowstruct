@@ -12,8 +12,7 @@
     "test": "echo \"content: no tests defined\" && exit 0"
   },
   "dependencies": {
-    "@flowstruct/shared-types": "*",
-    "@flowstruct/api-client": "*",
+    "@astrojs/node": "^9.4.3",
     "@astrojs/tailwind": "^6.0.2",
     "astro": "^5.7.10",
     "lucide": "^0.468.0",
