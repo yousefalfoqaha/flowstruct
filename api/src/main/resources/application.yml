@@ -2,16 +2,16 @@ spring:
   application:
     name: flowstruct-api
   datasource:
-    url: jdbc:postgresql://database/${DB_NAME:flowstruct}
-    username: ${DB_USER:flowstruct}
-    password: ${DB_PASSWORD:flowstruct}
+    url: jdbc:postgresql://database/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
   flyway:
     clean-disabled: true
     baseline-on-migrate: true
     baseline-description: "init"
     baseline-version: 0
-    user: ${DB_USER:flowstruct}
-    password: ${DB_PASSWORD:flowstruct}
+    user: ${DB_USER}
+    password: ${DB_PASSWORD}
 
 jwt:
   cookie:
@@ -21,9 +21,9 @@ server:
   forward-headers-strategy: native
 
 cors:
-  allowed-origins: ${CMS_DOMAIN:localhost:5173}
+  allowed-origins: ${CMS_DOMAIN}
 
-secure: ${SECURE:false}
+secure: ${SECURE}
 
 api:
-  key: ${API_KEY:super-secret-api-key}
+  key: ${API_KEY}
