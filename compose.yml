@@ -1,13 +1,10 @@
 services:
   cms:
-    build:
-      context: .
-      dockerfile: ./client/apps/cms/Dockerfile
+    image: ${GHCR_NAMESPACE:ghcr.io/yousefalfoqaha/flowstruct}/cms:latest
     environment:
-      APP_PREFIX: PREFIX_
+      RUNTIME_ENV_VAR_PREFIX: PREFIX_
       PREFIX_CONTENT_DOMAIN: ${DOMAIN}
       PREFIX_API_DOMAIN: api.${DOMAIN}
-      ASSET_DIR: /srv
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.cms.rule=Host(\"cms.${DOMAIN}\")"
@@ -18,14 +15,11 @@ services:
     restart: always
 
   content:
-    build:
-      context: .
-      dockerfile: ./client/apps/content/Dockerfile
+    image: ${GHCR_NAMESPACE:ghcr.io/yousefalfoqaha/flowstruct}/content:latest
     environment:
-      APP_PREFIX: PREFIX_
+      RUNTIME_ENV_VAR_PREFIX: PREFIX_
       PREFIX_API_DOMAIN: api.${DOMAIN}
       PREFIX_API_KEY: ${API_KEY}
-      ASSET_DIR: /dist/server/entry.mjs
     depends_on:
       - api
     labels:
@@ -37,9 +31,7 @@ services:
     restart: always
 
   api:
-    build:
-      context: .
-      dockerfile: ./api/Dockerfile
+    image: ${GHCR_NAMESPACE:ghcr.io/yousefalfoqaha/flowstruct}/api:latest
     environment:
       SPRING_PROFILES_ACTIVE: prod
       DB_NAME: ${DB_NAME}
