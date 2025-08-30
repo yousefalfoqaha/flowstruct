@@ -1,6 +1,6 @@
 services:
   cms:
-    image: ${GHCR_NAMESPACE:-ghcr.io/yousefalfoqaha/flowstruct}/cms:latest
+    image: ${GHCR_NAMESPACE:-ghcr.io/flowstruct}/cms:latest
     environment:
       RUNTIME_ENV_VAR_PREFIX: RUNTIME_
       RUNTIME_DOMAIN: ${DOMAIN}
@@ -15,7 +15,7 @@ services:
     restart: always
 
   content:
-    image: ${GHCR_NAMESPACE:-ghcr.io/yousefalfoqaha/flowstruct}/content:latest
+    image: ${GHCR_NAMESPACE:-ghcr.io/flowstruct}/content:latest
     environment:
       RUNTIME_ENV_VAR_PREFIX: RUNTIME_
       RUNTIME_DOMAIN: ${DOMAIN}
@@ -32,7 +32,7 @@ services:
     restart: always
 
   api:
-    image: ${GHCR_NAMESPACE:-ghcr.io/yousefalfoqaha/flowstruct}/api:latest
+    image: ${GHCR_NAMESPACE:-ghcr.io/flowstruct}/api:latest
     environment:
       SPRING_PROFILES_ACTIVE: prod
       DB_NAME: ${DB_NAME}
